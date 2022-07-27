@@ -33,7 +33,7 @@ manual_setup="""
 using Test
 using DataFrames
 using Dates									# for e.g. Dates.now(), DateTime
-using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+#using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames
@@ -51,6 +51,7 @@ using OrdinaryDiffEq, Sundials, DiffEqDevTools, ODEInterfaceDiffEq, ODE, LSODA
 
 # List each PhyBEARS code file prefix here
 using PhyBEARS.BGExample
+using PhyloBits.PNreadwrite  # for readTopology etc.
 using PhyloBits.TrUtils
 using PhyBEARS.StateSpace
 using PhyloBits.TreeTable		# for prt, nodetimes
@@ -71,7 +72,7 @@ Distributed.workers()
 @everywhere using DataFrames
 
 @everywhere using Dates									# for e.g. Dates.now(), DateTime
-@everywhere using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+@everywhere #using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 @everywhere using Distributed						# for e.g. @spawn
 @everywhere using Combinatorics					# for e.g. combinations()
 @everywhere using DataFrames
