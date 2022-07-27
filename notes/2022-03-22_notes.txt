@@ -1,0 +1,19 @@
+
+
+Make Gflow work with reduced Cmatrices = DONE
+speed up gflow & standard by removing [m] - NOT NEEDED I THINK
+create Cijk_vals_sub_i, use to speed up - yes? maybe -- NOT REALLY, CREATES ANOTHER THING TO UPDATE
+
+add Cijk weights, probs, rates - DONE, BUT USING VALS FOR NOW
+
+simple demos/speed tests -- make some phylogenies
+
+	Carray = (Carray_event_types=Carray_event_types, Carray_ivals=Carray_ivals, Carray_jvals=Carray_jvals, Carray_kvals=Carray_kvals, Carray_pair=Carray_pair, Cijk_weights=Cijk_weights, Cijk_vals=Cijk_vals, row_weightvals=row_weightvals)
+	
+	1. parallelizer
+	2. wrapper
+	3. continuous distance inputter
+	
+	4. (regimes etc big project not crucial)
+	
+	

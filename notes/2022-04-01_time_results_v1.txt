@@ -1,0 +1,933 @@
+
+
+
+
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+  13.232
+   8
+ -82.45191631081559
+  -5.900460836915152
+ -88.35237714773075
+ -50.47078129482782
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1400 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+  20.725
+   5.094
+  15.02
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1400 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> outputs = []
+Any[]
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-3)
+11-element Vector{Any}:
+   1.812
+   8
+ -82.38496138000208
+  -5.898299100468749
+ -88.28326048047083
+ -50.403041696209606
+   0.004
+   0.001
+   2.267
+   2.267
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-6)
+11-element Vector{Any}:
+   0.251
+   8
+ -82.45211407518002
+  -5.9005298240477275
+ -88.35264389922774
+ -50.471013782751164
+   0.004
+   0.004
+   0.251
+   0.251
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-9)
+11-element Vector{Any}:
+   0.534
+   8
+ -82.45149929233057
+  -5.9005184709771665
+ -88.35201776330773
+ -50.4703931314559
+   0.004
+   0.065
+   0.534
+   0.534
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-12)
+
+11-element Vector{Any}:
+   1.076
+   8
+ -82.45149930124899
+  -5.900518463914238
+ -88.35201776516323
+ -50.47039313909975
+   0.004
+   0.013
+   1.076
+   1.076
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-15)
+
+11-element Vector{Any}:
+   1.768
+   8
+ -82.45149930017863
+  -5.900518463911827
+ -88.35201776409045
+ -50.470393138035114
+   0.004
+   0.038
+   1.768
+   1.768
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+   1.44
+   8
+ -82.46180606107193
+  -5.892790612849849
+ -88.35459667392178
+ -50.47580229613221
+   0.004
+   0.001
+   3.212
+   5.725
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+   0.006
+   8
+ -82.49960477996225
+  -5.893776067432391
+ -88.39338084739464
+ -50.514559405375245
+   0.004
+   0.004
+   0.008
+   0.014
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+   0.006
+   8
+ -82.49944111273896
+  -5.893770450890814
+ -88.39321156362978
+ -50.514388521155674
+   0.004
+   0.007
+   0.016
+   0.022
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+   0.006
+   8
+ -82.49944082775042
+  -5.893770441503863
+ -88.39321126925428
+ -50.51438822818806
+   0.004
+   0.015
+   0.027
+   0.033
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+   0.006
+   8
+ -82.49944082777236
+  -5.8937704414953105
+ -88.39321126926767
+ -50.51438822819778
+   0.004
+   0.038
+   0.069
+   0.075
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+   0.379
+   8
+ -82.45191631081559
+  -5.900460836915152
+ -88.35237714773075
+ -50.47078129482782
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1400 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+   0.004
+   0.001
+   0.379
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1400 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+  11.781
+   8
+ -82.45149941989042
+  -5.900518447372614
+ -88.35201786726304
+ -50.47039324946608
+    "CompositeAlgorithm{Tuple{Vern7," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+   0.004
+   0.003
+  11.781
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Vern7," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+  23.353
+   8
+ -82.45149929721012
+  -5.900518464321818
+ -88.35201776153194
+ -50.47039313527187
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+   0.004
+   0.006
+  23.353
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+   0.877
+   8
+ -82.45149930019072
+  -5.900518463910049
+ -88.35201776410076
+ -50.47039313804631
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+   0.004
+   0.014
+   0.877
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+   2.0
+   8
+ -82.45149930017801
+  -5.900518463911802
+ -88.35201776408982
+ -50.47039313803449
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 909 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+   0.003
+   0.036
+   2.0
+    "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 909 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+   0.964
+   8
+ -82.11405279928132
+  -5.889083919952718
+ -88.00313671923405
+ -50.11890419903492
+   0.004
+   3.879
+   7.295
+   9.547
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1400 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1887 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+   1.008
+   8
+ -82.11405326452945
+  -5.8890839599500575
+ -88.0031372244795
+ -50.118904688639596
+   0.004
+   8.665
+  14.672
+  16.807
+    "CompositeAlgorithm{Tuple{Vern7," ⋯ 907 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    "CompositeAlgorithm{Tuple{Vern7" ⋯ 1425 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+   2.108
+   8
+ -82.11405326455281
+  -5.889083959950549
+ -88.00313722450336
+ -50.118904688663044
+   0.004
+  20.801
+  29.825
+  32.971
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 909 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    "CompositeAlgorithm{Tuple{Vern9" ⋯ 1440 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+   0.007
+   8
+ -82.11405326455285
+  -5.8890839599505505
+ -88.0031372245034
+ -50.118904688663086
+   0.005
+   0.017
+   0.019
+   0.026
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 909 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+   0.006
+   8
+ -82.11405326455285
+  -5.8890839599505505
+ -88.0031372245034
+ -50.118904688663086
+   0.004
+   0.048
+   0.051
+   0.057
+    "CompositeAlgorithm{Tuple{Vern9," ⋯ 909 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+
+
+
+
+
+
+
+
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-3)
+11-element Vector{Any}:
+    3.256
+   12
+ -289.0253674207618
+   -9.812209773353482
+ -298.8375771941153
+ -113.83630616285794
+    0.2
+    0.021
+    3.256
+    3.256
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-6)
+11-element Vector{Any}:
+    9.342
+   12
+ -289.1638654601284
+   -9.741960605086234
+ -298.9058260652147
+ -113.94599163615496
+    0.808
+    0.068
+    9.342
+    9.342
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-9)
+11-element Vector{Any}:
+   20.943
+   12
+ -289.16515002366015
+   -9.742039771878101
+ -298.9071897955383
+ -113.94733314519723
+    0.11
+    0.141
+   20.943
+   20.943
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-12)
+
+11-element Vector{Any}:
+   40.656
+   12
+ -289.1651501634968
+   -9.742040055049413
+ -298.9071902185462
+ -113.94733336599032
+    0.114
+    0.367
+   40.656
+   40.656
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-15)
+
+11-element Vector{Any}:
+   88.364
+   12
+ -289.1651501681177
+   -9.742040056115295
+ -298.907190224233
+ -113.94733337096338
+    0.145
+    1.084
+   88.364
+   88.364
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+    0.188
+   12
+ -290.49170392819025
+   -8.953805434710588
+ -299.44550936290085
+ -114.8662468393845
+    0.108
+    0.02
+    0.089
+    0.277
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+    0.169
+   12
+ -290.51273621253995
+   -9.08763235717551
+ -299.60036856971544
+ -114.94800803239306
+    0.109
+    0.092
+    0.247
+    0.416
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+    0.165
+   12
+ -290.5123966196408
+   -9.087738612348632
+ -299.60013523198944
+ -114.94773577777485
+    0.133
+    0.155
+    0.637
+    0.802
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+    0.165
+   12
+ -290.5123966195827
+   -9.087739317158483
+ -299.6001359367412
+ -114.94773609735884
+    0.13
+    0.376
+    1.611
+    1.777
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+    0.211
+   12
+ -290.51239662098556
+   -9.087739318702074
+ -299.6001359396876
+ -114.94773609947399
+    0.122
+    1.13
+    4.626
+    4.837
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+   12.076
+   12
+ -289.1664510397491
+   -9.741514620371976
+ -298.9079656601211
+ -113.94839075316796
+     "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1887 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    0.107
+    0.02
+   12.076
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1887 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+   19.24
+   12
+ -289.1651306550658
+   -9.742046838645244
+ -298.90717749371106
+ -113.94731703391389
+     "CompositeAlgorithm{Tuple{Vern7" ⋯ 1425 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    0.173
+    0.07
+   19.24
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CompositeAlgorithm{Tuple{Vern7" ⋯ 1425 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+   41.528
+   12
+ -289.1651502070872
+   -9.742040042562499
+ -298.9071902496497
+ -113.94733340358707
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1440 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    0.177
+    0.133
+   41.529
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1440 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+   28.08
+   12
+ -289.1651501683015
+   -9.742040056058823
+ -298.90719022436036
+ -113.9473333711206
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1440 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    0.173
+    0.379
+   28.08
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1440 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+   61.572
+   12
+ -289.1651501681324
+   -9.742040056117695
+ -298.9071902242501
+ -113.94733337097907
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+    0.125
+    1.142
+   61.572
+     "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+    0.652
+   12
+ -260.5744305291431
+   -9.28023377851218
+ -269.8546643076553
+  -85.01413473345687
+    0.101
+    3.575
+    3.753
+    5.717
+     "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1889 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     "Tsit5(stage_limiter! = trivial_" ⋯ 36 bytes ⋯ "miter!, thread = static(false))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+    0.667
+   12
+ -260.5744062290351
+   -9.280650753962039
+ -269.85505698299716
+  -85.01428693726874
+    0.145
+    7.304
+    7.464
+    9.446
+     "CompositeAlgorithm{Tuple{Vern7" ⋯ 1427 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     "Vern7(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+    0.656
+   12
+ -260.574406229592
+   -9.28065075640522
+ -269.85505698599724
+  -85.0142869333375
+    0.157
+   19.677
+   25.408
+   27.458
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     "Vern9(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+    0.149
+   12
+ -260.57440622960036
+   -9.280650756413612
+ -269.85505698601395
+  -85.01428693335808
+    0.161
+    0.278
+    0.752
+    0.901
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     "Vern9(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+    0.206
+   12
+ -260.57440622960036
+   -9.280650756413662
+ -269.855056986014
+  -85.01428693335814
+    0.147
+    0.839
+    1.5
+    1.706
+     "CompositeAlgorithm{Tuple{Vern9" ⋯ 1442 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     "Vern9(true)"
+
+
+
+
+
+
+
+
+
+
+
+timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-3)
+11-element Vector{Any}:
+    45.103
+    22
+ -1264.1794383796105
+   -15.020264820887865
+ -1279.1997032004983
+  -571.6672006775856
+     2.021
+     0.176
+    45.104
+    45.104
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-6)
+11-element Vector{Any}:
+   133.999
+    22
+ -1264.3280146975649
+   -15.886922315096502
+ -1280.2149370126613
+  -570.1857045061344
+     1.244
+     0.596
+   134.0
+   134.0
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-9)
+11-element Vector{Any}:
+   296.357
+    22
+ -1264.3891454426182
+   -15.885899717815441
+ -1280.2750451604336
+  -570.2458125005854
+     1.142
+     1.177
+   296.357
+   296.357
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-12)
+
+11-element Vector{Any}:
+   573.519
+    22
+ -1264.3894726561039
+   -15.885940705783918
+ -1280.2754133618878
+  -570.246180646281
+     1.335
+     4.297
+   573.519
+   573.519
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_goldstandard(trfn, geogfn; include_null_range=false, tol=1e-15)
+
+11-element Vector{Any}:
+  1311.066
+    22
+ -1264.3894736652933
+   -15.885940742047032
+ -1280.2754144073403
+  -570.246181691686
+     1.153
+    10.324
+  1311.066
+  1311.066
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 82 bytes ⋯ "7, 3, 10, nothing, nothing, 0)]"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+     4.662
+    22
+ -1718.7822569401
+   -14.565905768403498
+ -1733.3481627085037
+ -1024.388902909052
+     1.143
+     0.612
+     1.983
+     6.646
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+     4.989
+    22
+ -1288.3584315185187
+   -12.007106475370593
+ -1300.3655379938893
+  -595.4895762736447
+     2.029
+     0.645
+     4.372
+     9.361
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+     4.665
+    22
+ -1273.5656992914396
+   -17.09604713978375
+ -1290.6617464312233
+  -580.7930919952508
+     1.56
+     1.169
+    11.048
+    15.713
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+     4.969
+    22
+ -1274.2844887018746
+   -16.128290859442487
+ -1290.4127795613172
+  -580.4481668448828
+     2.054
+     3.35
+    29.795
+    34.764
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_Gflow_CVODE(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+     4.251
+    22
+ -1276.3015058537649
+   -15.866803011790731
+ -1292.1683088655557
+  -582.1398630826412
+     1.694
+    10.916
+   103.581
+   107.833
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+    81.928
+    22
+ -1262.9286627788022
+   -15.593242570188208
+ -1278.5219053489905
+  -568.5934561483103
+      "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1780 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     2.787
+     0.171
+    81.929
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1780 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+   131.069
+    22
+ -1264.3895327505327
+   -15.88593701276537
+ -1280.2754697632981
+  -570.2462370473276
+      "CompositeAlgorithm{Tuple{Vern7" ⋯ 1630 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     1.357
+     0.567
+   131.071
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CompositeAlgorithm{Tuple{Vern7" ⋯ 1630 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+   240.689
+    22
+ -1264.3894738881063
+   -15.88594074448078
+ -1280.2754146325872
+  -570.2461819169329
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1333 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     1.761
+     1.04
+   240.69
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1333 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+   352.516
+    22
+ -1264.389473669237
+   -15.885940742138278
+ -1280.2754144113753
+  -570.246181695721
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1333 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     1.703
+     3.319
+   352.517
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1333 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_trad_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+   771.759
+    22
+ -1264.3894736688549
+   -15.885940742134883
+ -1280.2754144109897
+  -570.2461816953354
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1335 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+     1.545
+     9.193
+   771.76
+      "CVODE_BDF{:Newton, :GMRES, Noth" ⋯ 36 bytes ⋯ " 7, 3, 10, nothing, nothing, 0)"
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1335 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-3)
+12-element Vector{Any}:
+     4.273
+    22
+ -1750.8452560647797
+   -17.69469460741741
+ -1768.5399506721972
+ -1061.9191256757645
+     1.699
+     5.688
+     5.327
+    10.611
+      "CompositeAlgorithm{Tuple{Tsit5" ⋯ 1779 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+      "Tsit5(stage_limiter! = trivial_" ⋯ 36 bytes ⋯ "miter!, thread = static(false))"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-6)
+12-element Vector{Any}:
+     4.214
+    22
+ -1366.8150006280289
+   -16.871377802423403
+ -1383.6863784304524
+  -677.3015227738191
+     2.004
+    12.819
+    10.367
+    15.702
+      "CompositeAlgorithm{Tuple{Vern7" ⋯ 1629 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+      "Vern7(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-9)
+12-element Vector{Any}:
+     4.485
+    22
+ -1366.8176126324804
+   -16.871819561720496
+ -1383.689432194201
+  -677.3047034653317
+     2.131
+    24.632
+    32.013
+    37.77
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1332 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+      "Vern9(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-12)
+12-element Vector{Any}:
+     3.561
+    22
+ -1366.8176139189434
+   -16.871819625366143
+ -1383.6894335443096
+  -677.3047048232214
+     1.7
+     1.908
+    10.946
+    14.508
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1335 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+      "Vern9(true)"
+
+julia> timed_run_Gflow_solverFree(trfn, geogfn; include_null_range=false, tol=1e-15)
+12-element Vector{Any}:
+     3.737
+    22
+ -1366.8176139219818
+   -16.87181962555565
+ -1383.6894335475374
+  -677.3047048264226
+     2.119
+    12.401
+    20.172
+    23.91
+      "CompositeAlgorithm{Tuple{Vern9" ⋯ 1337 bytes ⋯ "3, 9//10, 9//10, 2, false, 5))"
+      "Vern9(true)"
+

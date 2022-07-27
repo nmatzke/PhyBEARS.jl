@@ -1,0 +1,187 @@
+#######################################################
+# Notes on matrix norms from Louca & Pennel, and 
+# how to implement in PhyBEARS. NJM 2022-03-23
+#######################################################
+# Louca & Pennell:
+# "A standard measure for how close the matrix G(t) is to singularity for numerical
+# purposes is the “condition number”, denoted kappa(t) (Cline et al., 1979, Turing, 1948); a greater kappa(t) generally
+# means that G(t) is harder to invert numerically. The condition number is given by the ratio of the largest
+# over the smallest singular value, s1/sn, where s1, .., sn are the singular values in decreasing size (Watkins,
+# 2010)."
+# 
+# An upper bound on kappa_Gt can be found:
+# obs_condnum_kappa_Gt_upper_bound = exp(2*t*sigma1_A)   # upper bound on kappa, the norm of Gt
+# ln_obs_condnum_kappa_Gt_upper_bound = 2*t*sigma1_A     # upper kappa rate, the log of the norm of Gt
+#
+#
+# castor code:
+# // calculate largest singular value (sigma1) of the dynamics at this age
+# // then kappa_rate <= 2*sigma1, since sigma1(exp(t*A))/sigma2(exp(t*A)) <= exp(t*2*sigma1(A)) [So and Thompson (2000)
+# Singular values of Matrix Exponentials. Theorem 2.1]
+#		double kappa_rate;
+#		const double sigma1 = get_largest_singular_value(Nstates, Nstates, dynamics, 1000, 1e-3);
+#		if(!std::isnan(sigma1)){
+#			kappa_rate = 2*sigma1;
+####################################################### 
+# Julia Linear Algebra:
+# https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/
+# When p=2, the operator norm is the spectral norm, equal to the largest singular value of A.
+#######################################################
+# NJM says: 
+# Now, sigma1(A) is itself the 2-norm of A. But the 2-norm is expensive.  These notes:
+#
+# https://www.math.usm.edu/lambers/mat610/sum10/lecture2.pdf
+# 
+# ...say (pp. 3-4):
+#
+# m = #rows
+# n = #columns
+# 
+# That is, the (l)1-norm of a matrix is its maximum column sum.
+# That is, the (l)Inf-norm of a matrix is its maximum row sum.
+# 
+# "That is, the (l)2-norm of a matrix is the square root of the largest eigenvalue of ATA, 
+# which is guaranteed to be nonnegative, as can be shown using the vector 2-norm. We see 
+# that unlike the vector (l)2-norm, the matrix (l)2-norm is much more difficult to 
+# compute than the matrix (l)1-norm or (l)Inf-norm."
+#
+# opnorm(A,2) <= norm(A) (Frobenius norm) <= sqrt(n)*opnorm(A,2)
+# 
+# 1/sqrt(n)*opnorm(A,Inf) <= opnorm(A,2) <= sqrt(m)*opnorm(A,Inf)
+#
+# We need a cheap upper-bound on sigma1A, this could be: 
+# 
+# sqrt(m)*opnorm(A,Inf)
+# 
+# (Matrix A in our usage is square, so m=n)
+
+
+# Older notes (2020):
+	# From Louca & Pennell code:
+	# phylogenetics_cpp_routines.cpp
+	# max_condition_number = max_allowed_condition_number,			// (INPUT) unitless number, 
+	# the maximum acceptable condition number for the Gmap 
+	# (as estimated from the linearized dynamics), when choosing 
+	# the integration interval size. A larger max_condition number 
+	# leads to fewer age-splits, thus faster computation but also 
+	# lower accuracy. Hence, this number controls the trade-off 
+	# between speed and accuracy. Typical values are 
+	# 1e4 (slower, more accurate) up to 
+	# 1e8 (faster, less accurate).
+	
+	# The condition number is kappa:
+	# https://julia.quantecon.org/tools_and_techniques/iterative_methods_sparsity.html
+	# The cond() operation can be expensive, so the inequality in Louca, Supp. Mat. Eq. 3 is useful
+	# It looks *extremely* conservative, it blows up at e.g.
+	# time = 0.00015
+	#
+	# upper_bound_condition_number: 18425.777249466213
+	# 
+	# At time t=0.00015, Condition number=2.175764, 1.658813, 1.70285
+	# opnorms p=1 & p=2:
+	# 32759.807937823098
+	# 30274.76762619003
+	# 30274.767626190034
+	# 17479.145238634184
+	#
+	# vs.
+	# 
+	# upper_bound_condition_number: 1.0971658583069032e6
+	# 
+	# At time t=0.0002, Condition number=3.261165, 2.255482, 2.334215
+	# opnorms p=1 & p=2:
+	# 34805.07811454515
+	# 32164.890247616975
+	# 32164.89024761698
+	# 18570.408042916435
+	# 
+	# Probably we could just use opnorm(A,1), or even opnorm(A,1)^2
+	
+	
+	# Matrix norms
+	# See: 
+	# Lambers, Jim (2009). Vector Norms & Matrix Norms. pp. 1-16.
+	# https://www.math.usm.edu/lambers/mat610/sum10/lecture2.pdf
+	# These notes have the inequalities between norm forms
+	
+	# https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/
+	# Note: operator norm = matrix norm
+	# When p=1, ||A||1, much faster, seems to always be bigger
+	# When p=2, ||A||2, the operator norm is the spectral norm, equal to the largest singular value of A
+	# When p=Inf, ||A||Inf, this is just opnorm(t(A),1), and 
+	#
+	# ||A||2 <= sqrt(ncol(A))*||A||Inf
+	# ||A||2 <= sqrt(nrow(A))*||A||Inf
+	# 
+	# (doesn't seem to be true, actually. But cond of opnorm(1) does seem conservative
+	
+	# Actually, instead of tracking the condition number kappa, they are tracking the 
+	# *growth rate* of kappa:
+	#
+	# // determine linear dynamics (matrix form) of D at various representative 
+	# ages, and keep track of the largest estimated exponential growth rate of 
+	# the condition number of Gmap ("kappa_rate")
+	# 
+	# // calculate largest singular value (sigma1) of the dynamics at this age
+	#	// then kappa_rate <= 2*sigma1, since 
+	# // sigma1(exp(t*A))/sigma2(exp(t*A)) <= exp(t*2*sigma1(A))
+	# [So and Thompson (2000) Singular values of Matrix Exponentials. Theorem 2.1]
+	# 
+	
+	# From Louca & Pennell:
+	# max_allowed_condition_number,	
+	# // (INPUT) unitless number, the maximum acceptable condition number for the Gmap 
+	# (as estimated from the linearized dynamics), when choosing the integration 
+	# interval size. A larger max_condition number leads to fewer age-splits, thus 
+	# faster computation but also lower accuracy. Hence, this number controls the 
+	# trade-off between speed and accuracy. Typical values are 1e4 (slower, more accurate) 
+	# up to 1e8 (faster, less accurate).
+	#
+	# The comparison is done in:
+	# const double DeltaT 		= max(root_age/max_Nintervals, 
+	# min(1.0000001*root_age,log(max_allowed_condition_number)/upper_bound_kappa_rate));
+	# 
+	# If the maximum observed kappa was 20, and the max condition number
+	# was 1e8, log(1e8) would be 18.4
+	# 
+
+# Rescaling after Delta_int time interval:
+#
+# Just take mean of the vector:
+#
+# inline double vector_mean(const std::vector<double> &values){
+# 	double S = 0;
+# 	for(long i=0; i<values.size(); ++i) S += values[i];
+# 	return (S/values.size());
+# }
+# 
+# 		const double initial_mean = vector_mean(initial);
+# 		if(initial_mean<=0) return false;
+# 		scale = log(initial_mean);
+# 		shape = initial/initial_mean;
+# 		return true; 
+# 	}
+# 
+# 	// record a new time series point, provided by the numerical solver
+# 	void registerState(double age, const MuSSEstateD &state){
+# 		trajectory.push_back(state); 
+# 		ages.push_back(age); 
+# 
+# 		// make sure entries are in [0,1]
+# 		const long i = trajectory.size()-1;
+# 		for(long s=0; s<trajectory[i].size(); ++s) trajectory[i][s] = max(0.0, min(1.0, trajectory[i][s]));
+# 	}
+# 	
+# 	
+# 	// record a new trajectory point, provided by the numerical solver
+# 	// The state X to be recorded is provided in rescaled format, i.e. state = exp(scale) * shape
+# 	// You can either record shape and scale separately, or combine them to obtain the actual state
+# 	void registerScaledState(double age, const MuSSEstateD &shape, const double scale){
+# 		trajectory_shape.push_back(shape);
+# 		trajectory_scale.push_back(scale);
+# 		ages.push_back(age); 
+
+
+
+
+

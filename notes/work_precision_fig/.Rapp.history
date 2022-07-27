@@ -1,0 +1,2128 @@
+install.packages("ape")
+library(ape)
+library(BioGeoBEARS)
+library(ape)#
+#
+trstr = "(((((Hsapiens:0.4,Hneander:0.4):4.6,Ardi:0.4):1.0,Pan:6.0):1.0,Gorilla:7.0):6.0,Pongo:13.0);"#
+tr = read.tree(file="", text=trstr)#
+#
+pdffn = "Node_numbers_v1.pdf"#
+pdf(pdffn, height=11, width=11)#
+#
+####################################################
+# Plot APE/BioGeoBEARS node numbers#
+####################################################
+ntips = length(tr$tip.label)#
+Rnodenums = (ntips+1):(ntips+tr$Nnode)#
+tipnums = 1:ntips#
+plot(tr, label.offset=0.25, cex=1.25)#
+axisPhylo()#
+tiplabels(cex=1.5)#
+nodelabels(text=Rnodenums, node=Rnodenums, cex=1.5)#
+title("APE/BioGeoBEARS node numbers")#
+#
+# END PDF#
+dev.off()#
+cmdstr = paste("open ", pdffn, sep="")#
+system(cmdstr)#
+########################################################
+# Print a "tree table" with the #
+# BioGeoBEARS function prt()#
+########################################################
+#
+# Install BioGeoBEARS from GitHub#
+# https://github.com/nmatzke/BioGeoBEARS#
+#
+# install.packages("rexpokit")#
+# install.packages("cladoRcpp")#
+library(devtools)#
+# devtools::install_github(repo="nmatzke/BioGeoBEARS")#
+#
+library(BioGeoBEARS)#
+#
+# Print the "tree table"#
+trtable = prt(tr, printflag=FALSE)#
+trtable
+ace
+tr2 <- reorder(tr, "postorder")#
+#
+# Compare the edge matrices#
+tr$edge#
+tr2$edge#
+#
+nb.node = length(tr$tip.label + tr2$Nnode)  # The number of tip+internal nodes#
+for (i in seq(from = 1, by = 2, length.out = nb.node))#
+	{#
+	j <- i + 1L#
+	anc <- tr2$edge[i,1]#
+    des1 <- tr2$edge[i,2]#
+    des2 <- tr2$edge[j,2]#
+	txt = paste0("Ancestral node=", anc, "; Left descendant node=", des1, ", Right descendant node=", des2)#
+	cat("\n", txt, sep="")#
+	}#
+cat("\n\n")
+tr2 <- reorder(tr, "postorder")#
+#
+# Compare the edge matrices#
+tr$edge#
+tr2$edge#
+#
+nb.node = length(tr$tip.label) + tr2$Nnode  # The number of tip+internal nodes#
+for (i in seq(from = 1, by = 2, length.out = nb.node))#
+	{#
+	j <- i + 1L#
+	anc <- tr2$edge[i,1]#
+    des1 <- tr2$edge[i,2]#
+    des2 <- tr2$edge[j,2]#
+	txt = paste0("Ancestral node=", anc, "; Left descendant node=", des1, ", Right descendant node=", des2)#
+	cat("\n", txt, sep="")#
+	}#
+cat("\n\n")
+ace
+tr2 <- reorder(tr, "postorder")#
+#
+# Compare the edge matrices#
+tr$edge#
+tr2$edge#
+#
+nb.node = tr2$Nnode  # The number of internal nodes#
+for (i in seq(from = 1, by = 2, length.out = nb.node))#
+	{#
+	j <- i + 1L#
+	anc <- tr2$edge[i,1]#
+    des1 <- tr2$edge[i,2]#
+    des2 <- tr2$edge[j,2]#
+	txt = paste0("Ancestral node=", anc, "; Left descendant node=", des1, ", Right descendant node=", des2)#
+	cat("\n", txt, sep="")#
+	}#
+cat("\n\n")
+birthrates = seq(from=0, to=5, by=0.05)#
+deathrates = seq(from=0, to=5, by=0.05)#
+BDrates = expand.grid(birthrates, deathrates)
+dim(BDrates)
+birthrates = seq(from=0, to=10, by=0.05)#
+deathrates = seq(from=0, to=10, by=0.05)#
+BDrates = expand.grid(birthrates, deathrates)#
+dim(BDrates)
+head(BDrates)
+ace
+p = c(1, rep(mean(x), #
+                  nb.node)
+?ace
+library(diversitree)
+data(bird.orders)#
+set.seed(1)#
+x <- structure(rnorm(length(bird.orders$tip.label)), names = bird.orders$tip.label)
+x
+fit1 <- find.mle(make.bm(bird.orders, x), 0.1)
+lik.pruning <- make.bm(bird.orders, x, control = list(method = "pruning"))#
+fit2 <- find.mle(lik.pruning, 0.1)
+lik.pruning
+names(lik.pruning)
+fitContinuous
+library(geiger)
+fitContinuous
+? fitContinuous
+fitContinuous
+bm.lik
+library(phytools)
+fastBM
+simBM
+phytools::: simBM
+BMlk
+phytools::: BMlk
+(2^14)*(2^14)
+seq()
+?seq
+dnorm()
+########################################################
+# Basic statistical distributions#
+########################################################
+#
+# These are all sampling distributions, i.e. they arise#
+# under the frequentist idea of "if the data were #
+# generated again and again", under the model/experiment.#
+##
+# Probably in some sense they therefore all follow from#
+# the Central Limit Theorem#
+########################################################
+# z-distribution (standard normal distribution)#
+########################################################
+# The standard normal distribution is a normal #
+# distribution with mean=0, sd=1.#
+##
+# Let's plot it#
+# Set up a series of values on the x-axis#
+x = seq(from=-3, to=3, by=0.1)#
+#
+# Set up a series of corresponding y values, for #
+# the p.d.f. (probability density function) for #
+# the standard normaol distribution.#
+#
+# dnorm = *density* of normal distribution#
+y = dnorm(x=x, mean=0, sd=1, log=FALSE)#
+#
+plot(x, y, main="probability density of standard normal distribution")
+y = dnorm(x=x, mean=0, sd=1, log=TRUE)#
+#
+plot(x, y, main="probability density of standard normal distribution")
+plot(x^2, log(y), main="natural log of a standard normal distribution\nequals a parabola")
+y
+x = seq(from=-3, to=3, by=0.1)#
+#
+# Set up a series of corresponding y values, for #
+# the p.d.f. (probability density function) for #
+# the standard normaol distribution.#
+#
+# dnorm = *density* of normal distribution#
+y = dnorm(x=x, mean=0, sd=1, log=FALSE)#
+#
+plot(x, y, main="probability density of standard normal distribution")#
+#
+# That's just the "bell curve", you've seen it many times before.#
+# Let's investigate the shape. What happens if we take the#
+# natural log of the bell-curve?#
+plot(x, log(y), main="natural log of a standard normal distribution\nequals a parabola")#
+#
+# That looks suspiciously like a parabola.#
+# You may vaguely recall that a parabola is a "quadratic" function,#
+# produced by something like y=x^2.  Or, in this case, since#
+# the parabola is pointing down, something like y = -1*(x^2).#
+##
+# We can check if it is a parabola by plotting log(y) against x^2:#
+plot(x^2, log(y), main="natural log of a standard normal distribution\nequals a parabola")
+plot(x, sqrt(abs(log(y))), main="natural log of a standard normal distribution\nequals a parabola")
+x
+x^2
+hist(x)
+hist(x^2)
+plot(x^2, log(y), main="natural log of a standard normal distribution\nequals a parabola")
+max( log(y))
+max(h)
+max(y)
+exp()
+exp(1)
+# 1. start with x#
+x = seq(from=-3, to=3, by=0.1)#
+#
+# 2. square it#
+x2 = x^2#
+#
+# 3. Take the reverse of the natural log -- the natural exponent#
+# exp(a) = e^a = 2.718282^a#
+exp_x2 = exp(x^2)#
+#
+plot(x, exp_x2, main="generating a normal distribution"
+)
+?dnorm
+exp_x2 = exp((x^2)/2)#
+#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp((x^2)/2)#
+plot(x, exp_x2, main="generating a normal distribution")#
+#
+exp_x2 = exp(x^2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(2*x^2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(4*x^2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(40*x^2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(0.001*x^2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(-(x^2)/2)#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(-(x^2))#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(1/(x^2))#
+plot(x, exp_x2, main="generating a normal distribution")
+exp_x2 = exp(-(x^2))#
+plot(x, exp_x2, main="generating a normal distribution")#
+# Here, x is the deviation from the estimated mean.#
+#
+# So, sum-of-squared errors, times -1, put into the natural exponent,#
+# is proportional to the likelihood#
+# more errors = lower likelihood#
+#
+# If we take the log of the negative sum-of-squared errors,#
+# then we get proportional to the likelihood#
+#
+plot(x, log(exp_x2), main="log-likelihood")
+plot(x, log(log(exp_x2)), main="log-likelihood")
+plot(x, sqrt(-log(exp_x2)), main="log-likelihood")
+plot(x, log(exp_x2), main="log-likelihood")#
+plot(x, sqrt(-log(exp_x2)), main="sqrt(~log-likelihood)")
+plot(x, y^2, "standard-normal squared")
+y
+plot(x,y)
+plot(x, y^2, "standard-normal squared")
+?dchisq
+plot()
+plot(x=x, y=x^2, "standard-normal squared")
+plot(x=x, y=dchisq(x), "standard-normal squared")
+plot(x=x, y=dchisq(x, df=1), "chi-squared, df=1")
+plot(x=x, y=dchisq(x, df=1), main="chi-squared, df=1")
+dchisq(x, df=1)
+x = seq(0, 6, by=0.01)#
+plot(x=x, y=dchisq(x, df=1), main="chi-squared, df=1")
+x = seq(0, 6, by=0.01)#
+y = dchisq(x, df=1)#
+plot(x=x, y=y, main="chi-squared, df=1")#
+plot(x=x, y=log(y), main="chi-squared, df=1")#
+plot(x=x, y=sqrt(y), main="chi-squared, df=1")
+plot(x=x, y=log(sqrt(y)), main="chi-squared, df=1")#
+plot(x=x, y=sqrt(log(y)), main="chi-squared, df=1")
+plot(x=x, y=y, main="chi-squared, df=1")#
+plot(x=x, y=log(y), main="chi-squared, df=1")#
+plot(x=x, y=sqrt(y), main="chi-squared, df=1")#
+plot(x=x, y=log(sqrt(y)), main="chi-squared, df=1")#
+plot(x=x, y=sqrt(log(y)), main="chi-squared, df=1")
+# Standard normal squared#
+x = seq(0, 6, by=0.01)#
+y = dchisq(x, df=1)#
+plot(x=x, y=y, main="chi-squared, df=1")#
+plot(x=x, y=dnorm(x)^2, main="dnorm(x)^2")
+plot(x=x, y=(dnorm(x))^2, main="dnorm(x)^2")
+x = seq(0, 6, by=0.01)#
+y = dchisq(x, df=1)#
+plot(x=x, y=y, main="chi-squared, df=1")#
+plot(x=x, y=y/(sqrt(x)), main="")
+plot(x=x, y=y*(sqrt(x)), main="")
+plot(x=x, y=y, main="chi-squared, df=1")#
+plot(x=x, y=y*(sqrt(x)), main="")#
+plot(x=x, y=y*(sqrt(x)), main="")#
+plot(x=x, y=log(y*(sqrt(x))), main="")
+exp(2*pi)
+pi
+exp(-2*pi)
+exp(-*pi)
+exp(-pi)
+sqrt(-1)
+complex(1,0,-1)
+exp(complex(1,0,-1))
+exp(complex(1,0,-1)*2)
+exp(complex(1,0,-1)*2*pi)
+exp(complex(1,0,-1)*pi)
+exp(complex(1,0,-1)*2*pi)
+rstanarm
+install.packages("rstanarm")
+library(rstanarm)
+install.packages("LearnBayes")
+library(LearnBayes)
+?LearnBayes
+install.packages("arm")
+library(arm)
+?arm
+?ranef
+?glm
+?invlogit
+n <- 100#
+  x1 <- rnorm (n)#
+  x2 <- rbinom (n, 1, .5)#
+  b0 <- 1#
+  b1 <- 1.5#
+  b2 <- 2#
+  y <- rbinom (n, 1, invlogit(b0+b1*x1+b2*x2))#
+#
+  M1 <- glm (y ~ x1 + x2, family=binomial(link="logit"))#
+  display (M1)#
+#
+  M2 <- bayesglm (y ~ x1 + x2, family=binomial(link="logit"),#
+    prior.scale=Inf, prior.df=Inf)#
+  display (M2)  # just a test:  this should be identical to classical logit
+M1
+M2
+display (M1)
+plot(M1)
+?laplace
+chirps=c(20,16.0,19.8,18.4,17.1,15.5,14.7,17.1,15.4,16.2,15,17.2,16,17,14.1)#
+temp=c(88.6,71.6,93.3,84.3,80.6,75.2,69.7,82,69.4,83.3,78.6,82.6,80.6,83.5,76.3)#
+X=cbind(1,chirps)#
+m=1000#
+s=blinreg(temp,X,m)
+s
+hist(s)
+names(s)
+class(s)
+plot(s$beta, s$sigma)
+length(s$sigma)
+length(s$bea)
+length(s$beta)
+rdirichlet
+library(LaplacesDemon)
+install.packages(c("TeachBayes"))
+install.packages(c("LaplacesDemon"))
+library(LaplacesDemon)
+? LaplacesDemon
+wd = "/GitHub/BioGeoJulia.jl/notes"
+setwd(wd)
+load('/GitHub/BioGeoJulia.jl/notes/workprecision_050areas_0320states.Rdata')
+df
+/GitHub/BioGeoJulia.jl/notes/work_precision_fig
+array
+dim(df)
+df
+/GitHub/BioGeoJulia.jl/notes/work_precision_fig
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		tmp_col = df[,solver_names[j]]#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i
+rep(0,1)
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% solver_names)#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i
+i
+j
+solver_names[j]
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i
+big_cube
+isnan
+is.nan
+plot()
+df
+?seq
+?plot
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), pch=".", col="white", xlog=TRUE, ylog=TRUE)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = x[TF == FALSE]#
+		points(x, y, pch=j-1)#
+		}#
+	}
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), pch=".", col="white", xlog=TRUE, ylog=TRUE, xlab="precision", ylab="time (s)")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		points(x, y, pch=j-1)#
+		}#
+	}
+?par
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		points(x, y, pch=j-1)#
+		}#
+	}
+rainbow()
+rainbow()
+?points
+lines
+?lines
+?legend
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+?legend
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1, txt.col=colors)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+?legend
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.00001, 100, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1, text.col=colors)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1, text.col=colors)#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+?legend
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)[-1]#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names, col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1], col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1], col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+j
+i
+k
+tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(x), min(x)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1], col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))
+c(max(x), min(x)
+)
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1], col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1], col=colors, lty="solid", lwd=1, text.col=colors, pch=1:(ncol(tmpmat)-1))#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+apply()
+apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun)
+tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	missing_cols = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun)
+missing_cols
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+abline()
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy")#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+?axis
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE, tcl=ticklength, pos=0)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE, tcl=ticklength, pos=0)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE, tcl=ticklength, pos=0)
+plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE, tcl=1, pos=0)
+plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE, tcl=0.01, pos=0)
+plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"), cex.axis=3, tick=TRUE
+plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s"))
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (s)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("0.001 s", "0.01 s", "0.1 s", "1 s", "10 s", "100 s"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="precision", ylab="time (seconds)", log="xy", yaxt="n")#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+?plot
+?mtext
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab=""", ylab="time (seconds)", log="xy", yaxt="n")#
+	mtext(text="precision", side=1, line=1)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab=""", ylab="time (seconds)", log="xy", yaxt="n")#
+	mtext(text="precision", side=1, line=1)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="time (seconds)", log="xy", yaxt="n")#
+	mtext(text="precision", side=1, line=1)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="time (seconds)", log="xy", yaxt="n")#
+	mtext(text="precision", side=1, line=1.5)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+	mtext(text="time (seconds)", side=2, line=1.5)#
+	mtext(text="precision", side=1, line=1.5)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+	mtext(text="time (seconds)", side=2, line=1.8)#
+	mtext(text="precision", side=1, line=2)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+pdffn = "work_precision_figs_v1.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 10000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+	mtext(text="time (seconds)", side=2.5, line=1.8)#
+	mtext(text="precision", side=1, line=2)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+pdffn = "work_precision_figs_v1.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+	mtext(text="time (seconds)", side=2.5, line=1.8)#
+	mtext(text="precision", side=1, line=2)#
+	axis(2, at=c(0.001, 0.1, 1, 10, 100), label=c("<0.001", "0.1", "1", "10", "100"))#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+i = 1#
+#
+for (i in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[i])#
+#
+	if (i == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,i] = tmp_col#
+		} # end j#
+#
+	} # end i#
+########################################################
+# Plot work-precision diagram#
+########################################################
+pdffn = "work_precision_figs_v1.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+system(cmdstr)
+k=1
+tmpmat = big_cube[,,k]
+tmpmat
+system(cmdstr)
+k=2
+tmpmat = big_cube[,,k]
+tmpmat
+k=3
+load(df_fns[k])
+df
+load(df_fns[4]; df)
+load(df_fns[4])2020-02-25_f
+load(df_fns[4]);df
+names(df)
+solver_names
+names(df)
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+k = 1#
+#
+for (k in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[k])#
+#
+	if (k == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,j] = tmp_col#
+		} # end j#
+#
+	} # end k#
+########################################################
+# Plot work-precision diagram#
+########################################################
+pdffn = "work_precision_figs_v1.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+k = 1#
+#
+for (k in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[k])#
+#
+	if (k == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,j] = tmp_col#
+		} # end j#
+#
+	} # end k
+pdffn = "dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)#
+.pdf"#
+pdf(file=pdffn, width=6, height=6)
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+k=1
+tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)
+tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}
+tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}
+tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")
+axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)
+txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])
+for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}
+df
+dev.off()
+dev.off()
+wd = "/GitHub/BioGeoJulia.jl/notes/work_precision_fig/"#
+setwd(wd)#
+#
+df_fns = c("workprecision_020areas_040states.Rdata",#
+"workprecision_030areas_080states.Rdata",#
+"workprecision_040areas_0160states.Rdata",#
+"workprecision_050areas_0320states.Rdata",#
+"workprecision_060areas_0640states.Rdata",#
+"workprecision_070areas_01280states.Rdata",#
+"workprecision_080areas_02560states.Rdata",#
+"workprecision_090areas_05120states.Rdata",#
+"workprecision_0100areas_010240states.Rdata",#
+"workprecision_0110areas_020480states.Rdata")#
+k = 1#
+#
+for (k in 1:length(df_fns))#
+	{#
+	# Loads to df#
+	load(df_fns[k])#
+#
+	if (k == 1)#
+		{#
+		solver_names = names(df)#
+		dims = c(dim(df), length(df_fns))#
+		big_cube = array(data=NA, dim=dims)#
+		}#
+#
+	for (j in 1:length(solver_names))#
+		{#
+		if (solver_names[j] %in% names(df))#
+			{#
+			tmp_col = df[,solver_names[j]]#
+			} else {#
+			tmp_col = rep(NaN, times=dims[1])#
+			}#
+		big_cube[,j,k] = tmp_col#
+		} # end j#
+#
+	} # end k#
+########################################################
+# Plot work-precision diagram#
+########################################################
+pdffn = "work_precision_figs_v1.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+for (k in 1:dim(big_cube)[3])#
+	{#
+	tmpmat = big_cube[,,k]#
+	abstol = tmpmat[,1]#
+	colors = rainbow(n=ncol(tmpmat)-1)#
+	ticklength = 0.5#
+	tmpfun <- function(tmpcol)#
+		{#
+		all(is.nan(tmpcol))#
+		}#
+	keep_cols_TF = apply(X=tmpmat[,2:ncol(tmpmat)], MARGIN=2, FUN=tmpfun) == FALSE#
+	plot(x=abstol, y=seq(0.001, 100000, length.out=length(abstol)), xlim=c(max(abstol), min(abstol)), pch=".", col="white", xlab="", ylab="", log="xy", yaxt="n")#
+#
+	axis(2, at=c(0.001, 0.01, 0.1, 1, 10, 100), label=c("<0.001", "0.01", "0.1", "1", "10", "100"), cex=0.7)#
+#
+	mtext(text="time (seconds)", side=2, line=2.5)#
+	mtext(text="precision", side=1, line=2)#
+	txt = paste0("Work-precision diagram, ", k+1, " areas, ", 2^(k+1), " states")#
+	title(txt)#
+	abline(h=1, lty="dashed", col="grey")#
+	legend(x="topleft", legend=solver_names[-1][keep_cols_TF], col=colors[keep_cols_TF], lty="solid", lwd=1, text.col=colors[keep_cols_TF], pch=(1:(ncol(tmpmat)-1))[keep_cols_TF])#
+	for (j in 2:ncol(tmpmat))#
+		{#
+		y = tmpmat[,j]#
+		if (all(is.nan(y)) == TRUE)#
+			{#
+			next()#
+			}#
+		TF = is.nan(y)#
+		y = y[TF == FALSE]#
+		x = abstol[TF == FALSE]#
+		lines(x, y, col=colors[j-1])#
+		points(x, y, pch=j-1, col=colors[j-1])#
+		}#
+	}#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)

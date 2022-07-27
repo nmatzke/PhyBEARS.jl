@@ -1,0 +1,42 @@
+
+How to create a symlink in the root directory in macOS Catalina
+https://medium.com/@klokie/how-to-create-a-symlink-in-the-root-directory-in-macos-catalina-281073ce336
+
+
+
+
+Gitter where Chris Rackauckas hangs out and gives advice on DifferentialEquations solvers
+https://gitter.im/JuliaDiffEq/Lobby
+
+An Intro to DifferentialEquations.jl
+by Chris Rackauckas
+https://nextjournal.com/sdanisch/an-intro-to-differentialequations
+
+
+https://nbviewer.jupyter.org/github/MSeeker1340/DiffEqBenchmarks.jl/blob/expRK/StiffODE/Burgers.ipynb
+
+
+Chris youtube Julia DifferentialEquations solvers:
+https://twitter.com/ChrisRackauckas/status/1070373034668609536
+
+
+https://datascience-enthusiast.com/R/R_Julia_cheat_sheet.html
+
+A Newcomers Guide To The Julia Package Manager
+Jan 13, 2020
+https://aaowens.github.io/julia/2020/01/13/A-Newcomers-Guide-to-the-Julia-Package-Manager.html
+
+Julia By Example
+https://juliabyexample.helpmanual.io/
+
+
+Fezzik - build a precompiled library
+https://github.com/TsurHerman/Fezzik
+
+
+
+
+Compiling GCC 10 on macOS Mojave
+Posted on May 21, 2017 by Paul
+https://solarianprogrammer.com/2017/05/21/compiling-gcc-macos/
+
