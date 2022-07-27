@@ -3,15 +3,15 @@
 Example Julia package repo.
 
 ```@autodocs
-Modules = [Example, BioGeoJulia]
+Modules = [Example, PhyBEARS]
 ```
 
 
 ``` NOTE: If a module is missing, this causes e.g.:
 
-Pkg.add(PackageSpec(path="/GitHub/BioGeoJulia.jl"))
-  Updating git-repo `/GitHub/BioGeoJulia.jl`
-ERROR: expected the file `src/BioGeoJulia.jl` to exist for package BioGeoJulia at /var/folders/_l/ph0n0x6d1l7_8ywbfqrmpdtm0000gp/T/jl_PgtjWR
+Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl"))
+  Updating git-repo `/GitHub/PhyBEARS.jl`
+ERROR: expected the file `src/PhyBEARS.jl` to exist for package PhyBEARS at /var/folders/_l/ph0n0x6d1l7_8ywbfqrmpdtm0000gp/T/jl_PgtjWR
 Stacktrace:
  [1] pkgerror(::String) at /Users/sabae/buildbot/worker/package_macos64/build/usr/share/julia/stdlib/v1.3/Pkg/src/Types.jl:113
  [2] read_package(::String) at /Users/sabae/buildbot/worker/package_macos64/build/usr/share/julia/stdlib/v1.3/Pkg/src/Types.jl:480

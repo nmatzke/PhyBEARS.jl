@@ -1,1 +1,0 @@
-This presentation is to introduce a paleo distance extractor, which will allow the user to extract paleographical distances using gplates or GMT at user chosen timepoints. At the current time we are focusing on using very broad scale location data, with the intention to allow users to narrow down their areas/ranges in the future.
