@@ -23,7 +23,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize5, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c
 
 
 
@@ -44,7 +44,7 @@ export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize5, func2_v
 #######################################################
 # 2022-03-06: NOW PUT UPDATER INTO A FUNCTION!!
 #######################################################
-function func_to_optimize5(pars, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)
+function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)
 
 	# Get the results object (with old p_Ds_v5)
 	# and treetable (trdf)
@@ -200,7 +200,7 @@ function func_to_optimize5(pars, parnames, inputs, p_Ds_v5; returnval="lnL", pri
 	end
 	# Shouldn't get here
 	return(NaN)
-end # END function func_to_optimize5(pars, parnames)
+end # END function func_to_optimize(pars, parnames)
 
 
 function func_to_optimize_nonparallel_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)

@@ -112,7 +112,13 @@ doesnt_work="""
 @everywhere using PhyBEARS
 """
 
-
+"""
+# Start from scratch
+julia --startup-file=no
+using Pkg
+Pkg.add(PackageSpec(url="https://github.com/nmatzke/PhyloBits.jl"))
+Pkg.add(PackageSpec(url="https://github.com/nmatzke/PhyBEARS.jl"))
+"""
 
 """
 # Run with:
