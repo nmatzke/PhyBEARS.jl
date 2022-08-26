@@ -149,3 +149,38 @@ Es_interpolator(1.0)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
+
+
+
+#######################################################
+# Optimize the DEC model (fixed birthRate and deathRate)
+#######################################################
+
+pars = bmo.est[bmo.type .== "free"]
+func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL", printlevel=1)
+pars = [0.9, 0.9]
+func(pars)
+function func2(pars, dummy_gradient!)
+	return func(pars)
+end # END function func2(pars, dummy_gradient!)
+
+
+#######################################################
+# Best optimizer so far - 2022-03-15
+#######################################################
+using NLopt
+pars = [0.9, 0.9]
+func(pars)
+opt = NLopt.Opt(:LN_BOBYQA, length(pars))
+ndims(opt)
+opt.algorithm
+algorithm_name(opt::Opt)
+opt.min_objective = func2
+opt.lower_bounds = lower::Union{AbstractVector,Real}
+opt.upper_bounds = upper::Union{AbstractVector,Real}
+opt.lower_bounds
+opt.upper_bounds
+opt.ftol_abs = 0.00001 # tolerance on log-likelihood
+(optf,optx,ret) = NLopt.optimize!(opt, pars)
+#######################################################
+
