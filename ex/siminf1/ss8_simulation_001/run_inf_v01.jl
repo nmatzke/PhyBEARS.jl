@@ -40,6 +40,7 @@ using OrdinaryDiffEq, Sundials, DiffEqDevTools, ODEInterfaceDiffEq, ODE, LSODA
 # using PhyBEARS.SSEs
 # using PhyBEARS.ModelLikes
 # using PhyBEARS.Optimizers
+using PhyloBits
 using PhyBEARS
 
 #####################################################
@@ -115,7 +116,7 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 bmo.est[bmo.rownames .== "d"] .= 0.001
 bmo.est[bmo.rownames .== "e"] .= 0.001
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.1
+bmo.est[bmo.rownames .== "j"] .= 0.0
 numareas = Rncol(geog_df)-1
 
 # Set up inputs 
@@ -157,6 +158,7 @@ Es_interpolator(1.0)
 #######################################################
 
 pars = bmo.est[bmo.type .== "free"]
+parnames = bmo.rownames[bmo.type .== "free"]
 func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL", printlevel=1)
 pars = [0.9, 0.9]
 func(pars)

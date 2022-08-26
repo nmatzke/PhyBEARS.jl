@@ -1940,7 +1940,11 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 			rstate = states_list[k]
 			rsize = length(rstate)
 			smaller_range_size = min(lsize, rsize)
-			weights[z] = y_wt * maxent01symp[ancsize, smaller_range_size] * 1.0 * 1.0 * pair_vals[z]
+			if ancsize == 0 # null range ancestor (weird, but allowed in some simulations)
+				weights[z] = y_wt * 1.0 * 1.0 * pair_vals[z]
+			else
+				weights[z] = y_wt * maxent01symp[ancsize, smaller_range_size] * 1.0 * 1.0 * pair_vals[z]
+			end
 		end
 		Cijk_weights[TF] = weights
 	end # End update of y event weights
