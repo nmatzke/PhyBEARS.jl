@@ -128,7 +128,8 @@ prtCp(p_Es_v5)
 
 # Problem: this simulation allowed null-range speciation (null->null, null or 000->000,000)
 # Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
-add_111_to_Carray!(p_Es_v5)
+birthRate = bmo.est[bmo.rownames .== "birthRate"]
+add_111_to_Carray!(p_Es_v5, birthRate)
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
