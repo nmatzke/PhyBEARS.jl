@@ -17,7 +17,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -114,6 +114,44 @@ function prtCp(p_Ds_v5)
 	Cdf = DataFrame(event=p_Ds_v5.p_indices.Carray_event_types, i=p_Ds_v5.p_indices.Carray_ivals, j=p_Ds_v5.p_indices.Carray_jvals, k=p_Ds_v5.p_indices.Carray_kvals, pair=p_Ds_v5.p_indices.Carray_pair, wt=p_Ds_v5.params.Cijk_weights, prob=p_Ds_v5.params.Cijk_probs, rate=p_Ds_v5.params.Cijk_rates, val=p_Ds_v5.params.Cijk_vals)
 	return Cdf
 end
+
+"""
+# Problem: a simulation allowed null-range speciation (null->null, null or 000->000,000)
+# Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
+"""
+function add_111_to_Carray!(p_Es_v5, birthRate)
+	# Hack
+	# Add the null -> null, null cladogenesis event to the p_Es_v5
+	# I.e. state 1: 1->1,1
+	prepend!(p_Es_v5.p_indices.Carray_event_types, ["y"])
+	prepend!(p_Es_v5.p_indices.Carray_ivals, [1])
+	prepend!(p_Es_v5.p_indices.Carray_jvals, [1])
+	prepend!(p_Es_v5.p_indices.Carray_kvals, [1])
+	prepend!(p_Es_v5.p_indices.Carray_pair, [1])
+	prepend!(p_Es_v5.params.Cijk_weights, [1.0])
+	prepend!(p_Es_v5.params.Cijk_probs, [1.0])
+	prepend!(p_Es_v5.params.Cijk_rates, p_Es_v5.params.Cijk_probs[1] * birthRate)
+	prepend!(p_Es_v5.params.Cijk_vals, p_Es_v5.params.Cijk_probs[1] * birthRate)
+	p_Es_v5.params.row_weightvals[1] = 1.0
+
+	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
+		if i == 1
+			prepend!(p_Es_v5.p_TFs.Ci_eq_i[i], Bool[1]) # state 1 is "true" (1) for row 1 of the Carray
+		else
+			prepend!(p_Es_v5.p_TFs.Ci_eq_i[i], Bool[0]) # all others are false
+		end
+	end
+	p_Es_v5.p_TFs.Ci_sub_i[1] = [1]
+	p_Es_v5.p_TFs.Cj_sub_i[1] = [1]
+	p_Es_v5.p_TFs.Ck_sub_i[1] = [1]
+	p_Es_v5.p_TFs.Cijk_pair_sub_i[1] = [1]
+	p_Es_v5.p_TFs.Cijk_rates_sub_i[1] = p_Es_v5.params.Cijk_probs[1] * birthRate
+	p_Es_v5.p_TFs.Cijk_not_y_sub_i[1] = Bool[0]
+	# p_Es_v5.p_TFs.Cij_singleNum_sub_i[1] =  # some kind of grid reference
+	# p_Es_v5.p_TFs.Cik_singleNum_sub_i[1] =  # some kind of grid reference
+	prtCp(p_Es_v5)
+	return p_Es_v5
+end # END function add_111_to_Carray!(p_Es_v5)
 
 
 
