@@ -89,6 +89,8 @@ tvals = seq(18.0, 23.0, 0.25)
 get_areas_of_range.(tvals)
 
 
+
+
 # Now make an extinction_rate_interpolator
 function get_extinction_rate_multiplier(tval, uval, state_as_areas_list, area_of_areas_interpolator)
 	extinction_rate_multiplier = 1.0 * (get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator) ^ uval)
