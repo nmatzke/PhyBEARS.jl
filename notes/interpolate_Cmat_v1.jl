@@ -14,6 +14,7 @@ using Test						# for @test, @testset
 using PhyloBits
 using PhyBEARS
 using DataFrames
+using CSV
 
 trfn = "/GitHub/PhyBEARS.jl/data/Psychotria_tree.newick"
 tr = readTopology(trfn)
@@ -73,10 +74,30 @@ area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_NZ_Oz_v1.txt"
 area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
 area_of_areas_table = readtable(area_of_areas_file)
 
-function get_extinction_rates(statenum, time)
-	
+#area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table; cols=2)
+area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table)
+
+area_of_areas_interpolator = interpolate((area_of_areas_table.times,), area_of_areas_vec, Gridded(Linear()))
+
+# Calculate the area at different times
+tval = 19.0
+state_as_areas_list = [1,2]
+total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+
+get_areas_of_range = x -> get_area_of_range(x, state_as_areas_list, area_of_areas_interpolator)
+tvals = seq(18.0, 23.0, 0.25)
+get_areas_of_range.(tvals)
+
+
+# Now make an extinction_rate_interpolator
+function get_extinction_rate_multiplier(tval, uval, state_as_areas_list, area_of_areas_interpolator)
+	extinction_rate_multiplier = 1.0 * (get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator) ^ uval)
+	# Error check
+	extinction_rate_multiplier = minimum([extinction_rate_multiplier, 10000.0])
+	return(extinction_rate_multiplier)
 end
 
+get_extinction_rate_multipliers = x -> get_extinction_rate_multiplier(x, uval, state_as_areas_list, area_of_areas_interpolator)
 
 # https://docs.juliahub.com/JLD2/O1EyT/0.1.13/
 cd("/GitHub/PhyBEARS.jl/src")
