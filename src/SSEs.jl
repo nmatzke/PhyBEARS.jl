@@ -1074,7 +1074,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
 #	uE = p.uE
-	uE = p.sol_Es_v5(t)
+	uE = p.sol_Es_v10(t)
 	terms = Vector{Float64}(undef, 4)
   for i in 1:n
 		terms .= 0.0
