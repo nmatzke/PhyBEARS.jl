@@ -11,7 +11,7 @@ using DataFrames  # for e.g. DataFrame()
 print("...done.\n")
 
 
-export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
+export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
 
 
 
@@ -1021,6 +1021,71 @@ parameterized_ClaSSE_Ds_v7_simd_sums = (du,u,p,t) -> begin
   end
 end
 
+
+# Time-varying areas & extinction rates
+parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
+ 	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	u_row = 8
+ 	
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals # base extinction rate of each range
+  mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  
+  # Populate changing mus with time
+  for i in 1:n
+  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.area_of_areas_interpolator)^p.bmo.est[u_row]
+  end
+  
+  
+	terms = Vector{Float64}(undef, 4)
+
+  for i in 1:n
+		terms .= 0.0
+
+		terms[1], terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+	
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		
+		du[i] = mu_t[i] -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
+  end
+end
+
+
+# Time-varying areas & extinction rates
+parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
+ 	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	u_row = 8
+ 	
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals # base extinction rate of each range
+  mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  
+  # Populate changing mus with time
+  for i in 1:n
+  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.area_of_areas_interpolator)^p.bmo.est[u_row]
+  end
+	
+	# Pre-calculated solution of the Es
+#	sol_Es = p.sol_Es_v5
+#	uE = p.uE
+	uE = p.sol_Es_v5(t)
+	terms = Vector{Float64}(undef, 4)
+  for i in 1:n
+		terms .= 0.0
+
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+	
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		
+		du[i] = -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
+  end
+end
 
 
 
