@@ -90,11 +90,12 @@ area_of_areas_interpolator = interpolate((area_of_areas_table.times,), area_of_a
 # Calculate the area at different times
 tval = 19.0
 state_as_areas_list = [1,2]
-total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+area_of_areas = area_of_areas_interpolator(tval)
+total_area = PhyBEARS.TimeDep.get_area_of_range(tval, state_as_areas_list, area_of_areas)
 
-get_areas_of_range = x -> get_area_of_range(x, state_as_areas_list, area_of_areas_interpolator)
+get_areas_of_range_at_t = x -> get_area_of_range_using_interpolator(x, state_as_areas_list, area_of_areas_interpolator)
 tvals = seq(18.0, 23.0, 0.25)
-get_areas_of_range.(tvals)
+PhyBEARS.TimeDep.get_areas_of_range.(tvals)
 
 
 
@@ -114,9 +115,15 @@ add_111_to_Carray!(p_Es_v5, birthRate);
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
+
+
 p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
 Rnames(p_Es_v10)
 prtCp(p_Es_v10)
+
+@time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
+@time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
+
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
@@ -183,7 +190,7 @@ p.params.Qij_vals_t
 
 # Now make an extinction_rate_interpolator
 function get_extinction_rate_multiplier(tval, uval, state_as_areas_list, area_of_areas_interpolator)
-	extinction_rate_multiplier = 1.0 * (get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator) ^ uval)
+	extinction_rate_multiplier = 1.0 * (get_area_of_range_using_interpolator(tval, state_as_areas_list, area_of_areas_interpolator) ^ uval)
 	# Error check
 	extinction_rate_multiplier = minimum([extinction_rate_multiplier, 10000.0])
 	return(extinction_rate_multiplier)
