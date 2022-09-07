@@ -1027,7 +1027,8 @@ end
 parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
  	# The row of bmo that refers to "u", the effect of area on extinction rate
  	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
- 	u_row = 8
+ 	u_row = p.time_var.u_row
+ 	max_extinction_rate = p.time_var.max_extinction_rate
  	
   # Possibly varying parameters
   n = p.n
@@ -1039,7 +1040,8 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
   	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.area_of_areas_interpolator)^p.bmo.est[u_row]
   end
-  
+  # Correct "Inf" max_extinction_rates
+  mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
   
 	terms = Vector{Float64}(undef, 4)
 

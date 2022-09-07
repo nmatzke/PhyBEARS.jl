@@ -35,6 +35,7 @@ bmo.est[bmo.rownames .== "d"] .= 0.02
 bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
+bmo.est[bmo.rownames .== "u"] .= -1.0
 bmo.est[:] = bmo_updater_v1(bmo);
 
 # Set up the model
@@ -70,12 +71,19 @@ area_interpolator(tvals)
 #######################################################
 areas_list = inputs.setup.areas_list
 states_list = inputs.setup.states_list
-area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_NZ_Oz_v1.txt"
+area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_Hawaii_1s_v2.txt"
 area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
 area_of_areas_table = readtable(area_of_areas_file)
 
 #area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table; cols=2)
 area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table)
+
+# Check if the area of areas vector has the same number of areas as the geog_df
+if (Rncol(geog_df)-1) != length(area_of_areas_vec[1])
+	txt = paste0(["STOP ERROR. The area_of_areas_table, used as the input to area_of_areas_df_to_vectors() and then interpolate(), must have the same number of areas as the geographic ranges file. Fix this before proceeding.\n\nSpecifically, these should match, but don't: length(area_of_areas_vec[1])=", length(area_of_areas_vec[1]), ". Rncol(geog_df)-1=", Rncol(geog_df)-1, ""])
+	print(txt)
+	error(txt)
+end
 
 area_of_areas_interpolator = interpolate((area_of_areas_table.times,), area_of_areas_vec, Gridded(Linear()))
 
@@ -105,26 +113,37 @@ birthRate = bmo.est[bmo.rownames .== "birthRate"]
 add_111_to_Carray!(p_Es_v5, birthRate)
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
+prtCp(p_Es_v10)
 
-
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
+p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, time_var=p_Es_v5.time_var, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
 Rnames(p_Es_v10)
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
+
+du = collect(repeat([0.0], numstates)) 
+u = collect(repeat([0.0], numstates)) 
+p = p_Es_v10
+t = 0.0
+PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t)
+
+
 prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;
-p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
+p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, time_var, sol_Es_v5=sol_Es_v10);
 
 # Check the interpolator
 p_Ds_v5.sol_Es_v5(1.0)
 Es_interpolator(1.0)
 
 # Calculate the Ds & total lnL via downpass
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 

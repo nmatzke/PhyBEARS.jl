@@ -305,6 +305,13 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	areas_list = collect(1:numareas)
 	total_numareas = length(areas_list)
 	
+	# Fixed constants
+	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	u_row = 8
+ 	max_extinction_rate = 100.0
+
+	
 	# Create a default BioGeoBEARS_model_object
 	type_string = string(typeof(bmo))
 	if startswith(type_string, "DataFrame") == false
@@ -510,6 +517,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, elist_base=elist_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01)
 	
+	# Inputs for time-varying parameter calculations
+	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
+	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)
 	
@@ -518,7 +528,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	
-	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
+	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan, time_var=time_var)
 	# Parse the geography as well!  This updates inputs.res
 	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
 
