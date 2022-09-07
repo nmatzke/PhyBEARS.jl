@@ -19,7 +19,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range
+export area_of_areas_df_to_vectors, get_area_of_range, update_Qij_e_vals!
 
 
 
@@ -104,6 +104,31 @@ function get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator
 end
 
 
+
+"""
+Update 'u' based on time 't'
+"""
+function update_Qij_e_vals!(p, tval)
+	# Update elist_t, i.e. the multiplier on the base e rate (at time t)
+	#p = p_Ds_v10
+	#tval = 5.1
+	p.setup.elist_t .= p.setup.elist_base .* p.area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
+	
+	# Update the Qmat, using elist_t
+	prtQp(p)
+	Rnames(p.p_indices)
+	e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
+	
+	for i in 1:length(e_rows)
+		starting_statenum = p.p_indices.Qarray_ivals[e_rows[i]]
+		ending_statenum = p.p_indices.Qarray_jvals[e_rows[i]]
+		area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
+		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
+		p.params.Qij_vals_t[e_rows[i]] = p.params.Qij_vals[e_rows[i]] * p.setup.elist_t[area_lost]
+	end
+	
+	return(p)
+end # END function update_Qij_e_vals!(p, tval)
 
 
 end # END TimeDep

@@ -40,7 +40,7 @@ bmo.est[:] = bmo_updater_v1(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan, time_var) = inputs;
+(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
@@ -76,7 +76,7 @@ area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
 area_of_areas_table = readtable(area_of_areas_file)
 
 #area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table; cols=2)
-area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table)
+area_of_areas_vec = PhyBEARS.TimeDep.area_of_areas_df_to_vectors(area_of_areas_table)
 
 # Check if the area of areas vector has the same number of areas as the geog_df
 if (Rncol(geog_df)-1) != length(area_of_areas_vec[1])
@@ -101,7 +101,7 @@ get_areas_of_range.(tvals)
 
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan, time_var) = inputs;
+(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
@@ -110,11 +110,11 @@ prtCp(p_Es_v5)
 # Problem: this simulation allowed null-range speciation (null->null, null or 000->000,000)
 # Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
 birthRate = bmo.est[bmo.rownames .== "birthRate"]
-add_111_to_Carray!(p_Es_v5, birthRate)
+add_111_to_Carray!(p_Es_v5, birthRate);
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, time_var=inputs.time_var, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
+p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
 Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
@@ -132,7 +132,7 @@ prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSS
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;
-p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var,states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v5=sol_Es_v10);
+p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup,states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v5=sol_Es_v10);
 
 # Check the interpolator
 p_Ds_v7.sol_Es_v5(1.0)
@@ -141,7 +141,7 @@ Es_interpolator(1.0)
 # Calculate the Ds & total lnL via downpass
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
+p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
@@ -159,8 +159,9 @@ p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, 
 inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
 
 # Update elist_t, i.e. the multiplier on the base e rate (at time t)
+p = p_Ds_v10
 tval = 5.1
-inputs.setup.elist_t .= inputs.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.time_var.u_row]
+p.setup.elist_t .= p.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
 
 # Update the Qmat, using elist_t
 prtQp(p)
@@ -176,7 +177,7 @@ for i in 1:length(e_rows)
 end
 
 
-
+p.params.Qij_vals_t
 
 # Now make an extinction_rate_interpolator
 function get_extinction_rate_multiplier(tval, uval, state_as_areas_list, area_of_areas_interpolator)

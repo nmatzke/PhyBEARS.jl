@@ -303,6 +303,8 @@ inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max
 function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN)
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
+	
+	# For time-varying analyses
 	areas_list = collect(1:numareas)
 	total_numareas = length(areas_list)
 	
@@ -522,7 +524,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, max_extinction_rate=max_extinction_rate)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
@@ -535,7 +537,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	
-	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan, time_var=time_var)
+	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
 	# Parse the geography as well!  This updates inputs.res
 	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
 

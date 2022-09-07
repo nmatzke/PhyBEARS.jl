@@ -1028,8 +1028,8 @@ end
 parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
  	# The row of bmo that refers to "u", the effect of area on extinction rate
  	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
- 	u_row = p.time_var.u_row
- 	max_extinction_rate = p.time_var.max_extinction_rate
+ 	u_row = p.setup.u_row
+ 	max_extinction_rate = p.setup.max_extinction_rate
  	
   # Possibly varying parameters
   n = p.n
@@ -1068,8 +1068,8 @@ end
 parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
  	# The row of bmo that refers to "u", the effect of area on extinction rate
  	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
- 	u_row = p.time_var.u_row
- 	max_extinction_rate = p.time_var.max_extinction_rate
+ 	u_row = p.setup.u_row
+ 	max_extinction_rate = p.setup.max_extinction_rate
  	
   # Possibly varying parameters
   n = p.n
