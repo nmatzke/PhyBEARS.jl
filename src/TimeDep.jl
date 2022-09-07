@@ -165,6 +165,7 @@ function update_Qij_e_vals!(p)
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
+		# PRECALCULATE THE AREA THAT WAS LOST (AND GAINED)
 		area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.setup.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.setup.e_rows[i]]])
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
