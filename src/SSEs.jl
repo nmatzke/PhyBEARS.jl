@@ -1032,7 +1032,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
 
  	# Get the area of areas at time t
-	p.area_of_areas .= p.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.setup.area_of_areas_interpolator(t)
  	
   # Possibly varying parameters
   n = p.n
@@ -1042,7 +1042,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # Populate changing mus with time
   @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.area_of_areas)^p.bmo.est[u_mu_row]
+  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[u_mu_row]
   end
   # Correct "Inf" max_extinction_rates
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
@@ -1077,7 +1077,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
  	
  	# Get the area of areas at time t
-	p.area_of_areas .= p.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.setup.area_of_areas_interpolator(t)
 
  	
   # Possibly varying parameters
@@ -1088,7 +1088,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Populate changing mus with time
   @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.area_of_areas)^p.bmo.est[u_mu_row]
+  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[u_mu_row]
   end
   # Correct "Inf" max_extinction_rates
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
