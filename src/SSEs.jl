@@ -1094,7 +1094,8 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
   # Get the e_vals for the Qij matrix, at time t
   # elist_actual = elist_base * area_of_area_lost^u_e
-  #update_Qij_e_vals!(p)
+  # THIS IS THE SLOW STEP; pre-allocate e_rows
+  update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
 
 	
