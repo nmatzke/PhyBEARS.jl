@@ -95,7 +95,7 @@ total_area = PhyBEARS.TimeDep.get_area_of_range(tval, state_as_areas_list, area_
 
 get_areas_of_range_at_t = x -> get_area_of_range_using_interpolator(x, state_as_areas_list, area_of_areas_interpolator)
 tvals = seq(18.0, 23.0, 0.25)
-PhyBEARS.TimeDep.get_areas_of_range.(tvals)
+get_areas_of_range_at_t.(tvals)
 
 
 

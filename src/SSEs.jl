@@ -1077,24 +1077,24 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
  	# Get the area of areas at time t
 	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
 
- 	
+  # NOT the slow step:
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-#  @inbounds @simd for i in 1:n
+  @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
- # 	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
- # end
+  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
+  end
   # Correct "Inf" max_extinction_rates
-  #mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
-  mu_t .= mu
+  mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+
 
   # Get the e_vals for the Qij matrix, at time t
   # elist_actual = elist_base * area_of_area_lost^u_e
-  update_Qij_e_vals!(p)
+  #update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
 
 	
