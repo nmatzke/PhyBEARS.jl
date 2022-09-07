@@ -8,6 +8,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 print("PhyBEARS: loading SSEs.jl dependencies...")
 using DataFrames  # for e.g. DataFrame()
 using PhyloBits.TrUtils # for get_area_of_range etc.
+using PhyBEARS.TimeDep # for get_area_of_range etc.
 
 print("...done.\n")
 

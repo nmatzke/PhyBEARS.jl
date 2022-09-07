@@ -14,9 +14,6 @@ print("PhyBEARS: loading TimeDep.jl dependencies...")
 using PhyloBits.PNtypes	# for e.g. HybridNetwork
 using PhyloBits.TrUtils # for e.g. flat2
 using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
-using PhyBEARS.SSEs 
-#using PhyBEARS.Flow 
-using Hwloc						# for e.g. getinfo()[:Core] # the current core, I think
 #using Distributed			# for e.g. Distributed.@spawn
 
 print("...done.\n")
