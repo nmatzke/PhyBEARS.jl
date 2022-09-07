@@ -159,8 +159,10 @@ p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, 
 inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
 
 # Update elist_t, i.e. the multiplier on the base e rate (at time t)
-p = p_Ds_v10
+p = p_Ds_v10;
 tval = 5.1
+PhyBEARS.TimeDep.update_Qij_e_vals!(p, tval);
+p.params.Qij_vals_t
 p.setup.elist_t .= p.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
 
 # Update the Qmat, using elist_t

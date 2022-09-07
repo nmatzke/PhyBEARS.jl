@@ -1044,12 +1044,13 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # Correct "Inf" max_extinction_rates
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
   
+  
+  # Get the e_vals for the Qij matrix, at time t
+  update_Qij_e_vals!(p, tval)
+  # (updates p.params.Qij_vals)
+  
+  
   # Populate changing "e" with time
-  
-  
-  
-  
-  
 	terms = Vector{Float64}(undef, 4)
 
   for i in 1:n
@@ -1057,7 +1058,8 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 
 		terms[1], terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
 	
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		
 		du[i] = mu_t[i] -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
   end
@@ -1083,6 +1085,11 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   end
   # Correct "Inf" max_extinction_rates
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+
+  # Get the e_vals for the Qij matrix, at time t
+  update_Qij_e_vals!(p, tval)
+  # (updates p.params.Qij_vals)
+
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
@@ -1094,7 +1101,8 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
 		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
 	
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		
 		du[i] = -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
   end
