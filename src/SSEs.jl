@@ -1084,12 +1084,13 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-  @inbounds @simd for i in 1:n
+#  @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
-  end
+ # 	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
+ # end
   # Correct "Inf" max_extinction_rates
-  mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+  #mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+  mu_t .= mu
 
   # Get the e_vals for the Qij matrix, at time t
   # elist_actual = elist_base * area_of_area_lost^u_e
@@ -1107,9 +1108,9 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
 		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
 		
-		# Is this the slow step??
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		# Is this the slow step?? -- NO!
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		
 		du[i] = -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
   end
