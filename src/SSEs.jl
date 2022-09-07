@@ -1046,7 +1046,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Get the e_vals for the Qij matrix, at time t
-  update_Qij_e_vals!(p, tval)
+  update_Qij_e_vals!(p, t)
   # (updates p.params.Qij_vals)
   
   
@@ -1087,7 +1087,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
 
   # Get the e_vals for the Qij matrix, at time t
-  update_Qij_e_vals!(p, tval)
+  update_Qij_e_vals!(p, t)
   # (updates p.params.Qij_vals)
 
 	
