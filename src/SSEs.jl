@@ -1032,7 +1032,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
 
  	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.setup.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
  	
   # Possibly varying parameters
   n = p.n
@@ -1077,7 +1077,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
  	
  	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.setup.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
 
  	
   # Possibly varying parameters
