@@ -40,7 +40,7 @@ bmo.est[:] = bmo_updater_v1(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan, time_var) = inputs;
 
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
@@ -101,7 +101,7 @@ get_areas_of_range.(tvals)
 
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan, time_var) = inputs;
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
@@ -113,10 +113,10 @@ birthRate = bmo.est[bmo.rownames .== "birthRate"]
 add_111_to_Carray!(p_Es_v5, birthRate)
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
-prtCp(p_Es_v10)
 
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, time_var=p_Es_v5.time_var, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
+p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, time_var=inputs.time_var, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
 Rnames(p_Es_v10)
+prtCp(p_Es_v10)
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
@@ -126,16 +126,16 @@ u = collect(repeat([0.0], numstates))
 p = p_Es_v10
 t = 0.0
 PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t)
-
+du
 
 prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;
-p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, time_var, sol_Es_v5=sol_Es_v10);
+p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var,states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v5=sol_Es_v10);
 
 # Check the interpolator
-p_Ds_v5.sol_Es_v5(1.0)
+p_Ds_v7.sol_Es_v5(1.0)
 Es_interpolator(1.0)
 
 # Calculate the Ds & total lnL via downpass
@@ -144,6 +144,31 @@ Es_interpolator(1.0)
 p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, time_var=p_Es_v10.time_var, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
+
+
+
+
+
+
+#######################################################
+# Now make "e" events depend on "u"
+#######################################################
+# Update elist
+inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
+
+# Update the Qmat
+prtQp(p)
+Rnames(p.p_indices)
+e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
+
+for i in 1:length(e_rows)
+	starting_statenum = p.p_indices.Qarray_ivals[e_rows[i]]
+	ending_statenum = p.p_indices.Qarray_jvals[e_rows[i]]
+	area_lost = symdiff(inputs.setup.states_list[starting_statenum], inputs.setup.states_list[ending_statenum])
+	p.params.
+end
 
 
 

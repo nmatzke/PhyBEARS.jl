@@ -104,6 +104,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
+	Qij_vals_t = Qmat.Qij_vals_t
 	
 	# Update Qij parameters, manually
 	dTF = Qarray_event_types .== "d"
@@ -352,12 +353,14 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	amat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	elist_base = repeat([1.0], total_numareas)
 	elist = repeat([1.0], total_numareas)
+	elist_t = repeat([1.0], total_numareas)
 	area_of_areas = repeat([1.0], total_numareas)
 	
 	amat = a_val .* amat
 	dmat = d_val .* dmat
 	jmat = jmat .* dmat
 	elist = e_val .* elist
+	elist_t = 1.0 .* elist
 	dispersal_multipliers_mat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	distmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	envdistmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas)) 
@@ -369,6 +372,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
+	Qij_vals_t = Qmat.Qij_vals_t
 	Qarray_event_types = Qmat.Qarray_event_types
 	
 	prtQ(Qmat)
@@ -394,7 +398,10 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	#Carray = setup_DEC_Cmat(areas_list, states_list, maxent01, Cparams)
 	# Paired events lumped (e.g. i,j,k = i,k,j : 2022-03-15
 	Carray = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams; birthRate=birthRate)
-
+	
+	Cijk_vals_t = similar(Carray.Cijk_vals)
+	Cijk_vals_t .= 0.0
+	
 	# Possibly varying parameters
 	# Set up mu (extinction) rates, manually
 	mu_vals = repeat([deathRate], n)
@@ -407,7 +414,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	# Get the DEC weights and per-event weights, then multiply per-event weights by birthRate
 	#params = (mu_vals=mu_vals, Qij_vals=Qmat.Qij_vals, Cijk_weights=Carray.Cijk_weights, Cijk_vals=birthRate .* Carray.Cijk_vals, row_weightvals=Carray.row_weightvals)
-	params = (mu_vals=mu_vals, mu_t_vals=mu_t_vals, psi_vals=psi_vals, Qij_vals=Qmat.Qij_vals, Cijk_weights=Carray.Cijk_weights, Cijk_probs=Carray.Cijk_probs, Cijk_rates=Carray.Cijk_rates, Cijk_vals=Carray.Cijk_vals, row_weightvals=Carray.row_weightvals)
+	params = (mu_vals=mu_vals, mu_t_vals=mu_t_vals, psi_vals=psi_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=Qmat.Qij_vals_t, Cijk_weights=Carray.Cijk_weights, Cijk_probs=Carray.Cijk_probs, Cijk_rates=Carray.Cijk_rates, Cijk_vals=Carray.Cijk_vals, Cijk_vals_t=Cijk_vals_t, row_weightvals=Carray.row_weightvals)
 	
 	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
 	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types)
@@ -515,7 +522,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, elist_base=elist_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, elist=elist, elist_base=elist_base, elist_t=elist_t, dmat=dmat, amat=amat, jmat=jmat, elist=elist, dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
@@ -608,6 +615,7 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
+	Qij_vals_t = Qmat.Qij_vals_t
 	Qarray_event_types = Qmat.Qarray_event_types
 	
 	prtQ(Qmat)

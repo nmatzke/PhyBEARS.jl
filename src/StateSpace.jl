@@ -707,6 +707,7 @@ function setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_eve
 	Qarray_ivals = repeat([0], num_nonzero_rates)
 	Qarray_jvals = repeat([0], num_nonzero_rates)
 	Qij_vals =  repeat([0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
+	Qij_vals_t =  repeat([0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
 	                     # This is populated by calculating through the others
 	#base_vals = Array{Float64, num_nonzero_rates}  # base rates -- d, e, a
 	#mod_vals = Array{Float64, num_nonzero_rates}  # base modifiers -- e.g., "2" for AB -> ABC
@@ -846,7 +847,7 @@ function setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_eve
 	Qarray_event_types = Qarray_event_types[keepTF]
 	
 	# Return results
-	Qmat = (Qarray_ivals=Qarray_ivals, Qarray_jvals=Qarray_jvals, Qij_vals=Qij_vals, Qarray_event_types=Qarray_event_types)
+	Qmat = (Qarray_ivals=Qarray_ivals, Qarray_jvals=Qarray_jvals, Qij_vals=Qij_vals, Qij_vals_t=Qij_vals_t, Qarray_event_types=Qarray_event_types)
 	
 	"""
 	Qarray_ivals = Qmat.Qarray_ivals
@@ -874,18 +875,18 @@ end # end setup_DEC_DEmat()
 bmo = construct_BioGeoBEARS_model_object()
 """
 function construct_BioGeoBEARS_model_object()
-	type_vec = ["free", "free", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "3-j", "ysv*2/3", "ysv*1/3", "ysv*1/3", "ysv*1/3", "fixed", "fixed", "fixed", "fixed", "mx01", "mx01", "mx01", "mx01", "fixed", "fixed", "fixed", "fixed"]
-	init_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1, 0]
+	type_vec = ["free", "free", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "u", "u", "fixed", "3-j", "ysv*2/3", "ysv*1/3", "ysv*1/3", "ysv*1/3", "fixed", "fixed", "fixed", "fixed", "mx01", "mx01", "mx01", "mx01", "fixed", "fixed", "fixed", "fixed"]
+	init_vec = [0.01, 0.01, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.99999, 1.99999, 1.0, 1.0, 1.0, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1.0, 0.0]
 	#init_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.5, 0.1, 1, 0]
-	min_vec = [1e-12, 1e-12, 1e-12, 1e-12, -2.5, -10, -10, -10, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 0.0, 0.0, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.005, 0.005, 0.005]
-	max_vec = [4.999999999999, 4.999999999999, 4.999999999999, 0.999999999999, 2.5, 10, 10, 10, 2.99999, 3, 2, 1, 1, 1, 2.0, 2.0, 2.0, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.995, 0.995, 0.995]
+	min_vec = [1e-12, 1e-12, 1e-12, 1e-12, -2.5, -10, -10, -10, -10, -10, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 0.0, 0.0, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.005, 0.005, 0.005]
+	max_vec = [4.999999999999, 4.999999999999, 4.999999999999, 0.999999999999, 2.5, 10, 10, 10, 10, 10, 2.99999, 3, 2, 1, 1, 1, 2.0, 2.0, 2.0, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.995, 0.995, 0.995]
 	#est_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.5, 0.1, 1, 0]
-	est_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1, 0]
+	est_vec = [0.01, 0.01, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.99999, 1.99999, 1.0, 1.0, 1.0, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1.0, 0.0]
 		 
-	note_vec = ["works", "works", "works", "non-stratified only", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "no", "yes", "yes", "yes"]
-	desc_vec = ["anagenesis: rate of 'dispersal' (range expansion)", "anagenesis: rate of 'extinction' (range contraction)", "anagenesis: rate of range-switching (i.e. for a standard char.)", "anagenesis: exponent on branch lengths", "exponent on distance (modifies d, j, a)", "exponent on environmental distance (modifies d, j, a)", "exponent on manual dispersal multipliers (modifies d, j, a)", "anagenesis: exponent on extinction risk with area (modifies e)", "cladogenesis: relative per-event weight of jump dispersal", "cladogenesis: y+s+v", "cladogenesis: y+s", "cladogenesis: relative per-event weight of sympatry (range-copying)", "cladogenesis: relative per-event weight of subset speciation", "cladogenesis: relative per-event weight of vicariant speciation", "speciation rate", "extinction rate (lineages)", "sampling rate (fossils)", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "root: controls range size probabilities of root", "mean frequency of truly sampling OTU of interest", "detection probability per true sample of OTU of interest", "false detection of OTU probability per true taphonomic control sample"]
+	note_vec = ["works", "works", "works", "non-stratified only", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "no", "yes", "yes", "yes"]
+	desc_vec = ["anagenesis: rate of 'dispersal' (range expansion)", "anagenesis: rate of 'extinction' (range contraction)", "anagenesis: rate of range-switching (i.e. for a standard char.)", "anagenesis: exponent on branch lengths", "exponent on distance (modifies d, j, a)", "exponent on environmental distance (modifies d, j, a)", "exponent on manual dispersal multipliers (modifies d, j, a)", "anagenesis: exponent on extinction risk with area (modifies e)", "anagenesis: exponent on range extirpation risk with area (modifies e)", "u_mu: exponent on lineage extinction risk with area (modifies mu|deathRate)", "cladogenesis: relative per-event weight of jump dispersal", "cladogenesis: y+s+v", "cladogenesis: y+s", "cladogenesis: relative per-event weight of sympatry (range-copying)", "cladogenesis: relative per-event weight of subset speciation", "cladogenesis: relative per-event weight of vicariant speciation", "speciation rate", "extinction rate (lineages)", "sampling rate (fossils)", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "root: controls range size probabilities of root", "mean frequency of truly sampling OTU of interest", "detection probability per true sample of OTU of interest", "false detection of OTU probability per true taphonomic control sample"]
 	
-	rownames = ["d", "e", "a", "b", "x", "n", "w", "u", "j", "ysv", "ys", "y", "s", "v", "birthRate", "deathRate", "psiRate", "mx01", "mx01j", "mx01y", "mx01s", "mx01v", "mx01r", "mf", "dp", "fdp"]
+	rownames = ["d", "e", "a", "b", "x", "n", "w", "u", "u_e", "u_mu", "j", "ysv", "ys", "y", "s", "v", "birthRate", "deathRate", "psiRate", "mx01", "mx01j", "mx01y", "mx01s", "mx01v", "mx01r", "mf", "dp", "fdp"]
 	# Load into a DataFrame
 	bmo = DataFrames.DataFrame(rownames=rownames, type=type_vec, init=init_vec, min=min_vec, max=max_vec, est=est_vec, note=note_vec, desc=desc_vec)
 	return bmo

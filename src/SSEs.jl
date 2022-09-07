@@ -1043,6 +1043,12 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # Correct "Inf" max_extinction_rates
   mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
   
+  # Populate changing "e" with time
+  
+  
+  
+  
+  
 	terms = Vector{Float64}(undef, 4)
 
   for i in 1:n
