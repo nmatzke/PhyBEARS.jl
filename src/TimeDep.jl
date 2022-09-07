@@ -112,7 +112,7 @@ function update_Qij_e_vals!(p, tval)
 	# Update elist_t, i.e. the multiplier on the base e rate (at time t)
 	#p = p_Ds_v10
 	#tval = 5.1
-	p.setup.elist_t .= p.setup.elist_base .* p.area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
+	p.setup.elist_t .= p.setup.elist_base .* p.area_of_areas_interpolator(tval) .^ p.bmo.est[p.setup.u_row]
 	
 	# Update the Qmat, using elist_t
 	prtQp(p)
@@ -124,7 +124,7 @@ function update_Qij_e_vals!(p, tval)
 		ending_statenum = p.p_indices.Qarray_jvals[e_rows[i]]
 		area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
-		p.params.Qij_vals_t[e_rows[i]] = p.params.Qij_vals[e_rows[i]] * p.setup.elist_t[area_lost]
+		p.params.Qij_vals_t[e_rows[i]] = p.params.Qij_vals[e_rows[i]] * p.setup.elist_t[area_lost][]
 	end
 	
 	return(p)
