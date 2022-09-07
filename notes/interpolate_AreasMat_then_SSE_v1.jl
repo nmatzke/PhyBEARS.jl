@@ -155,10 +155,14 @@ p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, 
 #######################################################
 # Now make "e" events depend on "u"
 #######################################################
-# Update elist
-inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
+# Update elist, i.e. the multiplier on the base e rate (fixed time)
+inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
 
-# Update the Qmat
+# Update elist_t, i.e. the multiplier on the base e rate (at time t)
+tval = 5.1
+inputs.setup.elist_t .= inputs.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.time_var.u_row]
+
+# Update the Qmat, using elist_t
 prtQp(p)
 Rnames(p.p_indices)
 e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
@@ -167,7 +171,8 @@ for i in 1:length(e_rows)
 	starting_statenum = p.p_indices.Qarray_ivals[e_rows[i]]
 	ending_statenum = p.p_indices.Qarray_jvals[e_rows[i]]
 	area_lost = symdiff(inputs.setup.states_list[starting_statenum], inputs.setup.states_list[ending_statenum])
-	p.params.
+	# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
+	p.params.Qij_vals_t[e_rows[i]] = p.params.Qij_vals[e_rows[i]] * inputs.setup.elist_t[area_lost]
 end
 
 
