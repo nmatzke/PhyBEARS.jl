@@ -15,6 +15,7 @@ using PhyloBits			# for prt(), Node/HybridNetwork, etc.
 # NOTE: LOAD THE DEPENDENCY .jl FILES *FIRST*, or you get "not recognized" errors
 include("BGExample.jl")			# default examples
 #include("TrUtils.jl")			# basic utility functions 
+include("TimeDep.jl")				# time-dependency in Qmat and Cmat
 include("MaxentInterp.jl")	# preconstructed interpolator for weighting rangesize of smaller daughter
 #include("TreeTable.jl")			# for prt() tree tables (DFs), bd_liks(), etc.
 include("StateSpace.jl")	# set up lists of areas and states (geographic ranges)
