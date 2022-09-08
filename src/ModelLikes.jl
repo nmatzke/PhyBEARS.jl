@@ -385,6 +385,21 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
 	
+	# Pre-allocate area gained/lost
+	gains = repeat([[]], length(Qarray_event_types))
+	losses = repeat([[]], length(Qarray_event_types))
+	for i in 1:length(d_rows)
+		gains[d_rows[i]] = symdiff(states_list[Qarray_ivals[d_rows[i]]], states_list[Qarray_jvals[d_rows[i]]])
+	end
+	for i in 1:length(e_rows)
+		losses[e_rows[i]] = symdiff(states_list[Qarray_ivals[e_rows[i]]], states_list[Qarray_jvals[e_rows[i]]])
+	end
+	# Events "a" are e.g. moving from area A to area B ("range-switching")
+	for i in 1:length(a_rows)
+		losses[a_rows[i]] = states_list[Qarray_ivals[d_rows[i]]]	# from = i
+		gains[a_rows[i]] = states_list[Qarray_jvals[d_rows[i]]]		# to = j
+	end
+
 	Cparams = default_Cparams()
 	
 	Cparams.j = j_val
@@ -530,7 +545,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, max_extinction_rate=max_extinction_rate)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, max_extinction_rate=max_extinction_rate)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
