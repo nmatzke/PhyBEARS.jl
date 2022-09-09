@@ -449,7 +449,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Corig: original ancestral range (as a list of area numbers)
 	# CdescL: left descendant range (as a list of area numbers)
 	# CdescR: left descendant range (as a list of area numbers)
-
+	Carray_event_types = Carray.Carray_event_types
 	y_rows = (1:length(Carray_event_types))[Carray_event_types .== "y"]
 	s_rows = (1:length(Carray_event_types))[Carray_event_types .== "s"]
 	v_rows = (1:length(Carray_event_types))[Carray_event_types .== "v"]
@@ -460,7 +460,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	CdescL = repeat([[]], length(Carray_event_types))
 	CdescR = repeat([[]], length(Carray_event_types))
 	for i in 1:length(j_rows)
-		Cgains[j_rows[i]] = states_list[Carray_kvals[j_rows[i]]
+		Cgains[j_rows[i]] = states_list[Carray_kvals[j_rows[i]]]
 	end
 	for i in 1:length(Carray_event_types)
 		Corig[i] = states_list[Carray_ivals[i]]
