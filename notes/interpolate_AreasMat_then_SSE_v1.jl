@@ -36,7 +36,7 @@ bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
 bmo.est[bmo.rownames .== "u"] .= -1.0
-bmo.est[:] = bmo_updater_v1(bmo);
+bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);

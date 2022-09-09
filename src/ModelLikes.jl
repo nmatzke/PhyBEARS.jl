@@ -468,7 +468,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		CdescR[i] = states_list[Carray.Carray_kvals[i]]
 	end
 	
-	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)
+	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)
 
 	# True/False statements by index
 	# The calculation of dEi and dDi for state i involves many
@@ -573,7 +573,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, max_extinction_rate=max_extinction_rate)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, max_extinction_rate=max_extinction_rate, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
