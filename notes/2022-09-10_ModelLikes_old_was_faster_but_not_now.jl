@@ -440,35 +440,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	params = (mu_vals=mu_vals, mu_t_vals=mu_t_vals, psi_vals=psi_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=Qmat.Qij_vals_t, Cijk_weights=Carray.Cijk_weights, Cijk_probs=Carray.Cijk_probs, Cijk_rates=Carray.Cijk_rates, Cijk_vals=Carray.Cijk_vals, Cijk_vals_t=Cijk_vals_t, row_weightvals=Carray.row_weightvals)
 	
 	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
-	# Add: 
-	# y_rows: row numbers of "y" events (narrow sympatry/range-copying)
-	# s_rows: row numbers of "s" events (subset sympatry)
-	# v_rows: row numbers of "v" events (vicariance)
-	# j_rows: row numbers of "y" events (narrow sympatry/range-copying)
-	# Cgains: cladogenetic gains (jump dispersal)
-	# Corig: original ancestral range (as a list of area numbers)
-	# CdescL: left descendant range (as a list of area numbers)
-	# CdescR: left descendant range (as a list of area numbers)
-	Carray_event_types = Carray.Carray_event_types
-	y_rows = (1:length(Carray_event_types))[Carray_event_types .== "y"]
-	s_rows = (1:length(Carray_event_types))[Carray_event_types .== "s"]
-	v_rows = (1:length(Carray_event_types))[Carray_event_types .== "v"]
-	j_rows = (1:length(Carray_event_types))[Carray_event_types .== "j"]
-
-	Cgains = repeat([[]], length(Carray_event_types))
-	Corig = repeat([[]], length(Carray_event_types))
-	CdescL = repeat([[]], length(Carray_event_types))
-	CdescR = repeat([[]], length(Carray_event_types))
-	for i in 1:length(j_rows)
-		Cgains[j_rows[i]] = states_list[Carray.Carray_kvals[j_rows[i]]]
-	end
-	for i in 1:length(Carray_event_types)
-		Corig[i] = states_list[Carray.Carray_ivals[i]]
-		CdescL[i] = states_list[Carray.Carray_jvals[i]]
-		CdescR[i] = states_list[Carray.Carray_kvals[i]]
-	end
-	
-	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)
+	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types)
 
 	# True/False statements by index
 	# The calculation of dEi and dDi for state i involves many
@@ -573,7 +545,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, max_extinction_rate=max_extinction_rate)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, max_extinction_rate=max_extinction_rate)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)
