@@ -460,12 +460,12 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	CdescL = repeat([[]], length(Carray_event_types))
 	CdescR = repeat([[]], length(Carray_event_types))
 	for i in 1:length(j_rows)
-		Cgains[j_rows[i]] = states_list[Carray_kvals[j_rows[i]]]
+		Cgains[j_rows[i]] = states_list[Carray.Carray_kvals[j_rows[i]]]
 	end
 	for i in 1:length(Carray_event_types)
-		Corig[i] = states_list[Carray_ivals[i]]
-		CdescL[i] = states_list[Carray_jvals[i]]
-		CdescR[i] = states_list[Carray_kvals[i]]
+		Corig[i] = states_list[Carray.Carray_ivals[i]]
+		CdescL[i] = states_list[Carray.Carray_jvals[i]]
+		CdescR[i] = states_list[Carray.Carray_kvals[i]]
 	end
 	
 	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)

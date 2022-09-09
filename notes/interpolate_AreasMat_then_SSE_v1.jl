@@ -161,6 +161,11 @@ p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, 
 
 
 
+#######################################################
+# Now make dispersal events dependent on distance
+#######################################################
+
+
 
 #######################################################
 # Now make "e" events depend on "u"
