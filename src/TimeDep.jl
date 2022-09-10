@@ -152,7 +152,7 @@ function update_Qij_e_vals!(p)
 	# Update elist_t, i.e. the base_e_rate * multiplier on the base e rate (at time t)
 	#p = p_Ds_v10
 	#tval = 5.1
-	@inbounds @simd for i in 1:p.numareas
+	@inbounds @simd for i in 1:p.setup.numareas
 		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.u_e_row[i]]
 	end
 	# Update the Qmat, using elist_t
