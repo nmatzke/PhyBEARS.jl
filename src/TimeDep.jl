@@ -173,8 +173,12 @@ function update_Qij_e_vals!(p)
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.params.Qij_vals[p.p_indices.e_rows[i]] * p.setup.elist_t[area_lost][]
-		p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
-		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
+		# Slower
+		#p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
+		#p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
+		# v2:
+		p.params.Qij_vals[p.p_indices.e_rows[i]] .= p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ]
+		p.params.Qij_vals_t[p.p_indices.e_rows[i]] .= p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ]
 	end
 	
 	#return(p)
