@@ -176,7 +176,7 @@ function update_Qij_e_vals!(p)
 		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
 	end
 	
-	return(p)
+	#return(p)
 end # END function update_Qij_e_vals!(p)
 
 

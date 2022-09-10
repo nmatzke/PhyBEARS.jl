@@ -93,7 +93,7 @@ state_as_areas_list = [1,2]
 area_of_areas = area_of_areas_interpolator(tval)
 total_area = PhyBEARS.TimeDep.get_area_of_range(tval, state_as_areas_list, area_of_areas)
 
-get_areas_of_range_at_t = x -> get_area_of_range_using_interpolator(x, state_as_areas_list, area_of_areas_interpolator)
+get_areas_of_range_at_t = x -> PhyBEARS.TimeDep.get_area_of_range_using_interpolator(x, state_as_areas_list, area_of_areas_interpolator)
 tvals = seq(18.0, 23.0, 0.25)
 get_areas_of_range_at_t.(tvals)
 
@@ -176,7 +176,7 @@ inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo
 # Update elist_t, i.e. the multiplier on the base e rate (at time t)
 p = p_Ds_v10;
 tval = 5.1
-PhyBEARS.TimeDep.update_Qij_e_vals!(p, tval);
+PhyBEARS.TimeDep.update_Qij_e_vals!(p);
 p.params.Qij_vals_t
 p.setup.elist_t .= p.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
 
