@@ -384,6 +384,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "d"]
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
+	num_e_rows = length(e_rows)
 	
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
@@ -573,7 +574,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, max_extinction_rate=max_extinction_rate)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, num_e_rows=num_e_rows, u_row=u_row, u_e_row=u_e_row, u_mu_row=u_mu_row, max_extinction_rate=max_extinction_rate)
 	
 	# Inputs for time-varying parameter calculations
 	time_var = (u_row=u_row, max_extinction_rate=max_extinction_rate)

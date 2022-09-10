@@ -138,7 +138,7 @@ get_extinction_rate_multipliers.(tvals)
 function get_area_of_range_using_interpolator(tval, state_as_areas_list, area_of_areas_interpolator)
 	num_areas = length(state_as_areas_list)
 	total_area = 0.0
-	for i in 1:num_areas
+	@inbounds @simd for i in 1:num_areas
 		total_area += area_of_areas_interpolator(tval)[state_as_areas_list[i]]
 	end
 	return total_area
@@ -152,8 +152,9 @@ function update_Qij_e_vals!(p)
 	# Update elist_t, i.e. the base_e_rate * multiplier on the base e rate (at time t)
 	#p = p_Ds_v10
 	#tval = 5.1
-	p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas .^ p.bmo.est[p.setup.u_e_row]
-	
+	@inbounds @simd for i in 1:p.numareas
+		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.u_e_row[i]]
+	end
 	# Update the Qmat, using elist_t
 	#prtQp(p)
 	#Rnames(p.p_indices)
@@ -161,7 +162,7 @@ function update_Qij_e_vals!(p)
 	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
 	
 	
-	@inbounds @simd for i in 1:length(p.p_indices.e_rows)
+	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.p_indices.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.p_indices.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
