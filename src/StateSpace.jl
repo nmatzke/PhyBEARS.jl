@@ -704,16 +704,16 @@ function setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_eve
 	num_nonzero_rates = num_e_rates + num_d_rates + num_a_rates
 	
 	# Initialize empty arrays
-	Qarray_ivals = repeat([0], num_nonzero_rates)
-	Qarray_jvals = repeat([0], num_nonzero_rates)
-	Qij_vals =  repeat([0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
-	Qij_vals_t =  repeat([0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
+	Qarray_ivals = repeat(Int64[0], num_nonzero_rates)
+	Qarray_jvals = repeat(Int64[0], num_nonzero_rates)
+	Qij_vals =  repeat(Float64[0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
+	Qij_vals_t =  repeat(Float64[0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
 	                     # This is populated by calculating through the others
 	#base_vals = Array{Float64, num_nonzero_rates}  # base rates -- d, e, a
 	#mod_vals = Array{Float64, num_nonzero_rates}  # base modifiers -- e.g., "2" for AB -> ABC
 	#mult_vals = Array{Float64, num_nonzero_rates} # multipliers from mult_mat, e_mult 
 	# (ie modification by distance, area, etc.)
-	Qarray_event_types = repeat([""], num_nonzero_rates)
+	Qarray_event_types = repeat(String[""], num_nonzero_rates)
 	index = 0
 	
 	

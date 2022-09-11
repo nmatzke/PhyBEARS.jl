@@ -350,15 +350,15 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_val = bmo.est[bmo.rownames .== "a"][1]
 	j_val = bmo.est[bmo.rownames .== "j"][1]
 	
-	dmat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	jmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	dmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	amat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	amat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	elist_base = repeat([1.0], total_numareas)
-	elist = repeat([1.0], total_numareas)
-	elist_t = repeat([1.0], total_numareas)
-	area_of_areas = repeat([1.0], total_numareas)
+	dmat_base = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	jmat = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	dmat = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	amat_base = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	amat = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	elist_base = repeat(Float64[1.0], total_numareas)
+	elist = repeat(Float64[1.0], total_numareas)
+	elist_t = repeat(Float64[1.0], total_numareas)
+	area_of_areas = repeat(Float64[1.0], total_numareas)
 	
 	amat = a_val .* amat
 	dmat = d_val .* dmat
@@ -366,10 +366,10 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	elist = e_val .* elist
 	elist_t = 1.0 .* elist
 	dispersal_multipliers_mat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	distmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	envdistmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas)) 
-	distmat2 = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	distmat3 = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	distmat = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	envdistmat = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas)) 
+	distmat2 = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	distmat3 = reshape(repeat(Float64[1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	
 	
 	Qmat = setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_event_types=["d","e"])
@@ -385,11 +385,11 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
 	num_e_rows = length(e_rows)
-	losses_by_e_rows = repeat([0], length(e_rows))
+	losses_by_e_rows = repeat(Int64[0], length(e_rows))
 
 	# Pre-allocate area gained/lost
-	gains = repeat([[]], length(Qarray_event_types))
-	losses = repeat([[]], length(Qarray_event_types))
+	gains = repeat([Int64[]], length(Qarray_event_types))
+	losses = repeat([Int64[]], length(Qarray_event_types))
 	for i in 1:length(d_rows)
 		gains[d_rows[i]] = symdiff(states_list[Qarray_ivals[d_rows[i]]], states_list[Qarray_jvals[d_rows[i]]])
 	end
