@@ -385,7 +385,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
 	num_e_rows = length(e_rows)
-	
+	losses_by_e_rows = repeat([[]], length(e_rows))
+
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
 	losses = repeat([[]], length(Qarray_event_types))
@@ -393,8 +394,13 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		gains[d_rows[i]] = symdiff(states_list[Qarray_ivals[d_rows[i]]], states_list[Qarray_jvals[d_rows[i]]])
 	end
 	for i in 1:length(e_rows)
-		losses[e_rows[i]] = symdiff(states_list[Qarray_ivals[e_rows[i]]], states_list[Qarray_jvals[e_rows[i]]])
+		area_lost = symdiff(states_list[Qarray_ivals[e_rows[i]]], states_list[Qarray_jvals[e_rows[i]]])
+		losses[e_rows[i]] = area_lost
+		losses_by_e_rows[i] = area_lost
 	end
+
+		
+
 	# Events "a" are e.g. moving from area A to area B ("range-switching")
 	for i in 1:length(a_rows)
 		losses[a_rows[i]] = states_list[Qarray_ivals[d_rows[i]]]	# from = i
@@ -469,7 +475,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		CdescR[i] = states_list[Carray.Carray_kvals[i]]
 	end
 	
-	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)
+	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, d_rows=d_rows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, losses_by_e_rows=losses_by_e_rows, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types, y_rows=y_rows, s_rows=s_rows, v_rows=v_rows, j_rows=j_rows, Corig=Corig, Cgains=Cgains, CdescL=CdescL, CdescR=CdescR)
 
 	# True/False statements by index
 	# The calculation of dEi and dDi for state i involves many

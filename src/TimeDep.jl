@@ -152,9 +152,12 @@ function update_Qij_e_vals!(p)
 	# Update elist_t, i.e. the base_e_rate * multiplier on the base e rate (at time t)
 	#p = p_Ds_v10
 	#tval = 5.1
-	@inbounds @simd for i in 1:p.setup.numareas
-		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.u_e_row[i]]
-	end
+	#@inbounds @simd for i in 1:p.setup.numareas
+	#	p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.u_e_row[i]]
+	#end
+	
+	p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas.^p.bmo.est[p.setup.u_e_row]
+	
 	# Update the Qmat, using elist_t
 	#prtQp(p)
 	#Rnames(p.p_indices)
@@ -162,7 +165,7 @@ function update_Qij_e_vals!(p)
 	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
 	
 	
-	@inbounds @simd for i in 1:p.setup.num_e_rows
+#	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.p_indices.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.p_indices.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
@@ -178,8 +181,10 @@ function update_Qij_e_vals!(p)
 		#p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
 		# v2:
 		#p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ][1]
-		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ][1]
-	end
+#		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ][1]
+#	end
+	
+	p.params.Qij_vals_t[p.p_indices.e_rows] .= p.setup.elist_t[p.p_indices.losses_by_e_rows]
 	
 	#return(p)
 end # END function update_Qij_e_vals!(p)
