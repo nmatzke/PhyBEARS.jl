@@ -395,8 +395,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	end
 	for i in 1:length(e_rows)
 		area_lost = symdiff(states_list[Qarray_ivals[e_rows[i]]], states_list[Qarray_jvals[e_rows[i]]])
-		losses[e_rows[i]] = area_lost
-		losses_by_e_rows[i] = area_lost
+		losses[e_rows[i]] = area_lost  # Returns a list
+		losses_by_e_rows[i] = area_lost[1] # Returns an integer
 	end
 
 		
