@@ -385,7 +385,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
 	num_e_rows = length(e_rows)
-	losses_by_e_rows = repeat([[]], length(e_rows))
+	losses_by_e_rows = repeat([0], length(e_rows))
 
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
