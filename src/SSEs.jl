@@ -1039,7 +1039,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-  @inbounds @simd for i in 1:n
+  for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
   	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
   end
@@ -1055,7 +1055,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # Populate changing "e" with time
 	terms = Vector{Float64}(undef, 4)
 
-  @inbounds @simd for i in 1:n
+  for i in 1:n
 		terms .= 0.0
 
 		terms[1], terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
@@ -1084,7 +1084,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-  @inbounds @simd for i in 1:n
+  for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
   	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
   end
@@ -1104,7 +1104,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 #	uE = p.uE
 	uE = p.sol_Es_v10(t)
 	terms = Vector{Float64}(undef, 4)
-  @inbounds @simd for i in 1:n
+  for i in 1:n
 		terms .= 0.0
 
 		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
