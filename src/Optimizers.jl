@@ -1233,19 +1233,19 @@ function bmo_updater_v1(bmo)
 	
 	
 	# Update u_e and u_mu based on u?
-	type_eq_u_TF = bmo.type .== "u"
-	rownames_eq_u_e_TF = bmo.rownames .== "u_e"
-	rownames_eq_u_mu_TF = bmo.rownames .== "u_mu"
-	u_e_from_u_TF = type_eq_u_TF .+ rownames_eq_u_e_TF
-	if sum(u_e_from_u_TF) > 0.0
-		u = bmo.est[bmo.rownames .== "u"][1]
-		bmo.est[bmo.rownames .== "u_e"] .= u
-	end
-	u_mu_from_u_TF = type_eq_u_TF .+ rownames_eq_u_mu_TF
-	if sum(u_mu_from_u_TF) > 0.0
-		u = bmo.est[bmo.rownames .== "u"][1]
-		bmo.est[bmo.rownames .== "u_mu"] .= u
-	end
+# 	type_eq_u_TF = bmo.type .== "u"
+# 	rownames_eq_u_e_TF = bmo.rownames .== "u_e"
+# 	rownames_eq_u_mu_TF = bmo.rownames .== "u_mu"
+# 	u_e_from_u_TF = type_eq_u_TF .+ rownames_eq_u_e_TF
+# 	if sum(u_e_from_u_TF) > 0.0
+# 		u = bmo.est[bmo.rownames .== "u"][1]
+# 		bmo.est[bmo.rownames .== "u_e"] .= u
+# 	end
+# 	u_mu_from_u_TF = type_eq_u_TF .+ rownames_eq_u_mu_TF
+# 	if sum(u_mu_from_u_TF) > 0.0
+# 		u = bmo.est[bmo.rownames .== "u"][1]
+# 		bmo.est[bmo.rownames .== "u_mu"] .= u
+# 	end
 	
 	# Update mx01's based on mx01?
 	
