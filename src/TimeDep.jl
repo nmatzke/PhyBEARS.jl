@@ -139,7 +139,7 @@ function get_area_of_range_using_interpolator(tval, state_as_areas_list, area_of
 	num_areas = length(state_as_areas_list)
 	total_area = 0.0
 	#@inbounds @simd for i in 1:num_areas
-	for i in 1:num_areas
+	@inbounds for i in 1:num_areas
 		total_area += area_of_areas_interpolator(tval)[state_as_areas_list[i]]
 	end
 	return total_area
