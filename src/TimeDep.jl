@@ -147,7 +147,11 @@ end
 
 
 """
-Update 'u' based on time 't'
+# 1. Update parameter 'e' based on 'u' and time 't'
+# 2. Propagate that through the Q matrix, in the form of updating the Qij_vals
+
+# Adding:
+# Update the 'd' rates based on the distance between areas
 """
 function update_Qij_e_vals!(p)
 	# Update elist_t, i.e. the base_e_rate * multiplier on the base e rate (at time t)
@@ -203,6 +207,72 @@ function update_Qij_e_vals!(p)
 	
 	return(p)
 end # END function update_Qij_e_vals!(p)
+
+
+
+"""
+# 1. Update parameter 'd' based on a distance matrix (already determined for time 't')
+# 2. Propagate that through the Q matrix, in the form of updating the Qij_vals
+# (save multiple distance matrices for later)
+"""
+function update_Qij_d_vals!(p)
+	
+	# dmat: a numareas x numarea matrix, containing the total product of all the 
+	#       dispersal multipliers (time-dependent or not)
+	# initially: just based on distance
+	#p.setup.dmat_t .= p.setup.dmat_base .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x]
+
+	p.setup.dmat_t .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
+	#p.setup.amat_t .= p.setup.amat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
+	
+	# Update the Qmat, using elist_t
+	#prtQp(p)
+	#Rnames(p.p_indices)
+	# PRE-ALLOCATE THIS FOR SPEED
+	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
+	
+	p.params.Qij_vals[p.setup.d_rows] .= 0.0
+	p.params.Qij_vals_t[p.setup.d_rows] .= 0.0
+	@inbounds @simd for i in 1:length(p.setup.d_drows)
+		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
+		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
+		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
+		
+		# PRECALCULATE THE AREA THAT WAS LOST (AND GAINED)
+		# area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.setup.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.setup.e_rows[i]]])
+		#area_lost = p.setup.losses[p.setup.e_rows[i]] 
+		
+		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
+		p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.states_list[p.setup.d_froms[i]]
+		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.states_list[p.setup.d_froms[i]]
+	end
+	
+	
+#	@inbounds @simd for i in 1:p.setup.num_e_rows
+		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
+		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
+		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
+		
+		# PRECALCULATE THE AREA THAT WAS LOST (AND GAINED)
+		# area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.setup.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.setup.e_rows[i]]])
+		#area_lost = p.setup.losses[p.setup.e_rows[i]] 
+		
+		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
+		# Slower
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+		# v2:
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i]] ][1]
+#		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i]] ][1]
+#	end
+	
+#	p.params.Qij_vals_t[p.setup.e_rows] .= p.setup.elist_t[p.setup.losses_by_e_rows]
+	
+	return(p)
+end # END function update_Qij_d_vals!(p)
+
 
 
 end # END TimeDep

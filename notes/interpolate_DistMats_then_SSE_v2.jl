@@ -100,6 +100,43 @@ get_areas_of_range_at_t.(tvals)
 
 
 
+
+#######################################################
+# Distances interpolator for a series of distances
+#######################################################
+dists1 = [0.00 0.33 0.58 1.00;
+0.33 0.00 0.25 0.67;
+0.58 0.25 0.00 0.17;
+1.00 0.67 0.17 0.00];
+dists2 = [0.00 0.17 0.29 0.50;
+0.17 0.00 0.13 0.33;
+0.29 0.13 0.00 0.08;
+0.50 0.33 0.08 0.00];
+dists3 = [0.00 0.08 0.15 0.25;
+0.08 0.00 0.06 0.17;
+0.15 0.06 0.00 0.04;
+0.25 0.17 0.04 0.00];
+dists4 = [0.00 0.04 0.07 0.13;
+0.04 0.00 0.03 0.08;
+0.07 0.03 0.00 0.02;
+0.13 0.08 0.02 0.00];
+dists5 = [0.00 0.04 0.07 0.13;
+0.04 0.00 0.03 0.08;
+0.07 0.03 0.00 0.02;
+0.13 0.08 0.02 0.00];
+
+changing_distances = [dists1, dists2, dists3, dists4, dists5];
+
+times = [0.0, 1.5, 3.0, 5.5, 600];
+
+distances_interpolator = interpolate((times,), changing_distances, Gridded(Linear()));
+tvals = seq(0.0, 10, 1.0);
+distances_interpolator(tvals)
+
+
+
+
+
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
@@ -117,12 +154,12 @@ prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
 
 
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, bmo=bmo)
+p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, use_distances=true, bmo=bmo)
 Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
-@time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
+@time PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
 
 
 # Solve the Es
