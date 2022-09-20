@@ -175,8 +175,8 @@ function update_Qij_e_vals!(p)
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
-		p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
-		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
+		p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 	end
 	
 	
@@ -187,19 +187,19 @@ function update_Qij_e_vals!(p)
 		
 		# PRECALCULATE THE AREA THAT WAS LOST (AND GAINED)
 		# area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.setup.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.setup.e_rows[i]]])
-		#area_lost = p.p_indices.losses[p.setup.e_rows[i]] 
+		#area_lost = p.setup.losses[p.setup.e_rows[i]] 
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
 		# Slower
-		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
-		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 		# v2:
-		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i]] ][1]
-#		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i]] ][1]
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i]] ][1]
+#		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i]] ][1]
 #	end
 	
-#	p.params.Qij_vals_t[p.setup.e_rows] .= p.setup.elist_t[p.p_indices.losses_by_e_rows]
+#	p.params.Qij_vals_t[p.setup.e_rows] .= p.setup.elist_t[p.setup.losses_by_e_rows]
 	
 	return(p)
 end # END function update_Qij_e_vals!(p)
