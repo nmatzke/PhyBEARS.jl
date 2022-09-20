@@ -138,7 +138,8 @@ get_extinction_rate_multipliers.(tvals)
 function get_area_of_range_using_interpolator(tval, state_as_areas_list, area_of_areas_interpolator)
 	num_areas = length(state_as_areas_list)
 	total_area = 0.0
-	@inbounds @simd for i in 1:num_areas
+	#@inbounds @simd for i in 1:num_areas
+	for i in 1:num_areas
 		total_area += area_of_areas_interpolator(tval)[state_as_areas_list[i]]
 	end
 	return total_area
@@ -200,7 +201,7 @@ function update_Qij_e_vals!(p)
 	
 #	p.params.Qij_vals_t[p.p_indices.e_rows] .= p.setup.elist_t[p.p_indices.losses_by_e_rows]
 	
-	#return(p)
+	return(p)
 end # END function update_Qij_e_vals!(p)
 
 
