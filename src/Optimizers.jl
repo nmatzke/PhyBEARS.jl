@@ -23,7 +23,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c
 
 
 
@@ -1252,6 +1252,57 @@ function bmo_updater_v1(bmo)
 	
 	return bmo.est
 end # END bmo_updater_v1
+
+
+
+function bmo_updater_v2(bmo, bmo_rows)
+	# Update cladogenesis parameters
+	j_wt = bmo.est[bmo_rows.j][1]
+	ysv = bmo.est[bmo_rows.ysv][1]
+	ys = bmo.est[bmo_rows.ys][1]
+	y = bmo.est[bmo_rows.y][1]
+	s = bmo.est[bmo_rows.s][1]
+	v = bmo.est[bmo_rows.v][1]
+	
+	# Update
+	ysv_func = bmo.type[bmo_rows.ysv][1]
+	if ysv_func == "3-j"
+		ysv = 3-j_wt
+	end
+	if ysv_func == "2-j"
+		ysv = 2-j_wt
+	end
+	if ysv_func == "1-j"
+		ysv = 1-j_wt
+	end
+	
+	ys = ysv*2/3
+	y = ysv*1/3
+	s = ysv*1/3
+	v = ysv*1/3
+	
+	bmo.est[bmo_rows.ysv] .= ysv
+	bmo.est[bmo_rows.ys] .= ys
+	bmo.est[bmo_rows.y] .= y
+	bmo.est[bmo_rows.s] .= s
+	bmo.est[bmo_rows.v] .= v
+
+	# Does this make it slower?? YES, 2x slowdown!
+	# Update u_e and u_mu based on u?
+	if bmo.type[bmo_rows.u_e] == "u"
+		#u = bmo.est[bmo_rows.u]
+		#bmo.est[bmo_rows.u_e] = u
+		bmo.est[bmo_rows.u_e] = bmo.est[bmo_rows.u]
+	end
+	if bmo.type[bmo_rows.u_mu] == "u"
+		#u = bmo.est[bmo_rows.u]
+		#bmo.est[bmo_rows.u_mu] = u
+		bmo.est[bmo_rows.u_mu] = bmo.est[bmo_rows.u_mu]
+	end	
+	# Update mx01's based on mx01?
+	
+	return bmo.est
+end # END bmo_updater_v2
 
 
 

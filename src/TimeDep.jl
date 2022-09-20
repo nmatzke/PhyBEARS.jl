@@ -157,7 +157,7 @@ function update_Qij_e_vals!(p)
 	#	p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.u_e_row[i]]
 	#end
 	
-	p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas.^p.bmo.est[p.setup.u_e_row]
+	p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas.^p.bmo.est[p.setup.bmo_rows.u_e]
 	
 	# Update the Qmat, using elist_t
 	#prtQp(p)
