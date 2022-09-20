@@ -164,7 +164,7 @@ function update_Qij_e_vals!(p)
 	#Rnames(p.p_indices)
 	# PRE-ALLOCATE THIS FOR SPEED
 	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
-	@inbounds @simd for i in 1:length(p.p_indices.e_rows)
+	@inbounds @simd for i in 1:length(p.setup.e_rows)
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
@@ -175,31 +175,31 @@ function update_Qij_e_vals!(p)
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
-		p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
-		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
+		p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
+		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
 	end
 	
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows
-		#starting_statenum = p.p_indices.Qarray_ivals[p.p_indices.e_rows[i]]
-		#ending_statenum = p.p_indices.Qarray_jvals[p.p_indices.e_rows[i]]
+		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
+		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
 		
 		# PRECALCULATE THE AREA THAT WAS LOST (AND GAINED)
-		# area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.p_indices.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.p_indices.e_rows[i]]])
-		#area_lost = p.p_indices.losses[p.p_indices.e_rows[i]] 
+		# area_lost = symdiff(p.setup.states_list[p.p_indices.Qarray_ivals[p.setup.e_rows[i]]], p.setup.states_list[p.p_indices.Qarray_jvals[p.setup.e_rows[i]]])
+		#area_lost = p.p_indices.losses[p.setup.e_rows[i]] 
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
-		#p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.params.Qij_vals[p.p_indices.e_rows[i]] * p.setup.elist_t[area_lost][]
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
 		# Slower
-		#p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
-		#p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i][1]] ][1]
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
+		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i][1]] ][1]
 		# v2:
-		#p.params.Qij_vals[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ][1]
-#		p.params.Qij_vals_t[p.p_indices.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.p_indices.e_rows[i]] ][1]
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i]] ][1]
+#		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.p_indices.losses[p.setup.e_rows[i]] ][1]
 #	end
 	
-#	p.params.Qij_vals_t[p.p_indices.e_rows] .= p.setup.elist_t[p.p_indices.losses_by_e_rows]
+#	p.params.Qij_vals_t[p.setup.e_rows] .= p.setup.elist_t[p.p_indices.losses_by_e_rows]
 	
 	return(p)
 end # END function update_Qij_e_vals!(p)
