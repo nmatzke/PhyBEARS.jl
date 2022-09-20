@@ -1039,7 +1039,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-  for i in 1:n
+  @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
   	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
   end
@@ -1084,7 +1084,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   mu_t = p.params.mu_t_vals # mu_t = mu at time t
   
   # Populate changing mus with time
-  for i in 1:n
+  @inbounds @simd for i in 1:n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
   	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.u_mu_row]
   end
