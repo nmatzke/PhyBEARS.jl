@@ -844,6 +844,7 @@ function setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_eve
 	Qarray_ivals = Qarray_ivals[keepTF]
 	Qarray_jvals = Qarray_jvals[keepTF]
 	Qij_vals = Qij_vals[keepTF]
+	Qij_vals_t = Qij_vals_t[keepTF]
 	Qarray_event_types = Qarray_event_types[keepTF]
 	
 	# Return results
