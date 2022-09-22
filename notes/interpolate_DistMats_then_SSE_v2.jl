@@ -179,13 +179,15 @@ t=0.3
 p.setup.distmat .= distances_interpolator(t)
 
 	p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
-
+p.params.Qij_vals
 p.params.Qij_vals_t
 
 
-
-
-@time PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
+t=0.0
+p.setup.distmat .= distances_interpolator(t)
+PhyBEARS.TimeDep.update_Qij_d_vals!(p);
+p.params.Qij_vals[1:5]
+p.params.Qij_vals_t[1:5]
 
 
 # Solve the Es
