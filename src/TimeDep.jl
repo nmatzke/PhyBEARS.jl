@@ -163,7 +163,7 @@ function update_Qij_e_vals!(p)
 	
 	#p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas.^p.bmo.est[p.setup.bmo_rows.u_e]
 	@inbounds @simd for i in 1:length(p.setup.elist_t)
-		p.setup.elist_t[i] = p.setup.elist_base * p.setup.area_of_areas^p.bmo.est[p.setup.bmo_rows.u_e]
+		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
 	end
 	
 	
