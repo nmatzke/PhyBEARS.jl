@@ -161,6 +161,15 @@ prtCp(p_Es_v10)
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
 
 p = p_Es_v10;
+
+
+p.params.Qij_vals
+p.params.Qij_vals_t
+PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
+p.params.Qij_vals
+p.params.Qij_vals_t
+
+
 @time PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
 
 
