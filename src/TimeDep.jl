@@ -179,7 +179,7 @@ function update_Qij_e_vals!(p)
 		
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
-		p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 	end
 	
@@ -232,7 +232,7 @@ function update_Qij_d_vals!(p)
 	# PRE-ALLOCATE THIS FOR SPEED
 	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
 	
-	p.params.Qij_vals[p.setup.d_rows] .= 0.0
+	#p.params.Qij_vals[p.setup.d_rows] .= 0.0
 	p.params.Qij_vals_t[p.setup.d_rows] .= 0.0
 	@inbounds @simd for i in 1:length(p.setup.d_drows)
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
@@ -249,7 +249,7 @@ function update_Qij_d_vals!(p)
 		# area moving from: p.setup.d_froms[i]
 		# area moving to: p.setup.d_tos[i]
 		
-		p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
+		#p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 	end
 	

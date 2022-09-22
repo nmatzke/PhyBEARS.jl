@@ -36,6 +36,7 @@ bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
 bmo.est[bmo.rownames .== "u"] .= 1.0
+bmo.est[bmo.rownames .== "x"] .= -1.0
 bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
@@ -143,6 +144,10 @@ inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
+p_Es_v5.params.Qij_vals
+p_Es_v5.params.Qij_vals_t
+
+
 prtCp(p_Es_v5)
 
 # Problem: this simulation allowed null-range speciation (null->null, null or 000->000,000)
@@ -168,6 +173,16 @@ p.params.Qij_vals_t
 PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
 p.params.Qij_vals
 p.params.Qij_vals_t
+
+
+t=0.3
+p.setup.distmat .= distances_interpolator(t)
+
+	p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
+
+p.params.Qij_vals_t
+
+
 
 
 @time PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
