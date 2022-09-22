@@ -1054,7 +1054,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
-  p.setup.distmat = p.distances_interpolator(t)
+  p.setup.distmat .= p.distances_interpolator(t)
   # ...others?
   
   # Using the current t's distmat, etc. update the dmat, then 
@@ -1111,7 +1111,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
   # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
-  p.setup.distmat = p.distances_interpolator(t)
+  p.setup.distmat .= p.distances_interpolator(t)
   # ...others?
   
   # Using the current t's distmat, etc. update the dmat, then 
