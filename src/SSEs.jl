@@ -1052,10 +1052,20 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # (updates p.params.Qij_vals)
   
   
+  # Get the d_vals for the Qij matrix, at time t
+  # 1. Update the distance matrices etc.
+  p.setup.distmat = distances_interpolator(t)
+  # ...others?
+  
+  # Using the current t's distmat, etc. update the dmat, then 
+  # propagate through the 
+  update_Qij_d_vals!(p)
+  
+  
   # Populate changing "e" with time
 	terms = Vector{Float64}(undef, 4)
 
-  for i in 1:n
+  @inbounds for i in 1:n
 		terms .= 0.0
 
 		terms[1], terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
@@ -1098,13 +1108,24 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
 
+
+  # Get the d_vals for the Qij matrix, at time t
+  # 1. Update the distance matrices etc.
+  p.setup.distmat = distances_interpolator(t)
+  # ...others?
+  
+  # Using the current t's distmat, etc. update the dmat, then 
+  # propagate through the 
+  update_Qij_d_vals!(p)
+  
+
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
 #	uE = p.uE
 	uE = p.sol_Es_v10(t)
 	terms = Vector{Float64}(undef, 4)
-  for i in 1:n
+  @inbounds for i in 1:n
 		terms .= 0.0
 
 		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
