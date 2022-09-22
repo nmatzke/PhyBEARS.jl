@@ -566,7 +566,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		ending_area = gains[d_rows[i]]
 		for j in 1:length(starting_areas)
 			push!(d_froms, starting_areas[j])
-			push!(d_tos, ending_area)
+			push!(d_tos, ending_area[1])
 			push!(d_drows, d_rows[i])
 		end
 	end
