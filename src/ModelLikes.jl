@@ -510,7 +510,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
 	Qi_sub_i = Vector{Vector{Int64}}(undef, n)
 	Qj_sub_i = Vector{Vector{Int64}}(undef, n)
-	Qij_vals_sub_i = Vector{Vector{Int64}}(undef, n)
+	Qij_vals_sub_i = Vector{Vector{Float64}}(undef, n)
 
 	Ci_sub_i = Vector{Vector{Int64}}(undef, n)
 	Cj_sub_i = Vector{Vector{Int64}}(undef, n)
