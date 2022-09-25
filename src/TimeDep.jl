@@ -19,7 +19,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, update_elist_t!, Qij_e_vals_t!(p), Qij_d_vals_t!(p), update_dmat!
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, update_elist_t!, Qij_e_vals_t!, Qij_d_vals_t!, update_dmat!
 
 
 """
