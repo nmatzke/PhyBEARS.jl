@@ -468,6 +468,42 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# 10+ times speed improvement (!)
 
 	# These are lists of TFs for anc==i
+# 	Qi_eq_i = Any[] 
+# 	Ci_eq_i = Any[]
+
+	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
+# 	Qi_sub_i = Any[]
+# 	Qj_sub_i = Any[]
+# 	Qij_vals_sub_i = Any[]
+# 
+# 	Ci_sub_i = Any[]
+# 	Cj_sub_i = Any[]
+# 	Ck_sub_i = Any[]
+# 	Cijk_not_y_sub_i = Any[]
+# 	Cijk_pair_sub_i = Any[]
+# 	Cijk_rates_sub_i = Any[]
+# 	
+
+	# Set up the p_TFs & subs (where anc==i)
+	# The push! operation may get slow at huge n
+# 	for i in 1:n
+# 		push!(Qi_eq_i, Qmat.Qarray_ivals .== i)									# list of TF lists for anc==i
+# 		push!(Qi_sub_i, Qmat.Qarray_ivals[Qarray_ivals .== i])	# list of i's lists for anc==i
+# 		push!(Qj_sub_i, Qmat.Qarray_jvals[Qarray_ivals .== i])	# list of j's lists for anc==i
+# 		push!(Qij_vals_sub_i, Qmat.Qij_vals[Qarray_ivals .== i])	# list of Qij rates lists for anc==i
+# 
+# 		push!(Ci_eq_i, Carray.Carray_ivals .== i)								# list of TF lists for anc==i
+# 		push!(Ci_sub_i, Carray.Carray_ivals[Carray.Carray_ivals .== i]) # list of i's lists for anc==i
+# 		push!(Cj_sub_i, Carray.Carray_jvals[Carray.Carray_ivals .== i]) # list of j's lists for anc==i
+# 		push!(Ck_sub_i, Carray.Carray_kvals[Carray.Carray_ivals .== i]) # list of k's lists for anc==i
+# 		push!(Cijk_not_y_sub_i, Carray.Carray_event_types[Carray.Carray_ivals .== i] .!= "y")	# gives true if not "y"
+# 		push!(Cijk_pair_sub_i, Carray.Carray_pair[Carray.Carray_ivals .== i])	# list of Cijk rates lists for anc==i
+# 		push!(Cijk_rates_sub_i, Carray.Cijk_rates[Carray.Carray_ivals .== i])	# list of Cijk rates lists for anc==i
+# 	end
+
+
+
+	# These are lists of TFs for anc==i
 	Qi_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
 	Ci_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
 
@@ -487,19 +523,21 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Set up the p_TFs & subs (where anc==i)
 	# The push! operation may get slow at huge n
 	for i in 1:n
-		Qi_eq_i[i] .= Qmat.Qarray_ivals .== i											# list of TF lists for anc==i
-		Qi_sub_i[i] .= Qmat.Qarray_ivals[Qarray_ivals .== i]		# list of i's lists for anc==i
-		Qj_sub_i[i] .= Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
-		Qij_vals_sub_i[i] .= Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
+		Qi_eq_i[i] = Qmat.Qarray_ivals .== i											# list of TF lists for anc==i
+		Qi_sub_i[i] = Qmat.Qarray_ivals[Qarray_ivals .== i]		# list of i's lists for anc==i
+		Qj_sub_i[i] = Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
+		Qij_vals_sub_i[i] = Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
 
-		Ci_eq_i[i] .= Carray.Carray_ivals .== i													# list of TF lists for anc==i
-		Ci_sub_i[i] .= Carray.Carray_ivals[Carray.Carray_ivals .== i]		# list of i's lists for anc==i
-		Cj_sub_i[i] .= Carray.Carray_jvals[Carray.Carray_ivals .== i]		# list of j's lists for anc==i
-		Ck_sub_i[i] .= Carray.Carray_kvals[Carray.Carray_ivals .== i]		# list of k's lists for anc==i
-		Cijk_not_y_sub_i[i] .= Carray.Carray_event_types[Carray.Carray_ivals .== i] .!= "y"	# gives true if not "y"
-		Cijk_pair_sub_i[i] .= Carray.Carray_pair[Carray.Carray_ivals .== i]		# list of Cijk rates lists for anc==i
-		Cijk_rates_sub_i[i] .= Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
+		Ci_eq_i[i] = Carray.Carray_ivals .== i													# list of TF lists for anc==i
+		Ci_sub_i[i] = Carray.Carray_ivals[Carray.Carray_ivals .== i]		# list of i's lists for anc==i
+		Cj_sub_i[i] = Carray.Carray_jvals[Carray.Carray_ivals .== i]		# list of j's lists for anc==i
+		Ck_sub_i[i] = Carray.Carray_kvals[Carray.Carray_ivals .== i]		# list of k's lists for anc==i
+		Cijk_not_y_sub_i[i] = Carray.Carray_event_types[Carray.Carray_ivals .== i] .!= "y"	# gives true if not "y"
+		Cijk_pair_sub_i[i] = Carray.Carray_pair[Carray.Carray_ivals .== i]		# list of Cijk rates lists for anc==i
+		Cijk_rates_sub_i[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
 	end
+
+
 	
 	# Convert the pair of indices into single-number indices of matrix A
 	# Matrix indexes go down the columns first, then rows
