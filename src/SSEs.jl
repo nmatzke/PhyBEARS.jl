@@ -1057,7 +1057,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   p.setup.distmat .= p.distances_interpolator(t)
   # ...others?
   
-  # Using the current t's distmat, etc. update the dmat, then 
+  # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the 
   update_Qij_d_vals!(p)
   

@@ -19,7 +19,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, update_elist_t!, Qij_e_vals_t!, Qij_d_vals_t!, update_dmat!
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, get_jmat_at_time_t, update_Cijk_j_vals_t, update_Cijk_j_vals
 
 
 """
@@ -163,7 +163,7 @@ function update_Qij_e_vals!(p)
 #	@inbounds @simd for i in 1:length(p.setup.elist_t)
 #		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
 #	end
-	update_elist_t!(p)
+	get_elist_at_time_t!(p)
 	
 	# Update the Qmat, using elist_t
 	#prtQp(p)
@@ -184,7 +184,7 @@ function update_Qij_e_vals!(p)
 		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 #		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 #	end
-	Qij_e_vals_t!(p)
+	update_Qij_e_vals_t!(p)
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
@@ -211,32 +211,60 @@ function update_Qij_e_vals!(p)
 end # END function update_Qij_e_vals!(p)
 
 
-function update_elist_t!(p)
+function get_elist_at_time_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.elist_t)
 		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
 	end
 end
 
-function Qij_e_vals_t!(p)
+function update_Qij_e_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.e_rows)
 		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
 	end
 end
 
-function Qij_d_vals_t!(p)
+function get_dmat_at_time_t_t!(p)
+	@inbounds @simd for i in 1:length(p.setup.dmat_t)
+		p.setup.dmat_t[i] = p.setup.dmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
+	end
+end
+
+function update_Qij_d_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.d_drows)
-		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
+		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 	end
 end
 
-
-function update_dmat!(p)
-	@inbounds @simd for i in 1:length(p.setup.dmat)
-		p.setup.dmat[i] = p.setup.dmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
+# 2022-09-26:
+# 
+# Update jmat_t, modifying jmat_base (which will typically be 1s)
+# NOTE CAREFULLY: IN v10, jmat_t will modify the "val" of Cmat, i.e. the rate of
+# jump dispersal as set AFTER the j_wt has been converted to a rate.
+#
+# This will match BioGeoBEARS in the default case, but not necessarily with
+# changing distances etc.
+# 
+# (There is no other way to do it, any other method would require re-doing the j_wt-to-rates
+#  calculation in each timestep t)
+#
+# (This will mean the meaning of j_wt is complex, but then it always was!)
+function get_jmat_at_time_t!(p)
+	@inbounds @simd for i in 1:length(p.setup.jmat_t)
+		p.setup.jmat_t[i] = p.setup.jmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
 	end
 end
 
+function update_Cijk_j_vals_t!(p)
+	@inbounds @simd for i in 1:length(p.setup.j_jrows)
+		p.params.Cijk_vals_t[p.setup.j_jrows[i]] += p.setup.dmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
+	end	
+end
 
+function update_Cijk_j_vals!(p)
+	get_jmat_at_time_t!(p)
+	p.params.Cijk_vals_t[p.setup.d_rows] .= 0.0
+	update_Cijk_j_vals_t!(p)
+end
 
 """
 # 1. Update parameter 'd' based on a distance matrix (already determined for time 't')
@@ -254,7 +282,7 @@ function update_Qij_d_vals!(p)
 	#p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
 	#p.setup.dmat .= 0.0
-	update_dmat!(p)
+	get_dmat_at_time_t_t!(p)
 	
 	#p.setup.amat_t .= p.setup.amat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
@@ -284,7 +312,7 @@ function update_Qij_d_vals!(p)
 		#p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 	#	p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 	#end
-	Qij_d_vals_t!(p)
+	update_Qij_d_vals_t!(p)
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]

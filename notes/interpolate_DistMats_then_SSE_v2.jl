@@ -42,7 +42,7 @@ bmo.est .= bmo_updater_v1(bmo);
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
-
+p = p_Ds_v5
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-12;

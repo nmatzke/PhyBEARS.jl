@@ -365,11 +365,14 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	j_val = bmo.est[bmo.rownames .== "j"][1]
 	
 	dmat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	jmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	jmat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	jmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	jmat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	amat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	amat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	amat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	elist_base = repeat([1.0], total_numareas)
 	elist = repeat([1.0], total_numareas)
 	elist_t = repeat([1.0], total_numareas)
@@ -377,7 +380,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	amat = a_val .* amat
 	dmat = d_val .* dmat
+	#dmat_ = d_val .* dmat
 	jmat = jmat .* dmat
+	#jmat_t = jmat .* dmat
 	elist = e_val .* elist
 	elist_t = 1.0 .* elist
 	dispersal_multipliers_mat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
@@ -399,6 +404,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "d"]
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
+	j_rows = (1:length(Carray_event_types))[Carray_event_types .== "j"]
 	
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
@@ -596,9 +602,11 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	statenums = collect(1:numstates)
 	observed_statenums = collect(repeat([0], numtips))
 	
-	d_froms = Any[]
-	d_tos = Any[]
-	d_drows = Any[]
+	# The _froms and _tos are Vectors of Ints, i.e. starting and ending area numbers
+	# (they are NOT in lists; this is to avoid loops-within-loops)
+	d_froms = Vector{Float64}(undef, 0)
+	d_tos = Vector{Float64}(undef, 0)
+	d_drows = Vector{Float64}(undef, 0)
 	for i in 1:length(d_rows)
 		starting_areas = states_list[Qarray_ivals[d_rows[i]]]
 		ending_area = gains[d_rows[i]]
@@ -608,9 +616,24 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 			push!(d_drows, d_rows[i])
 		end
 	end
+
+	j_froms = Vector{Float64}(undef, 0)
+	j_tos = Vector{Float64}(undef, 0)
+	j_jrows = Vector{Float64}(undef, 0)
+	for i in 1:length(j_rows)
+		starting_areas = states_list[Carray_ivals[j_rows[i]]]
+		#ending_area = gains[j_rows[i]]
+		ending_area = states_list[Carray_kvals[j_rows[i]]]
+		for j in 1:length(starting_areas)
+			push!(j_froms, starting_areas[j])
+			push!(j_tos, ending_area[1])
+			push!(j_jrows, j_rows[i])
+		end
+	end
+
 	
 	
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat_t=dmat_t, amat_base=amat_base, dmat=dmat, amat=amat, jmat=jmat, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, max_extinction_rate=max_extinction_rate)
+	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, max_extinction_rate=max_extinction_rate)
 	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)
