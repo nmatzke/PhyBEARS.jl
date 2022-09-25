@@ -95,7 +95,7 @@ get_extinction_rate_multipliers.(tvals)
 function get_area_of_range(tval, state_as_areas_list, area_of_areas)
 	num_areas = length(state_as_areas_list)
 	total_area = 0.0
-	@simd @inbounds for i in 1:num_areas
+	@inbounds @simd for i in 1:num_areas
 		total_area += area_of_areas[state_as_areas_list[i]]
 	end
 	return total_area
