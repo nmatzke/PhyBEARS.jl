@@ -19,9 +19,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!
-
-
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, update_elist_t!, Qij_e_vals_t!(p), Qij_d_vals_t!(p), update_dmat!
 
 
 """
@@ -97,7 +95,7 @@ get_extinction_rate_multipliers.(tvals)
 function get_area_of_range(tval, state_as_areas_list, area_of_areas)
 	num_areas = length(state_as_areas_list)
 	total_area = 0.0
-	for i in 1:num_areas
+	@simd @inbounds for i in 1:num_areas
 		total_area += area_of_areas[state_as_areas_list[i]]
 	end
 	return total_area
@@ -162,17 +160,17 @@ function update_Qij_e_vals!(p)
 	#end
 	
 	#p.setup.elist_t .= p.setup.elist_base .* p.setup.area_of_areas.^p.bmo.est[p.setup.bmo_rows.u_e]
-	@inbounds @simd for i in 1:length(p.setup.elist_t)
-		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
-	end
-	
+#	@simd @inbounds for i in 1:length(p.setup.elist_t)
+#		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
+#	end
+	update_elist_t!(p)
 	
 	# Update the Qmat, using elist_t
 	#prtQp(p)
 	#Rnames(p.p_indices)
 	# PRE-ALLOCATE THIS FOR SPEED
 	#e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
-	@inbounds @simd for i in 1:length(p.setup.e_rows)
+#	@simd @inbounds for i in 1:length(p.setup.e_rows)
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
@@ -184,9 +182,9 @@ function update_Qij_e_vals!(p)
 		# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
 		#p.params.Qij_vals_t[p.setup.e_rows[i]] = p.params.Qij_vals[p.setup.e_rows[i]] * p.setup.elist_t[area_lost][]
 		#p.params.Qij_vals[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
-		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
-	end
-	
+#		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+#	end
+	Qij_e_vals_t!(p)
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
@@ -213,6 +211,32 @@ function update_Qij_e_vals!(p)
 end # END function update_Qij_e_vals!(p)
 
 
+function update_elist_t!(p)
+	@simd @inbounds for i in 1:length(p.setup.elist_t)
+		p.setup.elist_t[i] = p.setup.elist_base[i] * p.setup.area_of_areas[i]^p.bmo.est[p.setup.bmo_rows.u_e]
+	end
+end
+
+function Qij_e_vals_t!(p)
+	@simd @inbounds for i in 1:length(p.setup.e_rows)
+		p.params.Qij_vals_t[p.setup.e_rows[i]] = p.setup.elist_t[p.setup.losses[p.setup.e_rows[i][1]] ][1]
+	end
+end
+
+function Qij_d_vals_t!(p)
+	@simd @inbounds for i in 1:length(p.setup.d_drows)
+		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
+	end
+end
+
+
+function update_dmat!(p)
+	@simd @inbounds for i in 1:length(p.setup.dmat)
+		p.setup.dmat[i] = p.setup.dmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
+	end
+end
+
+
 
 """
 # 1. Update parameter 'd' based on a distance matrix (already determined for time 't')
@@ -230,9 +254,7 @@ function update_Qij_d_vals!(p)
 	#p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
 	#p.setup.dmat .= 0.0
-	@inbounds @simd for i in 1:length(p.setup.dmat)
-		p.setup.dmat[i] = p.setup.dmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
-	end
+	update_dmat!(p)
 	
 	#p.setup.amat_t .= p.setup.amat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
@@ -244,7 +266,7 @@ function update_Qij_d_vals!(p)
 	
 	#p.params.Qij_vals[p.setup.d_rows] .= 0.0
 	p.params.Qij_vals_t[p.setup.d_rows] .= 0.0
-	@inbounds @simd for i in 1:length(p.setup.d_drows)
+	#@simd @inbounds for i in 1:length(p.setup.d_drows)
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
 		#ending_statenum = p.p_indices.Qarray_jvals[p.setup.e_rows[i]]
 		#area_lost = symdiff(p.setup.states_list[starting_statenum], p.setup.states_list[ending_statenum])
@@ -260,9 +282,9 @@ function update_Qij_d_vals!(p)
 		# area moving to: p.setup.d_tos[i]
 		
 		#p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
-		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
-	end
-	
+	#	p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
+	#end
+	Qij_d_vals_t!(p)
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows
 		#starting_statenum = p.p_indices.Qarray_ivals[p.setup.e_rows[i]]
