@@ -1048,7 +1048,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Get the e_vals for the Qij matrix, at time t
-  update_Qij_e_vals!(p)
+  #update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
   
   
@@ -1059,11 +1059,11 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
-  update_Qij_d_vals!(p)
+  #update_Qij_d_vals!(p)
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_rates!(p)
+  #update_Cijk_j_rates!(p)
   
   # Populate changing "e" with time
 	#terms = Vector{Float64}(undef, 4)
@@ -1074,7 +1074,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 	
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
