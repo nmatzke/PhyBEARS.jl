@@ -263,7 +263,7 @@ end
 function update_Cijk_j_rates!(p)
 	get_jmat_at_time_t!(p)
 	p.params.Cijk_rates_t[p.setup.d_rows] .= 0.0
-	Cijk_rates_t!(p)
+	update_Cijk_j_rates_t!(p)
 	
 	# Update the Cijk_rates_sub_i_t (where anc==i)
 	@inbounds for i in 1:length(states_list)
