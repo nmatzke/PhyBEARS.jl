@@ -1063,7 +1063,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_vals!(p)
+  update_Cijk_j_rates!(p)
   
   # Populate changing "e" with time
 	#terms = Vector{Float64}(undef, 4)
@@ -1123,7 +1123,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_vals!(p)
+  update_Cijk_j_rates!(p)
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
