@@ -1262,7 +1262,7 @@ parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end
 
