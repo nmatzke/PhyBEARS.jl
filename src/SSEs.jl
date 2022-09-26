@@ -1063,20 +1063,20 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_vals!
+  update_Cijk_j_vals!(p)
   
   # Populate changing "e" with time
-	terms = Vector{Float64}(undef, 4)
+	#terms = Vector{Float64}(undef, 4)
 
   @inbounds for i in 1:n
-		terms .= 0.0
+		p.terms .= 0.0
 
-		terms[1], terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 	
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = mu_t[i] -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
+		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end
 
@@ -1121,23 +1121,25 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # propagate through the 
   update_Qij_d_vals!(p)
   
-
+  # Using the current t's distmat, etc. update the jmat_t, then
+  # propagate through the C matrix
+  update_Cijk_j_vals!(p)
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
 #	uE = p.uE
 	uE = p.sol_Es_v10(t)
-	terms = Vector{Float64}(undef, 4)
+	#terms = Vector{Float64}(undef, 4)
   @inbounds for i in 1:n
-		terms .= 0.0
+		p.terms .= 0.0
 
-		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 		
 		# Is this the slow step?? -- NO!
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = -(terms[1] + terms[2] + mu_t[i])*u[i] + terms[3] + terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end
 
