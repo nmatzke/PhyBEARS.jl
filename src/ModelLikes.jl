@@ -625,9 +625,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	j_tos = Vector{Float64}(undef, 0)
 	j_jrows = Vector{Float64}(undef, 0)
 	for i in 1:length(j_rows)
-		starting_areas = states_list[Carray_ivals[j_rows[i]]]
+		starting_areas = states_list[Carray.Carray_ivals[j_rows[i]]]
 		#ending_area = gains[j_rows[i]]
-		ending_area = states_list[Carray_kvals[j_rows[i]]]
+		ending_area = states_list[Carray.Carray_kvals[j_rows[i]]]
 		for j in 1:length(starting_areas)
 			push!(j_froms, starting_areas[j])
 			push!(j_tos, ending_area[1])
