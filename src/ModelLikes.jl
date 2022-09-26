@@ -608,9 +608,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	# The _froms and _tos are Vectors of Ints, i.e. starting and ending area numbers
 	# (they are NOT in lists; this is to avoid loops-within-loops)
-	d_froms = Vector{Float64}(undef, 0)
-	d_tos = Vector{Float64}(undef, 0)
-	d_drows = Vector{Float64}(undef, 0)
+	d_froms = Vector{Int64}(undef, 0)
+	d_tos = Vector{Int64}(undef, 0)
+	d_drows = Vector{Int64}(undef, 0)
 	for i in 1:length(d_rows)
 		starting_areas = states_list[Qarray_ivals[d_rows[i]]]
 		ending_area = gains[d_rows[i]]
@@ -621,9 +621,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		end
 	end
 
-	j_froms = Vector{Float64}(undef, 0)
-	j_tos = Vector{Float64}(undef, 0)
-	j_jrows = Vector{Float64}(undef, 0)
+	j_froms = Vector{Int64}(undef, 0)
+	j_tos = Vector{Int64}(undef, 0)
+	j_jrows = Vector{Int64}(undef, 0)
 	for i in 1:length(j_rows)
 		starting_areas = states_list[Carray.Carray_ivals[j_rows[i]]]
 		#ending_area = gains[j_rows[i]]
