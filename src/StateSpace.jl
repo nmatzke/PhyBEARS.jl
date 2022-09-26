@@ -135,6 +135,10 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	prepend!(p_Es_v5.params.Cijk_rates_t, 0.0 * birthRate)
 	p_Es_v5.params.row_weightvals[1] = 1.0
 
+	# You also have to add 1 to j_rows and j_jrows (because everything moved up 1 position)
+	p_Es_v5.setup.j_rows = p_Es_v5.setup.j_rows .+ 1
+	p_Es_v5.setup.j_jrows = p_Es_v5.setup.j_jrows .+ 1
+
 	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
 		if i == 1
 			prepend!(p_Es_v5.p_TFs.Ci_eq_i[i], Bool[1]) # state 1 is "true" (1) for row 1 of the Carray
@@ -147,6 +151,7 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	p_Es_v5.p_TFs.Ck_sub_i[1] = [1]
 	p_Es_v5.p_TFs.Cijk_pair_sub_i[1] = [1]
 	p_Es_v5.p_TFs.Cijk_rates_sub_i[1] = p_Es_v5.params.Cijk_probs[1] * birthRate
+	p_Es_v5.p_TFs.Cijk_rates_sub_i_t[1] = 0.0 * birthRate
 	p_Es_v5.p_TFs.Cijk_not_y_sub_i[1] = Bool[0]
 	# p_Es_v5.p_TFs.Cij_singleNum_sub_i[1] =  # some kind of grid reference
 	# p_Es_v5.p_TFs.Cik_singleNum_sub_i[1] =  # some kind of grid reference
