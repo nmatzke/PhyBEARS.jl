@@ -256,6 +256,8 @@ end
 
 function update_Cijk_j_rates_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.j_jrows)
+		# Add up the jmat_t modifiers for this dispersal event
+		# Here, we are doing it fractionally by starting p.params.Cijk_rates[p.setup.j_jrows[i]]
 		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.params.Cijk_rates[p.setup.j_jrows[i]] * p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
 	end	
 end
