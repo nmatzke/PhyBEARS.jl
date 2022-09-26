@@ -136,8 +136,8 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	p_Es_v5.params.row_weightvals[1] = 1.0
 
 	# You also have to add 1 to j_rows and j_jrows (because everything moved up 1 position)
-	p_Es_v5.setup.j_rows = p_Es_v5.setup.j_rows .+ 1
-	p_Es_v5.setup.j_jrows = p_Es_v5.setup.j_jrows .+ 1
+	p_Es_v5.setup.j_rows .= p_Es_v5.setup.j_rows .+ 1
+	p_Es_v5.setup.j_jrows .= p_Es_v5.setup.j_jrows .+ 1
 
 	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
 		if i == 1

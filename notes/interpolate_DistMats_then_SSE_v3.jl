@@ -171,24 +171,25 @@ Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
-prtCp(p_Es_v10)
+prtQp(p_Es_v10)
 
-p = p_Es_v10;
 
 
 prtQp(p_Es_v10)
 PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
 prtQp(p_Es_v10)
 
+p = p_Es_v10;
+
 
 t=0.3
 p.setup.distmat .= distances_interpolator(t)
 
 	p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
+
+
 p.params.Qij_vals
 p.params.Qij_vals_t
-
-
 t=0.0
 p.setup.distmat .= distances_interpolator(t)
 PhyBEARS.TimeDep.update_Qij_d_vals!(p);
@@ -204,9 +205,9 @@ PhyBEARS.TimeDep.update_Cijk_j_rates!(p_Es_v10);
 p_Es_v10.params.Cijk_rates
 p_Es_v10.params.Cijk_rates_t
 
+p_Es_v10.params.Cijk_rates .- p_Es_v10.params.Cijk_rates_t
 
-
-
+prtCp(p_Es_v10)
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
