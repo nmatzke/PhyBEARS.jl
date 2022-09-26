@@ -404,7 +404,6 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "d"]
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
-	j_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "j"]
 	
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
@@ -442,6 +441,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	#Carray = setup_DEC_Cmat(areas_list, states_list, maxent01, Cparams)
 	# Paired events lumped (e.g. i,j,k = i,k,j : 2022-03-15
 	Carray = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams; birthRate=birthRate)
+
+	j_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "j"]
+
 	
 	Cijk_rates_t = similar(Carray.Cijk_vals)
 	Cijk_rates_t .= 0.0
