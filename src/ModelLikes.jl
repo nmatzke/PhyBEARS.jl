@@ -404,7 +404,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "d"]
 	a_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "a"]
 	e_rows = (1:length(Qarray_event_types))[Qarray_event_types .== "e"]
-	j_rows = (1:length(Carray_event_types))[Carray_event_types .== "j"]
+	j_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "j"]
 	
 	# Pre-allocate area gained/lost
 	gains = repeat([[]], length(Qarray_event_types))
@@ -443,8 +443,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Paired events lumped (e.g. i,j,k = i,k,j : 2022-03-15
 	Carray = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams; birthRate=birthRate)
 	
-	Cijk_vals_t = similar(Carray.Cijk_vals)
-	Cijk_vals_t .= 0.0
+	Cijk_rates_t = similar(Carray.Cijk_vals)
+	Cijk_rates_t .= 0.0
 	
 	# Possibly varying parameters
 	# Set up mu (extinction) rates, manually
@@ -458,7 +458,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	# Get the DEC weights and per-event weights, then multiply per-event weights by birthRate
 	#params = (mu_vals=mu_vals, Qij_vals=Qmat.Qij_vals, Cijk_weights=Carray.Cijk_weights, Cijk_vals=birthRate .* Carray.Cijk_vals, row_weightvals=Carray.row_weightvals)
-	params = (mu_vals=mu_vals, mu_t_vals=mu_t_vals, psi_vals=psi_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=Qmat.Qij_vals_t, Cijk_weights=Carray.Cijk_weights, Cijk_probs=Carray.Cijk_probs, Cijk_rates=Carray.Cijk_rates, Cijk_vals=Carray.Cijk_vals, Cijk_vals_t=Cijk_vals_t, row_weightvals=Carray.row_weightvals)
+	params = (mu_vals=mu_vals, mu_t_vals=mu_t_vals, psi_vals=psi_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=Qmat.Qij_vals_t, Cijk_weights=Carray.Cijk_weights, Cijk_probs=Carray.Cijk_probs, Cijk_rates=Carray.Cijk_rates, Cijk_vals=Carray.Cijk_vals, Cijk_rates_t=Cijk_rates_t, row_weightvals=Carray.row_weightvals)
 	
 	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
 	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types)
@@ -524,6 +524,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	Cijk_not_y_sub_i = Vector{Vector{Bool}}(undef, n)
 	Cijk_pair_sub_i = Vector{Vector{Int64}}(undef, n)
 	Cijk_rates_sub_i = Vector{Vector{Float64}}(undef, n)
+	Cijk_rates_sub_i_t = Vector{Vector{Float64}}(undef, n)
 	
 
 	# Set up the p_TFs & subs (where anc==i)
@@ -541,6 +542,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		Cijk_not_y_sub_i[i] = Carray.Carray_event_types[Carray.Carray_ivals .== i] .!= "y"	# gives true if not "y"
 		Cijk_pair_sub_i[i] = Carray.Carray_pair[Carray.Carray_ivals .== i]		# list of Cijk rates lists for anc==i
 		Cijk_rates_sub_i[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
+		Cijk_rates_sub_i_t[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
 	end
 
 
@@ -553,7 +555,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	

@@ -1058,9 +1058,12 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # ...others?
   
   # Using the current t's distmat, etc. update the dmat_t, then 
-  # propagate through the 
+  # propagate through the Q matrix
   update_Qij_d_vals!(p)
   
+  # Using the current t's distmat, etc. update the jmat_t, then
+  # propagate through the C matrix
+  update_Cijk_j_vals!
   
   # Populate changing "e" with time
 	terms = Vector{Float64}(undef, 4)

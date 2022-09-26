@@ -256,7 +256,7 @@ end
 
 function update_Cijk_j_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.j_jrows)
-		p.params.Cijk_vals_t[p.setup.j_jrows[i]] += p.setup.dmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
+		p.params.Cijk_vals_t[p.setup.j_jrows[i]] += p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
 	end	
 end
 
@@ -264,6 +264,12 @@ function update_Cijk_j_vals!(p)
 	get_jmat_at_time_t!(p)
 	p.params.Cijk_vals_t[p.setup.d_rows] .= 0.0
 	update_Cijk_j_vals_t!(p)
+	
+	# Update the Cijk_rates_sub_i_t (where anc==i)
+	@inbounds for i in 1:length(states_list)
+		p.p_TFs.Cijk_rates_sub_i_t[i] .= p.params.Cijk_vals_t[p.p_TFs.Ci_eq_i[i]]
+	end
+	
 end
 
 """

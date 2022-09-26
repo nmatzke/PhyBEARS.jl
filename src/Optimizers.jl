@@ -1388,7 +1388,7 @@ function p_Ds_v5_updater_v1(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
 	inputs.setup.amat .= inputs.setup.amat_base .* inputs.setup.dispersal_multipliers_mat.^w .* inputs.setup.distmat.^x .* inputs.setup.envdistmat.^n .* inputs.setup.distmat2.^x2 .* inputs.setup.distmat3.^x3
 	inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^u
 	
-	# jmat does not include the "d" parameter
+	# jmat does not include the "d" or "j" parameter
 	inputs.setup.jmat .= inputs.setup.dispersal_multipliers_mat.^w .* inputs.setup.distmat.^x .* inputs.setup.envdistmat.^n .* inputs.setup.distmat2.^x2 .* inputs.setup.distmat3.^x3
 	
 	# Update the mus
@@ -2087,9 +2087,17 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 			rstate = states_list[k]
 			rsize = length(rstate)
 			
+			# The best way to do distances in this weights framework, is to set the minimum distance equal to 1.0
+			# That way any distances > 1.0 have dispersal penalties (e.g. if x=-1.0)
+			# 
+			# This way, if jmat_t changes, it can be used as long as jmat=1.0 or is otherwise fixed.
+			#
+			# (Because we have a modifier on the original jmat, which is user-set.)
+			#
 			# j events, modified by distance / multipliers (via input "jmat") if needed
-			try_jump_dispersal_based_on_dist = true
-			normalize_by_number_of_dispersal_events = true
+			try_jump_dispersal_based_on_dist = true				 # irrelevant when the jmats are 1.0
+			normalize_by_number_of_dispersal_events = true # irrelevant, because number of events 
+																										 # is the same for each ancestral range
 			jweight_for_cell_based_on_distances = 0.0
 			if (try_jump_dispersal_based_on_dist == true)
 				for anc_area in ancstate
@@ -2168,8 +2176,7 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	p_Ds_v5.params.Cijk_vals[:] .= Cijk_vals
 	p_Ds_v5.params.row_weightvals[:] .= row_weightvals
 
-	# Update the p_TFs& subs values (where anc==i)
-	# The push! operation may get slow at huge n
+	# Update the Cijk_rates_sub_i (where anc==i)
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Cijk_rates_sub_i[i] .= Cijk_rates[p_Ds_v5.p_TFs.Ci_eq_i[i]]
 	end
@@ -2317,7 +2324,7 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	inputs.setup.amat .= inputs.setup.amat_base .* inputs.setup.dispersal_multipliers_mat.^w .* inputs.setup.distmat.^x .* inputs.setup.envdistmat.^n .* inputs.setup.distmat2.^x2 .* inputs.setup.distmat3.^x3
 	inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^u
 	
-	# jmat does not include the "d" parameter
+	# jmat does not include the "d" or "j" parameter
 	inputs.setup.jmat .= inputs.setup.dispersal_multipliers_mat.^w .* inputs.setup.distmat.^x .* inputs.setup.envdistmat.^n .* inputs.setup.distmat2.^x2 .* inputs.setup.distmat3.^x3
 	
 	
