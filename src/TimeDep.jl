@@ -223,7 +223,7 @@ function update_Qij_e_vals_t!(p)
 	end
 end
 
-function get_dmat_at_time_t_t!(p)
+function update_dmat_at_time_t_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.dmat_t)
 		p.setup.dmat_t[i] = p.setup.dmat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
 	end
@@ -296,7 +296,7 @@ function update_Qij_d_vals!(p)
 	#p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
 	#p.setup.dmat .= 0.0
-	get_dmat_at_time_t_t!(p)
+	update_dmat_at_time_t_t!(p)
 	
 	#p.setup.amat_t .= p.setup.amat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	

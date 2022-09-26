@@ -41,7 +41,7 @@ bmo.est .= bmo_updater_v1(bmo);
 
 bmo.est[bmo.rownames .== "d"] .= 0.034
 bmo.est[bmo.rownames .== "e"] .= 0.028
-bmo.est[bmo.rownames .== "j"] .= 0.000000001
+bmo.est[bmo.rownames .== "j"] .= 0.00001
 
 
 # Set up the model
@@ -54,8 +54,9 @@ solver_options.abstol = 1e-12;
 solver_options.reltol = 1e-12;
 
 p_Ds_v5 = inputs.p_Ds_v5;
+inputs.setup.dmat_base
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
-
+inputs.setup.dmat_base
 prtCp(p_Ds_v5)
 
 
@@ -149,6 +150,7 @@ inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
+inputs.setup.dmat_base
 p_Es_v5.params.Qij_vals
 p_Es_v5.params.Qij_vals_t
 
@@ -169,15 +171,14 @@ Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
+prtCp(p_Es_v10)
 
 p = p_Es_v10;
 
 
-p.params.Qij_vals
-p.params.Qij_vals_t
+prtQp(p_Es_v10)
 PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
-p.params.Qij_vals
-p.params.Qij_vals_t
+prtQp(p_Es_v10)
 
 
 t=0.3
@@ -195,6 +196,18 @@ p.params.Qij_vals[1:5]
 p.params.Qij_vals_t[1:5]
 
 
+
+
+p_Es_v10.params.Cijk_rates
+p_Es_v10.params.Cijk_rates_t
+PhyBEARS.TimeDep.update_Cijk_j_rates!(p_Es_v10);
+p_Es_v10.params.Cijk_rates
+p_Es_v10.params.Cijk_rates_t
+
+
+
+
+
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
 
@@ -205,7 +218,7 @@ t = 0.0
 PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t)
 du
 
-prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
+prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v11_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;

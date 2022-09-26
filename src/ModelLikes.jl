@@ -364,16 +364,16 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_val = bmo.est[bmo.rownames .== "a"][1]
 	j_val = bmo.est[bmo.rownames .== "j"][1]
 	
-	dmat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	dmat_base = reshape(repeat(d_val], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	jmat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	jmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	jmat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	amat_base = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
+	amat_base = reshape(repeat([a_val], (total_numareas^2)), (total_numareas,total_numareas))
 	amat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	amat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
-	elist_base = repeat([1.0], total_numareas)
+	elist_base = repeat([e_val], total_numareas)
 	elist = repeat([1.0], total_numareas)
 	elist_t = repeat([1.0], total_numareas)
 	area_of_areas = repeat([1.0], total_numareas)

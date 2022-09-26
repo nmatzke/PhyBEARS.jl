@@ -132,7 +132,7 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	prepend!(p_Es_v5.params.Cijk_probs, [1.0])
 	prepend!(p_Es_v5.params.Cijk_rates, p_Es_v5.params.Cijk_probs[1] * birthRate)
 	prepend!(p_Es_v5.params.Cijk_vals, p_Es_v5.params.Cijk_probs[1] * birthRate)
-	prepend!(p_Es_v5.params.Cijk_rates_t, p_Es_v5.params.Cijk_probs[1] * birthRate)
+	prepend!(p_Es_v5.params.Cijk_rates_t, 0.0 * birthRate)
 	p_Es_v5.params.row_weightvals[1] = 1.0
 
 	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
