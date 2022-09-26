@@ -256,7 +256,7 @@ end
 
 function update_Cijk_j_rates_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.j_jrows)
-		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
+		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.params.Cijk_rates[p.setup.j_jrows[i]] * p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
 	end	
 end
 
@@ -269,7 +269,7 @@ end
 
 function update_Cijk_j_rates!(p)
 	get_jmat_at_time_t!(p)
-	p.params.Cijk_rates_t[p.setup.d_rows] .= 0.0
+	p.params.Cijk_rates_t[p.setup.j_rows] .= 0.0
 	update_Cijk_j_rates_t!(p)
 	update_Cijk_rates_sub_i_t!(p) # updates the pre-allocation of Cijk_rates_t to simplify core SSE simd
 end
