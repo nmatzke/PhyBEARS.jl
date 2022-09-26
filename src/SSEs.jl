@@ -13,7 +13,7 @@ using PhyBEARS.TimeDep # for get_area_of_range etc.
 print("...done.\n")
 
 
-export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
+export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
 
 
 
@@ -1048,7 +1048,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Get the e_vals for the Qij matrix, at time t
-  #update_Qij_e_vals!(p)
+  update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
   
   
@@ -1059,11 +1059,11 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
-  #update_Qij_d_vals!(p)
+  update_Qij_d_vals!(p)
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  #update_Cijk_j_rates!(p)
+  update_Cijk_j_rates!(p)
   
   # Populate changing "e" with time
 	#terms = Vector{Float64}(undef, 4)
@@ -1071,10 +1071,10 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   @inbounds for i in 1:n
 		p.terms .= 0.0
 
-		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i_t[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 	
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
@@ -1108,7 +1108,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Get the e_vals for the Qij matrix, at time t
   # elist_actual = elist_base * area_of_area_lost^u_e
   # THIS IS THE SLOW STEP; pre-allocate e_rows
-  #update_Qij_e_vals!(p)
+  update_Qij_e_vals!(p)
   # (updates p.params.Qij_vals)
 
 
@@ -1119,11 +1119,134 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the dmat, then 
   # propagate through the 
-  #update_Qij_d_vals!(p)
+  update_Qij_d_vals!(p)
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  #update_Cijk_j_rates!(p)
+  update_Cijk_j_rates!(p)
+	
+	# Pre-calculated solution of the Es
+#	sol_Es = p.sol_Es_v5
+#	uE = p.uE
+	uE = p.sol_Es_v10(t)
+	#terms = Vector{Float64}(undef, 4)
+  @inbounds for i in 1:n
+		p.terms .= 0.0
+
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i_t[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+		
+		# Is this the slow step?? -- NO!
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+end
+
+
+
+
+
+# Time-varying areas & extinction rates
+parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
+ 	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	##max_extinction_rate = p.setup.max_extinction_rate
+
+ 	# Get the area of areas at time t
+	##p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
+ 	
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals # base extinction rate of each range
+  ##mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  
+  # Populate changing mus with time
+  ##@inbounds for i in 1:n
+  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+  ##	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_e]
+  ##end
+  # Correct "Inf" max_extinction_rates
+  ##mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+  
+  
+  # Get the e_vals for the Qij matrix, at time t
+  ##update_Qij_e_vals!(p)
+  # (updates p.params.Qij_vals)
+  
+  
+  # Get the d_vals for the Qij matrix, at time t
+  # 1. Update the distance matrices etc.
+  ##p.setup.distmat .= p.distances_interpolator(t)
+  # ...others?
+  
+  # Using the current t's distmat, etc. update the dmat_t, then 
+  # propagate through the Q matrix
+  ##update_Qij_d_vals!(p)
+  
+  # Using the current t's distmat, etc. update the jmat_t, then
+  # propagate through the C matrix
+  ##update_Cijk_j_rates!(p)
+  
+  # Populate changing "e" with time
+	#terms = Vector{Float64}(undef, 4)
+
+  @inbounds for i in 1:n
+		p.terms .= 0.0
+
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+	
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		du[i] = mu[i] -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+end
+
+
+# Time-varying areas & extinction rates
+parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
+ 	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	##max_extinction_rate = p.setup.max_extinction_rate
+ 	
+ 	# Get the area of areas at time t
+	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
+
+  # NOT the slow step:
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals # base extinction rate of each range
+  ##mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  
+  # Populate changing mus with time
+  ##@inbounds for i in 1:n
+  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+  ##	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_e]
+  ##end
+  # Correct "Inf" max_extinction_rates
+  ##mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
+
+
+  # Get the e_vals for the Qij matrix, at time t
+  # elist_actual = elist_base * area_of_area_lost^u_e
+  # THIS IS THE SLOW STEP; pre-allocate e_rows
+  ##update_Qij_e_vals!(p)
+  # (updates p.params.Qij_vals)
+
+
+  # Get the d_vals for the Qij matrix, at time t
+  # 1. Update the distance matrices etc.
+  ##p.setup.distmat .= p.distances_interpolator(t)
+  # ...others?
+  
+  # Using the current t's distmat, etc. update the dmat, then 
+  # propagate through the 
+  ##update_Qij_d_vals!(p)
+  
+  # Using the current t's distmat, etc. update the jmat_t, then
+  # propagate through the C matrix
+  ##update_Cijk_j_rates!(p)
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
@@ -1142,6 +1265,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end
+
 
 
 
