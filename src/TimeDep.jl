@@ -258,23 +258,27 @@ function update_Cijk_j_rates_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.j_jrows)
 		# Add up the jmat_t modifiers for this dispersal event
 		# Here, we are doing it fractionally by starting p.params.Cijk_rates[p.setup.j_jrows[i]]
+		# The rate for a j event will be Cijk_rates * jmat_t
 		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.params.Cijk_rates[p.setup.j_jrows[i]] * p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]]
 	end	
 end
 
+
+function update_Cijk_j_rates!(p)
+	get_jmat_at_time_t!(p)
+	p.params.Cijk_rates_t[p.setup.j_rows] .= 0.0 # zero out Cijk_rates_t
+	update_Cijk_j_rates_t!(p)
+	update_Cijk_rates_sub_i_t!(p) # updates the pre-allocation of Cijk_rates_t, in Cijk_rates_sub_i_t, to simplify core SSE simd
+end
+
+
 function update_Cijk_rates_sub_i_t!(p)
 	# Update the Cijk_rates_sub_i_t (where anc==i)
-	@inbounds for i in 1:length(p.setup.states_list)
+	@inbounds @simd for i in 1:length(p.setup.states_list)
 		p.p_TFs.Cijk_rates_sub_i_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
 	end
 end
 
-function update_Cijk_j_rates!(p)
-	get_jmat_at_time_t!(p)
-	p.params.Cijk_rates_t[p.setup.j_rows] .= 0.0
-	update_Cijk_j_rates_t!(p)
-	update_Cijk_rates_sub_i_t!(p) # updates the pre-allocation of Cijk_rates_t to simplify core SSE simd
-end
 
 """
 # 1. Update parameter 'd' based on a distance matrix (already determined for time 't')

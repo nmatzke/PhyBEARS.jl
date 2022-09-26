@@ -35,7 +35,7 @@ bmo.est[bmo.rownames .== "d"] .= 0.02
 bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
-bmo.est[bmo.rownames .== "u"] .= 1.0
+bmo.est[bmo.rownames .== "u"] .= -1.0
 bmo.est[bmo.rownames .== "x"] .= -1.0
 bmo.est .= bmo_updater_v1(bmo);
 
