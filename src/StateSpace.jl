@@ -67,7 +67,7 @@ end
 # Print a Qarray to a data.frame
 """
 function prtQ(Qarray)
-	Qdf = DataFrame(event=Qarray.Qarray_event_types, i=Qarray.Qarray_ivals, j=Qarray.Qarray_jvals, val=Qarray.Qij_vals)
+	Qdf = DataFrame(event=Qarray.Qarray_event_types, i=Qarray.Qarray_ivals, j=Qarray.Qarray_jvals, val=Qarray.Qij_vals, vals_t=Qarray.Qij_vals_t)
 	return Qdf
 end
 
@@ -75,7 +75,7 @@ end
 # Print a Qarray from inputs to a data.frame
 """
 function prtQi(inputs)
-	Qdf = DataFrame(event=inputs.p_Ds_v5.p_indices.Qarray_event_types, i=inputs.p_Ds_v5.p_indices.Qarray_ivals, j=inputs.p_Ds_v5.p_indices.Qarray_jvals, val=inputs.p_Ds_v5.params.Qij_vals)
+	Qdf = DataFrame(event=inputs.p_Ds_v5.p_indices.Qarray_event_types, i=inputs.p_Ds_v5.p_indices.Qarray_ivals, j=inputs.p_Ds_v5.p_indices.Qarray_jvals, val=inputs.p_Ds_v5.params.Qij_vals, vals_t=inputs.p_Ds_v5.params.Qij_vals_t)
 	return Qdf
 end
 
@@ -84,7 +84,7 @@ end
 # Print a p_Ds_v5 Qarray to a data.frame
 """
 function prtQp(p_Ds_v5)
-	Qdf = DataFrame(event=p_Ds_v5.p_indices.Qarray_event_types, i=p_Ds_v5.p_indices.Qarray_ivals, j=p_Ds_v5.p_indices.Qarray_jvals, val=p_Ds_v5.params.Qij_vals)
+	Qdf = DataFrame(event=p_Ds_v5.p_indices.Qarray_event_types, i=p_Ds_v5.p_indices.Qarray_ivals, j=p_Ds_v5.p_indices.Qarray_jvals, val=p_Ds_v5.params.Qij_vals, vals_t=p_Ds_v5.params.Qij_vals_t)
 	return Qdf
 end
 
@@ -103,7 +103,7 @@ end
 # Print a Carray from inputs to a data.frame
 """
 function prtCi(inputs)
-	Cdf = DataFrame(event=inputs.p_Ds_v5.p_indices.Carray_event_types, i=inputs.p_Ds_v5.p_indices.Carray_ivals, j=inputs.p_Ds_v5.p_indices.Carray_jvals, k=inputs.p_Ds_v5.p_indices.Carray_kvals, pair=inputs.p_Ds_v5.p_indices.Carray_pair, wt=inputs.p_Ds_v5.params.Cijk_weights, prob=inputs.p_Ds_v5.params.Cijk_probs, rate=inputs.p_Ds_v5.params.Cijk_rates, val=inputs.p_Ds_v5.params.Cijk_vals)
+	Cdf = DataFrame(event=inputs.p_Ds_v5.p_indices.Carray_event_types, i=inputs.p_Ds_v5.p_indices.Carray_ivals, j=inputs.p_Ds_v5.p_indices.Carray_jvals, k=inputs.p_Ds_v5.p_indices.Carray_kvals, pair=inputs.p_Ds_v5.p_indices.Carray_pair, wt=inputs.p_Ds_v5.params.Cijk_weights, prob=inputs.p_Ds_v5.params.Cijk_probs, rate=inputs.p_Ds_v5.params.Cijk_rates, val=inputs.p_Ds_v5.params.Cijk_vals, rates_t=inputs.p_Ds_v5.params.Cijk_rates_t)
 	return Cdf
 end
 
@@ -111,7 +111,7 @@ end
 # Print a p_Ds_v5 Carray to a data.frame
 """
 function prtCp(p_Ds_v5)
-	Cdf = DataFrame(event=p_Ds_v5.p_indices.Carray_event_types, i=p_Ds_v5.p_indices.Carray_ivals, j=p_Ds_v5.p_indices.Carray_jvals, k=p_Ds_v5.p_indices.Carray_kvals, pair=p_Ds_v5.p_indices.Carray_pair, wt=p_Ds_v5.params.Cijk_weights, prob=p_Ds_v5.params.Cijk_probs, rate=p_Ds_v5.params.Cijk_rates, val=p_Ds_v5.params.Cijk_vals)
+	Cdf = DataFrame(event=p_Ds_v5.p_indices.Carray_event_types, i=p_Ds_v5.p_indices.Carray_ivals, j=p_Ds_v5.p_indices.Carray_jvals, k=p_Ds_v5.p_indices.Carray_kvals, pair=p_Ds_v5.p_indices.Carray_pair, wt=p_Ds_v5.params.Cijk_weights, prob=p_Ds_v5.params.Cijk_probs, rate=p_Ds_v5.params.Cijk_rates, val=p_Ds_v5.params.Cijk_vals, rates_t=p_Ds_v5.params.Cijk_rates_t)
 	return Cdf
 end
 
@@ -132,6 +132,7 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	prepend!(p_Es_v5.params.Cijk_probs, [1.0])
 	prepend!(p_Es_v5.params.Cijk_rates, p_Es_v5.params.Cijk_probs[1] * birthRate)
 	prepend!(p_Es_v5.params.Cijk_vals, p_Es_v5.params.Cijk_probs[1] * birthRate)
+	prepend!(p_Es_v5.params.Cijk_rates_t, p_Es_v5.params.Cijk_probs[1] * birthRate)
 	p_Es_v5.params.row_weightvals[1] = 1.0
 
 	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
