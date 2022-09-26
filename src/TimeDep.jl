@@ -255,11 +255,13 @@ function get_jmat_at_time_t!(p)
 end
 
 function update_Cijk_j_rates_t!(p)
+	p.params.Cijk_rates_t .= p.params.Cijk_rates # initialize at default rates 
+	# Change the (relative) j rates, nothing else
 	@inbounds @simd for i in 1:length(p.setup.j_jrows)
 		# Add up the jmat_t modifiers for this dispersal event
 		# Here, we are doing it fractionally by starting p.params.Cijk_rates[p.setup.j_jrows[i]]
 		# The rate for a j event will be Cijk_rates * jmat_t
-		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.params.Cijk_rates[p.setup.j_jrows[i]] * p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]] / p.setup.j_numdispersals[i]
+		p.params.Cijk_rates_t[p.setup.j_jrows[i]] += p.params.Cijk_rates_t[p.setup.j_jrows[i]] * p.setup.jmat_t[p.setup.j_froms[i], p.setup.j_tos[i]] / p.setup.j_numdispersals[i]
 	end	
 end
 
