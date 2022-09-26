@@ -16,11 +16,20 @@ using PhyBEARS
 using DataFrames
 using CSV
 
-trfn = "/GitHub/PhyBEARS.jl/data/Psychotria_tree.newick"
+#trfn = "/GitHub/PhyBEARS.jl/data/Psychotria_tree.newick"
+#tr = readTopology(trfn)
+
+#lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria_geog.data"
+#geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
+
+
+trfn = "/GitHub/PhyBEARS.jl/data/Cyrtandra.newick"
 tr = readTopology(trfn)
 
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria_geog.data"
-geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
+geogfn = "/GitHub/PhyBEARS.jl/data/Cyrtandra_geog.data"
+geog_df = Parsers.getranges_from_LagrangePHYLIP(geogfn)
+
+
 include_null_range = false
 numareas = Rncol(geog_df)-1
 max_range_size = numareas
@@ -29,25 +38,20 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC model on Hawaiian Psychotria
 bmo = construct_BioGeoBEARS_model_object()
 bmo.type[bmo.rownames .== "j"] .= "free"
-bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr)
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 0.0
-bmo.est[bmo.rownames .== "e"] .= 0.0
+bmo.est[bmo.rownames .== "birthRate"] .= 0.1
+bmo.est[bmo.rownames .== "deathRate"] .= 0.01
+bmo.est[bmo.rownames .== "d"] .= 0.02
+bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
-bmo.est[bmo.rownames .== "u"] .= 0.0
+bmo.est[bmo.rownames .== "u"] .= 1.0
 bmo.est[bmo.rownames .== "x"] .= 0.0
 bmo.est .= bmo_updater_v1(bmo);
-
-bmo.est[bmo.rownames .== "d"] .= 0.034
-bmo.est[bmo.rownames .== "e"] .= 0.028
-bmo.est[bmo.rownames .== "j"] .= 0.000000001
-
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
-p = p_Ds_v5
+
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-12;
@@ -77,7 +81,7 @@ area_interpolator(tvals)
 #######################################################
 areas_list = inputs.setup.areas_list
 states_list = inputs.setup.states_list
-area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_Hawaii_1s_v2.txt"
+area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_Cyrtandra_1s_v2.txt"
 area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
 area_of_areas_table = readtable(area_of_areas_file)
 
@@ -110,26 +114,41 @@ get_areas_of_range_at_t.(tvals)
 #######################################################
 # Distances interpolator for a series of distances
 #######################################################
-dists1 = [0.00 0.33 0.58 1.00;
-0.33 0.00 0.25 0.67;
-0.58 0.25 0.00 0.17;
-1.00 0.67 0.17 0.00];
-dists2 = [0.00 0.17 0.29 0.50;
-0.17 0.00 0.13 0.33;
-0.29 0.13 0.00 0.08;
-0.50 0.33 0.08 0.00];
-dists3 = [0.00 0.08 0.15 0.25;
-0.08 0.00 0.06 0.17;
-0.15 0.06 0.00 0.04;
-0.25 0.17 0.04 0.00];
-dists4 = [0.00 0.04 0.07 0.13;
-0.04 0.00 0.03 0.08;
-0.07 0.03 0.00 0.02;
-0.13 0.08 0.02 0.00];
-dists5 = [0.00 0.04 0.07 0.13;
-0.04 0.00 0.03 0.08;
-0.07 0.03 0.00 0.02;
-0.13 0.08 0.02 0.00];
+dists1 = [0.00 0.33 0.58 1.00 1.00 1.00 1.00;
+0.33 0.00 0.25 0.67 1.00 1.00 1.00;
+0.58 0.25 0.00 0.17 1.00 1.00 1.00;
+1.00 0.67 0.17 0.00 1.00 1.00 1.00;
+1.00 0.67 0.17 1.00 0.00 1.00 1.00;
+1.00 0.67 0.17 1.00 1.00 0.00 1.00;
+1.00 0.67 0.17 1.00 1.00 1.00 0.00];
+dists2 = [0.00 0.17 0.29 0.50 1.00 1.00 1.00;
+0.17 0.00 0.13 0.33 1.00 1.00 1.00;
+0.29 0.13 0.00 0.08 1.00 1.00 1.00;
+0.50 0.33 0.08 0.00 1.00 1.00 1.00;
+1.00 0.67 0.17 1.00 0.00 1.00 1.00;
+1.00 0.67 0.17 1.00 1.00 0.00 1.00;
+1.00 0.67 0.17 1.00 1.00 1.00 0.00];
+dists3 = [0.00 0.08 0.15 0.25 1.00 1.00 1.00;
+0.08 0.00 0.06 0.17 1.00 1.00 1.00;
+0.15 0.06 0.00 0.04 1.00 1.00 1.00;
+0.25 0.17 0.04 0.00 1.00 1.00 1.00;
+1.00 0.67 0.17 1.00 0.00 1.00 1.00;
+1.00 0.67 0.17 1.00 1.00 0.00 1.00;
+1.00 0.67 0.17 1.00 1.00 1.00 0.00];
+dists4 = [0.00 0.04 0.07 0.13 1.00 1.00 1.00;
+0.04 0.00 0.03 0.08 1.00 1.00 1.00;
+0.07 0.03 0.00 0.02 1.00 1.00 1.00;
+0.13 0.08 0.02 0.00 1.00 1.00 1.00;
+1.00 0.67 0.17 1.00 0.00 1.00 1.00;
+1.00 0.67 0.17 1.00 1.00 0.00 1.00;
+1.00 0.67 0.17 1.00 1.00 1.00 0.00];
+dists5 = [0.00 0.04 0.07 0.13 1.00 1.00 1.00;
+0.04 0.00 0.03 0.08 1.00 1.00 1.00;
+0.07 0.03 0.00 0.02 1.00 1.00 1.00;
+0.13 0.08 0.02 0.00 1.00 1.00 1.00;
+1.00 0.67 0.17 1.00 0.00 1.00 1.00;
+1.00 0.67 0.17 1.00 1.00 0.00 1.00;
+1.00 0.67 0.17 1.00 1.00 1.00 0.00];
 
 changing_distances = [dists1, dists2, dists3, dists4, dists5];
 
@@ -205,7 +224,7 @@ t = 0.0
 PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t)
 du
 
-prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
+prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;
@@ -227,22 +246,27 @@ PhyBEARS.TimeDep.update_Qij_d_vals!(p)
 
 p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, distances_interpolator=p_Es_v10.distances_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
 
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-# WORKS
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
 @benchmark PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 
 
+@benchmark PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+
+using PProf
+@pprof PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
+@code_warntype PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 #######################################################
 # Conclusions on calculation time changes
