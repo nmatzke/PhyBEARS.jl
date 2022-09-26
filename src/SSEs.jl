@@ -1119,11 +1119,11 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the dmat, then 
   # propagate through the 
-  update_Qij_d_vals!(p)
+  #update_Qij_d_vals!(p)
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_rates!(p)
+  #update_Cijk_j_rates!(p)
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5

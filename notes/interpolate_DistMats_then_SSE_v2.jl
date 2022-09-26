@@ -30,7 +30,7 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 bmo = construct_BioGeoBEARS_model_object()
 bmo.type[bmo.rownames .== "j"] .= "free"
 bmo.est[bmo.rownames .== "birthRate"] .= 0.1
-bmo.est[bmo.rownames .== "deathRate"] .= 0.01
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 bmo.est[bmo.rownames .== "d"] .= 0.02
 bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
