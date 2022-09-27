@@ -39,9 +39,9 @@ bmo.est[bmo.rownames .== "u"] .= 0.0
 bmo.est[bmo.rownames .== "x"] .= 0.0
 bmo.est .= bmo_updater_v1(bmo);
 
-# bmo.est[bmo.rownames .== "d"] .= 0.034
-# bmo.est[bmo.rownames .== "e"] .= 0.028
-# bmo.est[bmo.rownames .== "j"] .= 0.00001
+bmo.est[bmo.rownames .== "d"] .= 0.034
+bmo.est[bmo.rownames .== "e"] .= 0.028
+bmo.est[bmo.rownames .== "j"] .= 0.00001
 
 #bmo.est[bmo.rownames .== "birthRate"] .= 0.1
 #bmo.est[bmo.rownames .== "deathRate"] .= 0.1
