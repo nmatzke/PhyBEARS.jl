@@ -43,6 +43,13 @@ bmo.est .= bmo_updater_v1(bmo);
 # bmo.est[bmo.rownames .== "e"] .= 0.028
 # bmo.est[bmo.rownames .== "j"] .= 0.00001
 
+#bmo.est[bmo.rownames .== "birthRate"] .= 0.1
+#bmo.est[bmo.rownames .== "deathRate"] .= 0.1
+
+#bmo.est[bmo.rownames .== "d"] .= 0.034
+#bmo.est[bmo.rownames .== "e"] .= 0.028
+#bmo.est[bmo.rownames .== "j"] .= 0.11
+
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
@@ -132,6 +139,13 @@ dists5 = [0.00 0.04 0.07 0.13;
 0.07 0.03 0.00 0.02;
 0.13 0.08 0.02 0.00];
 
+dists1 .= 1.0;
+dists2 .= 1.0;
+dists3 .= 1.0;
+dists4 .= 1.0;
+dists5 .= 1.0;
+
+
 changing_distances = [dists1, dists2, dists3, dists4, dists5];
 
 times = [0.0, 1.5, 3.0, 5.5, 600];
@@ -162,7 +176,7 @@ prtCp(p_Es_v5)
 p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, use_distances=true, bmo=bmo)
 
 birthRate = bmo.est[bmo.rownames .== "birthRate"];
-add_111_to_Carray!(p_Es_v5, birthRate);
+#add_111_to_Carray!(p_Es_v5, birthRate);
 
 prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
@@ -252,8 +266,30 @@ PhyBEARS.TimeDep.update_Qij_d_vals!(p)
 
 p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, distances_interpolator=p_Es_v10.distances_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
 
-p_Ds_v10.params.Cijk_rates_t[1] = 0.0
-p = p_Ds_v10
+# Use ONLY with add_111
+#p_Ds_v10.params.Cijk_rates[1] = 0.0;
+#p_Ds_v10.params.Cijk_rates_t[1] = 0.0;
+p = p_Ds_v10;
+
+all(abs.(prtQp(p_Ds_v10).val .- prtQp(p_Ds_v7).val) .< 1e-20)
+all(abs.(prtQp(p_Ds_v10).vals_t .- prtQp(p_Ds_v7).val) .< 1e-20)
+all(abs.(prtCp(p_Ds_v10).rate .- prtCp(p_Ds_v5).rate) .< 1e-6)
+
+# Differences, dej 0.34, 0.28, 0.11, bd = 0.1, 0.1
+#  -39.96536521864187 - -40.092317498361034
+# 0.12695227971916268
+#
+# Differences, dej 0.34, 0.28, 0.11, bd = 0.34, 0.0
+# -26.775073112165167 - -26.663186300866577
+# -0.11188681129858935
+# 
+# Differences, dej 0.34, 0.28, 0.0, bd = 0.34, 0.0
+# -34.7239266954144 - -34.51134005431238
+# -0.2125866411020212
+#
+# # Differences, dej 0.0, 0.0, 0.0, bd = 0.34, 0.0
+# -20.921822175682088 - -20.921822175682088
+# 0.0
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
