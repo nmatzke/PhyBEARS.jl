@@ -1074,11 +1074,11 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i_t[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 	
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
-end
+end # END parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 
 
 # Time-varying areas & extinction rates
@@ -1145,18 +1145,50 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 		
 		# Is this the slow step?? -- NO!
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		
+		################################################
+		# Caused a slight difference!! :
+		# WRONG: sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]]
+		# RIGHT: sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i]
 		#
+		# Original definition in update:
+		# p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
+		# eq rather than sub!!!
+		#
+		# Differences, dej 0.34, 0.28, 0.11, bd = 0.1, 0.1
+		#  -39.96536521864187 - -40.092317498361034
+		# 0.12695227971916268
+		#
+		# Differences, dej 0.34, 0.28, 0.11, bd = 0.34, 0.0
+		# -26.775073112165167 - -26.663186300866577
+		# -0.11188681129858935
+		# 
+		# Differences, dej 0.34, 0.28, 0.0, bd = 0.34, 0.0
+		# -34.7239266954144 - -34.51134005431238
+		# -0.2125866411020212
+		#
+		# # Differences, dej 0.0, 0.0, 0.0, bd = 0.34, 0.0
+		# -20.921822175682088 - -20.921822175682088
+		# 0.0
+		
+		# Broke
 		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		# Works
+		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		# Works
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		
+		
 		
 		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
-end
+end # END parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
 
 
 
-
+# EXPERIMENTING/TESTING
 # Time-varying areas & extinction rates
 parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
  	# The row of bmo that refers to "u", the effect of area on extinction rate
@@ -1205,15 +1237,19 @@ parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
 		p.terms .= 0.0
 
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
-	
+		
+		# Broke
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		# Works
+		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		# Works
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = mu[i] -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
   end
-end
+end # END parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
 
-
+# EXPERIMENTING/TESTING
 # Time-varying areas & extinction rates
 parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
  	# The row of bmo that refers to "u", the effect of area on extinction rate
@@ -1269,12 +1305,15 @@ parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
 		
 		# Is this the slow step?? -- NO!
+		# Works
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		# Broke
+		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
   end
-end
+end # END parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
 
 
 

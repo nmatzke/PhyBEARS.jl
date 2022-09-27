@@ -519,6 +519,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	Qi_sub_i = Vector{Vector{Int64}}(undef, n)
 	Qj_sub_i = Vector{Vector{Int64}}(undef, n)
 	Qij_vals_sub_i = Vector{Vector{Float64}}(undef, n)
+	Qij_vals_sub_i_t = Vector{Vector{Float64}}(undef, n)
 
 	Ci_sub_i = Vector{Vector{Int64}}(undef, n)
 	Cj_sub_i = Vector{Vector{Int64}}(undef, n)
@@ -536,7 +537,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		Qi_sub_i[i] = Qmat.Qarray_ivals[Qarray_ivals .== i]		# list of i's lists for anc==i
 		Qj_sub_i[i] = Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
 		Qij_vals_sub_i[i] = Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
-
+		Qij_vals_sub_i_t[i] = Qmat.Qij_vals[Qarray_ivals .== i]
+		
 		Ci_eq_i[i] = Carray.Carray_ivals .== i													# list of TF lists for anc==i
 		Ci_sub_i[i] = Carray.Carray_ivals[Carray.Carray_ivals .== i]		# list of i's lists for anc==i
 		Cj_sub_i[i] = Carray.Carray_jvals[Carray.Carray_ivals .== i]		# list of j's lists for anc==i
@@ -557,7 +559,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
