@@ -43,12 +43,12 @@ bmo.est[bmo.rownames .== "d"] .= 0.034
 bmo.est[bmo.rownames .== "e"] .= 0.028
 bmo.est[bmo.rownames .== "j"] .= 0.00001
 
-#bmo.est[bmo.rownames .== "birthRate"] .= 0.1
-#bmo.est[bmo.rownames .== "deathRate"] .= 0.1
+bmo.est[bmo.rownames .== "birthRate"] .= 0.1
+bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 
-#bmo.est[bmo.rownames .== "d"] .= 0.034
-#bmo.est[bmo.rownames .== "e"] .= 0.028
-#bmo.est[bmo.rownames .== "j"] .= 0.11
+bmo.est[bmo.rownames .== "d"] .= 0.034
+bmo.est[bmo.rownames .== "e"] .= 0.028
+bmo.est[bmo.rownames .== "j"] .= 0.11
 
 
 # Set up the model
