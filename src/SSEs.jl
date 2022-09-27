@@ -1108,7 +1108,9 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Get the e_vals for the Qij matrix, at time t
   # elist_actual = elist_base * area_of_area_lost^u_e
   # THIS IS THE SLOW STEP; pre-allocate e_rows
-  update_Qij_e_vals!(p)
+  ##prtQp(p)
+  update_Qij_e_vals!(p);
+  ##prtQp(p)
   # (updates p.params.Qij_vals)
 
 
@@ -1119,11 +1121,17 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the dmat, then 
   # propagate through the 
-  update_Qij_d_vals!(p)
+  ##prtQp(p)
+  update_Qij_d_vals!(p);
+  ##prtQp(p)
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_rates!(p)
+  ##x1 = prtCp(p).rates_t
+  update_Cijk_j_rates!(p);
+  ##x2 = prtCp(p).rates_t
+	##x1 .- x2
+	
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
