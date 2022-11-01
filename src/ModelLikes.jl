@@ -446,7 +446,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	s_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "s"]
 	v_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "v"]
 
-	vicdist_base = repeat([1.0], length(v_rows))
+	# setup.vicdist_base  # a list of distances between ranges (e.g. minimum distance), 
+	# corresponding to v_rows of the Carray
+	cdist_base = repeat([1.0], length(v_rows))
 	vicdist = repeat([1.0], length(v_rows))
 	vicdist_t = repeat([1.0], length(v_rows))
 

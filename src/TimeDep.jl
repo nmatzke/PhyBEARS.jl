@@ -229,11 +229,52 @@ function update_dmat_at_time_t_t!(p)
 	end
 end
 
+# Update the vicariance distances (e.g. minimum distance between two ranges) at time t
+# (NOTE: dmat_t must be updated FIRST)
+# 
+# Here, we assume the minimum distance is relevant. Another option would be e.g. average distances
+function update_min_vdist_at_time_t_withp!(p; mindist=1.0e9)
+	@inbounds @simd for i in 1:length(p.setup.v_rows)
+		# Get the ranges (pretty small)
+		#jrange = p.setup.states_list[p.p_indices.Carray_jvals[setup.v_rows[i]]]
+		#krange = p.setup.states_list[p.p_indices.Carray_kvals[setup.v_rows[i]]]
+
+		# Save the minimum distances
+		p.setup.vicdist_t[i] = get_mindist_between_pair_of_ranges(p, p.setup.states_list[p.p_indices.Carray_jvals[setup.v_rows[i]]], p.setup.states_list[p.p_indices.Carray_kvals[setup.v_rows[i]]]; mindist=mindist)
+	end
+end
+
+function update_min_vdist_at_time_t!(vicdist_t, v_rows, distmat, states_list, Carray_jvals, Carray_kvals; mindist=1.0e9)
+	@inbounds @simd for i in 1:length(v_rows)
+		# Get the ranges (pretty small)
+		#jrange = p.setup.states_list[p.p_indices.Carray_jvals[setup.v_rows[i]]]
+		#krange = p.setup.states_list[p.p_indices.Carray_kvals[setup.v_rows[i]]]
+
+		# Save the minimum distances
+		vicdist_t[i] = get_mindist_between_pair_of_ranges(distmat, states_list[Carray_jvals[setup.v_rows[i]]], states_list[Carray_kvals[v_rows[i]]]; mindist=mindist)
+	end
+end
+
+
+function get_mindist_between_pair_of_ranges(distmat, jrange, krange; mindist=1.0e9)
+	# Create a tight inner loop; check if each dist is lower
+	@inbounds for j in 1:length(jrange)
+		@inbounds for k in 1:length(krange)
+			if distmat[jrange[j], krange[k]] < mindist
+				mindist = distmat[jrange[j], krange[k]]
+			end # END if
+		end # end k
+	end # end j
+	
+	return(mindist)
+end
+
 function update_Qij_d_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.d_drows)
 		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 	end
 end
+
 
 # 2022-09-26:
 # 
