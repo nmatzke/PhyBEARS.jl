@@ -448,10 +448,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 
 	# setup.vicdist_base  # a list of distances between ranges (e.g. minimum distance), 
 	# corresponding to v_rows of the Carray
-	cdist_base = repeat([1.0], length(v_rows))
+	vicdist_base = repeat([1.0], length(v_rows))
 	vicdist = repeat([1.0], length(v_rows))
 	vicdist_t = repeat([1.0], length(v_rows))
-
 	
 	Cijk_rates_t = similar(Carray.Cijk_vals)
 	Cijk_rates_t .= 0.0
