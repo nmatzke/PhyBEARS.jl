@@ -251,7 +251,7 @@ function update_min_vdist_at_time_t!(vicdist_t, v_rows, distmat, states_list, Ca
 		#krange = p.setup.states_list[p.p_indices.Carray_kvals[setup.v_rows[i]]]
 
 		# Save the minimum distances
-		vicdist_t[i] = get_mindist_between_pair_of_ranges(distmat, states_list[Carray_jvals[setup.v_rows[i]]], states_list[Carray_kvals[v_rows[i]]]; mindist=mindist)
+		vicdist_t[i] = get_mindist_between_pair_of_ranges(distmat, states_list[Carray_jvals[v_rows[i]]], states_list[Carray_kvals[v_rows[i]]]; mindist=mindist)
 	end
 end
 
