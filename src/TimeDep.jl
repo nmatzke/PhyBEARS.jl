@@ -19,7 +19,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_rates_sub_i_t!, update_Cijk_j_rates!
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!
 
 
 """
@@ -312,17 +312,36 @@ end
 function update_Cijk_j_rates!(p)
 	get_jmat_at_time_t!(p)
 	p.params.Cijk_rates_t[p.setup.j_rows] .= 0.0 # zero out Cijk_rates_t
-	update_Cijk_j_rates_t!(p)
+	update_Cijk_j_rates_t!(p) # modify the (post-weights) jump dispersal rates
+	update_Cijk_v_rates!(p)		# modify the (post-weights) vicariance rates
 	update_Cijk_rates_sub_i_t!(p) # updates the pre-allocation of Cijk_rates_t, in Cijk_rates_sub_i_t, to simplify core SSE simd
 end
 
 
+
+# Vicariance
+# Modify the default Cijk rates for vicariance
+function update_Cijk_v_rates!(p)
+	@inbounds @simd for i in 1:length(p.setup.v_rows)
+		# Modify the base vicariance rate by multiplying by mindistance ^ xv (where xv is positive)
+		p.params.Cijk_rates_t[p.setup.v_rows[i]] += p.params.Cijk_rates[p.setup.v_rows[i]] * p.setup.vicdist_t[[i]]^p.bmo.est[p.setup.bmo_rows.xv]
+	end
+end
+
+# Transfer Cijk rates to Cijk_rates_sub_i
 function update_Cijk_rates_sub_i_t!(p)
 	# Update the Cijk_rates_sub_i_t (where anc==i)
 	@inbounds @simd for i in 1:length(p.setup.states_list)
 		p.p_TFs.Cijk_rates_sub_i_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
 	end
 end
+
+
+
+
+
+
+
 
 
 """

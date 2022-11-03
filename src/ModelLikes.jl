@@ -632,7 +632,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	j_froms = Vector{Int64}(undef, 0)
 	j_tos = Vector{Int64}(undef, 0)
-	j_jrows = Vector{Int64}(undef, 0)
+	j_jrows = Vector{Int64}(undef, 0)  # repeats of j_rows, for when there are multiple starting areas
 	j_numdispersals = Vector{Float64}(undef, 0)
 	for i in 1:length(j_rows)
 		starting_areas = states_list[Carray.Carray_ivals[j_rows[i]]]
