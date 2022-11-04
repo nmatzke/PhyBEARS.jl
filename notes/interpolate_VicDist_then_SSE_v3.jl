@@ -49,7 +49,7 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 bmo.est[bmo.rownames .== "d"] .= 0.034
 bmo.est[bmo.rownames .== "e"] .= 0.028
 bmo.est[bmo.rownames .== "j"] .= 0.11
-bmo.est[bmo_rows.xv]
+bmo.est[bmo.rownames .== "xv"]
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
@@ -202,7 +202,7 @@ prtCp(p_Es_v5)
 
 # Problem: this simulation allowed null-range speciation (null->null, null or 000->000,000)
 # Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
-p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, use_distances=true, bmo=bmo)
+p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator, use_distances=true, bmo=bmo)
 
 birthRate = bmo.est[bmo.rownames .== "birthRate"];
 #add_111_to_Carray!(p_Es_v5, birthRate);
@@ -211,7 +211,7 @@ prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
 
 
 
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, use_distances=true, bmo=bmo)
+p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator, use_distances=true, bmo=bmo)
 Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
