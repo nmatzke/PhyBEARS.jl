@@ -1063,7 +1063,9 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
-  update_Cijk_j_rates!(p)
+  #update_Cijk_j_rates!(p)
+  # update vicariance also
+  update_Cijk_rates!(p)
   
   # Populate changing "e" with time
 	#terms = Vector{Float64}(undef, 4)
@@ -1117,6 +1119,11 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
   p.setup.distmat .= p.distances_interpolator(t)
+  
+  
+  # Update the vicariance minimum distance 
+  p.setup.vicdist_t .= vicariance_mindists_interpolator(tvals)
+  
   # ...others?
   
   # Using the current t's distmat, etc. update the dmat, then 

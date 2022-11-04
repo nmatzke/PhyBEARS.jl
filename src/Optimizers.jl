@@ -1299,7 +1299,18 @@ function bmo_updater_v2(bmo, bmo_rows)
 		#bmo.est[bmo_rows.u_mu] = u
 		bmo.est[bmo_rows.u_mu] = bmo.est[bmo_rows.u_mu]
 	end	
+
 	# Update mx01's based on mx01?
+
+
+	# Update xv based on x?
+	# i.e., an x of -1 gives an xv of 1
+	if bmo.type[bmo_rows.xv] == "-x"
+		#u = bmo.est[bmo_rows.u]
+		#bmo.est[bmo_rows.u_e] = u
+		bmo.est[bmo_rows.xv] = -1.0 * bmo.est[bmo_rows.x]
+	end
+
 	
 	return bmo.est
 end # END bmo_updater_v2

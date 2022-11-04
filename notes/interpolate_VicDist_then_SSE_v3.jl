@@ -49,7 +49,7 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 bmo.est[bmo.rownames .== "d"] .= 0.034
 bmo.est[bmo.rownames .== "e"] .= 0.028
 bmo.est[bmo.rownames .== "j"] .= 0.11
-
+bmo.est[bmo_rows.xv]
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
@@ -180,6 +180,10 @@ vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Grid
 vicariance_mindists_interpolator(tvals)
 
 
+
+# 1. create xv parameter
+# 2. create function to interpolate Carray and Qarray
+# 3. put these interpolators into SSEs v11
 
 
 
