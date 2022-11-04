@@ -1135,7 +1135,9 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Using the current t's distmat, etc. update the jmat_t, then
   # propagate through the C matrix
   ##x1 = prtCp(p).rates_t
-  update_Cijk_j_rates!(p);
+  #update_Cijk_j_rates!(p)
+  # update vicariance also
+  update_Cijk_rates!(p)
   ##x2 = prtCp(p).rates_t
 	##x1 .- x2
 	
@@ -1250,7 +1252,7 @@ parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
 		# Works
 		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		# Works
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
 		du[i] = mu[i] -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
   end

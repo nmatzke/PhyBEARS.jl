@@ -332,7 +332,7 @@ end
 function update_Cijk_v_rates!(p)
 	@inbounds @simd for i in 1:length(p.setup.v_rows)
 		# Modify the base vicariance rate by multiplying by mindistance ^ xv (where xv is positive)
-		p.params.Cijk_rates_t[p.setup.v_rows[i]] += p.params.Cijk_rates[p.setup.v_rows[i]] * p.setup.vicdist_t[[i]]^p.bmo.est[p.setup.bmo_rows.xv]
+		p.params.Cijk_rates_t[p.setup.v_rows[i]] += p.params.Cijk_rates[p.setup.v_rows[i]] * p.setup.vicdist_t[i]^p.bmo.est[p.setup.bmo_rows.xv]
 	end
 end
 
