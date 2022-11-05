@@ -1052,11 +1052,14 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # (updates p.params.Qij_vals)
   
   
-  # Get the d_vals for the Qij matrix, at time t
+ # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
   p.setup.distmat .= p.distances_interpolator(t)
-  # ...others?
   
+  
+  # Update the vicariance minimum distance 
+  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(tvals)
+    
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
   update_Qij_d_vals!(p)
@@ -1122,7 +1125,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= vicariance_mindists_interpolator(tvals)
+  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(tvals)
   
   # ...others?
   
