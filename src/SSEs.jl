@@ -1058,7 +1058,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(tvals)
+  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(t)
     
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
@@ -1125,7 +1125,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(tvals)
+  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(t)
   
   # ...others?
   
