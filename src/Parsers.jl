@@ -312,6 +312,7 @@ function parse_distances_fn(fn)
 	distmats = [Matrix{Float64}(undef, numcols, numrows) for _ = 1:num_matrices]
 	
 	blocknum = 1
+	j = 0
 	for i in 1:length(lines)
 		# Try to parse, if not, save the string
 		try
