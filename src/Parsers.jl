@@ -261,6 +261,7 @@ function parse_distances_fn(fn)
 	list_of_numlines_per_block = Any[]
 	numlines = 0
 	count_one = 0
+	lastword = ""
 	for i in 1:length(lines)
 		# Try to parse, if not, save the string
 		try
@@ -282,7 +283,8 @@ function parse_distances_fn(fn)
 
 		# Catch "END"
 		if (uppercase.(lines[i]) == "END")
-		 break
+			lastword = "END"
+		 	break
 		end
 
 		if length(words) > 0
@@ -290,6 +292,11 @@ function parse_distances_fn(fn)
 			count_one = 0
 			numlines = numlines + 1
 		end
+	end
+	
+	# If it didn't end with an END, add 1 to numblocks
+	if lastword == ""
+		numblocks = numblocks + 1
 	end
 	
 	# OK, now list_of_numlines_per_block has the number
