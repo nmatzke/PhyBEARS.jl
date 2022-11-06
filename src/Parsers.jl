@@ -284,8 +284,8 @@ function parse_distances_fn(fn)
 		# If the last line has numbers
 		if (length(words) > 0) && (i == length(lines))
 			numblocks = numblocks + 1
-			push!(list_of_numlines_per_block, numlines)
 			numlines = numlines + 1
+			push!(list_of_numlines_per_block, numlines)
 		end
 
 
