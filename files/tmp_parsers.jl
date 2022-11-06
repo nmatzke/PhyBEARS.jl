@@ -116,14 +116,15 @@ Read a text file containing whitespace-delimited vectors
 
 include("/Users/nickm/GitHub/PhyBEARS.jl/files/tmp_parsers.jl")
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1_wEND.txt";
-area_vectors = parse_areas_fn4(fn)
+area_vectors = parse_areas_fn(fn)
 """
-function parse_areas_fn4(fn)
+function parse_areas_fn(fn)
 	lines = readlines(fn);
 	# Replace tabs with space
 	#lines = readlines(IOBuffer(replace(read(fn), UInt8('\t') => UInt8(' '))));
 	
 	# Figure out how many blocks there are
+	words = Any[]
 	list_of_numcols = Any[]
 	numlines = 0
 	for i in 1:length(lines)

@@ -250,11 +250,13 @@ Read a text file containing whitespace-delimited distance matrices
 (with a blank line between them)
 
 fn = "/GitHub/PhyBEARS.jl/files/distances_changing_v1_wEND.txt";
+distmats = parse_distances_fn(fn)
 """
 function parse_distances_fn(fn)
 	lines = readlines(fn);
 	
 	# Figure out how many blocks there are
+	words = Any[]
 	numblocks = 0
 	list_of_numlines_per_block = Any[]
 	numlines = 0
@@ -400,7 +402,7 @@ function parse_areas_fn(fn)
 	
 	# If all error checks passed, fill in the matrices
 	numrows = length(list_of_numcols)
-	println(list_of_numcols)
+	#println(list_of_numcols)
 	numcols = unique(list_of_numcols)[1]
 	area_vectors = [Vector{Float64}(undef, numcols) for _ = 1:numrows]
 	
@@ -424,116 +426,13 @@ function parse_areas_fn(fn)
 		#print(words)
 		
 		if length(words) > 0
-			print(words)
+			#print(words)
 			area_vectors[i] .= words
 		end
 	end
 	
 	return(area_vectors)	
 end # END function parse_areas_fn(fn)
-
-
-
-
-
-"""
-Read a text file containing whitespace-delimited vectors
-
-(withOUT a blank line between them)
-
-include("/Users/nickm/GitHub/PhyBEARS.jl/files/tmp_parsers.jl")
-fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1_wEND.txt";
-area_vectors = parse_areas_fn3(fn)
-"""
-function parse_areas_fn3(fn)
-	lines = readlines(fn);
-	# Replace tabs with space
-	#lines = readlines(IOBuffer(replace(read(fn), UInt8('\t') => UInt8(' '))));
-	
-	# Figure out how many blocks there are
-	words = Any[]
-	list_of_numcols = Any[]
-	numlines = 0
-	parsed_TF = false
-	for i in 1:length(lines)
-		# Try to parse, if not, save the string
-		try
-			words = parse.(Float64, split(lines[i]))
-			parsed_TF = true
-		catch
-			parsed_TF = false
-		end
-		
-		if parsed_TF == false
-			# Catch "END"
-			if (uppercase.(lines[i]) == "END")
-				break
-			end
-		end
-		
-		if parsed_TF == true
-			if length(words) == 0
-				break
-			end
-		end
-
-		if length(words) > 0
-			push!(list_of_numcols, length(words))
-			numlines = numlines + 1
-		end
-	end
-	
-	# OK, now list_of_numlines_per_block has the number
-	# of lines per block
-	# Check if they match
-	
-	if all(unique(list_of_numcols) .== list_of_numcols) == false
-		txt = "ERROR in parse_areas_fn(): all of the numeric rows must have the same number of entries. Instead, the rows have the number of entries printed below. Fix and re-run."
-		print("\n\n")
-		print(txt)
-		print("\nlist_of_numcols = \n")
-		print(list_of_numcols)
-		error(txt)
-	end
-	
-	# If all error checks passed, fill in the matrices
-	numrows = length(list_of_numcols)
-	println(list_of_numcols)
-	numcols = unique(list_of_numcols)[1]
-	area_vectors = [Vector{Float64}(undef, numcols) for _ = 1:numrows]
-	
-	for i in 1:length(lines)
-		# Try to parse, if not, save the string
-		try
-			words = parse.(Float64, split(lines[i]))
-			parsed_TF = true
-		catch
-			parsed_TF = false
-		end
-		
-		if parsed_TF == false
-			# Catch "END"
-			if (uppercase.(lines[i]) == "END")
-				break
-			end
-		end
-		
-		if parsed_TF == true
-			if length(words) == 0
-				break
-			end
-		end
-		
-		if length(words) > 0
-			print(words)
-			area_vectors[i] .= words
-		end
-	end
-	
-	return(area_vectors)	
-end # END function parse_areas_fn(fn)
-
-
 
 
 
