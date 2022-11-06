@@ -30,7 +30,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, parse_distances_fn, parse_areas_fn, parse_times_fn
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn
 
 #######################################################
 # Temporary file to store functions under development
@@ -481,7 +481,7 @@ end # END function parse_areas_fn(fn)
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/times_v1.txt";
 times = parse_times_fn(fn)
 """
-function parse_times_fn(fn)
+function parse_numbers_list_fn(fn)
 	lines = readlines(fn);
 	
 	# Remove any lines with "END"
@@ -491,7 +491,19 @@ function parse_times_fn(fn)
 	nums_to_delete = (1:length(TF))[TF]
 	deleteat!(lines, nums_to_delete)
 	
-	times = parse.(Float64, lines)
+	nums = parse.(Float64, lines)
+	return(nums)	
+end # END function parse_times_fn(fn)
+
+"""
+fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/times_v1.txt";
+times = parse_times_fn(fn)
+"""
+function parse_times_fn(fn)
+	times = parse_numbers_list_fn(fn)
+	if times[1] != 0.0
+		preprend!([0.0], times)
+	end
 	return(times)	
 end # END function parse_times_fn(fn)
 
