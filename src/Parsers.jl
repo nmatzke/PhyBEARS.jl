@@ -312,7 +312,7 @@ function parse_distances_fn(fn)
 	distmats = [Matrix{Float64}(undef, numcols, numrows) for _ = 1:num_matrices]
 	
 	blocknum = 1
-	j = 0
+	j = 1
 	for i in 1:length(lines)
 		# Try to parse, if not, save the string
 		try
@@ -352,7 +352,6 @@ Read a text file containing whitespace-delimited vectors
 
 (withOUT a blank line between them)
 
-include("/Users/nickm/GitHub/PhyBEARS.jl/files/tmp_parsers.jl")
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1_wEND.txt";
 area_vectors = parse_areas_fn(fn)
 """
