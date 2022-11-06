@@ -281,6 +281,12 @@ function parse_distances_fn(fn)
 			end
 		end
 
+		# Catch "END"
+		if (uppercase.(lines[i]) == "END")
+			lastword = "END"
+		 	break
+		end
+
 		# If the last line has numbers
 		if (length(words) > 0) && (i == length(lines))
 			numblocks = numblocks + 1
@@ -288,12 +294,6 @@ function parse_distances_fn(fn)
 			push!(list_of_numlines_per_block, numlines)
 		end
 
-
-		# Catch "END"
-		if (uppercase.(lines[i]) == "END")
-			lastword = "END"
-		 	break
-		end
 
 		if length(words) > 0
 			# Not a blank line, reset to 0
