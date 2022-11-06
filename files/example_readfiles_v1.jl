@@ -22,6 +22,5 @@ times = parse_times_fn(fn)
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/times_v1_no0time.txt";
 times = parse_numbers_list_fn(fn)
 
-
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/times_wEND_v1.txt";
 times = parse_times_fn(fn)
