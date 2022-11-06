@@ -270,7 +270,7 @@ function parse_distances_fn(fn)
 			words = lines[i]
 		end
 		
-		if (length(words) == 0) || (i == length(lines))
+		if (length(words) == 0)
 			numblocks = numblocks + 1
 			count_one = count_one + 1
 			push!(list_of_numlines_per_block, numlines)
@@ -280,6 +280,14 @@ function parse_distances_fn(fn)
 				error(txt)
 			end
 		end
+
+		# If the last line has numbers
+		if (length(words) > 0) && (i == length(lines))
+			numblocks = numblocks + 1
+			push!(list_of_numlines_per_block, numlines)
+			numlines = numlines + 1
+		end
+
 
 		# Catch "END"
 		if (uppercase.(lines[i]) == "END")
