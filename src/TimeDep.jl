@@ -426,13 +426,6 @@ end # END function update_Qij_d_vals!(p)
 
 
 
-"""
-Construct interpolators for Qmat, Carray
-"""
-function construct_interpolators
-	
-end # END function construct_interpolators
-
 
 
 end # END TimeDep
