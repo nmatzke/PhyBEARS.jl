@@ -100,7 +100,8 @@ print("Unloading and re-loading PhyBEARS...\n")
 
 #Pkg.rm("PhyBEARS")
 #Pkg.rm(PackageSpec(name="PhyBEARS", uuid="7876af07-990d-54b4-ab0e-23690620f79a"))
-#Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl"))
+using Pkg
+Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl"))
 
 # Activate PhyBEARS
 #if isfile("Project.toml") && isfile("Manifest.toml")
