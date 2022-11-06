@@ -30,7 +30,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, parse_distances_fn, parse_areas_fn
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, parse_distances_fn, parse_areas_fn, parse_times_fn
 
 #######################################################
 # Temporary file to store functions under development
@@ -251,6 +251,16 @@ Read a text file containing whitespace-delimited distance matrices
 
 fn = "/GitHub/PhyBEARS.jl/files/distances_changing_v1_wEND.txt";
 distmats = parse_distances_fn(fn)
+
+fn = "/GitHub/PhyBEARS.jl/files/distances_changing_v1.txt";
+distmats = parse_distances_fn(fn)
+
+fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1_wEND.txt";
+area_vectors = parse_areas_fn(fn)
+
+fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1.txt";
+area_vectors = parse_areas_fn(fn)
+
 """
 function parse_distances_fn(fn)
 	lines = readlines(fn);
@@ -373,8 +383,19 @@ Read a text file containing whitespace-delimited vectors
 
 (withOUT a blank line between them)
 
+fn = "/GitHub/PhyBEARS.jl/files/distances_changing_v1_wEND.txt";
+distmats = parse_distances_fn(fn)
+
+fn = "/GitHub/PhyBEARS.jl/files/distances_changing_v1.txt";
+distmats = parse_distances_fn(fn)
+
 fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1_wEND.txt";
 area_vectors = parse_areas_fn(fn)
+
+fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/area_of_areas_changing_v1.txt";
+area_vectors = parse_areas_fn(fn)
+
+
 """
 function parse_areas_fn(fn)
 	lines = readlines(fn);
@@ -456,8 +477,23 @@ function parse_areas_fn(fn)
 end # END function parse_areas_fn(fn)
 
 
-
-
+"""
+fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/times_v1.txt";
+times = parse_times_fn(fn)
+"""
+function parse_times_fn(fn)
+	lines = readlines(fn);
+	
+	# Remove any lines with "END"
+	TF1 = uppercase.(lines) .== "END"
+	TF2 = lines .== ""
+	TF = (TF1 .+ TF2) .> 0
+	nums_to_delete = (1:length(TF))[TF]
+	deleteat!(lines, nums_to_delete)
+	
+	times = parse.(Float64, lines)
+	return(times)	
+end # END function parse_times_fn(fn)
 
 
 end # ENDING Parsers
