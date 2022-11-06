@@ -330,6 +330,12 @@ function parse_distances_fn(fn)
 			j = 1
 			blocknum = blocknum + 1
 		end
+
+		if (length(words) == 0) && (i == length(lines))
+			break
+		end
+	
+	
 	
 		if length(words) > 0
 		# Not a blank line, fill in data
