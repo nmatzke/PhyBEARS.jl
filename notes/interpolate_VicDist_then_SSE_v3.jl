@@ -187,6 +187,9 @@ vicariance_mindists_interpolator(tvals)
 
 
 
+
+
+
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
@@ -215,9 +218,39 @@ p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_T
 Rnames(p_Es_v10)
 prtCp(p_Es_v10)
 
+p = p_Es_v10
+
+p.bmo.est[p.setup.bmo_rows.u_e] = -1.0
+p.bmo.est[p.setup.bmo_rows.x] = -1.0
+p.bmo.est[p.setup.bmo_rows.xv] = 1.0
+
+prtQp(p).vals_t
+update_QC_mats_time_t!(p, 0.0)
+prtQp(p).vals_t
+
+prtQp(p).vals_t
+update_QC_mats_time_t!(p, 1.0)
+prtQp(p).vals_t
+
+prtQp(p).vals_t
+update_QC_mats_time_t!(p, 3.0)
+prtQp(p).vals_t
+
+
+prtCp(p).rates_t
+update_QC_mats_time_t!(p, 0.0)
+prtCp(p).rates_t
+
+
+prtCp(p).rates_t
+update_QC_mats_time_t!(p, 1.0)
+prtCp(p).rates_t
 
 
 
+prtCp(p).rates_t
+update_QC_mats_time_t!(p, 3.0)
+prtCp(p).rates_t
 
 
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
