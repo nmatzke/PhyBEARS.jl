@@ -267,56 +267,8 @@ p2.C_rates_interpolator(1.0)[1:3]
 p2.C_rates_interpolator(2.0)[1:3]
 p2.C_rates_interpolator(3.0)[1:3]
 
+p_Es_v12 = p2
 
-
-
-
-
-@time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
-prtQp(p_Es_v10)
-
-
-
-prtQp(p_Es_v10)
-PhyBEARS.TimeDep.update_Qij_d_vals!(p_Es_v10);
-prtQp(p_Es_v10)
-
-p = p_Es_v10;
-
-
-t=0.3
-p.setup.distmat .= distances_interpolator(t)
-
-
-
-
-	p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
-
-
-p.params.Qij_vals
-p.params.Qij_vals_t
-t=0.0
-p.setup.distmat .= distances_interpolator(t)
-PhyBEARS.TimeDep.update_Qij_d_vals!(p);
-p.params.Qij_vals[1:5]
-p.params.Qij_vals_t[1:5]
-
-
-
-
-
-p_Es_v10.params.Cijk_rates
-p_Es_v10.params.Cijk_rates_t
-PhyBEARS.TimeDep.update_Cijk_j_rates!(p_Es_v10);
-p_Es_v10.params.Cijk_rates
-p_Es_v10.params.Cijk_rates_t
-
-p_Es_v10.params.Cijk_rates .- p_Es_v10.params.Cijk_rates_t
-
-# Are all of the differences less than 1.0e-5?
-all(abs.((p_Es_v10.params.Cijk_rates .- p_Es_v10.params.Cijk_rates_t)) .< 1.0e-5)
-
-prtCp(p_Es_v10)
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
@@ -344,8 +296,16 @@ p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p
 p_Ds_v7.sol_Es_v5(1.0)
 Es_interpolator(1.0)
 
-PhyBEARS.TimeDep.update_Qij_e_vals!(p)
-PhyBEARS.TimeDep.update_Qij_d_vals!(p)
+
+
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+# This solution is an interpolator
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+Es_interpolator = sol_Es_v12;
+
+
+
+
 
 # Calculate the Ds & total lnL via downpass
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
@@ -355,6 +315,10 @@ PhyBEARS.TimeDep.update_Qij_d_vals!(p)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup, states_as_areas_lists=p_Es_v10.states_as_areas_lists, area_of_areas_interpolator=p_Es_v10.area_of_areas_interpolator, distances_interpolator=p_Es_v10.distances_interpolator, vicariance_mindists_interpolator=p_Es_v10.vicariance_mindists_interpolator, bmo=p_Es_v10.bmo, sol_Es_v10=sol_Es_v10);
+
+
+p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, area_of_areas_interpolator=p_Es_v12.area_of_areas_interpolator, distances_interpolator=p_Es_v12.distances_interpolator, vicariance_mindists_interpolator=p_Es_v12.vicariance_mindists_interpolator, Q_vals_interpolator=p_Es_v12.Q_vals_interpolator, C_rates_interpolator=p_Es_v12.C_rates_interpolator, bmo=p_Es_v12.bmo, sol_Es_v12=sol_Es_v12);
+
 
 # Use ONLY with add_111
 #p_Ds_v10.params.Cijk_rates[1] = 0.0;
@@ -381,6 +345,7 @@ all(abs.(prtCp(p_Ds_v10).rate .- prtCp(p_Ds_v5).rate) .< 1e-6)
 # -20.921822175682088 - -20.921822175682088
 # 0.0
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
