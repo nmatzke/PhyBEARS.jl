@@ -253,6 +253,45 @@ update_QC_mats_time_t!(p, 3.0)
 prtCp(p).rates_t
 
 
+
+# Construct interpolators for Q_vals_t and C_rates_t
+Q_vals_by_t = [Vector{Float64}(undef, length(p.params.Qij_vals_t)) for _ = 1:length(tvals)]
+C_rates_by_t = [Vector{Float64}(undef, length(p.params.Cijk_rates_t)) for _ = 1:length(tvals)]
+
+for i in 1:length(tvals)
+	# Zero out the rates
+	Q_vals_by_t[i] .= 0.0
+	C_rates_by_t[i] .= 0.0
+	
+	# Update the rates
+	update_QC_mats_time_t!(p, tvals[i])
+	
+	# Save these rates
+	Q_vals_by_t[i] .= p.params.Qij_vals_t
+	C_rates_by_t[i] .= p.params.Cijk_rates_t
+end
+
+Q_vals_by_t
+C_rates_by_t
+
+Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
+C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
+
+
+Q_vals_interpolator(0.0)[1:3]
+Q_vals_interpolator(1.0)[1:3]
+Q_vals_interpolator(2.0)[1:3]
+Q_vals_interpolator(3.0)[1:3]
+
+C_rates_interpolator(0.0)[1:3]
+C_rates_interpolator(1.0)[1:3]
+C_rates_interpolator(2.0)[1:3]
+C_rates_interpolator(3.0)[1:3]
+
+
+
+
+
 @time PhyBEARS.TimeDep.update_Qij_e_vals!(p_Es_v10);
 prtQp(p_Es_v10)
 
