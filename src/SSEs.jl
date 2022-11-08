@@ -1358,7 +1358,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 
@@ -1381,7 +1381,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 		
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 
