@@ -1,9 +1,13 @@
 
 #######################################################
-# Interpolate a Carray matrix
+# Example inference on a simulated tree & geography dataset
+# (from Wallis's ss8_sim_001)
+# 2022-11-09
 #
-# Notes: Saving interpolated function into a separate file in Julia
-# https://stackoverflow.com/questions/58499330/saving-interpolated-function-into-a-separate-file-in-julia
+# We will compare inference under 
+# * SSE likelihood calculator v7 (constant rates through time, very fast)
+# * SSE likelihood calculator v12 (changing rates through time, very fast)
+#   - Here, to start, we will only change the distances through time
 #######################################################
 
 using Interpolations	# for Linear, Gridded, interpolate
@@ -16,43 +20,41 @@ using PhyBEARS
 using DataFrames
 using CSV
 
-trfn = "/GitHub/PhyBEARS.jl/data/Psychotria_tree.newick"
+# Change the working directory as needed
+wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+cd(wd)
+
+# This simulation has 50 living species
+trfn = "newtree"
 tr = readTopology(trfn)
 
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria_geog.data"
+lgdata_fn = "rangedata.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
-include_null_range = false
+include_null_range = true
 numareas = Rncol(geog_df)-1
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 
-# DEC model on Hawaiian Psychotria
+# DEC-type SSE model on Hawaiian Psychotria
+# We are setting "j" to 0.0, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object()
 bmo.type[bmo.rownames .== "j"] .= "free"
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr)
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 0.0
-bmo.est[bmo.rownames .== "e"] .= 0.0
+bmo.est[bmo.rownames .== "d"] .= 0.034
+bmo.est[bmo.rownames .== "e"] .= 0.028
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.11
+bmo.est[bmo.rownames .== "j"] .= 0.0
 bmo.est[bmo.rownames .== "u"] .= 0.0
 bmo.est[bmo.rownames .== "x"] .= 0.0
 bmo.est .= bmo_updater_v1(bmo);
 
-bmo.est[bmo.rownames .== "d"] .= 0.034
-bmo.est[bmo.rownames .== "e"] .= 0.028
-bmo.est[bmo.rownames .== "j"] .= 0.00001
-
 bmo.est[bmo.rownames .== "birthRate"] .= 0.1
 bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 
-bmo.est[bmo.rownames .== "d"] .= 0.034
-bmo.est[bmo.rownames .== "e"] .= 0.028
-bmo.est[bmo.rownames .== "j"] .= 0.11
-bmo.est[bmo.rownames .== "xv"]
 
 # Set up the model
-inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # setup.vicdist_base  # a list of distances between ranges (e.g. minimum distance), 
