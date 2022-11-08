@@ -11,10 +11,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 
 print("PhyBEARS: loading TimeDep.jl dependencies...")
 
-using LinearAlgebra  	# for area_interpolator = interpolate((times,), areas, Gridded(Linear()))
-											# for "I" in: Matrix{Float64}(I, 2, 2)
-										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
-
+using Interpolations	# for Linear, Gridded, interpolate
 
 using PhyloBits.PNtypes	# for e.g. HybridNetwork
 using PhyloBits.TrUtils # for e.g. flat2
