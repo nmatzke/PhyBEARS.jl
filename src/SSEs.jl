@@ -13,7 +13,7 @@ using PhyBEARS.TimeDep # for get_area_of_range etc.
 print("...done.\n")
 
 
-export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd, update_QC_mats_time_t!, construct_QC_interpolators
+export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd, update_QC_mats_time_t!
 
 
 
@@ -1488,35 +1488,5 @@ function update_QC_mats_time_t!(p, t)
 
 end # END function update_QC_mats_time_t!(p, t)
 
-
-function construct_QC_interpolators(p, tvals)
-	# Construct interpolators for Q_vals_t and C_rates_t
-	Q_vals_by_t = [Vector{Float64}(undef, length(p.params.Qij_vals_t)) for _ = 1:length(tvals)]
-	C_rates_by_t = [Vector{Float64}(undef, length(p.params.Cijk_rates_t)) for _ = 1:length(tvals)]
-
-	for i in 1:length(tvals)
-		# Zero out the rates
-		Q_vals_by_t[i] .= 0.0
-		C_rates_by_t[i] .= 0.0
-	
-		# Update the rates
-		update_QC_mats_time_t!(p, tvals[i])
-	
-		# Save these rates
-		Q_vals_by_t[i] .= p.params.Qij_vals_t
-		C_rates_by_t[i] .= p.params.Cijk_rates_t
-	end
-
-	Q_vals_by_t
-	C_rates_by_t
-
-	Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
-	C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
-	
-	# Copy the tuple p
-	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=p.area_of_areas_interpolator, distances_interpolator=p.distances_interpolator, vicariance_mindists_interpolator=p.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator, use_distances=p.use_distances, bmo=p.bmo)
-	
-	return(p2)
-end # END function construct_QC_interpolators(p, tvals)
 
 end # end of module

@@ -11,6 +11,11 @@ __precompile__(false)  # will cause using / import to load it directly into the
 
 print("PhyBEARS: loading TimeDep.jl dependencies...")
 
+using LinearAlgebra  	# for area_interpolator = interpolate((times,), areas, Gridded(Linear()))
+											# for "I" in: Matrix{Float64}(I, 2, 2)
+										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+
+
 using PhyloBits.PNtypes	# for e.g. HybridNetwork
 using PhyloBits.TrUtils # for e.g. flat2
 using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
@@ -19,7 +24,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, construct_interpolators
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, construct_QC_interpolators
 
 
 """
@@ -426,6 +431,36 @@ end # END function update_Qij_d_vals!(p)
 
 
 
+
+function construct_QC_interpolators(p, tvals)
+	# Construct interpolators for Q_vals_t and C_rates_t
+	Q_vals_by_t = [Vector{Float64}(undef, length(p.params.Qij_vals_t)) for _ = 1:length(tvals)]
+	C_rates_by_t = [Vector{Float64}(undef, length(p.params.Cijk_rates_t)) for _ = 1:length(tvals)]
+
+	for i in 1:length(tvals)
+		# Zero out the rates
+		Q_vals_by_t[i] .= 0.0
+		C_rates_by_t[i] .= 0.0
+	
+		# Update the rates
+		update_QC_mats_time_t!(p, tvals[i])
+	
+		# Save these rates
+		Q_vals_by_t[i] .= p.params.Qij_vals_t
+		C_rates_by_t[i] .= p.params.Cijk_rates_t
+	end
+
+	Q_vals_by_t
+	C_rates_by_t
+
+	Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
+	C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
+	
+	# Copy the tuple p
+	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=p.area_of_areas_interpolator, distances_interpolator=p.distances_interpolator, vicariance_mindists_interpolator=p.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator, use_distances=p.use_distances, bmo=p.bmo)
+	
+	return(p2)
+end # END function construct_QC_interpolators(p, tvals)
 
 
 end # END TimeDep
