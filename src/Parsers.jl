@@ -247,7 +247,7 @@ function check_tr_geog_tip_labels(tr, geog_df)
 	tipnames = sort(tr.names)
 	geognames = sort(geog_df.tipnames)
 	
-	if (length(tipnames) != length(geognames)
+	if (length(tipnames) != length(geognames))
 		txt1 = "ERROR in check_tr_geog_tip_labels(tr, geog_df): the tree and the geography file must have the same number of species/OTUs."
 		txt2 = paste0(["Instead, the tree has ", length(tipnames), " tips, and the geography file has ", length(geog_df.tipnames), ". Fix these input files and re-run."])
 		println(txt1)
