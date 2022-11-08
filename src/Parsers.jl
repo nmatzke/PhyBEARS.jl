@@ -177,7 +177,7 @@ end # END getranges_from_LagrangePHYLIP
 function tipranges_to_tiplikes(inputs, geog_df)
 	# Error check
 	taxa = inputs.trdf.taxa
-	tipnames = taxa[inputs.trdf.nodeType .== "tip"]
+	tipnames = sort(taxa[inputs.trdf.nodeType .== "tip"])
 	check_tr_geog_tip_labels(tipnames, geog_df)
 	
 	
@@ -272,6 +272,7 @@ end
 # Alternative version
 function check_tr_geog_tip_labels(tipnames::Vector{String}, geog_df::DataFrame)
 	#tipnames = sort(tr.names)
+	tipnames = sort(tipnames)
 	geognames = sort(geog_df.tipnames)
 	
 	if (length(tipnames) != length(geognames))
