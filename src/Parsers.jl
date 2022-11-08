@@ -30,7 +30,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn
 
 #######################################################
 # Temporary file to store functions under development
@@ -175,6 +175,10 @@ end # END getranges_from_LagrangePHYLIP
 # Put the tip ranges into the likelihoods
 #######################################################
 function tipranges_to_tiplikes(inputs, geog_df)
+	# Error check
+	check_tr_geog_tip_labels(inputs.setup.tr, geogdf)
+	
+	
 	dfnames = names(geog_df)
 	area_column_nums = 2:length(dfnames)
 	areas_txt_list = dfnames[area_column_nums]
@@ -237,7 +241,30 @@ end # END function tipranges_to_tiplikes ()
 
 
 
+# Check that the tree and the geog file have matching tip labels
 
+function check_tr_geog_tip_labels(tr, geog_df)
+	tipnames = sort(tr.names)
+	geognames = sort(geog_df.tipnames)
+	
+	if (length(tipnames) != length(geognames)
+		txt1 = "ERROR in check_tr_geog_tip_labels(tr, geog_df): the tree and the geography file must have the same number of species/OTUs."
+		txt2 = paste0(["Instead, the tree has ", length(tipnames), " tips, and the geography file has ", length(geog_df.tipnames), ". Fix these input files and re-run."])
+		println(txt1)
+		println(txt2)
+		error(paste0([txt1, " ", txt2]))
+	end
+	
+	# Otherwise, check that they match
+	TF = all(tipnames .== geognames)
+	if TF == false
+		txt = "ERROR in check_tr_geog_tip_labels(tr, geog_df): the tree and the geography species/OTU names do not match. Printing them to screen."
+		println(txt)
+		display(Rcbind(tipnames, geognames))
+		error(txt)
+	end
+	return()
+end
 
 
 
