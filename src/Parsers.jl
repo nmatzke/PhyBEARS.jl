@@ -178,7 +178,7 @@ function tipranges_to_tiplikes(inputs, geog_df)
 	# Error check
 	taxa = inputs.trdf.taxa
 	tipnames = taxa[inputs.trdf.nodeType .== "tip"]
-	check_tr_geog_tip_labels(tipnames, geogdf)
+	check_tr_geog_tip_labels(tipnames, geog_df)
 	
 	
 	dfnames = names(geog_df)
