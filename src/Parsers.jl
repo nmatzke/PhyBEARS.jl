@@ -176,7 +176,9 @@ end # END getranges_from_LagrangePHYLIP
 #######################################################
 function tipranges_to_tiplikes(inputs, geog_df)
 	# Error check
-	check_tr_geog_tip_labels(inputs.setup.tr, geogdf)
+	taxa = inputs.trdf.taxa
+	tipnames = taxa[inputs.trdf.nodeType .== "tip"]
+	check_tr_geog_tip_labels(tipnames, geogdf)
 	
 	
 	dfnames = names(geog_df)
@@ -243,7 +245,7 @@ end # END function tipranges_to_tiplikes ()
 
 # Check that the tree and the geog file have matching tip labels
 
-function check_tr_geog_tip_labels(tr, geog_df)
+function check_tr_geog_tip_labels(tr::PhyloBits.PNtypes.HybridNetwork, DataFrame::geog_df)
 	tipnames = sort(tr.names)
 	geognames = sort(geog_df.tipnames)
 	
@@ -267,6 +269,29 @@ function check_tr_geog_tip_labels(tr, geog_df)
 end
 
 
+# Alternative version
+function check_tr_geog_tip_labels(tipnames::Vector{String}, DataFrame::geog_df)
+	#tipnames = sort(tr.names)
+	geognames = sort(geog_df.tipnames)
+	
+	if (length(tipnames) != length(geognames))
+		txt1 = "ERROR in check_tr_geog_tip_labels(tr, geog_df): the tree and the geography file must have the same number of species/OTUs."
+		txt2 = paste0(["Instead, the tree has ", length(tipnames), " tips, and the geography file has ", length(geog_df.tipnames), ". Fix these input files and re-run."])
+		println(txt1)
+		println(txt2)
+		error(paste0([txt1, " ", txt2]))
+	end
+	
+	# Otherwise, check that they match
+	TF = all(tipnames .== geognames)
+	if TF == false
+		txt = "ERROR in check_tr_geog_tip_labels(tr, geog_df): the tree and the geography species/OTU names do not match. Printing them to screen."
+		println(txt)
+		display(Rcbind(tipnames, geognames))
+		error(txt)
+	end
+	return()
+end
 
 
 
