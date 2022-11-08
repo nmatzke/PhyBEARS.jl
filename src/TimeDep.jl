@@ -21,6 +21,8 @@ using PhyloBits.TrUtils # for e.g. flat2
 using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 #using Distributed			# for e.g. Distributed.@spawn
 
+using PhyBEARS.SSEs			# for update_QC_mats_time_t!
+
 print("...done.\n")
 
 
