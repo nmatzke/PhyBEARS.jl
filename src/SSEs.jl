@@ -1350,7 +1350,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   # Populate changing "e" with time
 	#terms = Vector{Float64}(undef, 4)
 
-  @inbounds for i in 1:n
+  @inbounds for i in 1:p.n
 		p.terms .= 0.0
 		
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
@@ -1374,7 +1374,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 #	uE = p.uE
 	uE = p.sol_Es_v10(t)
 	#terms = Vector{Float64}(undef, 4)
-  @inbounds for i in 1:n
+  @inbounds for i in 1:p.n
 		p.terms .= 0.0
 
 		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
