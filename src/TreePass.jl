@@ -1190,7 +1190,7 @@ end # END function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 
 # Node operation, combining probabilities from above (assumed to be fast)
 # Time-dependent!  Updates the Carray rates for this timepoint
-function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v5)
+function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -1240,7 +1240,7 @@ function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v5)
 # 		print(current_nodeIndex)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
-		nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+		nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
@@ -1609,7 +1609,7 @@ end
 # This function can read from res, but writing to res is VERY BAD as 
 # it created conflicts apparently when there were more @spawns than cores
 # Do all the writing to res in the while() loop
-function branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v10, solver_options=solver_options)
+function branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
 	calc_start_time = Dates.now()
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
@@ -5482,7 +5482,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v5=p_Ds_v12)
+			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v12=p_Ds_v12)
 			# (updates res)
 		end
 	
