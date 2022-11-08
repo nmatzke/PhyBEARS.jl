@@ -245,7 +245,7 @@ end # END function tipranges_to_tiplikes ()
 
 # Check that the tree and the geog file have matching tip labels
 
-function check_tr_geog_tip_labels(tr::PhyloBits.PNtypes.HybridNetwork, DataFrame::geog_df)
+function check_tr_geog_tip_labels(tr::PhyloBits.PNtypes.HybridNetwork, geog_df::DataFrame)
 	tipnames = sort(tr.names)
 	geognames = sort(geog_df.tipnames)
 	
@@ -270,7 +270,7 @@ end
 
 
 # Alternative version
-function check_tr_geog_tip_labels(tipnames::Vector{String}, DataFrame::geog_df)
+function check_tr_geog_tip_labels(tipnames::Vector{String}, geog_df::DataFrame)
 	#tipnames = sort(tr.names)
 	geognames = sort(geog_df.tipnames)
 	
