@@ -70,6 +70,15 @@ geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 """
 
 
+function extract_first_integer_from_string(str)
+	tmp = [filter(isdigit, collect(s)) for s in str]
+	tmp2 = tmp[length.(tmp) .> 0]
+	tmp3 = parse.(Int, string(tmp2[1][]))
+	return(tmp3)
+end
+
+
+
 """
 Function to read in Lagrange/BioGeoBEARS-type PHYLIP-formatted
  geography input files.
