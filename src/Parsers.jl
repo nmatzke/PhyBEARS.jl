@@ -707,7 +707,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 			area_of_areas[i] .= area_of_areas[i] ./ maxval
 		end
 	
-		area_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
+		area_of_areas_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
 	else
 		area_of_areas = [Vector{Float64}(undef, numareas) for _ = 1:length(times)]
 		for i in 1:length(area_of_areas)
@@ -736,7 +736,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 
 	vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Gridded(Linear()));
 
-	interpolators = (interpolator_times=times, distances_interpolator=distances_interpolator, area_interpolator=area_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
+	interpolators = (interpolator_times=times, distances_interpolator=distances_interpolator, area_of_areas_interpolator=area_of_areas_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
 	
 	return(interpolators)
 end # END function files_to_interpolators()

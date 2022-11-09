@@ -39,21 +39,17 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0, for now -- so, no jump dispersal
-bmo = construct_BioGeoBEARS_model_object()
-bmo.type[bmo.rownames .== "j"] .= "free"
-bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr)
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 0.034
-bmo.est[bmo.rownames .== "e"] .= 0.028
-bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.0
-bmo.est[bmo.rownames .== "u"] .= 0.0
-bmo.est[bmo.rownames .== "x"] .= 0.0
+bmo = construct_BioGeoBEARS_model_object();
+bmo.type[bmo.rownames .== "j"] .= "free";
+bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
+bmo.est[bmo.rownames .== "d"] .= 0.034;
+bmo.est[bmo.rownames .== "e"] .= 0.028;
+bmo.est[bmo.rownames .== "a"] .= 0.0;
+bmo.est[bmo.rownames .== "j"] .= 0.0;
+bmo.est[bmo.rownames .== "u"] .= 0.0;
+bmo.est[bmo.rownames .== "x"] .= 0.0;
 bmo.est .= bmo_updater_v1(bmo);
-
-bmo.est[bmo.rownames .== "birthRate"] .= 0.1
-bmo.est[bmo.rownames .== "deathRate"] .= 0.1
-
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
@@ -72,17 +68,19 @@ files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
 files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
 files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
 
-interpolators = files_to_interpolators(files, p.setup.numareas, p.setup.states_list, p.setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=100.0)
+interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=100.0);
 
 
-p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
+p_Es_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 
-p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
+p_Es_v10 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 p = p_Es_v10
 
 # Add Q, C interpolators
+temptimes = reduce(vcat, [times, sort(unique(trdf.node_age))])
+times = sort(unique(temptimes))
 p2 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v10, times);
 
 
