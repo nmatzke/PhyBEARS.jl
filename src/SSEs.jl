@@ -1031,7 +1031,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
 
  	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
  	
   # Possibly varying parameters
   n = p.n
@@ -1054,11 +1054,11 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   
  # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
-  p.setup.distmat .= p.distances_interpolator(t)
+  p.setup.distmat .= p.interpolators.distances_interpolator(t)
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(t)
+  p.setup.vicdist_t .= p.interpolators.vicariance_mindists_interpolator(t)
     
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
@@ -1093,7 +1093,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
  	max_extinction_rate = p.setup.max_extinction_rate
  	
  	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
 
   # NOT the slow step:
   # Possibly varying parameters
@@ -1121,11 +1121,11 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
   # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
-  p.setup.distmat .= p.distances_interpolator(t)
+  p.setup.distmat .= p.interpolators.distances_interpolator(t)
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(t)
+  p.setup.vicdist_t .= p.interpolators.vicariance_mindists_interpolator(t)
   
   # ...others?
   
@@ -1339,8 +1339,8 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   # update_QC_mats_time_t!(p, t)
   
   # Interpolate the current Q_vals_t and C_rates_t
-  p.params.Qij_vals_t .= p.Q_vals_interpolator(t)
-  p.params.Cijk_rates_t .= p.C_rates_interpolator(t)
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]]
@@ -1366,8 +1366,8 @@ end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 # Time-varying areas & extinction rates
 parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
-  p.params.Qij_vals_t .= p.Q_vals_interpolator(t)
-  p.params.Cijk_rates_t .= p.C_rates_interpolator(t)
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5

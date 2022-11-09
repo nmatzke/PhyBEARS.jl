@@ -79,7 +79,7 @@ p_Es_v10 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_T
 p = p_Es_v10
 
 # Add Q, C interpolators
-temptimes = reduce(vcat, [times, sort(unique(trdf.node_age))])
+temptimes = reduce(vcat, [interpolators.interpolator_times, sort(unique(trdf.node_age))])
 times = sort(unique(temptimes))
 p2 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v10, times);
 
