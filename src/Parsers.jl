@@ -703,7 +703,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 		areas_vector = collect(Iterators.flatten(vec.(area_of_areas)))
 		maxval = maximum(areas_vector)
 
-		for i in 1:length(area_vectors)
+		for i in 1:length(area_of_areas)
 			area_of_areas[i] .= area_of_areas[i] ./ maxval
 		end
 	
