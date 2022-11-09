@@ -314,3 +314,13 @@ all(abs.(prtCp(p_Ds_v10).rate .- prtCp(p_Ds_v5).rate) .< 1e-6)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
+
+files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
+files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
+files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+
+interpolators = files_to_interpolators(files, p.setup.numareas, p.setup.states_list, p.setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=1000.0)
+
+# include("/Users/nickm/GitHub/PhyBEARS.jl/ex/siminf_v12a/example_inf_v12a.jl")
+
+
