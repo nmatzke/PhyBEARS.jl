@@ -97,7 +97,7 @@ end
 
 # Add one last distmat on the end to cover the bottom of the tree
 distmats[length(distmats)] .= distmats[length(distmats)-1]
-push!(unique_times, tree_age)
+push!(unique_times, oldest_possible_tree)
 sort!(unique_times)
 
 show(distmats)
@@ -116,7 +116,7 @@ distmats
 # Distances interpolator for a series of distances
 #######################################################
 distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
-tvals = seq(0.0, max_age, 1.0);
+tvals = seq(0.0, oldest_possible_tree, 1.0);
 distances_interpolator(tvals)
 
 
@@ -207,7 +207,7 @@ p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator, use_distances=true, bmo=bmo)
 
 
-p2 = construct_QC_interpolators(p, tvals);
+p2 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v10, times);
 
 
 # Interpolators
@@ -306,104 +306,10 @@ all(abs.(prtCp(p_Ds_v10).rate .- prtCp(p_Ds_v5).rate) .< 1e-6)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
-# WORKS
-@benchmark PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-
-
-
-
-
-#######################################################
-# Conclusions on calculation time changes
-#
-# deathRate = 0.0, u=-1.0  - Fails as null range with 0.0^-1.0 gives Inf
-# deathRate = 0.0, u= 1.0  - Time  (median):     30.675 ms  
-# deathRate = 0.01,u= 1.0  - Time  (median):     31.224 ms
-# deathRate = 0.1, u=-1.0 -  Time  (median):     39.746 ms 
-# deathRate = 0.1, u=-1.0 - Time  (median):     111.056 ms 
-#######################################################
-
-
-
-
-
-
-
-p_Ds_v10.bmo.est[p_Ds_v10.bmo.rownames .== "u"] .= 1.0
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-p_Ds_v10.bmo.est[p_Ds_v10.bmo.rownames .== "u"] .= -10.0
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-
-
-
-using PProf
-@pprof PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-
-
-
-#######################################################
-# Now make dispersal events dependent on distance
-#######################################################
-
-
-
-#######################################################
-# Now make "e" events depend on "u"
-#######################################################
-# Update elist, i.e. the multiplier on the base e rate (fixed time)
-inputs.setup.elist .= inputs.setup.elist_base .* inputs.setup.area_of_areas.^bmo.est[bmo.rownames .== "u"][1]
-
-# Update elist_t, i.e. the multiplier on the base e rate (at time t)
-p = p_Ds_v10;
-tval = 5.1
-PhyBEARS.TimeDep.update_Qij_e_vals!(p);
-p.params.Qij_vals_t
-p.setup.elist_t .= p.setup.elist_base .* area_of_areas_interpolator(tval) .^ bmo.est[p.setup.u_row]
-
-# Update the Qmat, using elist_t
-prtQp(p)
-Rnames(p.p_indices)
-e_rows = (1:length(p.p_indices.Qarray_event_types))[p.p_indices.Qarray_event_types .== "e"]
-
-for i in 1:length(e_rows)
-	starting_statenum = p.p_indices.Qarray_ivals[e_rows[i]]
-	ending_statenum = p.p_indices.Qarray_jvals[e_rows[i]]
-	area_lost = symdiff(inputs.setup.states_list[starting_statenum], inputs.setup.states_list[ending_statenum])
-	# actual rate of e = base_rate_of_e * area_of_area_lost ^ u
-	p.params.Qij_vals_t[e_rows[i]] = p.params.Qij_vals[e_rows[i]] * inputs.setup.elist_t[area_lost]
-end
-
-
-p.params.Qij_vals_t
-
-# Now make an extinction_rate_interpolator
-function get_extinction_rate_multiplier(tval, uval, state_as_areas_list, area_of_areas_interpolator)
-	extinction_rate_multiplier = 1.0 * (get_area_of_range_using_interpolator(tval, state_as_areas_list, area_of_areas_interpolator) ^ uval)
-	# Error check
-	extinction_rate_multiplier = minimum([extinction_rate_multiplier, 10000.0])
-	return(extinction_rate_multiplier)
-end
-
-get_extinction_rate_multipliers = x -> get_extinction_rate_multiplier(x, uval, state_as_areas_list, area_of_areas_interpolator)
-
-# https://docs.juliahub.com/JLD2/O1EyT/0.1.13/
-cd("/GitHub/PhyBEARS.jl/src")
-@save "list_of_interpolators.jld2" list_of_interpolators
-
-# Reloading
-using JLD2
-using Interpolations # for Interpolations.scale, Interpolations.interpolate
-@load "list_of_interpolators.jld2" list_of_interpolators # <- It loads to "list_of_interpolators"...has to be this
-
-# Find location of a module
-pathof(PhyBEARS)
-interp_jld2_path = join([pathof(PhyBEARS), ])
-
-itp = interpolate((x,), y, Gridded(Linear()))
 
