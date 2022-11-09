@@ -17,7 +17,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -42,6 +42,24 @@ function default_Cparams()
 	j = 0.0
 	Cparams = CparamsStructure(y, s, v, j)
 end
+
+
+mutable struct interpolators
+	distances_interpolator::Interpolations.GriddedInterpolation{Matrix{Float64}, 1, Vector{Matrix{Float64}}, Gridded{Linear{Throw{OnGrid}}}, Tuple{Vector{Float64}}}
+	
+	area_of_areas_interpolator::Interpolations.GriddedInterpolation{Vector{Float64}, 1, Vector{Vector{Float64}}, Gridded{Linear{Throw{OnGrid}}}, Tuple{Vector{Float64}}}
+	
+	vicariance_mindists_interpolator::Interpolations.GriddedInterpolation{Vector{Float64}, 1, Vector{Vector{Float64}}, Gridded{Linear{Throw{OnGrid}}}, Tuple{Vector{Float64}}}
+	
+	Q_vals_interpolator::Interpolations.GriddedInterpolation{Vector{Float64}, 1, Vector{Vector{Float64}}, Gridded{Linear{Throw{OnGrid}}}, Tuple{Vector{Float64}}}
+
+	C_rates_interpolator::Interpolations.GriddedInterpolation{Vector{Float64}, 1, Vector{Vector{Float64}}, Gridded{Linear{Throw{OnGrid}}}, Tuple{Vector{Float64}}}
+	
+#	Es_interpolator::ODESolution
+
+#	Gmat_interpolator::ODESolution
+end
+
 
 
 
@@ -901,8 +919,27 @@ end
 
 
 
+mutable struct FilesStructure
+	times_fn::String
+	distances_fn::String
+	distances2_fn::String
+	distances3_fn::String
+	envdistances_fn::String
+	manual_dispersal_multipliers_fn::String
+	area_of_areas_fn::String
+end
 
 
+"""
+files = construct_files_list()
+files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
+files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
+files.distances2_fn = ""
+files.distances3_fn = ""
+files.envdistances_fn = ""
+files.manual_dispersal_multipliers_fn = ""
+files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+"""
 function construct_files_list()
 	times_fn = ""         # The time-points where other files specify distances etc. 
 												# Should start with 0.0
@@ -914,7 +951,7 @@ function construct_files_list()
 	manual_dispersal_multipliers_fn = ""
 	area_of_areas_fn = ""
 	
-	files = (times_fn=times_fn, distances_fn=distances_fn, distances2_fn=distances2_fn, distances3_fn=distances3_fn, envdistances_fn=envdistances_fn, manual_dispersal_multipliers_fn=manual_dispersal_multipliers_fn, area_of_areas_fn=area_of_areas_fn)
+	files = FilesStructure(times_fn, distances_fn, distances2_fn, distances3_fn, envdistances_fn, manual_dispersal_multipliers_fn, area_of_areas_fn)
 	return(files)
 end # END function construct_files_list()
 

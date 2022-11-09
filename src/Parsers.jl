@@ -30,7 +30,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, extract_first_integer_from_string
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, extract_first_integer_from_string
 
 #######################################################
 # Temporary file to store functions under development
@@ -643,6 +643,101 @@ function parse_times_fn(fn)
 	end
 	return(times)	
 end # END function parse_times_fn(fn)
+
+
+
+#######################################################
+# Read distances etc. files to interpolators
+#######################################################
+function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals; oldest_possible_age=1000.0)
+	if files.distances_fn != ""
+		times = parse_times_fn(files.times_fn)
+	else
+		times = [0.0, oldest_possible_age]
+	end
+	
+	#######################################################
+	# Distances interpolator for a series of distances
+	#######################################################
+	if files.distances_fn != ""
+		distmats = parse_distances_fn(files.distances_fn)
+		# files.distances2_fn
+		# files.distances3_fn
+		# files.envdistances_fn
+		# files.manual_dispersal_multipliers_fn
+		TF = length(times) == length(distmats)
+		if TF == false
+			txt = "STOP ERROR in files_to_interpolators(). distances_fn must have the same number of entries as the times_fn file."
+			error(txt)
+		end
+	
+		# Let's divide the distances by the maximum distance
+		dists_vector = collect(Iterators.flatten(vec.(distmats)))
+		dists_vector2 = dists_vector[dists_vector .> 0.0]
+		maxval = maximum(dists_vector2)
+
+		for i in 1:length(distmats)
+			distmats[i] .= distmats[i] ./ maxval
+		end
+	
+		distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
+	else
+		distmats = [Array{Float64}(undef, numareas, numareas) for _ = 1:length(times)]
+		distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
+	end
+	
+	#######################################################
+	# Area of areas
+	#######################################################
+	if files.area_of_areas_fn != ""
+		area_of_areas = parse_areas_fn(files.area_of_areas_fn)
+		TF = length(times) == length(area_of_areas)
+		if TF == false
+			txt = "STOP ERROR in files_to_interpolators(). area_of_areas_fn must have the same number of entries as the times_fn file."
+			error(txt)
+		end
+	
+		# Let's divide the distances by the maximum area
+		areas_vector = collect(Iterators.flatten(vec.(area_of_areas)))
+		maxval = maximum(areas_vector)
+
+		for i in 1:length(area_vectors)
+			area_of_areas[i] .= area_of_areas[i] ./ maxval
+		end
+	
+		area_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
+	else
+		area_of_areas = [Vector{Float64}(undef, numareas) for _ = 1:length(times)]
+		for i in 1:length(area_of_areas)
+			area_of_areas[i] .= 1.0
+		end
+		area_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
+	end
+
+	
+	#######################################################
+	# Vicariance - minimum distances interpolator
+	#######################################################
+	#######################################################
+	# Construct vicariance minimum-distances interpolator
+	# (for the v_rows of the matrix)
+	#######################################################
+	# A Vector of # times Vectors, each of length v_rows
+	# THIS AVOIDS THE LINKED VECTORS ISSUE
+	changing_mindists = [Vector{Float64}(undef, length(v_rows)) for _ = 1:length(times)]
+
+	# Populate the minimum distances
+	for i in 1:length(times)
+		distmat = distances_interpolator(times[i])
+		update_min_vdist_at_time_t!(changing_mindists[i], v_rows, distmat, states_list, Carray_jvals, Carray_kvals; mindist=1.0e9)
+	end
+
+	vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Gridded(Linear()));
+
+	interpolators = (distances_interpolator=distances_interpolator, area_interpolator=area_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
+	
+	return(interpolators)
+end # END function files_to_interpolators()
 
 
 end # ENDING Parsers
