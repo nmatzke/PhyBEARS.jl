@@ -355,7 +355,7 @@ end
 
 
 """
-# 1. Update parameter 'd' based on a distance matrix (already determined for time 't')
+# 1. Update parameter 'd' based on a distance matrix (NOTE: MUST BE ALREADY DETERMINED for time 't')
 # 2. Propagate that through the Q matrix, in the form of updating the Qij_vals
 # (save multiple distance matrices for later)
 """
@@ -440,7 +440,7 @@ function update_QC_mats_time_t!(p, t)
  	max_extinction_rate = p.setup.max_extinction_rate
 
  	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.area_of_areas_interpolator(t)
+	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
  	
   # Possibly varying parameters
   n = p.n
@@ -462,11 +462,11 @@ function update_QC_mats_time_t!(p, t)
 
  # Get the d_vals for the Qij matrix, at time t
   # 1. Update the distance matrices etc.
-  p.setup.distmat .= p.distances_interpolator(t)
+  p.setup.distmat .= p.interpolators.distances_interpolator(t)
   
   
   # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.vicariance_mindists_interpolator(t)
+  p.setup.vicdist_t .= p.interpolators.vicariance_mindists_interpolator(t)
     
   # Using the current t's distmat, etc. update the dmat_t, then 
   # propagate through the Q matrix
@@ -510,8 +510,10 @@ function construct_QC_interpolators(p, tvals)
 	Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
 	C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
 	
+	interpolators = (distances_interpolator=p.interpolators.distances_interpolator, area_of_areas_interpolator=p.interpolators.area_of_areas_interpolator, vicariance_mindists_interpolator=p.interpolators.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator)
+	
 	# Copy the tuple p
-	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=p.setup, states_as_areas_lists=p.setup.states_list, area_of_areas_interpolator=p.area_of_areas_interpolator, distances_interpolator=p.distances_interpolator, vicariance_mindists_interpolator=p.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator, use_distances=p.use_distances, bmo=p.bmo)
+	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=p.setup, states_as_areas_lists=p.setup.states_list, interpolators=interpolators, use_distances=p.use_distances, bmo=p.bmo)
 	
 	return(p2)
 end # END function construct_QC_interpolators(p, tvals)
