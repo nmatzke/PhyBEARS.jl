@@ -337,6 +337,10 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		bmo = construct_BioGeoBEARS_model_object()
 	end
 	
+	# Create a list of files
+	files = construct_files_list()
+	
+	
 #	type_string = string(typeof(in_params))
 #	if (startswith(type_string, "NamedTuple") == false) && (isnan(in_params) == true)
 #		in_params = (birthRate=0.2, deathRate=0.0, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
@@ -659,7 +663,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	
-	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
+	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, files=files, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
 	# Parse the geography as well!  This updates inputs.res
 	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
 

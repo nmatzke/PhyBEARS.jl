@@ -17,7 +17,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -890,7 +890,7 @@ function construct_BioGeoBEARS_model_object()
 	#est_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.5, 0.1, 1, 0]
 	est_vec = [0.01, 0.01, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.99999, 1.99999, 1.0, 1.0, 1.0, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1.0, 0.0]
 		 
-	note_vec = ["works", "works", "works", "non-stratified only", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works","works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "no", "yes", "yes", "yes"]
+	note_vec = ["works", "works", "works", "non-stratified only", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works","works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "no", "no", "no", "no"]
 	desc_vec = ["anagenesis: rate of 'dispersal' (range expansion)", "anagenesis: rate of 'extinction' (range contraction)", "anagenesis: rate of range-switching (i.e. for a standard char.)", "anagenesis: exponent on branch lengths", "exponent on distmat (modifies d, j, a)", "exponent on distmat2 (modifies d, j, a)", "exponent on distmat3 (modifies d, j, a)", "exponent on vicariance distance (modifies v_rate)", "exponent on environmental distance (modifies d, j, a)", "exponent on manual dispersal multipliers (modifies d, j, a)", "anagenesis: exponent on extinction risk with area (modifies e)", "anagenesis: exponent on range extirpation risk with area (modifies e)", "u_mu: exponent on lineage extinction risk with area (modifies mu|deathRate)", "cladogenesis: relative per-event weight of jump dispersal", "cladogenesis: y+s+v", "cladogenesis: y+s", "cladogenesis: relative per-event weight of sympatry (range-copying)", "cladogenesis: relative per-event weight of subset speciation", "cladogenesis: relative per-event weight of vicariant speciation", "speciation rate", "extinction rate (lineages)", "sampling rate (fossils)", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "cladogenesis: controls range size of smaller daughter", "root: controls range size probabilities of root", "mean frequency of truly sampling OTU of interest", "detection probability per true sample of OTU of interest", "false detection of OTU probability per true taphonomic control sample"]
 	
 	rownames = ["d", "e", "a", "b", "x", "x2", "x3", "xv", "n", "w", "u", "u_e", "u_mu", "j", "ysv", "ys", "y", "s", "v", "birthRate", "deathRate", "psiRate", "mx01", "mx01j", "mx01y", "mx01s", "mx01v", "mx01r", "mf", "dp", "fdp"]
@@ -901,6 +901,22 @@ end
 
 
 
+
+
+function construct_files_list()
+	times_fn = ""         # The time-points where other files specify distances etc. 
+												# Should start with 0.0
+												# Should be used by everything else.
+	distances_fn = ""
+	distances2_fn = ""
+	distances3_fn = ""
+	envdistances_fn = ""
+	manual_dispersal_multipliers_fn = ""
+	area_of_areas_fn = ""
+	
+	files = (times_fn=times_fn, distances_fn=distances_fn, distances2_fn=distances2_fn, distances3_fn=distances3_fn, envdistances_fn=envdistances_fn, manual_dispersal_multipliers_fn=manual_dispersal_multipliers_fn, area_of_areas_fn=area_of_areas_fn)
+	return(files)
+end # END function construct_files_list()
 
 
 
