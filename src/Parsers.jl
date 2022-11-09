@@ -26,6 +26,7 @@ using PhyloBits.TrUtils # for flat2() (similar to unlist)
 using PhyBEARS.StateSpace
 using PhyloBits.TreeTable
 using PhyBEARS.SSEs
+using PhyBEARS.TimeDep # for update_min_vdist_at_time_t!
 
 print("...done.\n")
 

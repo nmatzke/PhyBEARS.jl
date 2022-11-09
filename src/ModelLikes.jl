@@ -677,7 +677,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	solver_options = inputs.solver_options
 	p_Ds_v5 = inputs.p_Ds_v5
 	
-	(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs
+	(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs
 	"""
 	
 	return inputs

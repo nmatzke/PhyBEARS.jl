@@ -28,7 +28,7 @@ cd(wd)
 trfn = "tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
-oldest_possible_tree = 100.0
+oldest_possible_age = 100.0
 
 lgdata_fn = "rangedata.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
@@ -57,7 +57,7 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 p = p_Ds_v5
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
@@ -97,8 +97,9 @@ end
 
 # Add one last distmat on the end to cover the bottom of the tree
 distmats[length(distmats)] .= distmats[length(distmats)-1]
-push!(unique_times, oldest_possible_tree)
+push!(unique_times, oldest_possible_age)
 sort!(unique_times)
+times = unique_times
 
 show(distmats)
 
@@ -116,7 +117,7 @@ distmats
 # Distances interpolator for a series of distances
 #######################################################
 distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
-tvals = seq(0.0, oldest_possible_tree, 1.0);
+tvals = seq(0.0, oldest_possible_age, 1.0);
 distances_interpolator(tvals)
 
 
@@ -197,7 +198,7 @@ vicariance_mindists_interpolator(tvals)
 
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
