@@ -736,7 +736,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 
 	vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Gridded(Linear()));
 
-	interpolators = (distances_interpolator=distances_interpolator, area_interpolator=area_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
+	interpolators = (interpolator_times=times, distances_interpolator=distances_interpolator, area_interpolator=area_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
 	
 	return(interpolators)
 end # END function files_to_interpolators()
