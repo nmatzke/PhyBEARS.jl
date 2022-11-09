@@ -6,6 +6,8 @@ __precompile__(false)  # will cause using / import to load it directly into the
                        # https://docs.julialang.org/en/v1/manual/modules/
 
 print("PhyBEARS: loading StateSpace.jl dependencies...")
+using Interpolations	# for Linear, Gridded, interpolate
+
 using Sundials				# for CVODE_BDF
 using Combinatorics  # for e.g. combinations()
 using DataFrames     # for e.g. DataFrame()

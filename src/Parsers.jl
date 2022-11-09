@@ -11,6 +11,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 
 print("PhyBEARS: loading Parsers.jl dependencies...")
 #using BenchmarkTools # for @time
+using Interpolations	# for Linear, Gridded, interpolate
 using InvertedIndices # for Not
 using LSODA           # for lsoda()
 using Sundials        # for CVODE_BDF(linear_solver=:GMRES)
