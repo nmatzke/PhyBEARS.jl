@@ -25,8 +25,10 @@ wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 cd(wd)
 
 # This simulation has 50 living species
-trfn = "newtree"
+trfn = "tree.newick"
 tr = readTopology(trfn)
+trdf = prt(tr)
+oldest_possible_tree = 100.0
 
 lgdata_fn = "rangedata.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
@@ -57,34 +59,82 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.1
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
-# setup.vicdist_base  # a list of distances between ranges (e.g. minimum distance), 
-# corresponding to v_rows of the Carray
-Rnames(setup)
-setup.vicdist_base
-
 p = p_Ds_v5
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-12;
 solver_options.reltol = 1e-12;
 
-p_Ds_v5 = inputs.p_Ds_v5;
-inputs.setup.dmat_base
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
-inputs.setup.dmat_base
-prtCp(p_Ds_v5)
+#######################################################
+# Load Wallis's distances
+#######################################################
+Times_3 = repeat([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3)
+Land1_3 = repeat(["test1","test1","test2"],inner = 11)
+Land2_3 = repeat(["test2","test3","test3"],inner = 11)
+Distances_km_3 = [0, 1000, 2000, 3500, 4100, 4900, 6000, 5800, 7000, 7500, 8000,0, 2000, 3000, 4000, 5100, 5900, 7000, 6800, 8000, 8500, 9000,0, 500, 1000, 2500, 3100, 3900, 5000, 4800, 6000, 6500, 7000] 
+testdf = DataFrame(Times = repeat([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],3), Land1 = repeat(["test1","test1","test2"],inner = 11), Land2 = repeat(["test2","test3","test3"],inner = 11), Distances_km = [0, 1000, 2000, 3500, 4100, 4900, 6000, 5800, 7000, 7500, 8000,0, 2000, 3000, 4000, 5100, 5900, 7000, 6800, 8000, 8500, 9000,0, 500, 1000, 2500, 3100, 3900, 5000, 4800, 6000, 6500, 7000])
+
+# Let's put in the form of distance matrices
+# This will create 11 distances matrices, of size 3x3
+numareas = 3
+unique_times = 1.0 .* sort(unique(testdf.Times))
+distmats = [Array{Float64}(undef, numareas, numareas) for _ = 1:(length(unique_times)+1)]
+
+# Fill in the distmats
+for i in 1:(length(unique_times))
+	distmats[i] .= 0.0  # zero-out the distances matrix
+	TF = testdf.Times .== unique_times[i]
+	tmpdf = testdf[TF,:]
+	for j in 1:Rnrow(tmpdf)
+		land1 = tmpdf.Land1[j]
+		land2 = tmpdf.Land2[j]
+		area1_num = extract_first_integer_from_string(land1)
+		area2_num = extract_first_integer_from_string(land2)
+		distmats[i][area1_num, area2_num] = convert(Float64, testdf.Distances_km[i])
+		distmats[i][area2_num, area1_num] = convert(Float64, testdf.Distances_km[i])
+	end
+end
+
+# Add one last distmat on the end to cover the bottom of the tree
+distmats[length(distmats)] .= distmats[length(distmats)-1]
+push!(unique_times, tree_age)
+sort!(unique_times)
+
+show(distmats)
+
+# Let's divide the distances by the minimum nonzero distance
+dists_vector = collect(Iterators.flatten(vec.(distmats)))
+dists_vector2 = dists_vector[dists_vector .> 0.0]
+maxval = maximum(dists_vector2)
+
+for i in 1:length(distmats)
+	distmats[i] .= distmats[i] ./ maxval
+end
+distmats
+
+#######################################################
+# Distances interpolator for a series of distances
+#######################################################
+distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
+tvals = seq(0.0, max_age, 1.0);
+distances_interpolator(tvals)
+
+
+
 
 
 #######################################################
-# OK let's make a function that interpolates different rates
-# based on changing distances / areas
+# Changing (or not) area of areas
 #######################################################
-times = [0.0, 4.0, 20.0, 22.0, 30.0, 80.0, 600.0]
-# current NZ area = 268,021 km2
-areas = [1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 10.0]
+times = unique_times
+# Set area of areas to 1.0 for now
+area_of_areas = [Vector{Float64}(undef, numareas) for _ = 1:(length(unique_times))]
+for i in 1:length(area_of_areas)
+	area_of_areas[i] .= 1.0
+end
 
-area_interpolator = interpolate((times,), areas, Gridded(Linear()))
-tvals = seq(0.0, 40, 1.0)
+area_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
+tvals = seq(0.0, maximum(times), 1.0)
 area_interpolator(tvals)
 
 
@@ -93,12 +143,14 @@ area_interpolator(tvals)
 #######################################################
 areas_list = inputs.setup.areas_list
 states_list = inputs.setup.states_list
-area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_Hawaii_1s_v2.txt"
-area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
-area_of_areas_table = readtable(area_of_areas_file)
+#area_of_areas_file = "/GitHub/PhyBEARS.jl/notes/area_of_areas_Hawaii_1s_v2.txt"
+#area_of_areas_table = CSV.read(area_of_areas_file, DataFrame; delim="\t")
+#area_of_areas_table = readtable(area_of_areas_file)
 
-#area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table; cols=2)
-area_of_areas_vec = PhyBEARS.TimeDep.area_of_areas_df_to_vectors(area_of_areas_table)
+###area_of_areas_vec = area_of_areas_df_to_vectors(area_of_areas_table; cols=2)
+#area_of_areas_vec = PhyBEARS.TimeDep.area_of_areas_df_to_vectors(area_of_areas_table)
+area_of_areas_vec = area_of_areas
+
 
 # Check if the area of areas vector has the same number of areas as the geog_df
 if (Rncol(geog_df)-1) != length(area_of_areas_vec[1])
@@ -107,60 +159,21 @@ if (Rncol(geog_df)-1) != length(area_of_areas_vec[1])
 	error(txt)
 end
 
-area_of_areas_interpolator = interpolate((area_of_areas_table.times,), area_of_areas_vec, Gridded(Linear()))
+#area_of_areas_interpolator = interpolate((area_of_areas_table.times,), area_of_areas_vec, Gridded(Linear()))
+area_of_areas_interpolator = interpolate((times,), area_of_areas_vec, Gridded(Linear()))
 
 # Calculate the area at different times
-tval = 19.0
-state_as_areas_list = [1,2]
+tval = 10.0
+state_as_areas_list = states_list[8]
 area_of_areas = area_of_areas_interpolator(tval)
 total_area = PhyBEARS.TimeDep.get_area_of_range(tval, state_as_areas_list, area_of_areas)
 
 get_areas_of_range_at_t = x -> PhyBEARS.TimeDep.get_area_of_range_using_interpolator(x, state_as_areas_list, area_of_areas_interpolator)
-tvals = seq(18.0, 23.0, 0.25)
+tvals = seq(1.0, 5.0, 1.0)
 get_areas_of_range_at_t.(tvals)
 
 
 
-
-
-#######################################################
-# Distances interpolator for a series of distances
-#######################################################
-dists1 = [0.00 0.33 0.58 1.00;
-0.33 0.00 0.25 0.67;
-0.58 0.25 0.00 0.17;
-1.00 0.67 0.17 0.00];
-dists2 = [0.00 0.17 0.29 0.50;
-0.17 0.00 0.13 0.33;
-0.29 0.13 0.00 0.08;
-0.50 0.33 0.08 0.00];
-dists3 = [0.00 0.08 0.15 0.25;
-0.08 0.00 0.06 0.17;
-0.15 0.06 0.00 0.04;
-0.25 0.17 0.04 0.00];
-dists4 = [0.00 0.04 0.07 0.13;
-0.04 0.00 0.03 0.08;
-0.07 0.03 0.00 0.02;
-0.13 0.08 0.02 0.00];
-dists5 = [0.00 0.04 0.07 0.13;
-0.04 0.00 0.03 0.08;
-0.07 0.03 0.00 0.02;
-0.13 0.08 0.02 0.00];
-
-# dists1 .= 1.0;
-# dists2 .= 1.0;
-# dists3 .= 1.0;
-# dists4 .= 1.0;
-# dists5 .= 1.0;
-
-
-changing_distances = [dists1, dists2, dists3, dists4, dists5];
-
-times = [0.0, 1.5, 3.0, 5.5, 600];
-
-distances_interpolator = interpolate((times,), changing_distances, Gridded(Linear()));
-tvals = seq(0.0, 10, 1.0);
-distances_interpolator(tvals)
 
 
 
@@ -182,77 +195,16 @@ vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Grid
 vicariance_mindists_interpolator(tvals)
 
 
-
-# 1. create xv parameter
-# 2. create function to interpolate Carray and Qarray
-# 3. put these interpolators into SSEs v11
-
-
-
-
-
-
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
-inputs.setup.dmat_base
-p_Es_v5.params.Qij_vals
-p_Es_v5.params.Qij_vals_t
-
-
-prtCp(p_Es_v5)
-
-# Problem: this simulation allowed null-range speciation (null->null, null or 000->000,000)
-# Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
 p_Es_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator, use_distances=true, bmo=bmo)
-
-birthRate = bmo.est[bmo.rownames .== "birthRate"];
-#add_111_to_Carray!(p_Es_v5, birthRate);
-
-prtCp(p_Es_v5) # now 1->1,1 is an allowed cladogenesis event
-
 
 
 p_Es_v10 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, area_of_areas_interpolator=area_of_areas_interpolator, distances_interpolator=distances_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator, use_distances=true, bmo=bmo)
-Rnames(p_Es_v10)
-prtCp(p_Es_v10)
-
-p = p_Es_v10
-
-p.bmo.est[p.setup.bmo_rows.u_e] = -1.0
-p.bmo.est[p.setup.bmo_rows.x] = -1.0
-p.bmo.est[p.setup.bmo_rows.xv] = 1.0
-
-prtQp(p).vals_t
-update_QC_mats_time_t!(p, 0.0)
-prtQp(p).vals_t
-
-prtQp(p).vals_t
-update_QC_mats_time_t!(p, 1.0)
-prtQp(p).vals_t
-
-prtQp(p).vals_t
-update_QC_mats_time_t!(p, 3.0)
-prtQp(p).vals_t
-
-
-prtCp(p).rates_t
-update_QC_mats_time_t!(p, 0.0)
-prtCp(p).rates_t
-
-
-prtCp(p).rates_t
-update_QC_mats_time_t!(p, 1.0)
-prtCp(p).rates_t
-
-
-
-prtCp(p).rates_t
-update_QC_mats_time_t!(p, 3.0)
-prtCp(p).rates_t
 
 
 p2 = construct_QC_interpolators(p, tvals);
@@ -280,12 +232,6 @@ u = collect(repeat([0.0], numstates));
 p = p_Es_v10;
 t = 0.0;
 PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t);
-du
-du = collect(repeat([0.0], numstates));
-u = collect(repeat([0.0], numstates)) ;
-p = p_Es_v10;
-t = 0.0;
-PhyBEARS.SSEs.parameterized_ClaSSE_Es_v11_simd_sums(du, u, p, t);
 du
 
 prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
