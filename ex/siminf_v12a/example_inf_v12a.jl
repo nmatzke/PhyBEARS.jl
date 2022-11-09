@@ -321,6 +321,11 @@ files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_are
 
 interpolators = files_to_interpolators(files, p.setup.numareas, p.setup.states_list, p.setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=1000.0)
 
+tvals2 = [0.0, 1.0, 2.0]
+interpolators.distances_interpolator(tvals2)
+interpolators.area_interpolator(tvals2)
+interpolators.vicariance_mindists_interpolator(tvals2)
+
 # include("/Users/nickm/GitHub/PhyBEARS.jl/ex/siminf_v12a/example_inf_v12a.jl")
 
 
