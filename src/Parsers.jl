@@ -30,7 +30,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, extract_first_integer_from_string
 
 #######################################################
 # Temporary file to store functions under development
