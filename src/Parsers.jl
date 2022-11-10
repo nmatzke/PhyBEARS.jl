@@ -22,7 +22,7 @@ using Dates						# for e.g. DateTime, Dates.now()
 using PhyloBits
 #using Plots						# for plot
 using DataFrames          # for DataFrame()
-using PhyloBits.TrUtils # for flat2() (similar to unlist)
+using PhyloBits.TrUtils # for flat2() (similar to unlist) and offdiag()
 using PhyBEARS.StateSpace
 using PhyloBits.TreeTable
 using PhyBEARS.SSEs
@@ -412,7 +412,7 @@ function parse_distances_fn(fn)
 	numrows = unique(list_of_numlines_per_block)[1]
 	numcols = unique(list_of_numlines_per_block)[1]
 	num_matrices = length(list_of_numlines_per_block)
-	distmats = [Matrix{Float64}(undef, numcols, numrows) for _ = 1:num_matrices]
+	distmats = [Matrix{Float64}(undef, numrows, numcols) for _ = 1:num_matrices]
 	
 	blocknum = 1
 	j = 1
@@ -651,7 +651,7 @@ end # END function parse_times_fn(fn)
 #######################################################
 # Read distances etc. files to interpolators
 #######################################################
-function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals; oldest_possible_age=1000.0)
+function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals; oldest_possible_age=1000.0, fraction_of_minimum_nonzero_distance=0.5)
 	if files.distances_fn != ""
 		times = parse_times_fn(files.times_fn)
 	else
@@ -672,14 +672,75 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 			txt = "STOP ERROR in files_to_interpolators(). distances_fn must have the same number of entries as the times_fn file."
 			error(txt)
 		end
-	
+		
+		
+		#######################################################
+		# NOTES ON HAVING DISTANCES MODIFY RATES
+		#
+		# 1. Units don't matter. All that matters is the 
+		#    proportions that one assigns to different distances.
+		#
+		# 2. Therefore, we could just divide by the minimum or 
+		#    maximum distance. However, this doesn't work
+		#		 when the minimum distance is 0.0
+		#
+		# 3. A FULL solution would have a separate parameter for
+		#    dispersal-between-connected or dispersal-between-not
+		#    connected, i.e. a multiplier. This could be done with 
+		#    the dispersal multipliers file if desired.
+		#
+		# 4. However, just for the distances, let's do it like
+		#    this. The goal is that the smallest distance gets
+		#    a distance-based dispersal multiplier of 1.0 -- thus
+		#    the base-rate of dispersal does NOT change, regardless
+		#    of the value of "x". 
+		#
+		#    4a. *If* the smallest non-diagonal distance is positive,
+		#        i.e. it's not 0.0, then divide all distances by this
+		#        distance. Now all distances are just ratios of
+		#        this distance.
+		#
+		#    4b. *If* the smallest non-diagonal distance is 0.0,
+		# 			 divide all distances by:
+		#        min_rel_dist = (minimum_nonzero_distance * fraction_of_minimum_nonzero_distance)
+		#
+		#        The default: fraction_of_minimum_nonzero_distance = 0.5.
+		#
+		#        E.g., if x=-1, then by default, dispersal over the minimum_nonzero_distance
+		#        would have 50% of the rate of dispersal over the 0.0 physical distance
+		#        
+		#        This fraction_of_minimum_nonzero_distance is arbitrary.  If users
+		#        decide to use parameter u to penalize dispersal between non-touching 
+		#        areas, fraction_of_minimum_nonzero_distance should be set to 1.0.
+		#######################################################
+		
 		# Let's divide the distances by the maximum distance
-		dists_vector = collect(Iterators.flatten(vec.(distmats)))
-		dists_vector2 = dists_vector[dists_vector .> 0.0]
-		maxval = maximum(dists_vector2)
+		# dists_vector = collect(Iterators.flatten(vec.(distmats)))
+		# dists_vector2 = dists_vector[dists_vector .> 0.0]
+		# maxval = maximum(dists_vector2)
 
+		# Find the minimum off-diagonal in the distance matrices
+		dists_vector = collect(Iterators.flatten(vec.(offdiag.(distmats))))
+		minval = minimum(dists_vector)
+		minval_nonzero = minimum(dists_vector[dists_vector .> 0.0])
+		
+		# Matrix of true/false for offdiagonal
+		offdiag_TF = make_offdiag_TF(dim(distmats[1])[1])
+		
+		if minval == 0.0
+			# Replace any off-diagonal zeros with
+			# inval_nonzero * fraction_of_minimum_nonzero_distance
+			for i in 1:length(distmats)
+				offdiag_and_zeroTF = (offdiag_TF + (distmats[i] .== 0.0)) .== 2
+				
+				distmats[i][offdiag_and_zeroTF] .= minval_nonzero * fraction_of_minimum_nonzero_distance
+			end
+			# This is the new minval
+			minval = minval_nonzero * fraction_of_minimum_nonzero_distance
+		end
+		
 		for i in 1:length(distmats)
-			distmats[i] .= distmats[i] ./ maxval
+			distmats[i] .= distmats[i] ./ minval
 		end
 	
 		distances_interpolator = interpolate((times,), distmats, Gridded(Linear()));
