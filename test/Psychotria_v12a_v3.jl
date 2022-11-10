@@ -130,12 +130,21 @@ p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, 
 
 # Calculate the Ds & total lnL via downpass
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+res7 = deepcopy(res);
+
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf=trdf, p_Ds_v10=p_Ds_v10, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+res10 = deepcopy(res);
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+res12 = deepcopy(res);
 
+res10.likes_at_each_nodeIndex_branchBot[1] .- res7.likes_at_each_nodeIndex_branchBot[1]
+res10.likes_at_each_nodeIndex_branchBot[1] .- res12.likes_at_each_nodeIndex_branchBot[1]
 
+res10.normlikes_at_each_nodeIndex_branchBot[1] .== res12.normlikes_at_each_nodeIndex_branchBot[1]
+res10.normlikes_at_each_nodeIndex_branchBot[2] .== res12.normlikes_at_each_nodeIndex_branchBot[2]
+res10.normlikes_at_each_nodeIndex_branchBot[37] .== res12.normlikes_at_each_nodeIndex_branchBot[37]
 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
