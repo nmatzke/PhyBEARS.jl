@@ -1337,7 +1337,37 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   
   # We don't even need this, since we have the interpolator
   # update_QC_mats_time_t!(p, t)
+  
+  # Interpolate the current Q_vals_t and C_rates_t
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+   
+  # Update 
+  # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]]
+  # p.p_TFs.Qij_vals_sub_i_t[i]   is replaced by p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]]
+  
+   
+  # Populate changing "e" with time
+	#terms = Vector{Float64}(undef, 4)
 
+  @inbounds for i in 1:p.n
+		p.terms .= 0.0
+		
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+	
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
+
+
+# Time-varying areas & extinction rates
+parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
+  # Interpolate the current Q_vals_t and C_rates_t
+#  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+#  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
  	max_extinction_rate = p.setup.max_extinction_rate
  	
  	# Get the area of areas at time t
@@ -1389,38 +1419,8 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   #update_Cijk_j_rates!(p)
   # update vicariance also
   update_Cijk_rates!(p)
-
-  
-  # Interpolate the current Q_vals_t and C_rates_t
-#  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
-#  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-   
-  # Update 
-  # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]]
-  # p.p_TFs.Qij_vals_sub_i_t[i]   is replaced by p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]]
-  
-   
-  # Populate changing "e" with time
-	#terms = Vector{Float64}(undef, 4)
-
-  @inbounds for i in 1:p.n
-		p.terms .= 0.0
-		
-		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
-	
-		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
-		
-		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
-  end
-end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
-
-
-# Time-varying areas & extinction rates
-parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
-  # Interpolate the current Q_vals_t and C_rates_t
-  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
-  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+  ##x2 = prtCp(p).rates_t
+	##x1 .- x2
 	
 	# Pre-calculated solution of the Es
 #	sol_Es = p.sol_Es_v5
