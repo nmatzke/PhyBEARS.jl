@@ -4820,7 +4820,10 @@ function iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf, p_Ds_v10, solver_
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v10)
+			# Update the C_rates_t
+			current_node_time = trdf.node_age[current_nodeIndex]
+			update_QC_mats_time_t!(p_Ds_v10, current_node_time)
+			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v12=p_Ds_v10)
 			# (updates res)
 		end
 	
@@ -5482,6 +5485,9 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
+			# Update the Carray C_rates_t
+			current_node_time = trdf.node_age[current_nodeIndex]
+			update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v12=p_Ds_v12)
 			# (updates res)
 		end
