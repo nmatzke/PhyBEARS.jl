@@ -96,28 +96,23 @@ p.interpolators.C_rates_interpolator(2.0)[1:3]
 p.interpolators.C_rates_interpolator(3.0)[1:3]
 
 p_Es_v12 = p
+p_Es_v10 = p
 
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
 
-du = collect(repeat([0.0], numstates)); 
-u = collect(repeat([0.0], numstates));
-p = p_Es_v10;
-t = 0.0;
-PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums(du, u, p, t);
-du
 
 prob_Es_v10 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v10_simd_sums, p_Es_v10.uE, Es_tspan, p_Es_v10);
 # This solution is an interpolator
 sol_Es_v10 = solve(prob_Es_v10, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v10;
+
 p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup,states_as_areas_lists=p_Es_v10.states_as_areas_lists, bmo=p_Es_v10.bmo, sol_Es_v5=sol_Es_v10);
 
 # Check the interpolator
 p_Ds_v7.sol_Es_v5(1.0)
 Es_interpolator(1.0)
-
 
 
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
@@ -127,6 +122,9 @@ Es_interpolator = sol_Es_v12;
 
 
 
+p_Ds_v10 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup, states_as_areas_lists=p_Es_v10.states_as_areas_lists, use_distances=p_Es_v10.use_distances, bmo=p_Es_v10.bmo, interpolators=p_Es_v10.interpolators, sol_Es_v10=sol_Es_v10);
+
+p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 
 # Calculate the Ds & total lnL via downpass
