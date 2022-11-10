@@ -48,7 +48,7 @@ bmo.est[bmo.rownames .== "e"] .= 0.028;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
 bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
-bmo.est[bmo.rownames .== "x"] .= 0.0;
+bmo.est[bmo.rownames .== "x"] .= -1.0;
 bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
@@ -56,7 +56,7 @@ inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 numstates = setup.numstates
 
-p = p_Ds_v5
+p = p_Ds_v5;
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-12;
@@ -65,9 +65,15 @@ solver_options.reltol = 1e-12;
 #######################################################
 # Read in and parse distances and area-of-areas
 #######################################################
-#files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
-#files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
-#files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
+files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
+files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+
+files.times_fn = "Hawaii_KOMH_times.txt"
+files.distances_fn = "Hawaii_KOMH_distances_changing_fractions_PhyBEARS.txt"
+files.area_of_areas_fn = ""
+
+
 
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=100.0);
 
@@ -80,9 +86,9 @@ p_Es_v10 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_T
 p = p_Es_v10
 
 # Add Q, C interpolators
-temptimes = reduce(vcat, [interpolators.interpolator_times, sort(unique(trdf.node_age))])
-temptimes = seq(0.0, 15.0, 0.1)
-times = sort(unique(temptimes))
+temptimes = reduce(vcat, [interpolators.interpolator_times, sort(unique(trdf.node_age))]);
+temptimes = seq(0.0, 15.0, 0.1);
+times = sort(unique(temptimes));
 p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v10, times);
 
 # Interpolators
@@ -96,8 +102,8 @@ p.interpolators.C_rates_interpolator(1.0)[1:3]
 p.interpolators.C_rates_interpolator(2.0)[1:3]
 p.interpolators.C_rates_interpolator(3.0)[1:3]
 
-p_Es_v12 = p
-p_Es_v10 = p
+p_Es_v12 = p;
+p_Es_v10 = p;
 
 
 # Solve the Es
@@ -111,7 +117,7 @@ Es_interpolator = sol_Es_v10;
 
 p_Ds_v7 = (n=p_Es_v10.n, params=p_Es_v10.params, p_indices=p_Es_v10.p_indices, p_TFs=p_Es_v10.p_TFs, uE=p_Es_v10.uE, terms=p_Es_v10.terms, setup=p_Es_v10.setup,states_as_areas_lists=p_Es_v10.states_as_areas_lists, bmo=p_Es_v10.bmo, sol_Es_v5=sol_Es_v10);
 
-# Check the interpolator
+# Check the interpolators
 p_Ds_v7.sol_Es_v5(1.0)
 Es_interpolator(1.0)
 
@@ -142,9 +148,6 @@ res12 = deepcopy(res);
 res10.likes_at_each_nodeIndex_branchBot[1] .- res7.likes_at_each_nodeIndex_branchBot[1]
 res10.likes_at_each_nodeIndex_branchBot[1] .- res12.likes_at_each_nodeIndex_branchBot[1]
 
-res10.normlikes_at_each_nodeIndex_branchBot[1] .== res12.normlikes_at_each_nodeIndex_branchBot[1]
-res10.normlikes_at_each_nodeIndex_branchBot[2] .== res12.normlikes_at_each_nodeIndex_branchBot[2]
-res10.normlikes_at_each_nodeIndex_branchBot[37] .== res12.normlikes_at_each_nodeIndex_branchBot[37]
 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
@@ -165,16 +168,4 @@ res10.normlikes_at_each_nodeIndex_branchBot[37] .== res12.normlikes_at_each_node
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
-
-
-p_Ds_v12.interpolators.Q_vals_interpolator(0.0)[1:3]
-p_Ds_v12.interpolators.Q_vals_interpolator(1.0)[1:3]
-p_Ds_v12.interpolators.Q_vals_interpolator(2.0)[1:3]
-p_Ds_v12.interpolators.Q_vals_interpolator(3.0)[1:3]
-
-p_Ds_v12.interpolators.C_rates_interpolator(0.0)[1:3]
-p_Ds_v12.interpolators.C_rates_interpolator(1.0)[1:3]
-p_Ds_v12.interpolators.C_rates_interpolator(2.0)[1:3]
-p_Ds_v12.interpolators.C_rates_interpolator(3.0)[1:3]
 

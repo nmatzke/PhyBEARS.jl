@@ -673,6 +673,12 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 			error(txt)
 		end
 		
+		# Check if the distances matrix is the correct size
+		TF = dim(distmats[1])[1] == numareas
+		if TF == false
+			txt = paste0(["STOP ERROR in files_to_interpolators(). numareas=", numareas, ", but the distance matrices in files.distances_fn='", files.distances_fn, "' have dim(distmats[1])[1]=", dim(distmats[1])[1], ". These must match. Edit your inputs and re-try."])
+			error(txt)
+		end
 		
 		#######################################################
 		# NOTES ON HAVING DISTANCES MODIFY RATES
@@ -759,6 +765,14 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 			txt = "STOP ERROR in files_to_interpolators(). area_of_areas_fn must have the same number of entries as the times_fn file."
 			error(txt)
 		end
+
+		# Check if the distances matrix is the correct size
+		TF = length(area_of_areas[1]) == numareas
+		if TF == false
+			txt = paste0(["STOP ERROR in files_to_interpolators(). numareas=", numareas, ", but the area_of_areas matrices in files.area_of_areas_fn='", files.area_of_areas_fn, "' have length(area_of_areas[1])=", length(area_of_areas[1]), ". These must match. Edit your inputs and re-try."])
+			error(txt)
+		end
+
 	
 		# Let's divide the distances by the maximum area
 		areas_vector = collect(Iterators.flatten(vec.(area_of_areas)))
