@@ -5477,7 +5477,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			# BIG CHANGE: LIVE TIME UPDATING - 2022-11-08
 			# Get the current time for this node, and update the Carray rates!
 			current_time = trdf.node_age[current_nodeIndex]
-			p_Ds_v12.params.Cijk_rates_t .= p_Ds_v12.C_rates_interpolator(current_time)
+			p_Ds_v12.params.Cijk_rates_t .= p_Ds_v12.interpolators.C_rates_interpolator(current_time)
 
 			
 			# Combine the downpass branch likelihoods
