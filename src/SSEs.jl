@@ -1366,73 +1366,18 @@ end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 # Time-varying areas & extinction rates
 parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
-#  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
-#  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
- 	max_extinction_rate = p.setup.max_extinction_rate
- 	
- 	# Get the area of areas at time t
-	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
 
-  # NOT the slow step:
-  # Possibly varying parameters
-  n = p.n
-  mu = p.params.mu_vals # base extinction rate of each range
-  mu_t = p.params.mu_t_vals # mu_t = mu at time t
-  
-  # Populate changing mus with time
-  @inbounds for i in 1:n
-  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	mu_t[i] = mu[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_e]
-  end
-  # Correct "Inf" max_extinction_rates
-  mu_t[mu_t .> max_extinction_rate] .= max_extinction_rate
-
-
-  # Get the e_vals for the Qij matrix, at time t
-  # elist_actual = elist_base * area_of_area_lost^u_e
-  # THIS IS THE SLOW STEP; pre-allocate e_rows
-  ##prtQp(p)
-  update_Qij_e_vals!(p);
-  ##prtQp(p)
-  # (updates p.params.Qij_vals)
-
-
-  # Get the d_vals for the Qij matrix, at time t
-  # 1. Update the distance matrices etc.
-  p.setup.distmat .= p.interpolators.distances_interpolator(t)
-  
-  
-  # Update the vicariance minimum distance 
-  p.setup.vicdist_t .= p.interpolators.vicariance_mindists_interpolator(t)
-  
-  # ...others?
-  
-  # Using the current t's distmat, etc. update the dmat, then 
-  # propagate through the 
-  ##prtQp(p)
-  update_Qij_d_vals!(p);
-  ##prtQp(p)
-  
-  # Using the current t's distmat, etc. update the jmat_t, then
-  # propagate through the C matrix
-  ##x1 = prtCp(p).rates_t
-  #update_Cijk_j_rates!(p)
-  # update vicariance also
-  update_Cijk_rates!(p)
-  ##x2 = prtCp(p).rates_t
-	##x1 .- x2
-	
 	# Pre-calculated solution of the Es
-#	sol_Es = p.sol_Es_v5
-#	uE = p.uE
 	uE = p.sol_Es_v12(t)
 	#terms = Vector{Float64}(undef, 4)
   @inbounds for i in 1:p.n
 		p.terms .= 0.0
 
-		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i_t[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
-		
-		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i_t[i], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		#p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i_t[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 
 
 
