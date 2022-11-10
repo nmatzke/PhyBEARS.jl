@@ -713,7 +713,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 		for i in 1:length(area_of_areas)
 			area_of_areas[i] .= 1.0
 		end
-		area_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
+		area_of_areas_interpolator = interpolate((times,), area_of_areas, Gridded(Linear()))
 	end
 
 	

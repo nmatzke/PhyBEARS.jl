@@ -21,16 +21,16 @@ using DataFrames
 using CSV
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+wd = "/GitHub/PhyBEARS.jl/data/"
 cd(wd)
 
 # This simulation has 50 living species
-trfn = "tree.newick"
+trfn = "Psychotria_tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
 oldest_possible_age = 100.0
 
-lgdata_fn = "rangedata.data"
+lgdata_fn = "Psychotria_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
 include_null_range = true
 numareas = Rncol(geog_df)-1
@@ -65,10 +65,9 @@ solver_options.reltol = 1e-12;
 #######################################################
 # Read in and parse distances and area-of-areas
 #######################################################
-files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
+#files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
 #files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
-files.distances_fn = ""
-files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+#files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
 
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals; oldest_possible_age=100.0);
 
