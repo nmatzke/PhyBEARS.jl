@@ -93,7 +93,7 @@ bmo.type[bmo.rownames .== "xv"] .= "free"
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="bgb_lnL", printlevel=1)
-pars = [0.4, 0.001, bmo.est[bmo.rownames .== "birthRate"][1], bmo.est[bmo.rownames .== "deathRate"][1], 0.1]
+pars = [0.04, 0.001, bmo.est[bmo.rownames .== "birthRate"][1], bmo.est[bmo.rownames .== "deathRate"][1], 0.1]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
