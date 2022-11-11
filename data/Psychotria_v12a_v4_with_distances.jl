@@ -145,8 +145,8 @@ res10 = deepcopy(res);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 res12 = deepcopy(res);
 
-res10.likes_at_each_nodeIndex_branchBot[1] .- res7.likes_at_each_nodeIndex_branchBot[1]
-res10.likes_at_each_nodeIndex_branchBot[1] .- res12.likes_at_each_nodeIndex_branchBot[1]
+round.(res10.likes_at_each_nodeIndex_branchBot[1] .- res7.likes_at_each_nodeIndex_branchBot[1], digits=2)
+round.(res10.likes_at_each_nodeIndex_branchBot[1] .- res12.likes_at_each_nodeIndex_branchBot[1], digits=2)
 
 
 
