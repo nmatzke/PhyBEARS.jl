@@ -916,8 +916,8 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 	
 	# Get parameter names and lower/upper bounds
 	parnames = inputs.bmo.rownames[inputs.bmo.type.=="free"];
-	lower = inputs.bmo.min[bmo.type .== "free"]
-	upper = inputs.bmo.max[bmo.type .== "free"]
+	lower = inputs.bmo.min[inputs.bmo.type .== "free"]
+	upper = inputs.bmo.max[inputs.bmo.type .== "free"]
 	#bmo = inputs.bmo
 	
 	# Update
