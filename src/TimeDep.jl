@@ -512,7 +512,7 @@ function construct_QC_interpolators(p, tvals)
 	Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
 	C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
 	
-	interpolators = (distances_interpolator=p.interpolators.distances_interpolator, area_of_areas_interpolator=p.interpolators.area_of_areas_interpolator, vicariance_mindists_interpolator=p.interpolators.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator)
+	interpolators = (times_for_dists_interpolator=p.interpolators.times_for_dists_interpolator, times_for_SSE_interpolators=p.interpolators.times_for_SSE_interpolators, distances_interpolator=p.interpolators.distances_interpolator, area_of_areas_interpolator=p.interpolators.area_of_areas_interpolator, vicariance_mindists_interpolator=p.interpolators.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator)
 	
 	# Copy the tuple p
 	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=p.setup, states_as_areas_lists=p.setup.states_list, interpolators=interpolators, use_distances=p.use_distances, bmo=p.bmo)

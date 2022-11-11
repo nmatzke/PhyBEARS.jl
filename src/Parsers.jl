@@ -651,12 +651,16 @@ end # END function parse_times_fn(fn)
 #######################################################
 # Read distances etc. files to interpolators
 #######################################################
-function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals; oldest_possible_age=1000.0, fraction_of_minimum_nonzero_distance=0.5)
+function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals, trdf; oldest_possible_age=1000.0, fraction_of_minimum_nonzero_distance=0.5)
+	
 	if files.distances_fn != ""
 		times = parse_times_fn(files.times_fn)
 	else
 		times = [0.0, oldest_possible_age]
 	end
+
+	times_for_SSE_interpolators = sort(unique(reduce(vcat, [times, sort(unique(trdf.node_age))])));
+
 	
 	#######################################################
 	# Distances interpolator for a series of distances
@@ -811,7 +815,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 
 	vicariance_mindists_interpolator = interpolate((times,), changing_mindists, Gridded(Linear()));
 
-	interpolators = (interpolator_times=times, distances_interpolator=distances_interpolator, area_of_areas_interpolator=area_of_areas_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
+	interpolators = (times_for_dists_interpolator=times, times_for_SSE_interpolators=times_for_SSE_interpolators, distances_interpolator=distances_interpolator, area_of_areas_interpolator=area_of_areas_interpolator, vicariance_mindists_interpolator=vicariance_mindists_interpolator)
 	
 	return(interpolators)
 end # END function files_to_interpolators()

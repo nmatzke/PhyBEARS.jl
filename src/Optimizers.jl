@@ -17,6 +17,7 @@ using Sundials					# for CVODE_BDF(linear_solver=:GMRES)
 
 using PhyloBits.TrUtils		 	# for paste0
 using PhyloBits.TreeTable 	# for nodetimes
+using PhyBEARS.TimeDep			# for construct_QC_interpolators
 using PhyBEARS.StateSpace 	# for bmo_updater_v1
 using PhyBEARS.SSEs				# for parameterized_ClaSSE_Es_v7_simd_sums
 using PhyBEARS.TreePass
@@ -969,6 +970,8 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 	# OTHERWISE I get a CRASH on 
 	# iteration 1, node 19
 	if inbounds == true
+		p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+		
 		# Solve the Es
 		prob_Es_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v12_simd_sums, p_Ds_v12.uE, Es_tspan, p_Ds_v12)
 		# This solution is an interpolator
