@@ -164,6 +164,9 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 # install.packages(pkgs="/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
 
 # Write model out to text files that can be read in to simulator
+timepoints = seq(0.0, 10.0, 1.0)
+# (the best way to do this is to do simulations for a fixed period of time; the number of taxa
+#  will vary, but have an average)
 outfns = model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 
 

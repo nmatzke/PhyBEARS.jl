@@ -5,6 +5,8 @@ library(castor)
 
 # Setup
 numstates = 8
+wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+setwd(wd)
 outfns = c(
 "timepoints.txt", 
 "mu_vals_by_t.txt",
@@ -16,14 +18,58 @@ outfns = c(
 
 # Set the random number seed, to make it repeatable
 set.seed(54321)
+# Set the max_simulation time -- whatever changing distances you have will be
+# extended with this timepoint, i.e. the final geography/rates will continue
+# to this timepoint
+max_simulation_time = NULL
+max_simulation_time = 100.0
 
 
 # Read timepoints
 # Read in Q/A matrix, populate one and array
 # Read in C matrix, populate one and array
 
+# Load the files
+#time_grid = seq(0,10,0.1) # About halfway through
+time_grid = c(read.table(outfns[1], header=FALSE))[[1]]
+# Change from time reading backwards to time reading forwards
+colnums = rev(1:length(time_grid))
+time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))
+time_grid
+mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]
+Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]
+Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]
+Qarray = read.table(outfns[5], header=TRUE)
+Carray = read.table(outfns[6], header=TRUE)
 
-time_grid = seq(0,10,0.1) # About halfway through
+# Add the final time at end of forward simulation, if needed
+if (is.null(max_simulation_time) == FALSE)
+	{
+	time_grid = c(time_grid, max_simulation_time)
+	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])
+	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])
+	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])
+	}
+
+
+# Produce the A transition matrix / array
+A = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))
+for (i in 1:length(time_grid))
+	{
+	for (j in 1:nrow(Qarray))
+		{
+		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]
+		}
+	# Set the diagonal
+	diag(A[,,i]) = 0.0
+	diag(A[,,i]) = -rowSums(A[,,i])
+	}
+
+# All rows in A sum to 0.0!
+round(apply(X=A, MARGIN=3, rowSums), digits=10)
+
+
+ignore = '
 A = get_random_mk_transition_matrix(Nstates=numstates, rate_model="ER", max_rate=0.1)
 
 # Make it more like a DEC model (anagenetic)
@@ -46,120 +92,114 @@ diag(A) = 0.0
 A
 diag(A) = -rowSums(A)
 A
-
+' # END Ignore
 
 # Cladogenetic part of the DEC model
 # At speciation, we have:
 # Specify probabilities of different events, given that speciation has occurred
+# (ADD THESE UP to provide the speciation rates / lambdas)
 
-
-
-#######################################################
-# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model
-#######################################################
-
-# Sympatry
-# null->null,null
-# A -> A,A  # 100
-# B -> B,B	# 100
-# Vicariance
-# AB -> A,B	# 0
-# AB -> B,A	# 0
-# Subset sympatry (speciation within widespread ancestor)
-# AB -> AB,A	# 0
-# AB -> A,AB	# 0
-# AB -> AB,B	# 0
-# AB -> B,AB	# 0
-# AB -> AB, AB # 1.0
-
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
-transition_matrix_C[,] = 0.0
-transition_matrix_C
-transition_matrix_C[1,1] = 1.0 # null->null
-transition_matrix_C[2,2] = 1.0 # A->A
-transition_matrix_C[3,3] = 1.0 # B->B
-transition_matrix_C[4,] = 0.0
-transition_matrix_C[4,1] = 0.0
-transition_matrix_C[4,2] = 0.0 # AB->A
-transition_matrix_C[4,3] = 0.0 # AB->B
-transition_matrix_C[4,4] = 6/6 # AB->AB
-transition_matrix_C1 = transition_matrix_C
-transition_matrix_C
-
-# Rows of transition_table_C
+# transition_table_C: columns are i, j, k, prob
+# transrates_table_C: columns are i, j, k, rate # (later, we will add up these rates to get the total lambda by state)
 transition_table_C = NULL
-tmprow = c(1,1,1,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(2,2,2,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(3,3,3,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,2,3,0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,2,4,0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,3,4,0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,4,4,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-transition_table_C
+transrates_table_C = NULL
+transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
+transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
+dim(transition_table_probs_C_matrix)
+dim(transition_table_rates_C_matrix)
+
+rates_sums_by_t = NULL
+for (i in 1:length(time_grid))
+	{
+	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)
+	names(tmprates) = c("i", "j", "k", "rates_t")
+	# Convert rates to probabilities
+	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)
+	# Column names
+	names(rates_sums) = c("i", "rates_sum")
+	
+	
+	# Make sure rates_sums are ordered by 'i' (ancestral state index)
+	tmporder = order(rates_sums$i)
+	rates_sums = rates_sums[tmporder,]
+	
+	# Check for null range; add row for "i" if needed
+	if (rates_sums$i[1] == 2)
+		{
+		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)
+		names(tmprow) = c("i", "rates_sum")
+		rates_sums = rbind(tmprow, rates_sums)
+		}
+	
+	rates_sums_by_t	= cbind(rates_sums_by_t, rates_sums$rates_sum)
+
+	# Convert rates to probabilities
+	tmpprobs = tmprates
+	names(tmpprobs) = c("i", "j", "k", "probs_t")
+	for (q in 1:nrow(rates_sums))
+		{
+		tmpi = rates_sums$i[q]
+		TF = tmprates$i == tmpi
+
+		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]
+		}
+	
+	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)
+	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)
+	}
+
+
+# Square transition matrix (not used, but sanity check)
+transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))
+transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))
+for (i in 1:length(time_grid))
+	{
+	for (j in 1:nrow(Carray))
+		{
+		if (Carray$i[j] == Carray$j[j])
+			{
+			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]
+			} else {
+			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2
+			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2
+			}
+		# Ignore, rates are already doubled if needed
+		# if (Carray$i[j] != Carray$j[j])
+		}
+	# DO NOT set the diagonal on the cladogenetic transition rates
+	#diag(transition_matrix_C_array[,,i]) = 0.0
+	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])
+
+	# Null range correction
+	if (rowSums(transition_matrix_C_array[,,i])[1] == 0.0)
+		{
+		transition_matrix_C_array[1,1,i] = 1.0
+		}
+	}
+transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]
+transition_matrix_C
+rowSums(transition_matrix_C)
+
+
+# Check probs
+for (i in 1:length(time_grid))
+	{
+	tmpprobs = transition_table_probs_C_matrix[,,i]
+	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)
+	tmprates = transition_table_rates_C_matrix[,,i]
+	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)
+	sums_by_i = cbind(rates_sum, probs_sum[,2])
+	names(sums_by_i) = c("i", "rates_sum", "probs_sum")
+	print(sums_by_i)
+	}
+
 
 # convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)
-transition_table_indices_C = transition_table_C[,1:3] - 1
-transition_table_probs_C1 = transition_table_C[,4]
-
-
-#######################################################
-# 2nd regime: vicariance, subset sympatry are allowed - DEC model
-#######################################################
-
-# Sympatry
-# null->null,null
-# A -> A,A  # 100
-# B -> B,B	# 100
-# Vicariance
-# AB -> A,B	# 1/6
-# AB -> B,A	# 1/6
-# Subset sympatry (speciation within widespread ancestor)
-# AB -> AB,A	# 1/6
-# AB -> A,AB	# 1/6
-# AB -> AB,B	# 1/6
-# AB -> B,AB	# 1/6
-
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
-transition_matrix_C[,] = 0.0
-transition_matrix_C
-transition_matrix_C[1,1] = 1.0 # null->null
-transition_matrix_C[2,2] = 1.0 # A->A
-transition_matrix_C[3,3] = 1.0 # B->B
-transition_matrix_C[4,] = 0.0
-transition_matrix_C[4,1] = 0.0
-transition_matrix_C[4,2] = 2/6 # AB->A
-transition_matrix_C[4,3] = 2/6 # AB->B
-transition_matrix_C[4,4] = 2/6 # AB->AB
-transition_matrix_C2 = transition_matrix_C
-
-# Rows of transition_table_C
-transition_table_C = NULL
-tmprow = c(1,1,1,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(2,2,2,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(3,3,3,1.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,2,3,1/3)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,2,4,1/3)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,3,4,1/3)
-transition_table_C = rbind(transition_table_C, tmprow)
-tmprow = c(4,4,4,0.0)
-transition_table_C = rbind(transition_table_C, tmprow)
-transition_table_C
-
-# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)
-transition_table_indices_C = transition_table_C[,1:3] - 1
-transition_table_probs_C2 = transition_table_C[,4]
+# transition_table_indices_C = transition_table_C[,1:3] - 1
+transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1
+transition_table_indices_C_matrix = array(data=transition_table_indices_C, dim=c(dim(transition_table_indices_C),length(time_grid)))
+# transition_table_probs_C1 = transition_table_C[,4]
+transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]
 
 
 
@@ -167,37 +207,28 @@ transition_table_probs_C2 = transition_table_C[,4]
 
 
 # Make the arrays for the parameters
-transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))
 
 # Probs encoded in a num_clado_events * 2 * num_times array
 # the "2" just duplicates, ensures we have a 3D array
-transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))
+transition_table_probs_C = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))
 
 # Fill in the transition_matrix_C and transition_table_probs
 for (i in 1:length(time_grid))
 	{
-	if (time_grid[i] < 5.0)
-		{
-		transition_matrix_C_array[,,i] = transition_matrix_C1
-		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C1
-		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C1
-		} else {
-		transition_matrix_C_array[,,i] = transition_matrix_C2		
-		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C2
-		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C2
-		}
+	transition_table_probs_C[,1,i] = transition_table_probs_C_matrix[,4,i]
+	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]
 	}
 
 
-parameters = list(birth_rates         = 0.3,
+parameters = list(birth_rates         = rates_sums_by_t,
                   death_rates         = 0.0,
                   transition_matrix_A = A,
                   transition_matrix_C = transition_matrix_C_array,
                   transition_table_indices_C = transition_table_indices_C,
-                  transition_table_probs_C = transition_table_probs_C_matrix )
+                  transition_table_probs_C = transition_table_probs_C )
  
 
-simulation = simulate_tdsse2( Nstates = 4, 
+simulation = simulate_tdsse2( Nstates = numstates, 
                             parameters = parameters, 
 														splines_degree      = 1,
                             start_state = 2,
