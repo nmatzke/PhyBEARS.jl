@@ -11,6 +11,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 
 print("PhyBEARS: loading Parsers.jl dependencies...")
 #using BenchmarkTools # for @time
+using DelimitedFiles	# for writedlm()
 using Interpolations	# for Linear, Gridded, interpolate
 using InvertedIndices # for Not
 using LSODA           # for lsoda()
@@ -32,7 +33,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, extract_first_integer_from_string
+export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, extract_first_integer_from_string, model_to_text_v12
 
 #######################################################
 # Temporary file to store functions under development
@@ -820,5 +821,46 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 	return(interpolators)
 end # END function files_to_interpolators()
 
+#######################################################
+# Output a time-varying model to text files
+#######################################################
+function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
+	outfns = Vector{String}(undef, 6)
+	
+	TF = (prefix == "") || (endswith(prefix,"_"))
+	if TF == false
+		prefix2 = paste0([prefix, "_"])
+	else
+		prefix2 = paste0([prefix, ""])
+	end
+	
+	
+	outfns[1] = paste0([prefix2, "timepoints.txt"]);
+	open(outfns[1], "w") do io
+		writedlm(io, timepoints, '\n')
+	end;
+	outfns[2] = paste0([prefix2, "mu_vals_by_t.txt"]);
+	open(outfns[2], "w") do io
+		writedlm(io, mu_vals_by_t, '\t')
+	end;
+	outfns[3] = paste0([prefix2, "Qvals_by_t.txt"]);
+	open(outfns[3], "w") do io
+		writedlm(io, Qvals_by_t, '\t')
+	end;
+	outfns[4] = paste0([prefix2, "Crates_by_t.txt"]);
+	open(outfns[1], "w") do io
+		writedlm(io, Crates_by_t, '\t')
+	end;
+	# Write the time-changing mus to a Matrix
+
+	# Write the rest of the Qarray (i,j)
+	outfns[5] = paste0([prefix2, "Qarray.txt"]);
+	CSV.write(outfns[5], prtQp(p_Ds_v12); delim="\t")
+	# Write the rest of the Carray (i,j,k)
+	outfns[6] = paste0([prefix2, "Carray.txt"]);
+	CSV.write(outfns[6], prtCp(p_Ds_v12); delim="\t")
+	#moref(outfn)
+	return(outfns)
+end
 
 end # ENDING Parsers

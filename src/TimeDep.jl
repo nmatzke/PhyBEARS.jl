@@ -487,9 +487,10 @@ end # END function update_QC_mats_time_t!(p, t)
 
 
 
-
+# Also interpolate mus
 function construct_QC_interpolators(p, tvals)
 	# Construct interpolators for Q_vals_t and C_rates_t
+	mu_vals_by_t = [Vector{Float64}(undef, length(p.params.mu_t_vals)) for _ = 1:length(tvals)]
 	Q_vals_by_t = [Vector{Float64}(undef, length(p.params.Qij_vals_t)) for _ = 1:length(tvals)]
 	C_rates_by_t = [Vector{Float64}(undef, length(p.params.Cijk_rates_t)) for _ = 1:length(tvals)]
 
@@ -502,17 +503,20 @@ function construct_QC_interpolators(p, tvals)
 		update_QC_mats_time_t!(p, tvals[i])
 	
 		# Save these rates
+		mu_vals_by_t[i] = p.params.mu_t_vals
 		Q_vals_by_t[i] .= p.params.Qij_vals_t
 		C_rates_by_t[i] .= p.params.Cijk_rates_t
 	end
-
+	
+	mu_vals_by_t
 	Q_vals_by_t
 	C_rates_by_t
 
+	mu_vals_interpolator = interpolate((tvals,), mu_vals_by_t, Gridded(Linear()));
 	Q_vals_interpolator = interpolate((tvals,), Q_vals_by_t, Gridded(Linear()));
 	C_rates_interpolator = interpolate((tvals,), C_rates_by_t, Gridded(Linear()));
 	
-	interpolators = (times_for_dists_interpolator=p.interpolators.times_for_dists_interpolator, times_for_SSE_interpolators=p.interpolators.times_for_SSE_interpolators, distances_interpolator=p.interpolators.distances_interpolator, area_of_areas_interpolator=p.interpolators.area_of_areas_interpolator, vicariance_mindists_interpolator=p.interpolators.vicariance_mindists_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator)
+	interpolators = (times_for_dists_interpolator=p.interpolators.times_for_dists_interpolator, times_for_SSE_interpolators=p.interpolators.times_for_SSE_interpolators, distances_interpolator=p.interpolators.distances_interpolator, area_of_areas_interpolator=p.interpolators.area_of_areas_interpolator, vicariance_mindists_interpolator=p.interpolators.vicariance_mindists_interpolator, mu_vals_interpolator=mu_vals_interpolator, Q_vals_interpolator=Q_vals_interpolator, C_rates_interpolator=C_rates_interpolator)
 	
 	# Copy the tuple p
 	p2 = (n=p.n, params=p.params, p_indices=p.p_indices, p_TFs=p.p_TFs, uE=p.uE, terms=p.terms, setup=p.setup, states_as_areas_lists=p.setup.states_list, interpolators=interpolators, use_distances=p.use_distances, bmo=p.bmo)

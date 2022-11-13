@@ -89,10 +89,12 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 #######################################################
 bmo.type[bmo.rownames .== "x"] .= "free"
 bmo.type[bmo.rownames .== "xv"] .= "free"
+bmo.type[bmo.rownames .== "birthRate"] .= "free"
+bmo.type[bmo.rownames .== "deathRate"] .= "free"
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="bgb_lnL", printlevel=1)
-pars = [0.4, 0.001, -0.001, 4.0]
+pars = [0.4, 0.001, -0.001, 4.0, 0.25, 0.0]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
@@ -115,6 +117,8 @@ opt.upper_bounds = upper::Union{AbstractVector,Real};
 #opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
+# d=0.09035,	e=0.00116,	x=-0.53656,	xv=7.41251,	birthRate=0.25956,	deathRate=0.21085,	Julia_sum_lq=-175.6323, rootstates_lnL=13.6898,	Julia_total_lnLs1=-161.9425, bgb_lnL=-44.7349
+# (-44.73494901514184, [0.09035419093152777, 0.001159414738073889, -0.5365638714798167, 7.41251181819682, 0.2595586392951748, 0.21085253647485827], :ROUNDOFF_LIMITED)
 
 
 
@@ -137,4 +141,73 @@ p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, 
 
 # Calculate the Ds, and final log-likelihood etc.
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+Rnames(res)
+round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
+
+# 0.0
+#  0.0
+#  0.0
+#  0.0
+#  0.296
+#  0.028
+#  0.292
+#  0.384
+
+
+
+# Install modified "castor" package in R
+# install.packages(pkgs="/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
+
+# Write model out to text files that can be read in to simulator
+Rnames(p_Ds_v12.interpolators)
+
+timepoints = seq(0.0, 10.0, 1.0)
+t = 0.0
+num_mu_vals = length(p_Ds_v12.interpolators.mu_vals_interpolator(t));
+numQvals = length(p_Ds_v12.interpolators.Q_vals_interpolator(t));
+numCrates = length(p_Ds_v12.interpolators.C_rates_interpolator(t));
+#Qvals_by_t = [Vector{Float64}(undef, numQvals) for _ = 1:length(timepoints)];
+#Crates_by_t = [Vector{Float64}(undef, numCrates) for _ = 1:length(timepoints)];
+mu_vals_by_t = Matrix{Float64}(undef, num_mu_vals, length(timepoints));
+Qvals_by_t = Matrix{Float64}(undef, numQvals, length(timepoints));
+Crates_by_t = Matrix{Float64}(undef, numCrates, length(timepoints));
+Qvals_by_t[1:6,1:6]
+
+for i in 1:length(timepoints)
+	mu_vals_by_t[:,i] .= p_Ds_v12.interpolators.mu_vals_interpolator
+	Qvals_by_t[:,i] .= p_Ds_v12.interpolators.Q_vals_interpolator(timepoints[i])
+	Crates_by_t[:,i] .= p_Ds_v12.interpolators.C_rates_interpolator(timepoints[i])
+	mus_by_t
+end
+
+# Write the model's time-changing Qarrays and Carrays to a text file.
+model_to_text_v12(p_Ds_v12, timepoints; prefix="")
+
+using DelimitedFiles
+outfn = "timepoints.txt";
+open(outfn, "w") do io
+	writedlm(io, timepoints, '\n')
+end;
+outfn = "mu_vals_by_t.txt";
+open(outfn, "w") do io
+	writedlm(io, mu_vals_by_t, '\t')
+end;
+outfn = "Qvals_by_t.txt";
+open(outfn, "w") do io
+	writedlm(io, Qvals_by_t, '\t')
+end;
+outfn = "Crates_by_t.txt";
+open(outfn, "w") do io
+	writedlm(io, Crates_by_t, '\t')
+end;
+# Write the time-changing mus to a Matrix
+
+# Write the rest of the Qarray (i,j)
+outfn = "Qarray.txt";
+CSV.write(outfn, prtQp(p_Ds_v12); delim="\t")
+# Write the rest of the Carray (i,j,k)
+outfn = "Carray.txt";
+CSV.write(outfn, prtCp(p_Ds_v12); delim="\t")
+#moref(outfn)
 
