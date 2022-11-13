@@ -18,6 +18,10 @@ outfns = c(
 set.seed(54321)
 
 
+# Read timepoints
+# Read in Q/A matrix, populate one and array
+# Read in C matrix, populate one and array
+
 
 time_grid = seq(0,10,0.1) # About halfway through
 A = get_random_mk_transition_matrix(Nstates=numstates, rate_model="ER", max_rate=0.1)
