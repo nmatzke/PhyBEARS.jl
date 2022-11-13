@@ -878,7 +878,7 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 		writedlm(io, Qvals_by_t, '\t')
 	end;
 	outfns[4] = paste0([prefix2, "Crates_by_t.txt"]);
-	open(outfns[1], "w") do io
+	open(outfns[4], "w") do io
 		writedlm(io, Crates_by_t, '\t')
 	end;
 	# Write the time-changing mus to a Matrix
