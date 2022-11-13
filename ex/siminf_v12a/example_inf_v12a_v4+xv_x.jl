@@ -66,7 +66,7 @@ files.distances_fn = "/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
 files.area_of_areas_fn = "/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
 
 # Construct interpolators, times-at-which-to-interpolate QC
-p = p_Ds_v5
+p = p_Ds_v5;
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=100.0);
 
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
@@ -119,7 +119,8 @@ opt.upper_bounds = upper::Union{AbstractVector,Real};
 #######################################################
 # d=0.09035,	e=0.00116,	x=-0.53656,	xv=7.41251,	birthRate=0.25956,	deathRate=0.21085,	Julia_sum_lq=-175.6323, rootstates_lnL=13.6898,	Julia_total_lnLs1=-161.9425, bgb_lnL=-44.7349
 # (-44.73494901514184, [0.09035419093152777, 0.001159414738073889, -0.5365638714798167, 7.41251181819682, 0.2595586392951748, 0.21085253647485827], :ROUNDOFF_LIMITED)
-
+# d=0.09035,	e=0.00116,	x=-0.53656,	xv=7.41251,	birthRate=0.25956,	deathRate=0.21085,	Julia_sum_lq=-175.6323, rootstates_lnL=13.6898,	Julia_total_lnLs1=-161.9425, bgb_lnL=-44.7349
+# (-44.73494901514184, [0.09035419093152777, 0.001159414738073889, -0.5365638714798167, 7.41251181819682, 0.2595586392951748, 0.21085253647485827], :ROUNDOFF_LIMITED)
 
 
 
@@ -175,10 +176,9 @@ Crates_by_t = Matrix{Float64}(undef, numCrates, length(timepoints));
 Qvals_by_t[1:6,1:6]
 
 for i in 1:length(timepoints)
-	mu_vals_by_t[:,i] .= p_Ds_v12.interpolators.mu_vals_interpolator
+	mu_vals_by_t[:,i] .= p_Ds_v12.interpolators.mu_vals_interpolator(timepoints[i])
 	Qvals_by_t[:,i] .= p_Ds_v12.interpolators.Q_vals_interpolator(timepoints[i])
 	Crates_by_t[:,i] .= p_Ds_v12.interpolators.C_rates_interpolator(timepoints[i])
-	mus_by_t
 end
 
 # Write the model's time-changing Qarrays and Carrays to a text file.

@@ -825,7 +825,9 @@ end # END function files_to_interpolators()
 # Output a time-varying model to text files
 #######################################################
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
-	outfns = Vector{String}(undef, 6)
+	# Initialize list of output filenames
+	num_outfns = 6	# 6 filenames for now
+	outfns = Vector{String}(undef, num_outfns) 
 	
 	TF = (prefix == "") || (endswith(prefix,"_"))
 	if TF == false
@@ -833,7 +835,24 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	else
 		prefix2 = paste0([prefix, ""])
 	end
-	
+
+	t = 0.0
+	num_mu_vals = length(p_Ds_v12.interpolators.mu_vals_interpolator(t));
+	numQvals = length(p_Ds_v12.interpolators.Q_vals_interpolator(t));
+	numCrates = length(p_Ds_v12.interpolators.C_rates_interpolator(t));
+	#Qvals_by_t = [Vector{Float64}(undef, numQvals) for _ = 1:length(timepoints)];
+	#Crates_by_t = [Vector{Float64}(undef, numCrates) for _ = 1:length(timepoints)];
+	mu_vals_by_t = Matrix{Float64}(undef, num_mu_vals, length(timepoints));
+	Qvals_by_t = Matrix{Float64}(undef, numQvals, length(timepoints));
+	Crates_by_t = Matrix{Float64}(undef, numCrates, length(timepoints));
+	Qvals_by_t[1:6,1:6]
+
+	for i in 1:length(timepoints)
+		mu_vals_by_t[:,i] .= p_Ds_v12.interpolators.mu_vals_interpolator(timepoints[i])
+		Qvals_by_t[:,i] .= p_Ds_v12.interpolators.Q_vals_interpolator(timepoints[i])
+		Crates_by_t[:,i] .= p_Ds_v12.interpolators.C_rates_interpolator(timepoints[i])
+	end
+
 	
 	outfns[1] = paste0([prefix2, "timepoints.txt"]);
 	open(outfns[1], "w") do io
@@ -861,6 +880,6 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	CSV.write(outfns[6], prtCp(p_Ds_v12); delim="\t")
 	#moref(outfn)
 	return(outfns)
-end
+end # END function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 
 end # ENDING Parsers
