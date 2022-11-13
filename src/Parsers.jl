@@ -12,6 +12,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 print("PhyBEARS: loading Parsers.jl dependencies...")
 #using BenchmarkTools # for @time
 using DelimitedFiles	# for writedlm()
+using CSV							# for CSV.write()
 using Interpolations	# for Linear, Gridded, interpolate
 using InvertedIndices # for Not
 using LSODA           # for lsoda()
@@ -824,6 +825,16 @@ end # END function files_to_interpolators()
 #######################################################
 # Output a time-varying model to text files
 #######################################################
+
+"""
+outfns = ["timepoints.txt", 
+"mu_vals_by_t.txt", 
+"Qvals_by_t.txt",
+"Crates_by_t.txt",
+"Qarray.txt",
+"Carray.txt"]
+"""
+
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	# Initialize list of output filenames
 	num_outfns = 6	# 6 filenames for now
