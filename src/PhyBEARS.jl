@@ -7,6 +7,7 @@ __precompile__(false)  # will cause using / import to load it directly into the
 
 print("\nPhyBEARS: loading PhyBEARS.jl.\n")
 
+using DelimitedFiles	# for writedlm
 using Distributed 	# for workers, spawnat :any, etc.
 using Hwloc					# for Hwloc.num_physical_cores(), Hwloc.num_virtual_cores()
 using PhyloBits			# for prt(), Node/HybridNetwork, etc.

@@ -16,9 +16,12 @@ using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
 using PhyloBits
-using PhyBEARS
 using DataFrames
 using CSV
+
+using PhyBEARS
+#using PhyBEARS.Parsers
+
 
 # Change the working directory as needed
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
@@ -111,9 +114,9 @@ lower = bmo.min[bmo.type .== "free"];
 upper = bmo.max[bmo.type .== "free"];
 opt.lower_bounds = lower::Union{AbstractVector,Real};
 opt.upper_bounds = upper::Union{AbstractVector,Real};
-#opt.ftol_abs = 0.01 # tolerance on log-likelihood
+opt.ftol_abs = 0.0001 # tolerance on log-likelihood
 #opt.ftol_rel = 0.01 # tolerance on log-likelihood
-#opt.xtol_abs = 0.0001 # tolerance on parameters
+opt.xtol_abs = 0.00001 # tolerance on parameters
 #opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
