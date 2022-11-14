@@ -248,6 +248,7 @@ parameters = list(birth_rates         = rates_sums_by_t,
                   transition_table_probs_C = transition_table_probs_C )
  
 
+set.seed(123)
 simulation = simulate_tdsse2( Nstates = numstates, 
                             parameters = parameters, 
 														splines_degree      = 1,
@@ -258,155 +259,18 @@ simulation = simulate_tdsse2( Nstates = numstates,
                             include_birth_times=TRUE,
                             include_death_times=TRUE,
                             coalescent=FALSE)
-simulation$tree
-
-plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)
-simulation$Ntransitions_A
-simulation$Ntransitions_C
-
-simtree = simulation$tree
-simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)
-newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))
-newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)
-
-match_simtree_in_new1 = match(x=simtable$tipnames, table=newtable$tipnames)
-match_simtree_in_new1
-
-match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)
-match_simtree_in_new2
-
-
-match_simtree_in_new1sub = match_simtree_in_new1[match_simtree_in_new1 > length(simtree$tip.label)]-length(simtree$tip.label)
-match_simtree_in_new1sub
-match_simtree_in_new2sub = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)
-match_simtree_in_new2sub
-
-simstates = c(as.numeric(simulation$tip_states), simulation$node_states)
-
-simstates
-simstates[match_simtree_in_new1]
-simstates[match_simtree_in_new2]
-
-simulation$node_states
-simulation$node_states[match_simtree_in_new1sub]
-simulation$node_states[match_simtree_in_new2sub]
-
-
-#######################################################
-# Make colors
-#######################################################
-library(cladoRcpp)
-areas = LETTERS[1:numareas]
-states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)
-states_list_0based
-
-possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)
-possible_ranges_list_txt
-
-# Make the list of ranges by node
-ranges_list = NULL
-
-
-
-for (i in 1:length(states_list_0based))
-    {    
-    if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )
-        {
-        tmprange = "_"
-        } else {
-        tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")
-        }
-    ranges_list = c(ranges_list, tmprange)
-    }
-
-# Look at the ranges list
-ranges_list
-
-
-
-
-colors_matrix = get_colors_for_numareas(length(areas))
-colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)
-colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white, 
-																																		# but with just AB, I like orange
-
-# Get the colors by node
-statetxt_by_node = rep("_", times=length(simstates))
-for (i in 1:length(statetxt_by_node))
-	{
-	statetxt_by_node[i] = ranges_list[simstates[i]]
-	}
-	
-statetxt_by_node
-cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)
-cols_byNode
-
-
-pdffn = "compare_castor_simtree_newtree_v1.pdf"
-pdf(file=pdffn, width=6, height=12)
-
-
-# Plot the original simtree
-tipnums = 1:length(simtree$tip.label)
-nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)
-plot(simtree, show.tip.label=FALSE)
-axisPhylo()
-mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)
-title("Plotting simtree & states from simulate_tdsse2()")
-tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])
-nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])
-
-# Try the re-orderings #2
-statetxt_by_node2 = statetxt_by_node[match_simtree_in_new2]
-cols_byNode2 = cols_byNode[match_simtree_in_new2]
-
-plot(newtree, show.tip.label=FALSE)
-axisPhylo()
-mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)
-title("simulate_tdsse2() tree after reordering attempt #2\nto default APE format -- CORRECT!")
-tiplabels(text=statetxt_by_node2[tipnums], tip=tipnums, bg=cols_byNode2[tipnums])
-nodelabels(text=statetxt_by_node2[nodenums], node=nodenums, bg=cols_byNode2[nodenums])
-
-# Try the re-orderings #1
-statetxt_by_node1 = statetxt_by_node[match_simtree_in_new1]
-cols_byNode1 = cols_byNode[match_simtree_in_new1]
-
-plot(newtree, show.tip.label=FALSE)
-axisPhylo()
-mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)
-title("simulate_tdsse2() tree after reordering attempt #1\nto default APE format")
-tiplabels(text=statetxt_by_node1[tipnums], tip=tipnums, bg=cols_byNode1[tipnums])
-nodelabels(text=statetxt_by_node1[nodenums], node=nodenums, bg=cols_byNode1[nodenums])
-
-dev.off()
-cmdstr = paste0("open ", pdffn)
-system(cmdstr)
 
 
 
 source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
-
-# Get the colors by node
-statetxt_by_node3 = rep("_", times=length(simulation2$states))
-for (i in 1:length(statetxt_by_node))
+# Check for successful simulation
+if (simulation$success == TRUE)
 	{
-	statetxt_by_node3[i] = ranges_list[simulation2$states[i]]
+	simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
+	print(unname(simulation2$tip_states))
+	plot_castor_simulation(simulation2, areas=areas, max_range_size=length(areas), include_null_range=TRUE)
+	} else {
+	simulation2 = NULL
 	}
-	
-statetxt_by_node3
-cols_byNode3 = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node3)
-cols_byNode3
-
-
-plot(simulation2$tree, show.tip.label=FALSE)
-axisPhylo()
-mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)
-title("simulate_tdsse2() tree after reordering with\ncastor_sim_to_default_ape_node_order()")
-tiplabels(text=statetxt_by_node3[tipnums], tip=tipnums, bg=cols_byNode3[tipnums])
-nodelabels(text=statetxt_by_node3[nodenums], node=nodenums, bg=cols_byNode3[nodenums])
-
-
-plot_castor_simulation(simulation2, areas=areas, max_range_size=length(areas), include_null_range=TRUE)
 

@@ -837,7 +837,7 @@ outfns = ["timepoints.txt",
 
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	# Initialize list of output filenames
-	num_outfns = 6	# 6 filenames for now
+	num_outfns = 7	# 6 filenames for now
 	outfns = Vector{String}(undef, num_outfns) 
 	
 	TF = (prefix == "") || (endswith(prefix,"_"))
@@ -846,6 +846,15 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	else
 		prefix2 = paste0([prefix, ""])
 	end
+	
+	# Run settings
+	numareas = length(p_Ds_v12.setup.areas_list)
+	numstates = length(p_Ds_v12.setup.states_list)
+	max_range_size = p_Ds_v12.setup.max_range_size
+	include_null_range = p_Ds_v12.setup.include_null_range
+	setup_df = DataFrame(numareas=numareas, numstates=numstates, max_range_size=max_range_size, include_null_range=include_null_range)
+	outfns[1] = paste0([prefix2, "setup_df.txt"]);
+	CSV.write(outfns[1], setup_df; delim="\t")
 
 	t = 0.0
 	num_mu_vals = length(p_Ds_v12.interpolators.mu_vals_interpolator(t));
@@ -865,30 +874,30 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	end
 
 	
-	outfns[1] = paste0([prefix2, "timepoints.txt"]);
-	open(outfns[1], "w") do io
+	outfns[2] = paste0([prefix2, "timepoints.txt"]);
+	open(outfns[2], "w") do io
 		writedlm(io, timepoints, '\n')
 	end;
-	outfns[2] = paste0([prefix2, "mu_vals_by_t.txt"]);
-	open(outfns[2], "w") do io
+	outfns[3] = paste0([prefix2, "mu_vals_by_t.txt"]);
+	open(outfns[3], "w") do io
 		writedlm(io, mu_vals_by_t, '\t')
 	end;
-	outfns[3] = paste0([prefix2, "Qvals_by_t.txt"]);
-	open(outfns[3], "w") do io
+	outfns[4] = paste0([prefix2, "Qvals_by_t.txt"]);
+	open(outfns[4], "w") do io
 		writedlm(io, Qvals_by_t, '\t')
 	end;
-	outfns[4] = paste0([prefix2, "Crates_by_t.txt"]);
-	open(outfns[4], "w") do io
+	outfns[5] = paste0([prefix2, "Crates_by_t.txt"]);
+	open(outfns[5], "w") do io
 		writedlm(io, Crates_by_t, '\t')
 	end;
 	# Write the time-changing mus to a Matrix
 
 	# Write the rest of the Qarray (i,j)
-	outfns[5] = paste0([prefix2, "Qarray.txt"]);
-	CSV.write(outfns[5], prtQp(p_Ds_v12); delim="\t")
+	outfns[6] = paste0([prefix2, "Qarray.txt"]);
+	CSV.write(outfns[6], prtQp(p_Ds_v12); delim="\t")
 	# Write the rest of the Carray (i,j,k)
-	outfns[6] = paste0([prefix2, "Carray.txt"]);
-	CSV.write(outfns[6], prtCp(p_Ds_v12); delim="\t")
+	outfns[7] = paste0([prefix2, "Carray.txt"]);
+	CSV.write(outfns[7], prtCp(p_Ds_v12); delim="\t")
 	#moref(outfn)
 	return(outfns)
 end # END function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
