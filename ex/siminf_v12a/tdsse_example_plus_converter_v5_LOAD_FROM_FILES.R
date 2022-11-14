@@ -138,9 +138,9 @@ A
 # (ADD THESE UP to provide the speciation rates / lambdas)
 
 # transition_table_C: columns are i, j, k, prob
-# transrates_table_C: columns are i, j, k, rate # (later, we will add up these rates to get the total lambda by state)
+# transition_table_rates_C_matrix: columns are i, j, k, rate 
+# (later, we will add up these rates to get the total lambda by state)
 transition_table_C = NULL
-transrates_table_C = NULL
 transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
 transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
 dim(transition_table_probs_C_matrix)
@@ -194,10 +194,12 @@ for (i in 1:length(time_grid))
 	{
 	for (j in 1:nrow(Carray))
 		{
-		if (Carray$i[j] == Carray$j[j])
+		if ((Carray$i[j] == Carray$j[j]) && (Carray$i[j] == Carray$k[j]))
 			{
+			# state i = state j = state k
 			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]
 			} else {
+			# Otherwise, you have two different "anagenetic" events, with the probability split between them
 			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2
 			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2
 			}

@@ -281,7 +281,7 @@ match_simtree_in_new1sub
 match_simtree_in_new2sub = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)
 match_simtree_in_new2sub
 
-simstates = c(as.numeric(simulation$tip_states), simulation$node_states)
+simstates = c(as.numeric(simulation$tip_states), as.numeric(simulation$node_states))
 
 simstates
 simstates[match_simtree_in_new1]
