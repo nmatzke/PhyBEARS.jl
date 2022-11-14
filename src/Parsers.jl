@@ -908,6 +908,7 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	open(outfns[8], "w") do io
 		for i=1:length(area_names)
 			write(io, area_names[i])
+			write(io, "\n")
 		end
 	end # END open,do
 	
