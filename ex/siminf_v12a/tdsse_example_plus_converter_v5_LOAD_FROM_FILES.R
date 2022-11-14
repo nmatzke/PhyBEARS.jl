@@ -16,7 +16,7 @@ include_null_range = TRUE
 
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
-outfns = c(
+simfns = c(
 "timepoints.txt", 
 "mu_vals_by_t.txt",
 "Qvals_by_t.txt",
@@ -40,17 +40,17 @@ max_tips = NULL
 
 # Load the files
 #time_grid = seq(0,10,0.1) # About halfway through
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]
+time_grid = c(read.table(simfns[1], header=FALSE))[[1]]
 
 # Change from time reading backwards to time reading forwards
 colnums = rev(1:length(time_grid))
 time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))
 time_grid
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]
-Qarray = read.table(outfns[5], header=TRUE)
-Carray = read.table(outfns[6], header=TRUE)
+mu_vals_by_t = as.matrix(read.table(simfns[2], header=FALSE))[,colnums]
+Qvals_by_t = as.matrix(read.table(simfns[3], header=FALSE))[,colnums]
+Crates_by_t = as.matrix(read.table(simfns[4], header=FALSE))[,colnums]
+Qarray = read.table(simfns[5], header=TRUE)
+Carray = read.table(simfns[6], header=TRUE)
 
 # Add the final time at end of forward simulation, if needed
 if (max(time_grid) < max_simulation_time)
