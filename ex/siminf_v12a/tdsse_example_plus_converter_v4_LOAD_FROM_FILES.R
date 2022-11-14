@@ -23,7 +23,7 @@ set.seed(54321)
 # to this timepoint
 max_simulation_time = NULL
 max_simulation_time = 100.0
-
+max_tips = NULL
 
 # Read timepoints
 # Read in Q/A matrix, populate one and array
@@ -32,6 +32,7 @@ max_simulation_time = 100.0
 # Load the files
 #time_grid = seq(0,10,0.1) # About halfway through
 time_grid = c(read.table(outfns[1], header=FALSE))[[1]]
+
 # Change from time reading backwards to time reading forwards
 colnums = rev(1:length(time_grid))
 time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))
@@ -43,7 +44,7 @@ Qarray = read.table(outfns[5], header=TRUE)
 Carray = read.table(outfns[6], header=TRUE)
 
 # Add the final time at end of forward simulation, if needed
-if (is.null(max_simulation_time) == FALSE)
+if (max(time_grid) < max_simulation_time)
 	{
 	time_grid = c(time_grid, max_simulation_time)
 	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])
@@ -231,7 +232,7 @@ for (i in 1:length(time_grid))
 
 
 parameters = list(birth_rates         = rates_sums_by_t,
-                  death_rates         = 0.0,
+                  death_rates         = mu_vals_by_t,
                   transition_matrix_A = A,
                   transition_matrix_C = transition_matrix_C_array,
                   transition_table_indices_C = transition_table_indices_C,
@@ -242,11 +243,13 @@ simulation = simulate_tdsse2( Nstates = numstates,
                             parameters = parameters, 
 														splines_degree      = 1,
                             start_state = 2,
-                            max_tips = 50,
+                            max_tips = max_tips,
+                            max_time = max_time,
                             time_grid = time_grid,
                             include_birth_times=TRUE,
                             include_death_times=TRUE,
-                            coalescent=FALSE)
+                            coalescent=FALSE
+)
 plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)
 simulation$Ntransitions_A
 simulation$Ntransitions_C
