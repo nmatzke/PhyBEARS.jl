@@ -116,7 +116,7 @@ plot_castor_simulation <- function(simulation, areas=c("A","B"), max_range_size=
 
 default_simfns <- function()
 	{
-	simfns = c(
+	simfns = c("setup_df.txt",
 	"timepoints.txt", 
 	"mu_vals_by_t.txt",
 	"Qvals_by_t.txt",
@@ -129,7 +129,10 @@ default_simfns <- function()
 
 # Simulate for a certain period of time, until minimum number of living taxa produced
 
-simulate_tdsse2_for_timeperiod <- function(wd, max_simulation_time, min_numtaxa, simfns=default_simfns(), 
+simulate_tdsse2_for_timeperiod <- function(wd, max_simulation_time, min_numtaxa, simfns=default_simfns())
+	{
+	
+	} 
 
 
 

@@ -356,11 +356,12 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Note: changing states_lists should be dealt with by setting superhigh
 	# extinction rates in the mus, and setting speciation rates to 0 in the 
 	# Carray (and 0 for the relevant transitions in the Q matrix as well)
-	if isnan(manual_states_list) == true
-		states_list = manual_states_list
+	type_string = string(typeof(manual_states_list))
+	if (startswith(type_string, "NamedTuple") == false) && (isnan(manual_states_list) == true)
+		states_list = areas_list_to_states_list(areas_list, max_range_size, include_null_range)
 		n = length(states_list)
 	else
-		states_list = areas_list_to_states_list(areas_list, max_range_size, include_null_range)
+		states_list = manual_states_list
 		n = length(states_list)
 	end # END if isnan(manual_states_list) == true
 

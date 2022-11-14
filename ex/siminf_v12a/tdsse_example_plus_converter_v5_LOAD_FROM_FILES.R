@@ -16,7 +16,7 @@ include_null_range = TRUE
 
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
-simfns = c(
+simfns = c("setup_df.txt",
 "timepoints.txt", 
 "mu_vals_by_t.txt",
 "Qvals_by_t.txt",
