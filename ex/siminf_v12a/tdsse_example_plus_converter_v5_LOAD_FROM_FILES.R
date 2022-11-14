@@ -8,11 +8,6 @@ source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
 
 
-# Setup
-numareas = 3
-numstates = 8
-max_range_size = 3
-include_null_range = TRUE
 
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
@@ -25,13 +20,36 @@ simfns = c("setup_df.txt",
 "Carray.txt")
 
 
+
+# Setup
+setup='
+numareas = 3
+numstates = 8
+max_range_size = 3
+include_null_range = TRUE
+'
+
+# Read in the setup
+setup_df = read.table("setup_df.txt", header=TRUE)
+numareas = setup_df$numareas
+numstates = setup_df$numstates
+max_range_size = setup_df$max_range_size
+if (tolower(setup_df$include_null_range) == "true")
+	{
+	include_null_range = TRUE
+	} else {
+	include_null_range = FALSE
+	}
+
+# User sets these here!
 # Set the random number seed, to make it repeatable
-set.seed(54321)
+seedval = 54321
+set.seed(seedval)
 # Set the max_simulation time -- whatever changing distances you have will be
 # extended with this timepoint, i.e. the final geography/rates will continue
 # to this timepoint
-max_simulation_time = NULL
-max_simulation_time = 15.0
+start_state = 8 # number of the starting state
+max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time
 max_tips = NULL
 
 # Read timepoints
@@ -40,17 +58,17 @@ max_tips = NULL
 
 # Load the files
 #time_grid = seq(0,10,0.1) # About halfway through
-time_grid = c(read.table(simfns[1], header=FALSE))[[1]]
+time_grid = c(read.table(simfns[2], header=FALSE))[[1]]
 
 # Change from time reading backwards to time reading forwards
 colnums = rev(1:length(time_grid))
 time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))
 time_grid
-mu_vals_by_t = as.matrix(read.table(simfns[2], header=FALSE))[,colnums]
-Qvals_by_t = as.matrix(read.table(simfns[3], header=FALSE))[,colnums]
-Crates_by_t = as.matrix(read.table(simfns[4], header=FALSE))[,colnums]
-Qarray = read.table(simfns[5], header=TRUE)
-Carray = read.table(simfns[6], header=TRUE)
+mu_vals_by_t = as.matrix(read.table(simfns[3], header=FALSE))[,colnums]
+Qvals_by_t = as.matrix(read.table(simfns[4], header=FALSE))[,colnums]
+Crates_by_t = as.matrix(read.table(simfns[5], header=FALSE))[,colnums]
+Qarray = read.table(simfns[6], header=TRUE)
+Carray = read.table(simfns[7], header=TRUE)
 
 # Add the final time at end of forward simulation, if needed
 if (max(time_grid) < max_simulation_time)
@@ -62,7 +80,7 @@ if (max(time_grid) < max_simulation_time)
 	}
 
 # Set a maximum rate for extreme cases
-max_rate = 10.0
+max_rate = 30.0
 
 # Enforce maximum rate on Crates_by_t
 Crates_by_t[Crates_by_t > max_rate] = max_rate
@@ -248,18 +266,18 @@ parameters = list(birth_rates         = rates_sums_by_t,
                   transition_table_probs_C = transition_table_probs_C )
  
 
-set.seed(123)
+simulation
 simulation = simulate_tdsse2( Nstates = numstates, 
                             parameters = parameters, 
 														splines_degree      = 1,
-                            start_state = 2,
+                            start_state = 8,
                             max_tips = max_tips,
                             max_time = max_simulation_time,
                             time_grid = time_grid,
                             include_birth_times=TRUE,
                             include_death_times=TRUE,
                             coalescent=FALSE)
-
+simulation
 
 
 source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
