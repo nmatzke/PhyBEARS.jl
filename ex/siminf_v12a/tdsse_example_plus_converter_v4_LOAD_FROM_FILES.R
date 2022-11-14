@@ -51,6 +51,12 @@ if (is.null(max_simulation_time) == FALSE)
 	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])
 	}
 
+# Set a maximum rate for extreme cases
+max_rate = 10.0
+
+# Enforce maximum rate on Crates_by_t
+Crates_by_t[Crates_by_t > max_rate] = max_rate
+mu_vals_by_t[mu_vals_by_t > max_rate] = max_rate
 
 # Produce the A transition matrix / array
 A = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))
@@ -60,6 +66,10 @@ for (i in 1:length(time_grid))
 		{
 		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]
 		}
+	
+	# Enforce maximum rate
+	A[A > max_rate] = max_rate
+	
 	# Set the diagonal
 	diag(A[,,i]) = 0.0
 	diag(A[,,i]) = -rowSums(A[,,i])
