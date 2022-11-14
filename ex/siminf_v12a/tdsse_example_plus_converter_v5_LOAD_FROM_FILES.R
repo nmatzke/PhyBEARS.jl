@@ -13,11 +13,12 @@ wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
 simfns = c("setup_df.txt",
 "timepoints.txt", 
-"mu_vals_by_t.txt",
+"mu_vals_by_t.txt", 
 "Qvals_by_t.txt",
 "Crates_by_t.txt",
 "Qarray.txt",
-"Carray.txt")
+"Carray.txt",
+"area_names.txt")
 
 
 

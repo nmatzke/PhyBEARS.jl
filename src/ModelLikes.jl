@@ -20,12 +20,12 @@ using Base.Threads  # <-- this is good for @spawn, Distributed.@spawn is BAD, it
 using Random					# for MersenneTwister()
 using Dates						# for e.g. DateTime, Dates.now()
 using PhyloBits
+using PhyloBits.TrUtils # for flat2() (similar to unlist), LETTERS, and 
+                        # pair_of_indices_to_single_index_column_first()
 using PhyloBits.PNtypes
 #using Plots						# for plot
 using DataFrames          # for DataFrame()
 using PhyBEARS.MaxentInterp # for discrete_maxent_distrib_of_smaller_daughter_ranges
-using PhyloBits.TrUtils # for flat2() (similar to unlist), and 
-                          # pair_of_indices_to_single_index_column_first()
 using PhyBEARS.StateSpace
 using PhyloBits.TreeTable
 using PhyBEARS.TreePass
@@ -311,7 +311,7 @@ geog_df = DataFrame(tipnames=tipnames, A=A, B=B)
 inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo)
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs
 """
-function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN)
+function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas))
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
 	
@@ -674,7 +674,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	min_stepsize = 1.0
 	
 	
-	setup = (areas_list=areas_list, states_list=states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, min_stepsize=min_stepsize)
+	setup = (area_names=area_names, areas_list=areas_list, states_list=states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, min_stepsize=min_stepsize)
 	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)

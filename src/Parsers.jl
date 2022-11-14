@@ -827,15 +827,19 @@ end # END function files_to_interpolators()
 #######################################################
 
 """
-outfns = ["timepoints.txt", 
+outfns = ["setup_df.txt",
+"timepoints.txt", 
 "mu_vals_by_t.txt", 
 "Qvals_by_t.txt",
 "Crates_by_t.txt",
 "Qarray.txt",
-"Carray.txt"]
+"Carray.txt",
+"area_names.txt"
+]
 """
 
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
+	area_names = p_Ds_v12.setup.area_names
 	# Initialize list of output filenames
 	num_outfns = 7	# 6 filenames for now
 	outfns = Vector{String}(undef, num_outfns) 
@@ -899,6 +903,14 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	outfns[7] = paste0([prefix2, "Carray.txt"]);
 	CSV.write(outfns[7], prtCp(p_Ds_v12); delim="\t")
 	#moref(outfn)
+	
+	outfns[8] = paste0([prefix2, "area_names.txt"]);
+	open(outfns[8], "w") do io
+		for i=1:length(area_names)
+			write(io, area_names[i])
+		end
+	end # END open,do
+	
 	return(outfns)
 end # END function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 

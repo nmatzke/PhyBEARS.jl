@@ -397,14 +397,26 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 			{ next() }
 		
 		# Otherwise, proceed
-		# ASDFASDF - PICK IT UP HERE
+		# 1. output a successful simulation
+		# 2. save to a living tree and complete tree
+		tr = simulation2$tree
+		tips_to_drop = tr$tip.label[fossils_TF]
+		living_tree = drop.tip(phy=tr, tip=tips_to_drop)
+		outfn = slashslash(paste0(wd, "/", "tree.newick")
+		write.tree(living_tree, file=outfn)
+		outfn = slashslash(paste0(wd, "/", "living_tree.newick")
+		write.tree(living_tree, file=outfn)
 		
-	1. output a successful simulation
-	2. save to a living tree and complete tree
+		outfn = slashslash(paste0(wd, "/", "full_tree.newick")
+		write.tree(tr, file=outfn)
+		outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick")
+		write.tree(tr, file=outfn)
+		
+		
 	3. geog files for both
 	4. save the Rdata file
 	5. save the states at tips & nodes
-
+'
 		} # END while(sim_done == FALSE)
 
 
