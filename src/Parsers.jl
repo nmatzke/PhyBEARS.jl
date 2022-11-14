@@ -841,7 +841,7 @@ outfns = ["setup_df.txt",
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	area_names = p_Ds_v12.setup.area_names
 	# Initialize list of output filenames
-	num_outfns = 7	# 6 filenames for now
+	num_outfns = 8	# 8 filenames for now
 	outfns = Vector{String}(undef, num_outfns) 
 	
 	TF = (prefix == "") || (endswith(prefix,"_"))

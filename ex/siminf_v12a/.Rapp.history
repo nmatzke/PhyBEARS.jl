@@ -1,1065 +1,377 @@
-time_grid
-c(read.table(outfns[1], header=FALSE))
-c(read.table(outfns[1], header=FALSE))[[1]]
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = max(time_grid) - time_grid#
-time_grid
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) + min(-1*(max(time_grid) - time_grid))#
-time_grid
--1*(max(time_grid) - time_grid)
--1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))
-as.matrix(read.table(outfns[2], header=FALSE))
-Qarray
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
-time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=FALSE)#
-Carray = read.table(outfns[6], header=FALSE)#
-#
-# Add the final time at end of forward simulation, if needed#
-if (is.null(max_simulation_time) == FALSE)#
+sapply(X=1:numareas, FUN=col2rgb)
+sapply(X=1:numareas, FUN=gray)
+sapply(X=(1:numareas)/numareas, FUN=gray)
+get_colors_for_numareas = function(numareas, use_rainbow=FALSE)#
 	{#
-	time_grid = c(time_grid, max_simulation_time)#
-	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
-	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
-	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
-	}
-max_simulation_time = NULL#
-max_simulation_time = 100.0#
-# Read timepoints#
-# Read in Q/A matrix, populate one and array#
-# Read in C matrix, populate one and array#
-#
-# Load the files#
-#time_grid = seq(0,10,0.1) # About halfway through#
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
-time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=FALSE)#
-Carray = read.table(outfns[6], header=FALSE)#
-#
-# Add the final time at end of forward simulation, if needed#
-if (is.null(max_simulation_time) == FALSE)#
-	{#
-	time_grid = c(time_grid, max_simulation_time)#
-	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
-	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
-	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
-	}
-Crates_by_t
-time_grid
-array
-array(data=0.0, dim=c(numstates,numstates))
-Qarray
-Qarray = read.table(outfns[5], header=TRUE)#
-Carray = read.table(outfns[6], header=TRUE)
-Qarray
-Qarray$i
-max_simulation_time = NULL#
-max_simulation_time = 100.0#
-# Read timepoints#
-# Read in Q/A matrix, populate one and array#
-# Read in C matrix, populate one and array#
-#
-# Load the files#
-#time_grid = seq(0,10,0.1) # About halfway through#
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
-time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=TRUE)#
-Carray = read.table(outfns[6], header=TRUE)#
-#
-# Add the final time at end of forward simulation, if needed#
-if (is.null(max_simulation_time) == FALSE)#
-	{#
-	time_grid = c(time_grid, max_simulation_time)#
-	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
-	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
-	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
-	}#
-# Produce the A transition matrix / array#
-A = array(data=0.0, dim=c(numstates,numstates,length(timepoints)))#
-for i in 1:length(timepoints)#
-	{#
-	for j in 1:nrow(Qarray)#
+	# default#
+	area_colors = sapply(X=(1:numareas)/numareas, FUN=gray)#
+	if (use_rainbow == TRUE)#
 		{#
-		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
+		area_colors = rainbow(numareas)#
+		colors_matrix = col2rgb(area_colors)#
+		return(colors_matrix)#
 		}#
-	}
-max_simulation_time = NULL#
-max_simulation_time = 100.0#
-# Read timepoints#
-# Read in Q/A matrix, populate one and array#
-# Read in C matrix, populate one and array#
-#
-# Load the files#
-#time_grid = seq(0,10,0.1) # About halfway through#
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
-# Change from time reading backwards to time reading forwards#
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
-time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=TRUE)#
-Carray = read.table(outfns[6], header=TRUE)#
-#
-# Add the final time at end of forward simulation, if needed#
-if (is.null(max_simulation_time) == FALSE)#
-	{#
-	time_grid = c(time_grid, max_simulation_time)#
-	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
-	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
-	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
-	}#
-# Produce the A transition matrix / array#
-A = array(data=0.0, dim=c(numstates,numstates,length(timepoints)))#
-for i in 1:length(time_grid)#
-	{#
-	for j in 1:nrow(Qarray)#
+	if (numareas == 2)#
 		{#
-		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
+		area_colors = c("blue", "green")#
 		}#
-	}
-A = array(data=0.0, dim=c(numstates,numstates,length(timepoints)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Qarray))#
+	if (numareas == 3)#
 		{#
-		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
+		area_colors = c("blue", "green", "red")#
 		}#
-	}
-A = array(data=0.0, dim=c(numstates,numstates,length(timepoints)))
-A = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Qarray))#
+	if (numareas == 4)#
 		{#
-		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
+		area_colors = c("blue", "green3", "yellow", "red")#
 		}#
-	}
-A
-A = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Qarray))#
+	if (numareas == 5)#
 		{#
-		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
+		area_colors = c("blue", "cyan", "green3", "yellow", "red")#
 		}#
-	# Set the diagonal#
-	diag(A[,,i]) = 0.0#
-	diag(A[,,i]) = -rowSums(A[,,i])#
-	}
-A
-A[,,8]
-apply(apply(X=A, MARGIN=3, rowSums)
-apply(X=A, MARGIN=3, rowSums)
-dims(A)
-dim(A)
-round(apply(X=A, MARGIN=3, rowSums), digits=10)
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
-transition_matrix_C
-Crates_by_t
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
-i=1
-tmprates = cbind(Carray, Crates_by_t[i])
-tmprates
-tmprates = cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[i])#
-	names(tmprates) = c("i", "j", "k", "rates_t")
-tmprates
-cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[i])
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")
-tmprates
-Crates_by_t
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")
-tmprates
-aggregate(tmprates$rates_t, by=tmprates$i, FUN=sum)
-aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)
-rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	tmporder = order(rates_sums[,1])#
-	tmporder
-rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)
-class(rates_sums)
-tmprates
-rates_sums
-names(rates_sums) = c("i", "rates_sum")#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]
-rates_sums
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
+	if (numareas == 6)#
 		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmpprobs$rates_t[TF] / rates_sums$rates_sum[q]#
+		area_colors = c("blue", "cyan", "green3", "yellow", "red", "violet")#
 		}#
-	transition_table_probs_C_matrix[,,i] = tmprates#
-	transition_table_probs_C_matrix[,,i] = tmpprobs#
-	}
-i
-q
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")
-tmpprobs
-tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi
-TF
-tmpprobs$probs_t[TF]
-tmpprobs$rates_t[TF]
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
+	if (numareas == 7)#
 		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
+		area_colors = c("blue", "cyan", "green3", "yellow", "orange", "red", "violet")#
 		}#
-	transition_table_probs_C_matrix[,,i] = tmprates#
-	transition_table_probs_C_matrix[,,i] = tmpprobs#
-	}
-transition_table_probs_C_matrix
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))
-dim(transition_table_probs_C_matrix)
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")
-tmpprobs
-rates_sums
-tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi
-q
-TF
-tmpprobs$probs_t[TF]
-tmprates$rates_t[TF]
-rates_sums$rates_sum[q]
-rates_sums$rates_sum[q]
-tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]
-tmpprobs$probs_t
-round(tmpprobs$probs_t, 3)
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
+	if (numareas > 7)#
 		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
+		area_colors = col2rgb(rainbow(numareas))#
+		return(area_colors)#
 		}#
-	transition_table_probs_C_matrix[,,i] = tmprates$probs_t#
-	transition_table_probs_C_matrix[,,i] = tmpprobs$probs_t#
+	colors_matrix = col2rgb(area_colors)#
+	return(colors_matrix)	#
 	}
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-for (i in 1:length(time_grid))#
+plot_castor_simulation <- function(simulation, areas=2, max_range_size=2, include_null_range=TRUE)#
 	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
+	defaults='#
+	areas = c("A", "B")#
+	max_range_size = 2#
+	include_null_range = TRUE#
+	'#
+	states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)#
+	states_list_0based#
+#
+	possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)#
+	possible_ranges_list_txt#
+#
+	# Make the list of ranges by node#
+	ranges_list = NULL#
+#
+	for (i in 1:length(states_list_0based))#
+			{    #
+			if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )#
+					{#
+					tmprange = "_"#
+					} else {#
+					tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")#
+					}#
+			ranges_list = c(ranges_list, tmprange)#
+			}#
+#
+	# Look at the ranges list#
+	ranges_list#
+#
+	colors_matrix = get_colors_for_numareas(length(areas))#
+	colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)#
+	colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white, #
+																																			# but with just AB, I like orange#
+#
+	# Get the colors by node#
+	statetxt_by_node = rep("_", times=length(simstates))#
+	for (i in 1:length(statetxt_by_node))#
 		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
+		statetxt_by_node[i] = ranges_list[simstates[i]]#
 		}#
-	transition_table_probs_C_matrix[,,i] = tmprates$rates_t#
-	transition_table_probs_C_matrix[,,i] = tmpprobs$probs_t#
-	}
-# transrates_table_C: columns are i, j, k, rate # (later, we will add up these rates to get the total lambda by state)#
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
+	statetxt_by_node#
+	cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)#
+	cols_byNode#
 #
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
+	# Plot the original simtree#
+	tipnums = 1:length(simtree$tip.label)#
+	nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)#
+	plot(simtree, show.tip.label=FALSE)#
+	axisPhylo()#
+	mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+	title("Plotting simtree & states from simulate_tdsse2()")#
+	tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])#
+	nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])#
 #
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = tmprates$rates_t#
-	transition_table_probs_C_matrix[,,i] = tmpprobs$probs_t#
-	}
-transition_table_probs_C_matrix
-tmpprobs
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	x = aggregate(tmpprobs, by=list(tmpprobs$i), FUN=sum)#
-	print(x)#
-	}
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	x = aggregate(tmpprobs[,"probs_t"], by=list(tmpprobs[,"i"]), FUN=sum)#
-	print(x)#
-	}
-tmpprobs
-tmpprobs[,1]
-tmpprobs
-transition_table_probs_C_matrix[,,i]
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = tmprates#
-	transition_table_probs_C_matrix[,,i] = tmpprobs#
+	return(cols_byNode)#
 	}#
 #
-# Check probs#
-for (i in 1:length(time_grid))#
+simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
+simulation2
+statetxt_by_node3 = rep("_", times=length(simulation2$states))#
+for (i in 1:length(statetxt_by_node))#
 	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	x = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	print(x)#
-	}
-tmprates
-dim(transition_table_rates_C_matrix[,,i])
-dim(transition_table_rates_C_matrix[,,1])
-dim(transition_table_rates_C_matrix)
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)
-i=1
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}
-tmprates
-tmpprobs
-transition_table_rates_C_matrix[,,i]
-transition_table_rates_C_matrix[,,i] = tmprates
-transition_table_rates_C_matrix
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
-	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
-	}
-transition_table_probs_C_matrix
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	x = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	print(x)#
-	}
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	print(probs_sum)#
-	tmprates = transition_table_probs_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	print(rates_sum)#
-	}
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	print(sums_by_i)#
-	}
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	names(sums_by_i) = c("i", "rates_sum", "probs_sum")#
-	print(sums_by_i)#
-	}
-transition_table_probs_C_matrix
-# Check for null range#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = c(1,1,1,0.0)#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}
-matrix
-if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = matrix(data=c(1,1,1,0.0), nrow=1)#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}
-rates_sums
-rates_sums
-matrix(data=c(1,1,1,0.0), nrow=1)
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")
-rates_sums
-tmprow = matrix(data=c(1,0.0), nrow=1)#
-		rates_sums = rbind(tmprow, rates_sums)
-data.frame(	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Check for null range#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), col.names= c("i", "rates_sum"))#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}
-tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Check for null range#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), col.names= c("i", "rates_sum"))#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}
-tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), col.names= c("i", "rates_sum"))
-tmprow
-tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		name(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)
-tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		names(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)
-rates_sums
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-rates_sums_by_t = NULL#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Check for null range; add row for "i" if needed#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		names(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}#
-	rates_sums_by_t	= cbind(rates_sums_by_t, rates_sums$rates_sum)#
-#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
-	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
+	statetxt_by_node3[i] = ranges_list[simulation2$states[i]]#
 	}#
+statetxt_by_node3#
+cols_byNode3 = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node3)#
+cols_byNode3#
+plot(simulation2$tree, show.tip.label=FALSE)#
+axisPhylo()#
+mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+title("simulate_tdsse2() tree after reordering with\ncastor_sim_to_default_ape_node_order()")#
+tiplabels(text=statetxt_by_node3[tipnums], tip=tipnums, bg=cols_byNode3[tipnums])#
+nodelabels(text=statetxt_by_node3[nodenums], node=nodenums, bg=cols_byNode3[nodenums])#
+plot_castor_simulation(simulation2, areas=2, max_range_size=2, include_null_range=TRUE)
+areas
+states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)#
+	states_list_0based#
 #
-rates_sums_by_t
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]
-time_grid
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))
-Crates_by_t
-colnums
-colnums = rev(1:length(time_grid))#
-time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
-time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=TRUE)#
-Carray = read.table(outfns[6], header=TRUE)
-Crates_by_t
-if (is.null(max_simulation_time) == FALSE)#
-	{#
-	time_grid = c(time_grid, max_simulation_time)#
-	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
-	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
-	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
-	}
-Crates_by_t
-rates_sums_by_t
-transition_table_C
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3] - 1
-transition_table_indices_C
-transition_table_rates_C_matrix[,1:3]
-transition_table_rates_C_matrix
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-# transition_table_probs_C1 = transition_table_C[,4]#
-transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]
-transition_table_indices_C
-transition_table_indices_C
-transition_table_C
-transition_table_probs_C_matrix
-transition_matrix_A
-A
-A
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
+	possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)#
+	possible_ranges_list_txt#
 #
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	transition_matrix_C_array[,,i] = transition_table_indices_C#
-	transition_table_probs_C_matrix[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C_matrix[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}
-transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_table_indices_C), ncol(transition_table_indices_C), length(time_grid)))#
+	# Make the list of ranges by node#
+	ranges_list = NULL#
 #
-# Probs encoded in a num_clado_events * 2 * num_times array#
-# the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
+	for (i in 1:length(states_list_0based))#
+			{    #
+			if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )#
+					{#
+					tmprange = "_"#
+					} else {#
+					tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")#
+					}#
+			ranges_list = c(ranges_list, tmprange)#
+			}#
 #
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	transition_matrix_C_array[,,i] = transition_table_indices_C#
-	transition_table_probs_C_matrix[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C_matrix[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}
-transition_table_probs_C_matrix
-transition_table_probs_C_matrix
-dim(transition_table_probs_C_matrix)
-transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_table_indices_C), ncol(transition_table_indices_C), length(time_grid)))#
+	# Look at the ranges list#
+	ranges_list#
 #
-# Probs encoded in a num_clado_events * 2 * num_times array#
-# the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
+	colors_matrix = get_colors_for_numareas(length(areas))#
+	colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)#
+	colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white,
+colors_list_for_states
+statetxt_by_node = rep("_", times=length(simstates))#
+	for (i in 1:length(statetxt_by_node))#
+		{#
+		statetxt_by_node[i] = ranges_list[simstates[i]]#
+		}#
+	statetxt_by_node
+cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)#
+	cols_byNode
+tipnums = 1:length(simtree$tip.label)#
+	nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)#
+	plot(simtree, show.tip.label=FALSE)#
+	axisPhylo()#
+	mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+	title("Plotting simtree & states from simulate_tdsse2()")#
+	tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])#
+	nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])
+simulation =simulation2
+states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)#
+	states_list_0based#
 #
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	transition_matrix_C_array[,,i] = transition_table_indices_C#
-	transition_table_probs_C[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}
-transition_table_probs_C_matrix
-dim9transition_table_probs_C_matrix)# transition_table_C: columns are i, j, k, prob#
-# transrates_table_C: columns are i, j, k, rate # (later, we will add up these rates to get the total lambda by state)#
+	possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)#
+	possible_ranges_list_txt#
+#
+	# Make the list of ranges by node#
+	ranges_list = NULL#
+#
+	for (i in 1:length(states_list_0based))#
+			{    #
+			if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )#
+					{#
+					tmprange = "_"#
+					} else {#
+					tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")#
+					}#
+			ranges_list = c(ranges_list, tmprange)#
+			}#
+#
+	# Look at the ranges list#
+	ranges_list
+colors_matrix = get_colors_for_numareas(length(areas))#
+	colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)#
+	colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white,
+colors_list_for_states
+statetxt_by_node = rep("_", times=length(simstates))#
+	for (i in 1:length(statetxt_by_node))#
+		{#
+		statetxt_by_node[i] = ranges_list[simstates[i]]#
+		}#
+	statetxt_by_node
+cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)#
+	cols_byNode
+tipnums = 1:length(simtree$tip.label)#
+	nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)#
+	plot(simtree, show.tip.label=FALSE)#
+	axisPhylo()#
+	mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+	title("Plotting simtree & states from simulate_tdsse2()")#
+	tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])#
+	nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])
+simulation
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+library(ape)#
+library(castor)#
+#
+# Set the random number seed, to make it repeatable#
+set.seed(54321)#
+#
+time_grid = seq(0,10,0.1) # About halfway through#
+A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+#
+# Make it more like a DEC model (anagenetic)#
+d_rate = 0.06 # range expansion#
+e_rate = 0.01 # range contraction#
+#
+# 4 states are:#
+# null, A, B, AB#
+A[,] = 0#
+A[2,4] = d_rate # A->AB#
+A[3,4] = d_rate # B->AB#
+A[2,1] = e_rate # A->null#
+A[3,1] = e_rate # B->null#
+A[4,2] = e_rate # AB->A#
+A[4,3] = e_rate # AB->B#
+A#
+#
+# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)#
+diag(A) = 0.0#
+A#
+diag(A) = -rowSums(A)#
+A#
+# Cladogenetic part of the DEC model#
+# At speciation, we have:#
+# Specify probabilities of different events, given that speciation has occurred#
+########################################################
+# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 0#
+# AB -> B,A	# 0#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 0#
+# AB -> A,AB	# 0#
+# AB -> AB,B	# 0#
+# AB -> B,AB	# 0#
+# AB -> AB, AB # 1.0#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 0.0 # AB->A#
+transition_matrix_C[4,3] = 0.0 # AB->B#
+transition_matrix_C[4,4] = 6/6 # AB->AB#
+transition_matrix_C1 = transition_matrix_C#
+transition_matrix_C#
+#
+# Rows of transition_table_C#
 transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
 #
-rates_sums_by_t = NULL#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Check for null range; add row for "i" if needed#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		names(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}#
-	rates_sums_by_t	= cbind(rates_sums_by_t, rates_sums$rates_sum)#
-#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
-	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
-	}#
-# Check probs#
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	names(sums_by_i) = c("i", "rates_sum", "probs_sum")#
-	print(sums_by_i)#
-	}#
 # convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
-# transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-# transition_table_probs_C1 = transition_table_C[,4]#
-transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C1 = transition_table_C[,4]#
+########################################################
+# 2nd regime: vicariance, subset sympatry are allowed - DEC model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 1/6#
+# AB -> B,A	# 1/6#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 1/6#
+# AB -> A,AB	# 1/6#
+# AB -> AB,B	# 1/6#
+# AB -> B,AB	# 1/6#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 2/6 # AB->A#
+transition_matrix_C[4,3] = 2/6 # AB->B#
+transition_matrix_C[4,4] = 2/6 # AB->AB#
+transition_matrix_C2 = transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,0.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C2 = transition_table_C[,4]#
 # Make the arrays for the parameters#
-transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_table_indices_C), ncol(transition_table_indices_C), length(time_grid)))#
+transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
 #
 # Probs encoded in a num_clado_events * 2 * num_times array#
 # the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
+transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))#
 #
 # Fill in the transition_matrix_C and transition_table_probs#
 for (i in 1:length(time_grid))#
 	{#
-	transition_matrix_C_array[,,i] = transition_table_indices_C#
-	transition_table_probs_C[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}
-transition_table_probs_C
+	if (time_grid[i] < 5.0)#
+		{#
+		transition_matrix_C_array[,,i] = transition_matrix_C1#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C1#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C1#
+		} else {#
+		transition_matrix_C_array[,,i] = transition_matrix_C2		#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C2#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C2#
+		}#
+	}#
 parameters = list(birth_rates         = 0.3,#
                   death_rates         = 0.0,#
                   transition_matrix_A = A,#
                   transition_matrix_C = transition_matrix_C_array,#
                   transition_table_indices_C = transition_table_indices_C,#
-                  transition_table_probs_C = transition_table_probs_C_matrix )
-transition_matrix_C_array
-transition_table_indices_C
-transition_matrix_C_array
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
-transition_matrix_C
-Carray
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(timegrid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] += Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] += Crates_by_t[j,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# Set the diagonal#
-	diag(transition_matrix_C_array[,,i]) = 0.0#
-	diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(timegrid)))
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] += Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] += Crates_by_t[j,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# Set the diagonal#
-	diag(transition_matrix_C_array[,,i]) = 0.0#
-	diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))
-i=1
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i] += Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] += Crates_by_t[j,i]
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i]
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i]
-Carray$i[j]
-Carray
-Carray$i
-j
-j=1
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i] += Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] += Crates_by_t[j,i]
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i]
-Crates_by_t[j,i]
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# Set the diagonal#
-	diag(transition_matrix_C_array[,,i]) = 0.0#
-	diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]
-transition_matrix_C_array
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)#
-#
-rates_sums_by_t = NULL
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Check for null range; add row for "i" if needed#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		names(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}#
-	rates_sums_by_t	= cbind(rates_sums_by_t, rates_sums$rates_sum)#
-#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
-	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
-	}
-transition_matrix_C_array
-transition_table_C = NULL#
-transrates_table_C = NULL#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
-dim(transition_table_probs_C_matrix)#
-dim(transition_table_rates_C_matrix)
-rates_sums_by_t = NULL#
-for (i in 1:length(time_grid))#
-	{#
-	tmprates = as.data.frame(cbind(Carray$i, Carray$j, Carray$k, Crates_by_t[,i]), stringsAsFactors=FALSE)#
-	names(tmprates) = c("i", "j", "k", "rates_t")#
-	# Convert rates to probabilities#
-	rates_sums = aggregate(tmprates$rates_t, by=list(tmprates$i), FUN=sum)#
-	# Column names#
-	names(rates_sums) = c("i", "rates_sum")#
-	# Make sure rates_sums are ordered by 'i' (ancestral state index)#
-	tmporder = order(rates_sums$i)#
-	rates_sums = rates_sums[tmporder,]#
-	# Check for null range; add row for "i" if needed#
-	if (rates_sums$i[1] == 2)#
-		{#
-		tmprow = as.data.frame(matrix(data=c(1,0.0), nrow=1), stringsAsFactors=FALSE)#
-		names(tmprow) = c("i", "rates_sum")#
-		rates_sums = rbind(tmprow, rates_sums)#
-		}#
-	rates_sums_by_t	= cbind(rates_sums_by_t, rates_sums$rates_sum)#
-#
-	# Convert rates to probabilities#
-	tmpprobs = tmprates#
-	names(tmpprobs) = c("i", "j", "k", "probs_t")#
-	for (q in 1:nrow(rates_sums))#
-		{#
-		tmpi = rates_sums$i[q]#
-		TF = tmprates$i == tmpi#
-#
-		tmpprobs$probs_t[TF] = tmprates$rates_t[TF] / rates_sums$rates_sum[q]#
-		}#
-	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
-	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
-	}
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	names(sums_by_i) = c("i", "rates_sum", "probs_sum")#
-	print(sums_by_i)#
-	}
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-# transition_table_probs_C1 = transition_table_C[,4]#
-transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]
-transition_matrix_C_array
-dim9transition_matrix_C_array)
-dim(transition_matrix_C_array)
-transition_matrix_C_array
-rates_sums_by_t
-transition_table_probs_C
-transition_table_indices_C
-transition_table_rates_C_matrix
-array(transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-transition_table_indices_C_matrix = array(data=transition_table_indices_C, dim=c(dim(transition_table_indices_C),length(time_grid)))
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-transition_table_indices_C_matrix = array(data=transition_table_indices_C, dim=c(dim(transition_table_indices_C),length(time_grid)))
-transition_table_indices_C_matrix
-transition_table_indices_C
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	names(sums_by_i) = c("i", "rates_sum", "probs_sum")#
-	print(sums_by_i)#
-	}#
-# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
-# transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-transition_table_indices_C_matrix = array(data=transition_table_indices_C, dim=c(dim(transition_table_indices_C),length(time_grid)))#
-# transition_table_probs_C1 = transition_table_C[,4]#
-transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]
-# Make the arrays for the parameters#
-#
-# Probs encoded in a num_clado_events * 2 * num_times array#
-# the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
-#
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	transition_table_probs_C[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}#
-parameters = list(birth_rates         = rates_sums_by_t,#
-                  death_rates         = 0.0,#
-                  transition_matrix_A = A,#
-                  transition_matrix_C = transition_matrix_C_array,#
-                  transition_table_indices_C = transition_table_indices_C,#
-                  transition_table_probs_C = transition_table_probs_C )
-transition_table_indices_C
-transition_table_probs_C
-parameters = list(birth_rates         = rates_sums_by_t,#
-                  death_rates         = 0.0,#
-                  transition_matrix_A = A,#
-                  transition_matrix_C = transition_matrix_C_array,#
-                  transition_table_indices_C = transition_table_indices_C_matrix,#
-                  transition_table_probs_C = transition_table_probs_C )
-simulation = simulate_tdsse2( Nstates = numstates, #
+                  transition_table_probs_C = transition_table_probs_C_matrix )#
+simulation = simulate_tdsse2( Nstates = 4, #
                             parameters = parameters, #
 														splines_degree      = 1,#
                             start_state = 2,#
@@ -1067,49 +379,1593 @@ simulation = simulate_tdsse2( Nstates = numstates, #
                             time_grid = time_grid,#
                             include_birth_times=TRUE,#
                             include_death_times=TRUE,#
-                            coalescent=FALSE)
-numstates = 8#
+                            coalescent=FALSE)#
+plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
+simulation$Ntransitions_A#
+simulation$Ntransitions_C#
+#
+simtree = simulation$tree#
+simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)#
+newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))#
+newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)#
+#
+match_simtree_in_new1 = match(x=simtable$tipnames, table=newtable$tipnames)#
+match_simtree_in_new1#
+#
+match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)#
+match_simtree_in_new2#
+match_simtree_in_new1sub = match_simtree_in_new1[match_simtree_in_new1 > length(simtree$tip.label)]-length(simtree$tip.label)#
+match_simtree_in_new1sub#
+match_simtree_in_new2sub = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)#
+match_simtree_in_new2sub#
+#
+simstates = c(as.numeric(simulation$tip_states), simulation$node_states)#
+#
+simstates#
+simstates[match_simtree_in_new1]#
+simstates[match_simtree_in_new2]#
+#
+simulation$node_states#
+simulation$node_states[match_simtree_in_new1sub]#
+simulation$node_states[match_simtree_in_new2sub]#
+########################################################
+# Make colors#
+########################################################
+library(cladoRcpp)#
+areas = c("A", "B")#
+max_range_size = 2#
+include_null_range = TRUE#
+states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)#
+states_list_0based#
+#
+possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)#
+possible_ranges_list_txt#
+#
+# Make the list of ranges by node#
+ranges_list = NULL#
+for (i in 1:length(states_list_0based))#
+    {    #
+    if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )#
+        {#
+        tmprange = "_"#
+        } else {#
+        tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")#
+        }#
+    ranges_list = c(ranges_list, tmprange)#
+    }#
+#
+# Look at the ranges list#
+ranges_list#
+colors_matrix = get_colors_for_numareas(length(areas))#
+colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)#
+colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white, #
+																																		# but with just AB, I like orange#
+#
+# Get the colors by node#
+statetxt_by_node = rep("_", times=length(simstates))#
+for (i in 1:length(statetxt_by_node))#
+	{#
+	statetxt_by_node[i] = ranges_list[simstates[i]]#
+	}#
+statetxt_by_node#
+cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)#
+cols_byNode#
+pdffn = "compare_castor_simtree_newtree_v1.pdf"#
+pdf(file=pdffn, width=6, height=12)#
+# Plot the original simtree#
+tipnums = 1:length(simtree$tip.label)#
+nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)#
+plot(simtree, show.tip.label=FALSE)#
+axisPhylo()#
+mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+title("Plotting simtree & states from simulate_tdsse2()")#
+tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])#
+nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])#
+#
+# Try the re-orderings #2#
+statetxt_by_node2 = statetxt_by_node[match_simtree_in_new2]#
+cols_byNode2 = cols_byNode[match_simtree_in_new2]#
+#
+plot(newtree, show.tip.label=FALSE)#
+axisPhylo()#
+mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+title("simulate_tdsse2() tree after reordering attempt #2\nto default APE format -- CORRECT!")#
+tiplabels(text=statetxt_by_node2[tipnums], tip=tipnums, bg=cols_byNode2[tipnums])#
+nodelabels(text=statetxt_by_node2[nodenums], node=nodenums, bg=cols_byNode2[nodenums])#
+#
+# Try the re-orderings #1#
+statetxt_by_node1 = statetxt_by_node[match_simtree_in_new1]#
+cols_byNode1 = cols_byNode[match_simtree_in_new1]#
+#
+plot(newtree, show.tip.label=FALSE)#
+axisPhylo()#
+mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+title("simulate_tdsse2() tree after reordering attempt #1\nto default APE format")#
+tiplabels(text=statetxt_by_node1[tipnums], tip=tipnums, bg=cols_byNode1[tipnums])#
+nodelabels(text=statetxt_by_node1[nodenums], node=nodenums, bg=cols_byNode1[nodenums])#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)#
+########################################################
+# Reorder a castor simulation from e.g. simulate_tdsse2()#
+# to the default APE node order#
+##
+# Procedure: #
+# 1. prints simulation$tree to a newick file,#
+#    then reads it back in#
+##
+# 2. Reorders the simulation$tip_states and simulation$node_states to match #
+##
+# 3. Adds simulation$states, to put all the states in one place#
+########################################################
+reorder_castor_sim_to_default_ape_node_order <- function(simulation)#
+	{#
+	# Make tree table from simulation tree#
+	simtree = simulation$tree#
+	simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)#
+#
+	# Write simtree to Newick; read back in to get standard APE newick format#
+	newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))#
+	# Write tree table for new tree#
+	newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)#
+#
+	match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)#
+	match_simtree_in_new2#
+#
+	match_simtree_in_new2sub_tips = match_simtree_in_new2[match_simtree_in_new2 <= length(simtree$tip.label)]#
+	match_simtree_in_new2sub_nodes = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)#
+#
+	simstates = c(as.numeric(simulation$tip_states), simulation$node_states)#
+#
+	simstates#
+	simstates[match_simtree_in_new2]#
+#
+	simulation$node_states#
+	simulation$node_states[match_simtree_in_new2sub_nodes]#
+	simulation$tip_states#
+	simulation$tip_states[match_simtree_in_new2sub_tips]#
+	# Re-save the re-ordered simulation#
+	simulation2 = simulation#
+	simulation2$tree = newtree#
+	simulation2$node_states = simulation$node_states[match_simtree_in_new2sub_nodes]#
+	simulation2$tip_states = simulation$tip_states[match_simtree_in_new2sub_tips]#
+	names(simulation2$tip_states) = 1:length(simulation2$tip_states)#
+	names(simulation2$tip_states)#
+	simulation2$states = simstates[match_simtree_in_new2]#
+	return(simulation2)#
+	}#
+# This assumes the list of states can be generated by#
+# rcpp_areas_list_to_states_list(); a manual states list #
+# would need another function#
+plot_castor_simulation <- function(simulation, areas=2, max_range_size=2, include_null_range=TRUE)#
+	{#
+	defaults='#
+	areas = c("A", "B")#
+	max_range_size = 2#
+	include_null_range = TRUE#
+	'#
+	states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=include_null_range)#
+	states_list_0based#
+#
+	possible_ranges_list_txt = areas_list_to_states_list_new(areas=areas,  maxareas=max_range_size, split_ABC=FALSE, include_null_range=include_null_range)#
+	possible_ranges_list_txt#
+#
+	# Make the list of ranges by node#
+	ranges_list = NULL#
+#
+	for (i in 1:length(states_list_0based))#
+			{    #
+			if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )#
+					{#
+					tmprange = "_"#
+					} else {#
+					tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")#
+					}#
+			ranges_list = c(ranges_list, tmprange)#
+			}#
+#
+	# Look at the ranges list#
+	ranges_list#
+#
+	colors_matrix = get_colors_for_numareas(length(areas))#
+	colors_list_for_states = mix_colors_for_states(colors_matrix, states_list_0based_index=states_list_0based, plot_null_range=include_null_range)#
+	colors_list_for_states[length(colors_list_for_states)] = "cyan"   # usually "all areas" is white, #
+																																			# but with just AB, I like orange#
+#
+	# Get the colors by node#
+	statetxt_by_node = rep("_", times=length(simstates))#
+	for (i in 1:length(statetxt_by_node))#
+		{#
+		statetxt_by_node[i] = ranges_list[simstates[i]]#
+		}#
+	statetxt_by_node#
+	cols_byNode = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node)#
+	cols_byNode#
+#
+	# Plot the original simtree#
+	tipnums = 1:length(simtree$tip.label)#
+	nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)#
+	plot(simtree, show.tip.label=FALSE)#
+	axisPhylo()#
+	mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+	title("Plotting simtree & states from simulate_tdsse2()")#
+	tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])#
+	nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])#
+#
+	return(cols_byNode)#
+	}#
+#
+simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+#
+# Get the colors by node#
+statetxt_by_node3 = rep("_", times=length(simulation2$states))#
+for (i in 1:length(statetxt_by_node))#
+	{#
+	statetxt_by_node3[i] = ranges_list[simulation2$states[i]]#
+	}#
+statetxt_by_node3#
+cols_byNode3 = rangestxt_to_colors(possible_ranges_list_txt, colors_list_for_states, MLstates=statetxt_by_node3)#
+cols_byNode3#
+plot(simulation2$tree, show.tip.label=FALSE)#
+axisPhylo()#
+mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)#
+title("simulate_tdsse2() tree after reordering with\ncastor_sim_to_default_ape_node_order()")#
+tiplabels(text=statetxt_by_node3[tipnums], tip=tipnums, bg=cols_byNode3[tipnums])#
+nodelabels(text=statetxt_by_node3[nodenums], node=nodenums, bg=cols_byNode3[nodenums])
+sprintf(fmt=%5.0, 1)
+sprintf(fmt="%5.0", 1)
+?sprintf
+sprintf(fmt="%5.0f", 1)
+sprintf("%09s",1)
+sprintf("%09s",)
+x=c("1","2","3","10")
+x
+sort(x)
+x1 = sprintf("%09s",x)
+x1
+sort(x1)
+x1 = sprintf("%03s",x)
+sort(x1)
+str = "((N1:0.010,N2:0.012):0.010,(S1:0.013, S2:0.011):0.09);"
+library(ape)
+tr2 = read.tree(file="", text=str)
+plot(tr)
+plot(tr2)
+str1 = "((A1:0.010,B2:0.012):0.10,(A2:0.013, B1:0.011):0.09);"
+tr1 = read.tree(file="", text=str1)
+plot(tr1)
+library(ape)#
+library(BioGeoBEARS)#
+trstr="(Human:5,Chimp:5):1,Gorilla:6;"
+tr = read.tree(file="", text=trstr)
+tr
+prt(tr)
+trstr="((Human:5,Chimp:5):1,Gorilla:6);"#
+tr = read.tree(file="", text=trstr)
+tr
+prt(tr)
+prt(
+)
+library(ape)#
+library(BioGeoBEARS)#
+trstr="((Human:5,Chimp:5):1,Gorilla:6);"#
+tr = read.tree(file="", text=trstr)#
+prt(tr, printflag=FALSE)
+prt(tr, printflag=FALSE, get_tipnames=TRUE)
+~/Downloads/bioinf/Rcode/blastR_setup
+library(seqinr)
+?seqinr
+library(ape)
+?read.fasta
+?read.data
+?read.dna
+/GitHub/bioinfRhints/data/seqs.fasta
+seqs_fn = "/GitHub/bioinfRhints/data/seqs.fasta"#
+#
+# Same effect -- produces an APE "DNAbin" object (DNA in binary format for compactness/speed)#
+seqs = read.FASTA(file=seqs_fn, type="DNA")#
+seqs = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=FALSE)#
+#
+# As strings#
+seqs_txt = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=TRUE)
+seqs_txt
+dim(seqs_txt)
+seqs_txt[1,]
+paste0(seqs_txt[1,], collapse=TRUE)
+paste0(seqs_txt[1,], collapse="")
+substr
+substr(first_seq, start=100, stop=110)
+first_seq = paste0(seqs_txt[1,], collapse="")#
+first_seq#
+# Subset of text sequence#
+substr(first_seq, start=100, stop=110)
+seqs
+names(seqs)
+summary(seqs)
+length(seqs)
+names(seqs)
+rownames(seqs)
+seqs[1]
+string(seqs[1])
+as.character(seqs[1])
+as.character(seqs[1,])
+?read.dna
+str(seqs)
+str(seqs[1,])
+methods(seqs)
+Methods(seqs)
+tmpdata_rownames = attr(tmpdata, "dimnames")[[1]]#
+tmpdata_rownames
+seqs_rownames = attr(seqs, "dimnames")[[1]]#
+seqs_rownames
+attributes(seqs)
+names(attributes(seqs))
+attr(seqs, "class")#
+attr(seqs, "dim")
+class(seqs)#
+attr(seqs, "class")#
+#
+dim(seqs)#
+attr(seqs, "dim")
+seqs_as_strings = DNAbin_to_list_of_strings(tmpdata=seqs)#
+seqs_as_strings[1]
+source('/GitHub/bioinfRhints/R/_R_tree_functions_v2.R', chdir = TRUE)
+source("/GitHub/bioinfRhints/R/_R_tree_functions_v2.R")#
+seqs_as_strings = DNAbin_to_list_of_strings(tmpdata=seqs)
+seqs_as_strings[1]
+seqs_as_characters[[1]]
+source("/GitHub/bioinfRhints/R/_R_tree_functions_v2.R")#
+seqs_as_characters = DNAbin_to_list_of_strings(tmpdata=seqs)#
+seqs_as_characters[[1]]
+lapply(lapply(X=seqs_as_characters, FUN=paste0, collapse="")
+lapply(X=seqs_as_characters, FUN=paste0, collapse="")
+# Each base as an individual string#
+seqs_txt = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=TRUE)#
+dim(seqs_txt)#
+# 69 2033#
+seqs_txt[1,]#
+# Paste a sequence into a single string#
+first_seq = paste0(seqs_txt[1,], collapse="")#
+first_seq#
+# Subset of text sequence#
+substr(first_seq, start=100, stop=110)
+substr(seqs_as_list_of_strings[[1]], start=100, stop=110)
+seqs_as_list_of_strings = lapply(X=seqs_as_characters, FUN=paste0, collapse="")#
+substr(seqs_as_list_of_strings[[1]], start=100, stop=110)
+seqs_txt = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=TRUE)#
+dim(seqs_txt)#
+# 69 2033#
+seqs_txt[1,]#
+# Paste a sequence into a single string#
+first_seq = paste0(seqs_txt[1,], collapse="")#
+first_seq#
+# Subset of text sequence#
+substr(first_seq, start=100, stop=110)
+dist.dna
+?dist.dna
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)
+dim(distmat1)
+head(distmat1)
+distmat[1:5, 1:5]
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]
+library(ape)
+?attr
+tr
+names(tr)
+names(seqs)
+names(tr)
+tr$Nnode
+tr$tip.label
+names(seqs)
+rownames(seqs)
+attributes(seqs)
+names(attributes(seqs))
+for (i in 100)#
+	{#
+	print(i)#
+	}
+for (i in 1:100)#
+	{#
+	print(i)#
+	}
+########################################################
+# 2022-09-15#
+##
+# 1. Read in a sequence alignment#
+# 2. Construct a distance matrix#
+##
+########################################################
+#
+# Loading a tree, printing to tree table (trtable)#
+library(ape)#
+# Data: 18S, ITS1, 5.8S rRNA sequences from#
+# X-cells (protist parasites of e.g. Antarctic fishes)#
+# Provided by Craig Miller#
+##
+# Request: distance matrix#
+#
+seqs_fn = "/GitHub/bioinfRhints/data/seqs.fasta"#
+#
+# Same effect -- produces an APE "DNAbin" object (DNA in binary format for compactness/speed)#
+seqs = read.FASTA(file=seqs_fn, type="DNA")#
+seqs = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=FALSE)#
+# 69 DNA sequences in binary format stored in a matrix.#
+# #
+# All sequences of same length: 2033 #
+# #
+# Labels:#
+# MT299786.1 Parvilucifera catillosa strain Kokar2016a isolate...#
+# KX519761.1 Parvilucifera corolla strain Lanzarote isolate 3 ...#
+# KF359483.1 Parvilucifera rostrata strain RCC2800 18S ribosom...#
+# EU502912.1 Parvilucifera sinerae#
+# KF359485.1 Parvilucifera infectans strain RCC2816 18S riboso...#
+# AF133909.1 Parvilucifera infectans 18S ribosomal RNA gene, p...#
+# ...#
+# #
+# Base composition:#
+#     a     c     g     t #
+# 0.269 0.198 0.259 0.275 #
+# (Total: 140.28 kb)#
+#
+# What's inside of 'seqs'?#
+#
+# Gene/locus names, method #1:#
+rownames(seqs)#
+#
+# Gene/locus names, method #2:#
+seqs_rownames = attr(seqs, "dimnames")[[1]]#
+seqs_rownames#
+#
+# What all is in a DNAbin object?#
+names(attributes(seqs))#
+# "dim"      "dimnames" "class"   #
+#
+# Alternate methods:#
+class(seqs)#
+attr(seqs, "class")#
+#
+dim(seqs)#
+attr(seqs, "dim")#
+# Each base as an individual string#
+seqs_txt = read.dna(file=seqs_fn, format="fasta", skip=0, as.character=TRUE)#
+dim(seqs_txt)#
+# 69 2033#
+seqs_txt[1,]#
+# Paste a sequence into a single string#
+first_seq = paste0(seqs_txt[1,], collapse="")#
+first_seq#
+# Subset of text sequence#
+substr(first_seq, start=100, stop=110)#
+# I have written some functions to process/convert DNAbin objects#
+source("/GitHub/bioinfRhints/R/_R_tree_functions_v2.R")#
+seqs_as_characters = DNAbin_to_list_of_strings(tmpdata=seqs)#
+seqs_as_characters[[1]]#
+#
+# Collapse all sequences to strings#
+seqs_as_list_of_strings = lapply(X=seqs_as_characters, FUN=paste0, collapse="")#
+substr(seqs_as_list_of_strings[[1]], start=100, stop=110)#
+########################################################
+# OK, make the distance matrix#
+########################################################
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+# Subset for the distance-matrix figure#
+nms = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MY743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")
+rownames(seqs)
+grepl(pattern="3", x="123")
+grepl(i=1#
+positions_in_seqs = rep("", times=length(tmpnames))
+tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MY743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+#
+i=1#
+positions_in_seqs = rep("", times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+'
+tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)
+hits_TF
+sum(hits_TF)
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MY743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+#
+i=1#
+positions_in_seqs = rep("", times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		stop("STOP ERROR: number of hits should be == 1")#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+#
+positions_in_seqs
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MY743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MW743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}
+positions_in_seqs
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]
+subset_distmat1
+pwd()
+pwd
+/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrixwrite.table(
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")
+?dist.dna
+distmat1 = dist.dna(x=seqs, model="raw", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_raw_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat2 = dist.dna(x=seqs, model="TN93", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat2[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat2 = dist.dna(x=seqs, model="TN93", gamma=0.5, as.matrix=TRUE)#
+dim(distmat1)#
+distmat2[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma0.5.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat2 = dist.dna(x=seqs, model="TN93", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat2[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat2 = dist.dna(x=seqs, model="TN93", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat2[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")
+?write.table
+########################################################
+# OK, make the distance matrix - Kimura 2-parameter#
+########################################################
+#
+# Subset for the distance-matrix figure#
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MW743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+distmat1 = dist.dna(x=seqs, model="raw", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_raw_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=0.5, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma0.5.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t")
+# Subset for the distance-matrix figure#
+tmpnames = c("KY628815",#
+"KY628818",#
+"KF911018",#
+"EU878172",#
+"GU296509",#
+"KY628817",#
+"AB112470",#
+"AB451874",#
+"OL630144",#
+"OL630145",#
+"GU296508",#
+"KY628819",#
+"MW743280",#
+"MW743279",#
+"MW743281",#
+"MW743278",#
+"Bork")#
+distmat1 = dist.dna(x=seqs, model="raw", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_raw_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="K80", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_K80_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=FALSE, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=0.5, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma0.5.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=1, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma1.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)#
+distmat1 = dist.dna(x=seqs, model="TN93", gamma=2, as.matrix=TRUE)#
+dim(distmat1)#
+distmat1[1:5,1:5]#
+i=1#
+positions_in_seqs = rep(NA, times=length(tmpnames))#
+for (i in 1:length(tmpnames))#
+	{#
+	tmpname = tmpnames[i]#
+	hits_TF = sapply(X=rownames(seqs), FUN=grepl, pattern=tmpname, ignore.case=TRUE)#
+	if (sum(hits_TF) != 1)#
+		{#
+		cat("\nSTOP ERROR: number of hits should be == 1. Non-match=\n")#
+		print(tmpname)#
+		}#
+	positions_in_seqs[i] = (1:length(rownames(seqs)))[hits_TF]#
+	}#
+positions_in_seqs#
+#
+subset_distmat1 = distmat1[positions_in_seqs,positions_in_seqs]#
+#
+outfn = "/drives/od/__GDrive_projects/2019-08-22_Craig_Millar_notho_fish/08_distance_matrix/Xcellidae_distmat_TN93_subset_gamma2.txt"#
+write.table(x=subset_distmat1, file=outfn, sep="\t", quote=FALSE)
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+library(ape)#
+library(castor)#
+#
+# Set the random number seed, to make it repeatable#
+set.seed(54321)#
+#
+time_grid = seq(0,10,0.1) # About halfway through#
+A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+#
+# Make it more like a DEC model (anagenetic)#
+d_rate = 0.06 # range expansion#
+e_rate = 0.01 # range contraction#
+#
+# 4 states are:#
+# null, A, B, AB#
+A[,] = 0#
+A[2,4] = d_rate # A->AB#
+A[3,4] = d_rate # B->AB#
+A[2,1] = e_rate # A->null#
+A[3,1] = e_rate # B->null#
+A[4,2] = e_rate # AB->A#
+A[4,3] = e_rate # AB->B#
+A#
+#
+# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)#
+diag(A) = 0.0#
+A#
+diag(A) = -rowSums(A)#
+A#
+# Cladogenetic part of the DEC model#
+# At speciation, we have:#
+# Specify probabilities of different events, given that speciation has occurred#
+########################################################
+# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 0#
+# AB -> B,A	# 0#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 0#
+# AB -> A,AB	# 0#
+# AB -> AB,B	# 0#
+# AB -> B,AB	# 0#
+# AB -> AB, AB # 1.0#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 0.0 # AB->A#
+transition_matrix_C[4,3] = 0.0 # AB->B#
+transition_matrix_C[4,4] = 6/6 # AB->AB#
+transition_matrix_C1 = transition_matrix_C#
+transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C1 = transition_table_C[,4]
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 2/6 # AB->A#
+transition_matrix_C[4,3] = 2/6 # AB->B#
+transition_matrix_C[4,4] = 2/6 # AB->AB#
+transition_matrix_C2 = transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,0.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C2 = transition_table_C[,4]#
+# Make the arrays for the parameters#
+transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
+#
+# Probs encoded in a num_clado_events * 2 * num_times array#
+# the "2" just duplicates, ensures we have a 3D array#
+transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))
+trstr = "((A1:0.010,B2:0.012):0.10,(A2:0.013, B1:0.011):0.09);"#
+tr=read.tree(file="", text=trstr)#
+plot(tr)
+library(ape)
+trstr = "((A1:0.010,B2:0.012):0.10,(A2:0.013, B1:0.011):0.09);"#
+tr=read.tree(file="", text=trstr)#
+plot(tr)
+install.packages("shipunov")
+library(shipunov)
+aa.d <- hclust(dist(t(atmospheres)))#
+tree <- ape::unroot(ape::as.phylo(aa.d))#
+#
+cl <- data.frame(#
+planet=c(#
+ "Mercury",#
+ "Venus",#
+ "Earth",#
+ "Mars",#
+ "Jupiter",#
+ "Saturn",#
+ "Uranus",#
+ "Neptune"),#
+clade=c(#
+ "Mercury",#
+ "Mars group",#
+ "Earth",#
+ "Mars group",#
+ "Close giants",#
+ "Close giants",#
+ "Distant giants",#
+ "Distant giants"),#
+stringsAsFactors=FALSE)#
+#
+Plot.phylocl(tree, cl, longer="5%", ct.off=0.1)
+plot(tree)
+ggtree
+install.packages("ggtree")
+BiocManager::install("ggtree")
+library(ggtree)
+BiocManager::install("ggtree")
+library(ggtree)#
+nwk <- system.file("extdata", "sample.nwk", package="treeio")#
+tree <- read.tree(nwk)#
+p <- ggtree(tree) + geom_tiplab()#
+viewClade(p, MRCA(p, "I", "L"))
+tree2 <- groupClade(tree, c(17, 21))
+p <- ggtree(tree2, aes(color=group)) + theme(legend.position='none') +#
+  scale_color_manual(values=c("black", "firebrick", "steelblue"))
+scaleClade(p, node=17, scale=.1)
+tree2 <- groupClade(tree, c(17, 21))
+tree2
+tree
+names(tree2)
+tree
+plot(tree)
+plot(tree2)
+nwk <- system.file("extdata", "sample.nwk", package="treeio")
+tree <- read.tree(nwk)#
+p <- ggtree(tree) + geom_tiplab()
+viewClade(p)
+viewClade(p, node=MRCA(p, "I", "L"))
+tree2 <- groupClade(tree, c(17, 21))
+tree2
+aes
+?aes
+tree2 <- groupClade(tree, c(17, 21))#
+p <- ggtree(tree2, aes(color=group)) + theme(legend.position='none') +#
+  scale_color_manual(values=c("black", "firebrick", "steelblue"))#
+scaleClade(p, node=17, scale=1)
+scaleClade(p, node=17, scale=.1)
+p2 <- p %>% collapse(node=21) + #
+  geom_point2(aes(subset=(node==21)), shape=21, size=5, fill='green')
+p2 <- collapse(p2, node=23) + #
+  geom_point2(aes(subset=(node==23)), shape=23, size=5, fill='red')
+print(p2)
+getMRCA
+MRCA
+?MRCA
+mrca
+library(BioGeoBEARS)
+treestring = "(((human:6,chimp:6):1,gorilla:7):5,orang:12);"#
+tr = read.tree(file="", text=treestring)#
+plot(tr)
+nodelabels(tr)
+nodelabel(tr)
+?nodelabel
+tr
+?nodelabels
+nodelabels(tr)
+library(ape)
+ape::nodelabels(tr)
+plot(tr)#
+axisPhylo()#
+nodelabels()#
+tiplabels(1:length(tr$tip.label))
+prt(
+trtable = prt(tr, printflag=FALSE, get_tipnames=TRUE)=)
+trtable = prt(tr, printflag=FALSE, get_tipnames=TRUE)
+trtable
+getMRCA(phy=tr, tip=c("human","gorilla"))
+ree2 <- groupClade(tree, c(17, 21))#
+p <- ggtree(tree2, aes(color=group)) + theme(legend.position='none') +#
+  scale_color_manual(values=c("black", "firebrick", "steelblue"))#
+scaleClade(p, node=17, scale=1) #
+scaleClade(p, node=17, scale=.1) #
+p2 <- p %>% collapse(node=21) + #
+  geom_point2(aes(subset=(node==21)), shape=21, size=5, fill='green')#
+p2 <- collapse(p2, node=23) + #
+  geom_point2(aes(subset=(node==23)), shape=23, size=5, fill='red')#
+print(p2)#
+expand(p2, node=23) %>% expand(node=21)
+p2 <- p + geom_tiplab()#
+node <- 21#
+collapse(p2, node, 'max') %>% expand(node)#
+collapse(p2, node, 'min') %>% expand(node)#
+collapse(p2, node, 'mixed') %>% expand(node)#
+#
+collapse(p, 21, 'mixed', fill='steelblue', alpha=.4) %>% #
+  collapse(23, 'mixed', fill='firebrick', color='blue')
+p2 <- p + geom_tiplab()#
+node <- 21
+p2 <- p %>% collapse(node=21) + #
+  geom_point2(aes(subset=(node==21)), shape=21, size=5, fill='green')#
+p2 <- collapse(p2, node=23) + #
+  geom_point2(aes(subset=(node==23)), shape=23, size=5, fill='red')
+print(p2)
+expand(p2, node=23) %>% expand(node=21)
+p2 <- p + geom_tiplab()
+node <- 21
+collapse(p2, node, 'max') %>% expand(node)
+collapse(p2, node, 'min') %>% expand(node)
+collapse(p2, node, 'mixed') %>% expand(node)
+collapse(p, 21, 'mixed', fill='steelblue', alpha=.4) %>% #
+  collapse(23, 'mixed', fill='firebrick', color='blue')
+scaleClade(p, 23, .2) %>% collapse(23, 'min', fill="darkgreen")
+data(iris)#
+rn <- paste0(iris[,5], "_", 1:150)
+rn
+rownames(iris) <- rn#
+d_iris <- dist(iris[,-5], method="man")
+d_iris
+tree_iris <- ape::bionj(d_iris)
+grp <- list(setosa     = rn[1:50],#
+            versicolor = rn[51:100],#
+            virginica  = rn[101:150])
+p_iris <- ggtree(tree_iris, layout = 'circular', branch.length='none')
+groupOTU(p_iris, grp, 'Species') + aes(color=Species) +#
+  theme(legend.position="right")
+pdffn = "greatapes_tree.pdf"
+pdf(file=pdffn, width=6, height=6)
+plot(tr)
+axisPhylo()#
+nodelabels()
+tiplabels(1:length(tr$tip.label))#
+title("Great ape dated phylogeny")
+dev.off()
+cmdstr = paste0("open ", pdffn)
+cmdstr
+system(cmdstr)
+pdffn = "greatapes_tree_no_tip_labels.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+#
+plot(tr, show.tip.label=FALSE)#
+axisPhylo()#
+nodelabels()#
+tiplabels(1:length(tr$tip.label))#
+title("Great ape dated phylogeny")#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+pdffn = "greatapes_tree.pdf"#
+pdf(file=pdffn, width=6, height=6)#
+#
+plot(tr, cex=0.4) # cex = character expansion#
+axisPhylo()#
+nodelabels()#
+tiplabels(1:length(tr$tip.label))#
+title("Great ape dated phylogeny")#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+library(ape)#
+library(castor)#
+#
+# for: reorder_castor_sim_to_default_ape_node_order(simulation)#
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"#
 setwd(wd)#
-outfns = c(#
+simfns = c("setup_df.txt",#
 "timepoints.txt", #
 "mu_vals_by_t.txt",#
 "Qvals_by_t.txt",#
 "Crates_by_t.txt",#
 "Qarray.txt",#
 "Carray.txt")#
+# Setup#
+setup='#
+numareas = 3#
+numstates = 8#
+max_range_size = 3#
+include_null_range = TRUE#
+'#
+#
+# Read in the setup#
+setup_df = read.table("setup_df.txt", header=TRUE)#
+numareas = setup_df$numareas#
+numstates = setup_df$numstates#
+max_range_size = setup_df$max_range_size#
+if (tolower(setup_df$include_null_range) == "true")#
+	{#
+	include_null_range = TRUE#
+	} else {#
+	include_null_range = FALSE#
+	}#
+#
+# User sets these here!#
 # Set the random number seed, to make it repeatable#
-set.seed(54321)#
+seedval = 54321#
+set.seed(seedval)#
 # Set the max_simulation time -- whatever changing distances you have will be#
 # extended with this timepoint, i.e. the final geography/rates will continue#
 # to this timepoint#
-max_simulation_time = NULL#
-max_simulation_time = 100.0#
+start_state = 8 # number of the starting state#
+max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time#
+max_tips = NULL#
+#
 # Read timepoints#
 # Read in Q/A matrix, populate one and array#
 # Read in C matrix, populate one and array#
 #
 # Load the files#
 #time_grid = seq(0,10,0.1) # About halfway through#
-time_grid = c(read.table(outfns[1], header=FALSE))[[1]]#
+time_grid = c(read.table(simfns[2], header=FALSE))[[1]]#
+#
 # Change from time reading backwards to time reading forwards#
 colnums = rev(1:length(time_grid))#
 time_grid = -1*(max(time_grid) - time_grid) - min(-1*(max(time_grid) - time_grid))#
 time_grid#
-mu_vals_by_t = as.matrix(read.table(outfns[2], header=FALSE))[,colnums]#
-Qvals_by_t = as.matrix(read.table(outfns[3], header=FALSE))[,colnums]#
-Crates_by_t = as.matrix(read.table(outfns[4], header=FALSE))[,colnums]#
-Qarray = read.table(outfns[5], header=TRUE)#
-Carray = read.table(outfns[6], header=TRUE)#
+mu_vals_by_t = as.matrix(read.table(simfns[3], header=FALSE))[,colnums]#
+Qvals_by_t = as.matrix(read.table(simfns[4], header=FALSE))[,colnums]#
+Crates_by_t = as.matrix(read.table(simfns[5], header=FALSE))[,colnums]#
+Qarray = read.table(simfns[6], header=TRUE)#
+Carray = read.table(simfns[7], header=TRUE)#
 #
 # Add the final time at end of forward simulation, if needed#
-if (is.null(max_simulation_time) == FALSE)#
+if (max(time_grid) < max_simulation_time)#
 	{#
 	time_grid = c(time_grid, max_simulation_time)#
 	mu_vals_by_t = cbind(mu_vals_by_t, mu_vals_by_t[,ncol(mu_vals_by_t)])#
 	Qvals_by_t = cbind(Qvals_by_t, Qvals_by_t[,ncol(Qvals_by_t)])#
 	Crates_by_t = cbind(Crates_by_t, Crates_by_t[,ncol(Crates_by_t)])#
 	}#
+#
+# Set a maximum rate for extreme cases#
+max_rate = 30.0#
+#
+# Enforce maximum rate on Crates_by_t#
+Crates_by_t[Crates_by_t > max_rate] = max_rate#
+mu_vals_by_t[mu_vals_by_t > max_rate] = max_rate#
+#
 # Produce the A transition matrix / array#
 A = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
 for (i in 1:length(time_grid))#
@@ -1118,6 +1974,8 @@ for (i in 1:length(time_grid))#
 		{#
 		A[Qarray$i[j],Qarray$j[j],i] = Qvals_by_t[j,i]#
 		}#
+	# Enforce maximum rate#
+	A[A > max_rate] = max_rate#
 	# Set the diagonal#
 	diag(A[,,i]) = 0.0#
 	diag(A[,,i]) = -rowSums(A[,,i])#
@@ -1125,23 +1983,6 @@ for (i in 1:length(time_grid))#
 #
 # All rows in A sum to 0.0!#
 round(apply(X=A, MARGIN=3, rowSums), digits=10)#
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-#
 ignore = '#
 A = get_random_mk_transition_matrix(Nstates=numstates, rate_model="ER", max_rate=0.1)#
 #
@@ -1173,9 +2014,9 @@ A#
 # (ADD THESE UP to provide the speciation rates / lambdas)#
 #
 # transition_table_C: columns are i, j, k, prob#
-# transrates_table_C: columns are i, j, k, rate # (later, we will add up these rates to get the total lambda by state)#
+# transition_table_rates_C_matrix: columns are i, j, k, rate #
+# (later, we will add up these rates to get the total lambda by state)#
 transition_table_C = NULL#
-transrates_table_C = NULL#
 transition_table_probs_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
 transition_table_rates_C_matrix = array(data=0.0, dim=c(nrow(Crates_by_t), 4, length(time_grid)))#
 dim(transition_table_probs_C_matrix)#
@@ -1215,6 +2056,38 @@ for (i in 1:length(time_grid))#
 	transition_table_rates_C_matrix[,,i] = as.matrix(tmprates)#
 	transition_table_probs_C_matrix[,,i] = as.matrix(tmpprobs)#
 	}#
+# Square transition matrix (not used, but sanity check)#
+transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
+transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
+for (i in 1:length(time_grid))#
+	{#
+	for (j in 1:nrow(Carray))#
+		{#
+		if ((Carray$i[j] == Carray$j[j]) && (Carray$i[j] == Carray$k[j]))#
+			{#
+			# state i = state j = state k#
+			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
+			} else {#
+			# Otherwise, you have two different "anagenetic" events, with the probability split between them#
+			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
+			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
+			}#
+		# Ignore, rates are already doubled if needed#
+		# if (Carray$i[j] != Carray$j[j])#
+		}#
+	# DO NOT set the diagonal on the cladogenetic transition rates#
+	#diag(transition_matrix_C_array[,,i]) = 0.0#
+	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
+#
+	# Null range correction#
+	if (rowSums(transition_matrix_C_array[,,i])[1] == 0.0)#
+		{#
+		transition_matrix_C_array[1,1,i] = 1.0#
+		}#
+	}#
+transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
+transition_matrix_C#
+rowSums(transition_matrix_C)#
 # Check probs#
 for (i in 1:length(time_grid))#
 	{#
@@ -1245,270 +2118,27 @@ for (i in 1:length(time_grid))#
 	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]#
 	}#
 parameters = list(birth_rates         = rates_sums_by_t,#
-                  death_rates         = 0.0,#
-                  transition_matrix_A = A,#
-                  transition_matrix_C = transition_matrix_C_array,#
-                  transition_table_indices_C = transition_table_indices_C_matrix,#
-                  transition_table_probs_C = transition_table_probs_C )#
-simulation = simulate_tdsse2( Nstates = numstates, #
-                            parameters = parameters, #
-														splines_degree      = 1,#
-                            start_state = 2,#
-                            max_tips = 50,#
-                            time_grid = time_grid,#
-                            include_birth_times=TRUE,#
-                            include_death_times=TRUE,#
-                            coalescent=FALSE)
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_table_probs_C_matrix[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_table_probs_C_matrix[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]
-transition_table_probs_C_matrix
-Cprobs_by_t
-Carray$i[j]
-rates_sums_by_t
-# Square transition matrix (not used, but sanity check)#
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Cprobs_by_t[j,i] / rates_sums_by_t[Carray$i,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Cprobs_by_t[j,i] / rates_sums_by_t[Carray$i,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i,i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i,i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C
-transition_matrix_C_array
-i
-j
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i,i]
-transition_matrix_C_array[Carray$i[j],Carray$j[j],i]
-Crates_by_t[j,i]
-j
-Crates_by_t
-Carray
-rates_sums_by_t[Carray$i,i]
-rates_sums_by_t
-rates_sums_by_t[,i]
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-		transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C
-rowSums(transition_matrix_C)
-Carray
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		if (Carray$i[j] == Carray$j[j])#
-			{#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			} else {#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			}#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		if (Carray$i[j] == Carray$j[j])#
-			{#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-			} else {#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			}#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C
-rowSums(transition_matrix_C)
-# Square transition matrix (not used, but sanity check)#
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		if (Carray$i[j] == Carray$j[j])#
-			{#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-			} else {#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			}#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-#
-	# Null range correction#
-	if (rowSums(transition_matrix_C_array[,,i])[1] = 0.0)#
-		{#
-		transition_matrix_C_array[1,1,i] = 1.0#
-		}#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C#
-rowSums(transition_matrix_C)
-# Square transition matrix (not used, but sanity check)#
-transition_matrix_C = array(data=0.0, dim=c(numstates,numstates,1))#
-transition_matrix_C_array = array(data=0.0, dim=c(numstates,numstates,length(time_grid)))#
-for (i in 1:length(time_grid))#
-	{#
-	for (j in 1:nrow(Carray))#
-		{#
-		if (Carray$i[j] == Carray$j[j])#
-			{#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i]#
-			} else {#
-			transition_matrix_C_array[Carray$i[j],Carray$j[j],i] = transition_matrix_C_array[Carray$i[j],Carray$j[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			transition_matrix_C_array[Carray$i[j],Carray$k[j],i] = transition_matrix_C_array[Carray$i[j],Carray$k[j],i] + Crates_by_t[j,i] / rates_sums_by_t[Carray$i[j],i] / 2#
-			}#
-		# Ignore, rates are already doubled if needed#
-		# if (Carray$i[j] != Carray$j[j])#
-		}#
-	# DO NOT set the diagonal on the cladogenetic transition rates#
-	#diag(transition_matrix_C_array[,,i]) = 0.0#
-	#diag(transition_matrix_C_array[,,i]) = -rowSums(transition_matrix_C_array[,,i])#
-#
-	# Null range correction#
-	if (rowSums(transition_matrix_C_array[,,i])[1] == 0.0)#
-		{#
-		transition_matrix_C_array[1,1,i] = 1.0#
-		}#
-	}#
-transition_matrix_C = transition_matrix_C_array[,,dim(transition_matrix_C_array)[3]]#
-transition_matrix_C#
-rowSums(transition_matrix_C)
-for (i in 1:length(time_grid))#
-	{#
-	tmpprobs = transition_table_probs_C_matrix[,,i]#
-	probs_sum = aggregate(tmpprobs[,4], by=list(tmpprobs[,1]), FUN=sum)#
-	tmprates = transition_table_rates_C_matrix[,,i]#
-	rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)#
-	sums_by_i = cbind(rates_sum, probs_sum[,2])#
-	names(sums_by_i) = c("i", "rates_sum", "probs_sum")#
-	print(sums_by_i)#
-	}#
-# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
-# transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_indices_C = transition_table_rates_C_matrix[,1:3,1] - 1#
-transition_table_indices_C_matrix = array(data=transition_table_indices_C, dim=c(dim(transition_table_indices_C),length(time_grid)))#
-# transition_table_probs_C1 = transition_table_C[,4]#
-transition_table_probs_C1 = transition_table_probs_C_matrix[,4,1]#
-# Make the arrays for the parameters#
-#
-# Probs encoded in a num_clado_events * 2 * num_times array#
-# the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C = array(data=0.0, dim=c(nrow(transition_table_indices_C), 2, length(time_grid)))#
-#
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	transition_table_probs_C[,1,i] = transition_table_probs_C_matrix[,4,i]#
-	transition_table_probs_C[,2,i] = transition_table_probs_C_matrix[,4,i]#
-	}#
-parameters = list(birth_rates         = rates_sums_by_t,#
-                  death_rates         = 0.0,#
-                  transition_matrix_A = A,#
-                  transition_matrix_C = transition_matrix_C_array,#
-                  transition_table_indices_C = transition_table_indices_C_matrix,#
-                  transition_table_probs_C = transition_table_probs_C )
-simulation = simulate_tdsse2( Nstates = numstates, #
-                            parameters = parameters, #
-														splines_degree      = 1,#
-                            start_state = 2,#
-                            max_tips = 50,#
-                            time_grid = time_grid,#
-                            include_birth_times=TRUE,#
-                            include_death_times=TRUE,#
-                            coalescent=FALSE)
-transition_table_indices_C
-transition_table_indices_C_matrix
-transition_table_indices_C
-parameters = list(birth_rates         = rates_sums_by_t,#
-                  death_rates         = 0.0,#
+                  death_rates         = mu_vals_by_t,#
                   transition_matrix_A = A,#
                   transition_matrix_C = transition_matrix_C_array,#
                   transition_table_indices_C = transition_table_indices_C,#
                   transition_table_probs_C = transition_table_probs_C )#
+simulation#
 simulation = simulate_tdsse2( Nstates = numstates, #
                             parameters = parameters, #
 														splines_degree      = 1,#
-                            start_state = 2,#
-                            max_tips = 50,#
+                            start_state = 8,#
+                            max_tips = max_tips,#
+                            max_time = max_simulation_time,#
                             time_grid = time_grid,#
                             include_birth_times=TRUE,#
                             include_death_times=TRUE,#
-                            coalescent=FALSE)
+                            coalescent=FALSE)#
 simulation
+simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+		tip_ages_above_root = get_node_ages_of_tips(simulation2$tree)
+tip_ages_above_root
+trtable = simulation2$tree
+trtable
+trtable = prt(simulation2$tree)
+printall(trtable)

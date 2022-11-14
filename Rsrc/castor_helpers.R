@@ -130,7 +130,8 @@ default_simfns <- function()
 	"Qvals_by_t.txt",
 	"Crates_by_t.txt",
 	"Qarray.txt",
-	"Carray.txt")
+	"Carray.txt",
+	"area_names.txt")
 	return(simfns)
 	}
 
@@ -146,6 +147,9 @@ max_rate=10.0
 "
 simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, simfns=default_simfns(), seedval=54321, max_rate=10.0)
 	{
+	# Get the area_names
+	
+	
 	# Add wd to the filename (stripping any prior paths from simfns)
 	for (i in 1:length(simfns))
 		{
