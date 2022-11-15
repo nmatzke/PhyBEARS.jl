@@ -34,7 +34,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, extract_first_integer_from_string, model_to_text_v12
+export extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12
 
 #######################################################
 # Temporary file to store functions under development
@@ -80,6 +80,29 @@ function extract_first_integer_from_string(str)
 	tmp3 = parse.(Int, string(tmp2[1][]))
 	return(tmp3)
 end
+
+"""
+states_list = Vector{Any}[[], [1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
+states_list_to_R_cmd(states_list; outfn="states_list.R")
+"""
+
+function states_list_to_R_cmd(states_list; outfn="")
+	tmpstr = string(states_list)
+	tmpstr2 = replace(tmpstr, "Vector{Any}["=>"states_list = list(") 
+	tmpstr3 = replace(tmpstr2, "]]"=>"])") 
+	tmpstr4 = replace(tmpstr3, "["=>"c(") 
+	tmpstr5 = replace(tmpstr4, "]"=>")") 
+	
+	if outfn != ""
+		open(outfn, "w") do io
+			write(io, tmpstr5)
+			write(io, "\n")
+		end # END open,do
+	end # END if
+	
+	return(tmpstr5)
+end
+
 
 
 
@@ -834,14 +857,15 @@ outfns = ["setup_df.txt",
 "Crates_by_t.txt",
 "Qarray.txt",
 "Carray.txt",
-"area_names.txt"
+"area_names.txt",
+"states_list.R"
 ]
 """
 
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	area_names = p_Ds_v12.setup.area_names
 	# Initialize list of output filenames
-	num_outfns = 8	# 8 filenames for now
+	num_outfns = 9	# 8 filenames for now
 	outfns = Vector{String}(undef, num_outfns) 
 	
 	TF = (prefix == "") || (endswith(prefix,"_"))
@@ -911,6 +935,8 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 			write(io, "\n")
 		end
 	end # END open,do
+	
+	states_list_to_R_cmd(states_list; outfn=outfns[9])
 	
 	return(outfns)
 end # END function model_to_text_v12(p_Ds_v12, timepoints; prefix="")

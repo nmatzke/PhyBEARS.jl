@@ -131,24 +131,31 @@ default_simfns <- function()
 	"Crates_by_t.txt",
 	"Qarray.txt",
 	"Carray.txt",
-	"area_names.txt")
+	"area_names.txt",
+	"states_list.R")
 	return(simfns)
 	}
 
 
 # Simulate for a certain period of time, until minimum number of living taxa produced
 starter="
+library(BioGeoBEARS)
+source('/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R')
+
+wd = '/GitHub/PhyBEARS.jl/ex/siminf_v12a/'
 start_state = 2 # number of the starting state
 max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time
-min_numtaxa = 2
+min_numtaxa = 50
+max_tips=100
 simfns=default_simfns()
 seedval = 54321
 max_rate=10.0
+numtries = 1000
+
+simulate_tdsse2_for_timeperiod(wd, start_state, max_simulation_time, min_numtaxa, max_tips, simfns, seedval, max_rate, numtries)
 "
-simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, simfns=default_simfns(), seedval=54321, max_rate=10.0)
+simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, max_tips=NULL, simfns=default_simfns(), seedval=54321, max_rate=10.0, numtries=1000)
 	{
-	# Get the area_names
-	
 	
 	# Add wd to the filename (stripping any prior paths from simfns)
 	for (i in 1:length(simfns))
@@ -156,6 +163,11 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		simfns[i] = get_path_last(simfns[i])
 		simfns[i] = slashslash(paste0(wd, "/", simfns[i]))
 		}
+
+	# Get the area_names and states_list
+	area_names = c(read.table(simfns[8]))[[1]]
+	# states_list = 
+	source(simfns[9]) # Creates a states_list
 	
 	# Read in the setup
 	setup_df = read.table(simfns[1], header=TRUE)
@@ -177,7 +189,7 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 	# to this timepoint
 	#start_state = 8 # number of the starting state
 	#max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time
-	max_tips = NULL
+	#max_tips = NULL
 
 	# Set a maximum rate for extreme cases
 	#max_rate = 10.0
@@ -369,23 +381,39 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
  
 
 	# simulation
-	simulation = simulate_tdsse2( Nstates = numstates, 
-															parameters = parameters, 
-															splines_degree      = 1,
-															start_state = 8,
-															max_tips = max_tips,
-															max_time = max_simulation_time,
-															time_grid = time_grid,
-															include_birth_times=TRUE,
-															include_death_times=TRUE,
-															coalescent=FALSE)
 	
 	sim_done = FALSE
-	
+	trynum = 1
 	while(sim_done == FALSE)
 		{
+		if (trynum > numtries)
+			{
+			txt = paste0("simulate_tdsse2() obtained no qualifying simulations after ", numtries, " tries. Increase numtries, increase max_simulation_time, or reduce max_tips.")
+			cat("\n")
+			cat(txt)
+			cat("\n")
+			sim_done = TRUE
+			break()
+			}
+
+		simulation = simulate_tdsse2( Nstates = numstates, 
+																parameters = parameters, 
+																splines_degree      = 1,
+																start_state = start_state,
+																max_tips = max_tips,
+																max_time = max_simulation_time,
+																time_grid = time_grid,
+																include_birth_times=TRUE,
+																include_death_times=TRUE,
+																coalescent=FALSE)
+
 		if (simulation$success == FALSE)
-			{ next() }
+			{ trynum=trynum+1; next() }
+
+		if (length(simulation$tree$tip.label) < 3)
+			{ trynum=trynum+1; next() }
+		
+		
 		
 		# Otherwise, proceed
 		simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
@@ -398,34 +426,107 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		
 		# Check for successful simulation
 		if (num_tips_in_present < min_numtaxa)
-			{ next() }
+			{ trynum=trynum+1; next() }
 		
 		# Otherwise, proceed
 		# 1. output a successful simulation
 		# 2. save to a living tree and complete tree
 		tr = simulation2$tree
+		tr$node.label = paste0("in", (length(tr$tip.label):(length(tr$tip.label)+tr$Nnode)))
+		tr$tip.label = paste0("sp", tr$tip.label)
 		tips_to_drop = tr$tip.label[fossils_TF]
 		living_tree = drop.tip(phy=tr, tip=tips_to_drop)
-		outfn = slashslash(paste0(wd, "/", "tree.newick")
+		
+		full_tree_tipnode_labels = c(tr$node.label, tr$tip.label)
+		living_tree_tipnode_labels = c(living_tree$node.label, living_tree$tip.label)
+		
+		index_in_fulltree_matching_living_tree_node = match(living_tree$node.label, table=tr$node.label)
+		length(index_in_fulltree_matching_living_tree_node)
+		length(living_tree$node.label)
+		length(tr$node.label)
+
+		index_in_fulltree_matching_living_tree_tipnode = match(living_tree_tipnode_labels, table=full_tree_tipnode_labels)
+		length(index_in_fulltree_matching_living_tree_tipnode)
+		length(living_tree_tipnode_labels)
+		length(full_tree_tipnode_labels)
+
+
+		#trtable_all = prt(t=tr, printflag=FALSE, get_tipnames=TRUE)
+		#trtable_living = prt(t=living_tree, printflag=FALSE, get_tipnames=TRUE)
+		
+		
+		outfn = slashslash(paste0(wd, "/", "tree.newick"))
 		write.tree(living_tree, file=outfn)
-		outfn = slashslash(paste0(wd, "/", "living_tree.newick")
+		outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
 		write.tree(living_tree, file=outfn)
 		
-		outfn = slashslash(paste0(wd, "/", "full_tree.newick")
+		outfn = slashslash(paste0(wd, "/", "full_tree.newick"))
 		write.tree(tr, file=outfn)
-		outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick")
+		outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick"))
 		write.tree(tr, file=outfn)
 		
+		sim_done = TRUE
 		
-	3. geog files for both
-	4. save the Rdata file
-	5. save the states at tips & nodes
-'
+		#	3. geog files for both
+		
+		# Write out the geography files
+		all_tip_states = simulation2$tip_states
+		
+		tipnames = tr$tip.label
+		tmpdf = NULL
+		for (i in 1:length(all_tip_states))
+			{
+			tmprow = rep(0, times=length(area_names))
+			tmpstate = states_list[all_tip_states[i]][[1]]
+			tmprow[tmpstate] = 1
+			tmpdf = rbind(tmpdf, tmprow)
+			}
+		
+		tmpdf = as.data.frame(tmpdf)
+		names(tmpdf) = area_names
+		row.names(tmpdf) = paste0("sp", names(all_tip_states))
+		tipranges = define_tipranges_object(tmpdf=tmpdf)
+		
+		lgdata_fn = slashslash(paste0(wd, "/", "geog_wFossils.data"))
+		save_tipranges_to_LagrangePHYLIP(tipranges, lgdata_fn=lgdata_fn, areanames=area_names)
+		
+		# Subset to living-only
+		rows_to_drop_TF = row.names(tmpdf) %in% tips_to_drop
+		rows_to_keep_TF = rows_to_drop_TF == FALSE
+		tmpdf2 = tmpdf[rows_to_keep_TF,]
+		tipranges2 = define_tipranges_object(tmpdf=tmpdf2)
+		lgdata_fn = slashslash(paste0(wd, "/", "geog_living.data"))
+		save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
+		lgdata_fn = slashslash(paste0(wd, "/", "geog.data"))
+		save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
+		
+		#	4. save the Rdata file
+		outfn = slashslash(paste0(wd, "/", "simulation2.Rdata"))
+		save(simulation2, file=outfn)
+		
+		#	5. save the states at tips & nodes
+		outfn = slashslash(paste0(wd, "/", "simstates_all.txt"))
+		write.table(unname(simulation2$simstates), file=outfn)
+
+		outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
+		write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
+		
+		index_in_fulltree_matching_living_tree_tipnode
+		
 		} # END while(sim_done == FALSE)
 
-
+	if (trynum <= numtries)
+		{
+		txt = paste0("simulate_tdsse2() found a tree after ", trynum, " tries. It has ", sum(fossils_TF==F), " living tips and ", sum(fossils_TF), " fossil tips. Printing:")
+		cat("\n")
+		cat(txt)
+		print(living_tree)
+		}
+	cat("\n")
 	
-	} 
+	# Further process simulation
+	
+	} # END simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, simfns=default_simfns(), seedval=54321, max_rate=10.0)
 
 
 

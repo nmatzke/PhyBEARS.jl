@@ -30,7 +30,7 @@ cd(wd)
 # This simulation has 50 living species
 trfn = "tree.newick"
 tr = readTopology(trfn)
-trdf = prt(tr)
+trdf = prt(tr);
 oldest_possible_age = 100.0
 
 lgdata_fn = "rangedata.data"

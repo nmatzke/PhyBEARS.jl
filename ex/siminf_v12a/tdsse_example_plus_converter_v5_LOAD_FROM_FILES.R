@@ -18,7 +18,8 @@ simfns = c("setup_df.txt",
 "Crates_by_t.txt",
 "Qarray.txt",
 "Carray.txt",
-"area_names.txt")
+"area_names.txt",
+"states_list.R")
 
 
 
