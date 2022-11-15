@@ -936,6 +936,7 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 		end
 	end # END open,do
 	
+	outfns[9] = paste0([prefix2, "states_list.R"]);
 	states_list_to_R_cmd(states_list; outfn=outfns[9])
 	
 	return(outfns)

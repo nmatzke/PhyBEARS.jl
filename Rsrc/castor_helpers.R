@@ -455,8 +455,6 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		#trtable_living = prt(t=living_tree, printflag=FALSE, get_tipnames=TRUE)
 		
 		
-		outfn = slashslash(paste0(wd, "/", "tree.newick"))
-		write.tree(living_tree, file=outfn)
 		outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
 		write.tree(living_tree, file=outfn)
 		
@@ -496,8 +494,6 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		tmpdf2 = tmpdf[rows_to_keep_TF,]
 		tipranges2 = define_tipranges_object(tmpdf=tmpdf2)
 		lgdata_fn = slashslash(paste0(wd, "/", "geog_living.data"))
-		save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
-		lgdata_fn = slashslash(paste0(wd, "/", "geog.data"))
 		save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
 		
 		#	4. save the Rdata file
