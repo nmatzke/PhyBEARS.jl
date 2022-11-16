@@ -507,7 +507,7 @@ function construct_QC_interpolators(p, tvals)
 		update_QC_mats_time_t!(p, tvals[i])
 	
 		# Save these rates
-		mu_vals_by_t[i] = p.params.mu_t_vals
+		mu_vals_by_t[i] .= p.params.mu_t_vals
 		Q_vals_by_t[i] .= p.params.Qij_vals_t
 		C_rates_by_t[i] .= p.params.Cijk_rates_t
 	end
