@@ -80,6 +80,8 @@ files.area_of_areas_fn = "sunkNZ_area_of_areas.txt"
 p = p_Ds_v5;
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=oldest_possible_age);
 
+interpolators.area_of_areas_interpolator
+
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 # Add Q, C interpolators
@@ -141,7 +143,7 @@ pars = optx;
 # Give the simulation a substantial death rate
 func(pars)
 pars[parnames .== "deathRate"] .= pars[parnames .== "birthRate"]
-pars[parnames .== "u"] .= 1.0
+pars[parnames .== "u"] .= -1.0
 func(pars)
 
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars;
@@ -158,6 +160,16 @@ prob_Es_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v12_simd_
 # This solution is an interpolator
 sol_Es_v12 = solve(prob_Es_v12, inputs.solver_options.solver, save_everystep=inputs.solver_options.save_everystep, abstol=inputs.solver_options.abstol, reltol=inputs.solver_options.reltol);
 p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+Rnames(p_Ds_v12.interpolators)
+p_Ds_v12.interpolators.mu_vals_interpolator(0.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(1.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(20.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(21.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(22.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(23.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(60.0)
+
 
 # Calculate the Ds, and final log-likelihood etc.
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)

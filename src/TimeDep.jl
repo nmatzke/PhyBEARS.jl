@@ -21,7 +21,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, update_QC_mats_time_t!, construct_QC_interpolators
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, update_mus_time_t!, update_QC_mats_time_t!, construct_QC_interpolators
 
 
 """
@@ -429,7 +429,19 @@ function update_Qij_d_vals!(p)
 end # END function update_Qij_d_vals!(p)
 
 
+function update_mus_time_t!(p, t)
+  #mu = p.params.mu_vals # base extinction rate of each range
+  #mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  
+  # Populate changing mus with time
+  @inbounds @simd for i in 1:n
+  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+  	p.params.mu_t_vals[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
+  end
+  # Correct "Inf" max_extinction_rates
+  p.params.mu_t_vals[p.params.mu_t_vals .> max_extinction_rate] .= max_extinction_rate
 
+end
 
 
 
@@ -444,19 +456,7 @@ function update_QC_mats_time_t!(p, t)
  	# Get the area of areas at time t
 	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
  	
-  # Possibly varying parameters
-  n = p.n
-  #mu = p.params.mu_vals # base extinction rate of each range
-  #mu_t = p.params.mu_t_vals # mu_t = mu at time t
-  
-  # Populate changing mus with time
-  @inbounds for i in 1:n
-  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	p.params.mu_t_vals[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_e]
-  end
-  # Correct "Inf" max_extinction_rates
-  p.params.mu_t_vals[p.params.mu_t_vals .> max_extinction_rate] .= max_extinction_rate
-  
+	update_mus_time_t!(p, t)  
   
   # Get the e_vals for the Qij matrix, at time t
   update_Qij_e_vals!(p)

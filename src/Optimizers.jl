@@ -2504,6 +2504,9 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 
 	# Update the mus
 	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.bmo.rownames .== "deathRate"][1]
+	
+	# (The mu_t_vals might change with time; if so, see update_mus_time_t
+	# p.params.mu_t_vals[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_mu]
 
 	#print("\n")
 	#print(prtQp(p_Ds_v5))
