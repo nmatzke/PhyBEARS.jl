@@ -439,7 +439,13 @@ function update_mus_time_t!(p, t)
   	p.params.mu_t_vals[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
   end
   # Correct "Inf" max_extinction_rates
-  p.params.mu_t_vals[p.params.mu_t_vals .> max_extinction_rate] .= max_extinction_rate
+ 	p.params.mu_t_vals[p.params.mu_t_vals .> p.setup.max_extinction_rate] .= p.setup.max_extinction_rate
+ 	if (p.setup.multi_area_ranges_have_zero_mu == true)
+	 	p.params.mu_t_vals[length.(p.states_as_areas_lists) .> 1] .= 0.0
+	end
+  
+
+multi_area_ranges_have_zero_mu
 
 end
 
