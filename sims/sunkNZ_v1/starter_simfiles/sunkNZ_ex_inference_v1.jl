@@ -142,7 +142,7 @@ pars = optx;
 
 # Give the simulation a substantial death rate
 func(pars)
-pars[parnames .== "deathRate"] .= 0.5*pars[parnames .== "birthRate"]
+pars[parnames .== "deathRate"] .= pars[parnames .== "birthRate"]
 pars[parnames .== "u"] .= -1.0
 func(pars)
 

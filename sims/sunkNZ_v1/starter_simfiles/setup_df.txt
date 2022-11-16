@@ -1,0 +1,2 @@
+numareas	numstates	max_range_size	include_null_range
+2	3	2	false
