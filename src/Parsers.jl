@@ -862,7 +862,7 @@ outfns = ["setup_df.txt",
 ]
 """
 
-function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
+function model_to_text_v12a(p_Ds_v12, timepoints; prefix="")
 	area_names = p_Ds_v12.setup.area_names
 	# Initialize list of output filenames
 	num_outfns = 9	# 8 filenames for now
@@ -893,7 +893,6 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	mu_vals_by_t = Matrix{Float64}(undef, num_mu_vals, length(timepoints));
 	Qvals_by_t = Matrix{Float64}(undef, numQvals, length(timepoints));
 	Crates_by_t = Matrix{Float64}(undef, numCrates, length(timepoints));
-	Qvals_by_t[1:6,1:6]
 
 	for i in 1:length(timepoints)
 		mu_vals_by_t[:,i] .= p_Ds_v12.interpolators.mu_vals_interpolator(timepoints[i])

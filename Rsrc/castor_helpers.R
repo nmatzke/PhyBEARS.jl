@@ -46,7 +46,7 @@ reorder_castor_sim_to_default_ape_node_order <- function(simulation)
 	names(simulation2$tip_states) = 1:length(simulation2$tip_states)
 	names(simulation2$tip_states)
 	simulation2$states = simstates[match_simtree_in_new2]
-	simulation2$simstates = c(simulation2$tip_states, simulation2$node_states)
+	simulation2$simstates = c(unname(simulation2$tip_states), simulation2$node_states)
 	return(simulation2)
 	} # END reorder_castor_sim_to_default_ape_node_order
 
@@ -145,17 +145,36 @@ source('/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R')
 wd = '/GitHub/PhyBEARS.jl/ex/siminf_v12a/'
 start_state = 2 # number of the starting state
 max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time
-min_numtaxa = 50
+min_tips = 50
 max_tips=100
 simfns=default_simfns()
 seedval = 54321
 max_rate=10.0
 numtries = 1000
 
-simulate_tdsse2_for_timeperiod(wd, start_state, max_simulation_time, min_numtaxa, max_tips, simfns, seedval, max_rate, numtries)
+start_state=2; max_simulation_time=15; min_tips=50; max_tips=100; simfns=default_simfns(); seedval=54321; max_rate=10.0; numtries=1000
+
+simulate_tdsse2_for_timeperiod(wd, start_state, max_simulation_time, min_tips, max_tips, simfns, seedval, max_rate, numtries)
 "
-simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, max_tips=NULL, simfns=default_simfns(), seedval=54321, max_rate=10.0, numtries=1000)
+simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_tips=2, max_tips=NULL, simfns=default_simfns(), seedval=54321, max_rate=10.0, numtries=1000)
 	{
+	# Error check
+	if (max_tips < min_tips)
+		{
+		txt = paste0("STOP ERROR in simulate_tdsse2_for_timeperiod(): max_tips=", max_tips, " < min_tips=", min_tips, ". This is an impossible simulation condition. Change inputs and re-run.") 
+		stop(txt)
+		}
+
+	if (abs(max_tips - min_tips) < 6)
+		{
+		txt = paste0("WARNING in simulate_tdsse2_for_timeperiod(): max_tips=", max_tips, " < min_tips=", min_tips, ". This is a range of less than 5 tips/species. It may be difficult for the simulator to provide trees of a size this precise.")
+		cat("\n")
+		cat(txt)
+		cat("\n")
+		warning(txt) 
+		}
+
+	
 	
 	# Add wd to the filename (stripping any prior paths from simfns)
 	for (i in 1:length(simfns))
@@ -342,7 +361,7 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		rates_sum = aggregate(tmprates[,4], by=list(tmprates[,1]), FUN=sum)
 		sums_by_i = cbind(rates_sum, probs_sum[,2])
 		names(sums_by_i) = c("i", "rates_sum", "probs_sum")
-		print(sums_by_i)
+		#print(sums_by_i)
 		}
 
 
@@ -384,15 +403,25 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 	
 	sim_done = FALSE
 	trynum = 1
+	num_living_tips = NULL
 	while(sim_done == FALSE)
 		{
 		if (trynum > numtries)
 			{
-			txt = paste0("simulate_tdsse2() obtained no qualifying simulations after ", numtries, " tries. Increase numtries, increase max_simulation_time, or reduce max_tips.")
+			meanval = round(mean(num_living_tips), digits=2)
+			lower95 = round(quantile(num_living_tips, prob=0.025), digits=2)
+			upper95 = round(quantile(num_living_tips, prob=0.975), digits=2)
+			minval = min(num_living_tips)
+			maxval = max(num_living_tips)
+			
+			txt2 = paste0("Simulation averages: ", meanval, " living tips (95% quantile: ", lower95, ", ", upper95, "), range: (", minval, ", ", maxval, ").")
+			
+			txt = paste0("simulate_tdsse2() obtained no qualifying simulations after ", numtries, " tries. Increase numtries, increase max_simulation_time, or reduce max_tips.\n", txt2)
 			cat("\n")
 			cat(txt)
 			cat("\n")
 			sim_done = TRUE
+			return(warning(txt))
 			break()
 			}
 
@@ -418,21 +447,28 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		# Otherwise, proceed
 		simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
 		tip_ages_above_root = get_node_ages_of_tips(simulation2$tree)
+		root_age = max(tip_ages_above_root)
 		
 		tip_age_tolerance = 1e-6
-		fossils_TF = (max(tip_ages_above_root) - tip_ages_above_root) > tip_age_tolerance
+		fossils_TF = (root_age - tip_ages_above_root) > tip_age_tolerance
 		
 		num_tips_in_present = sum(fossils_TF == FALSE)
+		num_living_tips = c(num_living_tips, num_tips_in_present)
 		
 		# Check for successful simulation
-		if (num_tips_in_present < min_numtaxa)
+		if (num_tips_in_present < min_tips)
 			{ trynum=trynum+1; next() }
+		
+		# All checks passed; so keep the tree
+		sim_done = TRUE
+		
+		} # END while(sim_done == FALSE)
 		
 		# Otherwise, proceed
 		# 1. output a successful simulation
 		# 2. save to a living tree and complete tree
 		tr = simulation2$tree
-		tr$node.label = paste0("in", (length(tr$tip.label):(length(tr$tip.label)+tr$Nnode)))
+		tr$node.label = paste0("in", ((length(tr$tip.label)+1):(length(tr$tip.label)+tr$Nnode)))
 		tr$tip.label = paste0("sp", tr$tip.label)
 		tips_to_drop = tr$tip.label[fossils_TF]
 		living_tree = drop.tip(phy=tr, tip=tips_to_drop)
@@ -457,13 +493,20 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		
 		outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
 		write.tree(living_tree, file=outfn)
+		living_tree_noNodeLabels = living_tree
+		living_tree_noNodeLabels$node.label = NULL
+		outfn = slashslash(paste0(wd, "/", "living_tree_noNodeLabels.newick"))
+		write.tree(living_tree_noNodeLabels, file=outfn)
 		
 		outfn = slashslash(paste0(wd, "/", "full_tree.newick"))
 		write.tree(tr, file=outfn)
 		outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick"))
 		write.tree(tr, file=outfn)
+		tree_wFossils_noNodeLabels = tr
+		tree_wFossils_noNodeLabels$node.label = NULL
+		outfn = slashslash(paste0(wd, "/", "tree_wFossils_noNodeLabels.newick"))
+		write.tree(tree_wFossils_noNodeLabels, file=outfn)
 		
-		sim_done = TRUE
 		
 		#	3. geog files for both
 		
@@ -507,25 +550,37 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
 		write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
 		
-		index_in_fulltree_matching_living_tree_tipnode
+		simulation2$tree = tr
+		simulation2$tree_living = living_tree
+		simulation2$simstates_all = simulation2$simstates
+		names(simulation2$simstates_all) = c(names(simulation2$tip_states), tr$node.label)
+		simulation2$simstates_living = simulation2$simstates_all[index_in_fulltree_matching_living_tree_tipnode]
 		
-		} # END while(sim_done == FALSE)
+		
 
 	if (trynum <= numtries)
 		{
-		txt = paste0("simulate_tdsse2() found a tree after ", trynum, " tries. It has ", sum(fossils_TF==F), " living tips and ", sum(fossils_TF), " fossil tips. Printing:")
+		txt = paste0("simulate_tdsse2() found a tree after ", trynum, " tries. It has ", sum(fossils_TF==F), " living tips and ", sum(fossils_TF), " fossil tips. root_age=", round(root_age, digits=2), ".")
 		cat("\n")
 		cat(txt)
-		print(living_tree)
-		}
+		#print(living_tree)
+		} 
 	cat("\n")
 	
 	# Further process simulation
+	return(simulation2)
+	} # END simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_tips=2, simfns=default_simfns(), seedval=54321, max_rate=10.0)
+
+
+
+get_root_age <- function(tr)
+	{
+	tip_ages_above_root = get_node_ages_of_tips(simulation2$tree)
+	root_age = max(tip_ages_above_root)
+	return(root_age)
+	}
 	
-	} # END simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_numtaxa=2, simfns=default_simfns(), seedval=54321, max_rate=10.0)
-
-
-
+		
 
 
 

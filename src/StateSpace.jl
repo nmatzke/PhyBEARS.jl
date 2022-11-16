@@ -452,7 +452,7 @@ function get_default_inputs(n=2)
 	tspan = (0.0, 1.2*trdf[tr.root,:node_age]) # 110% of tree root age
 
 	prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, u0_Es, tspan, p_Es_v5)
-	sol_Es_v5 = solve(prob_Es_v5, Tsit5(), save_everystep=true, abstol = 1e-9, reltol = 1e-9);
+	sol_Es_v5 = solve(prob_Es_v5, Tsit5(), save_everystep=true, abstol = 1.0e-9, reltol = 1.0e-9);
 
 	#######################################################
 	# Downpass with ClaSSE
@@ -904,10 +904,10 @@ bmo = construct_BioGeoBEARS_model_object()
 function construct_BioGeoBEARS_model_object()
 	type_vec = ["free", "free", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "u", "u", "fixed", "3-j", "ysv*2/3", "ysv*1/3", "ysv*1/3", "ysv*1/3", "fixed", "fixed", "fixed", "fixed", "mx01", "mx01", "mx01", "mx01", "fixed", "fixed", "fixed", "fixed"]
 	init_vec = [0.01, 0.01, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.99999, 1.99999, 1.0, 1.0, 1.0, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1.0, 0.0]
-	#init_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.5, 0.1, 1, 0]
-	min_vec = [1e-12, 1e-12, 1e-12, 1e-12, -2.5, -2.5, -2.5, -2.5, -10, -10, -10, -10, -10, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 1e-05, 0.0, 0.0, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.005, 0.005, 0.005]
-	max_vec = [4.999999999999, 4.999999999999, 4.999999999999, 0.999999999999, 2.5, 2.5, 2.5, 2.5, 10, 10, 10, 10, 10, 2.99999, 3, 2, 1, 1, 1, 2.0, 2.0, 2.0, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.995, 0.995, 0.995]
-	#est_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1e-04, 1e-04, 1e-04, 1e-04, 1e-04, 0.5, 0.1, 1, 0]
+	#init_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 0.5, 0.1, 1, 0]
+	min_vec = [1.0e-12, 1.0e-12, 1.0e-12, 1.0e-12, -2.5, -2.5, -2.5, -2.5, -10.0, -10.0, -1.0, -1.0, -1.0, 1.0e-05, 1.0e-05, 1.0e-05, 1.0e-05, 1.0e-05, 1.0e-05, 0.0, 0.0, 0.0, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 0.005, 0.005, 0.005]
+	max_vec = [4.999999999999, 4.999999999999, 4.999999999999, 0.999999999999, 2.5, 2.5, 2.5, 2.5, 10.0, 10.0, 2.5, 2.5, 2.5, 2.99999, 3, 2, 1, 1, 1, 2.0, 2.0, 2.0, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.9999, 0.995, 0.995, 0.995]
+	#est_vec = [0.01, 0.01, 0, 1, 0, 0, 1, 0, 0, 2.99999, 1.99999, 1, 1, 1, 0.3288164, 0.0, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 1.0e-04, 0.5, 0.1, 1, 0]
 	est_vec = [0.01, 0.01, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 2.99999, 1.99999, 1.0, 1.0, 1.0, 0.3288164, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.1, 1.0, 0.0]
 		 
 	note_vec = ["works", "works", "works", "non-stratified only", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works","works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "works", "no", "no", "no", "no"]
@@ -1076,7 +1076,7 @@ prtC(Carray)
 
 """
 
-function setup_DEC_Cmat(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1e-9)
+function setup_DEC_Cmat(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1.0e-9)
 	numareas = length(areas_list)
 	total_numareas = numareas
 	numstates = length(states_list)
@@ -1437,7 +1437,7 @@ Carray2 = setup_DEC_Cmat2(areas_list, states_list, maxent01, Cparams)
 prtC(Carray2)
 
 """
-function setup_DEC_Cmat2(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1e-9)
+function setup_DEC_Cmat2(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1.0e-9)
 	numareas = length(areas_list)
 	total_numareas = numareas
 	numstates = length(states_list)
@@ -1807,7 +1807,7 @@ Carray3 = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams)
 prtC(Carray3)
 
 """
-function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); birthRate=1.0, predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1e-9)
+function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); birthRate=1.0, predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1.0e-9)
 	numareas = length(areas_list)
 	total_numareas = numareas
 	numstates = length(states_list)

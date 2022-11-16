@@ -24,18 +24,18 @@ using PhyBEARS
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+wd = "/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/"
 cd(wd)
 
-# This simulation has 50 living species
-trfn = "tree.newick"
+# This simulation has 148 living species
+trfn = "living_tree_noNodeLabels.newick"
 tr = readTopology(trfn)
 trdf = prt(tr);
-oldest_possible_age = 100.0
+oldest_possible_age = 125.0
 
-lgdata_fn = "rangedata.data"
+lgdata_fn = "geog_living.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
-include_null_range = true
+include_null_range = false
 numareas = Rncol(geog_df)-1
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
@@ -45,32 +45,40 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 bmo = construct_BioGeoBEARS_model_object();
 #bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
+bmo.est[bmo.rownames .== "deathRate"] .= 0.9*ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "d"] .= 0.034;
 bmo.est[bmo.rownames .== "e"] .= 0.028;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.0;
-bmo.est[bmo.rownames .== "u"] .= 0.0;
-bmo.est[bmo.rownames .== "x"] .= 0.0;
-bmo.est[bmo.rownames .== "xv"] .= 0.1;
-bmo.max[bmo.rownames .== "xv"] .= 10.0;
+bmo.est[bmo.rownames .== "j"] .= 0.1;
+bmo.est[bmo.rownames .== "u"] .= -1.0;
+bmo.min[bmo.rownames .== "u"] .= -2.5;
+bmo.max[bmo.rownames .== "u"] .= 2.5;
+
+bmo.type[bmo.rownames .== "j"] .= "free";
+bmo.type[bmo.rownames .== "u"] .= "free";
+bmo.type[bmo.rownames .== "birthRate"] .= "free";
+bmo.type[bmo.rownames .== "deathRate"] .= "free";
+bmo.type[bmo.rownames .== "j"] .= "free"
+bmo.type[bmo.rownames .== "birthRate"] .= "free"
+bmo.type[bmo.rownames .== "deathRate"] .= "free"
+
 
 bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
-inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 #######################################################
 # Read in and parse distances and area-of-areas
 #######################################################
-files.times_fn = "v12a_times.txt"
-files.distances_fn = "v12a_distances.txt"
-files.area_of_areas_fn = "v12a_area_of_areas.txt"
+files.times_fn = "sunkNZ_times.txt"
+files.distances_fn = "sunkNZ_distances.txt"
+files.area_of_areas_fn = "sunkNZ_area_of_areas.txt"
 
 # Construct interpolators, times-at-which-to-interpolate QC
 p = p_Ds_v5;
-interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=100.0);
+interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=oldest_possible_age);
 
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
@@ -90,14 +98,14 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 #######################################################
 # Maximum likelihood inference
 #######################################################
-bmo.type[bmo.rownames .== "x"] .= "free"
-bmo.type[bmo.rownames .== "xv"] .= "free"
-bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "free"
-pars = bmo.est[bmo.type .== "free"]
-parnames = bmo.rownames[bmo.type .== "free"]
-func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="bgb_lnL", printlevel=1)
-pars = [0.4, 0.001, -0.001, 4.0, 0.25, 0.0]
+inputs.bmo.type[inputs.bmo.rownames .== "j"] .= "free"
+inputs.bmo.type[inputs.bmo.rownames .== "birthRate"] .= "free"
+inputs.bmo.type[inputs.bmo.rownames .== "deathRate"] .= "free"
+pars = deepcopy(inputs.bmo.est[inputs.bmo.type .== "free"])
+parnames = inputs.bmo.rownames[inputs.bmo.type .== "free"]
+func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="lnL", printlevel=1)
+#pars = [0.04, 0.001, 0.0001, 0.1, inputs.bmo.estinputs.[bmo.rownames .== "birthRate"][1], 0.0]
+
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
@@ -114,9 +122,9 @@ lower = bmo.min[bmo.type .== "free"];
 upper = bmo.max[bmo.type .== "free"];
 opt.lower_bounds = lower::Union{AbstractVector,Real};
 opt.upper_bounds = upper::Union{AbstractVector,Real};
-opt.ftol_abs = 0.0001 # tolerance on log-likelihood
+#opt.ftol_abs = 0.0001 # tolerance on log-likelihood
 #opt.ftol_rel = 0.01 # tolerance on log-likelihood
-opt.xtol_abs = 0.00001 # tolerance on parameters
+#opt.xtol_abs = 0.00001 # tolerance on parameters
 #opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
@@ -129,7 +137,15 @@ opt.xtol_abs = 0.00001 # tolerance on parameters
 
 # Get the inputs & res:
 pars = optx;
+
+# Give the simulation a substantial death rate
+func(pars)
+pars[parnames .== "deathRate"] .= pars[parnames .== "birthRate"]
+pars[parnames .== "u"] .= 1.0
+func(pars)
+
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars;
+inputs.bmo.est[bmo.rownames .== "birthRate"] = inputs.bmo.est[bmo.rownames .== "birthRate"] / 5
 bmo_updater_v1!(inputs.bmo);
 res = inputs.res;
 
@@ -164,10 +180,36 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 # install.packages(pkgs="/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
 
 # Write model out to text files that can be read in to simulator
-timepoints = seq(0.0, 10.0, 1.0)
+geog_interpolator_times = parse_times_fn(files.times_fn)
+timepoints = sort(unique(vcat(seq(0.0, maximum(geog_interpolator_times), 1.0), geog_interpolator_times)))
 # (the best way to do this is to do simulations for a fixed period of time; the number of taxa
 #  will vary, but have an average)
 outfns = model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 
 
+Rcode = """
+library(cladoRcpp)
+library(BioGeoBEARS)
+library(ape)
+library(castor)
 
+# for: reorder_castor_sim_to_default_ape_node_order(simulation)
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+
+wd = "/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/"
+setwd(wd)
+simfns = c("setup_df.txt",
+"timepoints.txt", 
+"mu_vals_by_t.txt", 
+"Qvals_by_t.txt",
+"Crates_by_t.txt",
+"Qarray.txt",
+"Carray.txt",
+"area_names.txt",
+"states_list.R")
+
+
+simulation2 = simulate_tdsse2_for_timeperiod(wd, start_state=2, max_simulation_time=100.0, min_tips=50, max_tips=500, simfns=default_simfns(), seedval=543221, max_rate=10.0, numtries=250)
+get_root_age(simulation2$tree)
+get_root_age(simulation2$living_tree)
+"""

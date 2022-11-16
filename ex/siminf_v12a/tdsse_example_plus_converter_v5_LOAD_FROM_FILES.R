@@ -6,9 +6,6 @@ library(castor)
 # for: reorder_castor_sim_to_default_ape_node_order(simulation)
 source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-
-
-
 wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
 simfns = c("setup_df.txt",
@@ -21,6 +18,8 @@ simfns = c("setup_df.txt",
 "area_names.txt",
 "states_list.R")
 
+
+simulation2 = simulate_tdsse2_for_timeperiod(wd, start_state=2, max_simulation_time=12, min_tips=50, max_tips=50, simfns=default_simfns(), seedval=54321, max_rate=10.0, numtries=250)
 
 
 # Setup
@@ -108,31 +107,6 @@ for (i in 1:length(time_grid))
 # All rows in A sum to 0.0!
 round(apply(X=A, MARGIN=3, rowSums), digits=10)
 
-
-ignore = '
-A = get_random_mk_transition_matrix(Nstates=numstates, rate_model="ER", max_rate=0.1)
-
-# Make it more like a DEC model (anagenetic)
-d_rate = 0.06 # range expansion
-e_rate = 0.01 # range contraction
-
-# 4 states are:
-# null, A, B, AB
-A[,] = 0
-A[2,4] = d_rate # A->AB
-A[3,4] = d_rate # B->AB
-A[2,1] = e_rate # A->null
-A[3,1] = e_rate # B->null
-A[4,2] = e_rate # AB->A
-A[4,3] = e_rate # AB->B
-A
-
-# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)
-diag(A) = 0.0
-A
-diag(A) = -rowSums(A)
-A
-' # END Ignore
 
 # Cladogenetic part of the DEC model
 # At speciation, we have:

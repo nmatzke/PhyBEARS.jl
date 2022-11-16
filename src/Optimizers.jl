@@ -152,8 +152,8 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 	
 	if printlevel >= 1
 		txt = paste0([txt, "Julia_sum_lq=", round(Julia_sum_lq; digits=4), ", rootstates_lnL=", round(rootstates_lnL; digits=4), ",	Julia_total_lnLs1=", round(Julia_total_lnLs1, digits=4), ", bgb_lnL=", round(bgb_lnL, digits=4)])
-		print("\n")
 		print(txt) 
+		print("\n")
 	end
 	
 	if returnval == "lnL"
