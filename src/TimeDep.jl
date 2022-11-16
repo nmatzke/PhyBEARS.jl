@@ -443,9 +443,7 @@ function update_mus_time_t!(p, t)
  	if (p.setup.multi_area_ranges_have_zero_mu == true)
 	 	p.params.mu_t_vals[length.(p.states_as_areas_lists) .> 1] .= 0.0
 	end
-  
 
-multi_area_ranges_have_zero_mu
 
 end
 
