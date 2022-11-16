@@ -168,7 +168,17 @@ p_Ds_v12.interpolators.mu_vals_interpolator(20.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(21.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(22.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(23.0)
+p_Ds_v12.interpolators.mu_vals_interpolator(23.5)
+p_Ds_v12.interpolators.mu_vals_interpolator(24.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(60.0)
+
+p_Ds_v12.interpolators.area_of_areas_interpolator(20.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(21.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(22.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(23.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(24.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(25.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(26.0)
 
 
 # Calculate the Ds, and final log-likelihood etc.
