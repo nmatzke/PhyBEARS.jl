@@ -52,7 +52,7 @@ bmo.est[bmo.rownames .== "a"] .= 0.0;
 bmo.est[bmo.rownames .== "j"] .= 0.1;
 bmo.est[bmo.rownames .== "u"] .= -1.0;
 bmo.min[bmo.rownames .== "u"] .= -2.5;
-bmo.max[bmo.rownames .== "u"] .= 2.5;
+bmo.max[bmo.rownames .== "u"] .= 0.0;
 
 bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.type[bmo.rownames .== "u"] .= "free";
