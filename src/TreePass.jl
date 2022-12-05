@@ -39,7 +39,7 @@ using SpecialFunctions			# for e.g. logfactorial
 print("...done.\n")
 
 
-export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!  # branchOp_ClaSSE_Gflow_v2, 
+export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, identify_identical_sisters, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!  # branchOp_ClaSSE_Gflow_v2, 
 
 
 
@@ -426,6 +426,61 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
 	return res
 end # END function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
+
+
+
+
+
+#######################################################
+# Identify identical sister branches
+#######################################################
+"""
+max_tip_age=0.0001 # Any tips less than this age are considered "living" (i.e. non-fossil)
+"""
+function identify_identical_sisters(res, trdf; max_tip_age=0.0001)
+	nan_int = -999
+	
+	# Error check
+	stopTF = length(trdf.nodeIndex) != res.numNodes
+	if stopTF == true
+		txt = paste0(["Stop error in identify_identical_sisters(): res.numNodes must == the number of rows in trdf."])
+		show(txt)
+		error(txt)
+	end
+	
+	# Identify NON-FOSSIL tips
+	tipsTF1 = trdf.nodeType .== "tip";
+	tipsTF2 = trdf.node_age .< max_tip_age;
+	tipsTF = (tipsTF1 .+ tipsTF2) .== 2;
+	sum(tipsTF)
+	
+	# Check for sisters that have identical sister ranges
+	ancNodes = sort(unique(trdf[tipsTF,:].ancNodeIndex))
+	trdf[ancNodes,:]
+	
+	# Vector describing which node to copy downpass, branch-bottom likelihoods from
+	copy_from = Vector{Int64}(undef, res.numNodes)
+	copy_from .= nan_int
+	
+	for i in 1:length(ancNodes)
+		ancNode = ancNodes[i]
+		lnode = trdf.leftNodeIndex[ancNode]
+		rnode = trdf.rightNodeIndex[ancNode]
+		
+		if all(res.likes_at_each_nodeIndex_branchTop[lnode] .== res.likes_at_each_nodeIndex_branchTop[rnode])
+			copy_from[lnode] = rnode
+			copy_from[rnode] = lnode
+		end
+	end
+	
+	TF = copy_from .!= nan_int;
+	copy_from[TF]
+	sum(TF)
+	
+	return(copy_from)
+end # END identify_identical_sisters
+
+
 
 
 
@@ -5271,6 +5326,9 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
+	# Get the list of nodes to copy from
+	copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001)
+	
 	# Get basic tree info
 	numTips = sum(trdf.nodeType .== "tip")
 	numInternal = sum(trdf.nodeType .== "intern") + sum(trdf.nodeType .== "root")
@@ -5339,6 +5397,15 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 #			if (parallel_TF == true)
 #				push!(tasks, Base.Threads.@spawn branchOp(current_nodeIndex, res, num_iterations=num_iterations))
 #			else
+
+			# Check if you can copy the sister branch
+			node_to_copy_from = copy_from[current_nodeIndex]
+			if (node_to_copy_from != -123)
+				if (res.node_state[node_to_copy_from] == "done")
+					#tmp_results = []
+				end
+			end
+
 			tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
 			#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
 			push!(tasks, tmp_results)			 # Add results to "tasks"
