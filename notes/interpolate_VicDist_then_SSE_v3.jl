@@ -53,7 +53,7 @@ bmo.est[bmo.rownames .== "xv"]
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # setup.vicdist_base  # a list of distances between ranges (e.g. minimum distance), 
 # corresponding to v_rows of the Carray
@@ -192,7 +192,7 @@ vicariance_mindists_interpolator(tvals)
 
 # Set up inputs 
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
 
