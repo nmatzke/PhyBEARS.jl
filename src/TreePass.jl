@@ -5400,17 +5400,17 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 
 			# Check if you can copy the sister branch
 			node_to_copy_from = copy_from[current_nodeIndex]
-			if (node_to_copy_from != -123)
+			if (node_to_copy_from != -999)
 				if (res.node_state[node_to_copy_from] == "done")
-					#tmp_results = []
+					res.node_state[current_nodeIndex] = "copy"
 				end
-			end
-
-			tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
-			#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
-			push!(tasks, tmp_results)			 # Add results to "tasks"
-#			end
-			push!(tasks_fetched_TF, false) # Add a "false" to tasks_fetched_TF
+			else
+				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
+				#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
+				push!(tasks, tmp_results)			 # Add results to "tasks"
+#				end
+				push!(tasks_fetched_TF, false) # Add a "false" to tasks_fetched_TF
+			end # END if (node_to_copy_from != -999)
 		end # END for current_nodeIndex in indexes_ready
 
 	
@@ -5512,6 +5512,64 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			end # END if (tasks_fetched_TF[i] == false)
 		end # END for i in 1:num_tasks
 
+		# Update nodes that need data COPIED from pre-calculated nodes
+		indexes_to_copy_to = findall(res.node_state .== "copy")
+		for current_nodeIndex in indexes_to_copy_to
+			calc_start_time = Dates.now()
+			node_to_copy_from = copy_from[current_nodeIndex]
+			# Store run information
+			res.calc_start_time[current_nodeIndex] = calc_start_time
+			tasks_fetched_TF[i] = true
+			res.thread_for_each_branchOp[current_nodeIndex] = res.thread_for_each_branchOp[node_to_copy_from]
+
+			nodeData_at_bottom = res.likes_at_each_nodeIndex_branchBot[node_to_copy_from]
+			sum_nodeData_at_bottom = sum(nodeData_at_bottom)
+			res.likes_at_each_nodeIndex_branchBot[current_nodeIndex] = nodeData_at_bottom .+ 0.0
+			res.normlikes_at_each_nodeIndex_branchBot[current_nodeIndex] = (nodeData_at_bottom .+ 0.0) ./ sum_nodeData_at_bottom
+			res.lq_at_branchBot[current_nodeIndex] = log(sum_nodeData_at_bottom) 
+			res.like_at_branchBot[current_nodeIndex] = sum_nodeData_at_bottom
+
+			# Get the ancestor nodeIndex
+			uppass_edgematrix = res.uppass_edgematrix
+			TF = uppass_edgematrix[:,2] .== current_nodeIndex
+			parent_nodeIndex = uppass_edgematrix[TF,1][1]
+
+			# Get the left daughter nodeIndex (1st in the uppass_edgematrix)
+			edge_rows_TF = uppass_edgematrix[:,1] .== parent_nodeIndex
+
+			# Error trap
+			if (sum(edge_rows_TF) > 3)
+				txt = "STOP error in: iterative_downpass_nonparallel_v12(), copying section - node has more than 2 edges"
+			end
+			
+			# Standard bifurcating node
+			if (sum(edge_rows_TF) == 2)
+				left_nodeIndex = uppass_edgematrix[edge_rows_TF,2][1]
+				right_nodeIndex = uppass_edgematrix[edge_rows_TF,2][2]
+
+				# Update the state of the parent_node's daughters
+				if (current_nodeIndex == left_nodeIndex)
+					res.node_Lparent_state[parent_nodeIndex] = "ready"
+				end
+				if (current_nodeIndex == right_nodeIndex)
+					res.node_Rparent_state[parent_nodeIndex] = "ready"
+				end
+			end 
+
+			# Singleton node (assumes direct-ancestor nodes are always "left"
+			if (sum(edge_rows_TF) == 1)
+				left_nodeIndex = uppass_edgematrix[edge_rows_TF,2][1]
+				res.node_Lparent_state[parent_nodeIndex] = "ready"
+			end
+
+			# Update the state of the current node
+			res.node_state[current_nodeIndex] = "done"
+
+			calc_end_time = Dates.now()
+			res.calc_end_time[current_nodeIndex] = calc_end_time
+			res.calc_duration[current_nodeIndex] = (calc_end_time - calc_start_time).value / 1000.0
+		end # END COPYING CALCULATIONS FROM SISTER BRANCHES
+		
 		# Update which nodes are SINGLETONS and are complete
 		TF1 = res.node_state .== "not_ready"
 		TF2 = res.node_Lparent_state .== "ready"
@@ -5529,7 +5587,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			
 			res = nodeOp_singleton!(current_nodeIndex, res, p_Ds_v5=p_Ds_v12)
 			# (updates res)
-		end
+		end # END UPDATE OF SINGLETON NODES
 
 	
 		# Update which nodes have had both parents complete
