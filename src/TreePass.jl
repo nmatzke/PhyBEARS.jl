@@ -5405,7 +5405,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			if ((node_to_copy_from != -999) && (res.node_state[node_to_copy_from] == "done"))
 				res.node_state[current_nodeIndex] = "copy"
 			else
-				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
+				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options);
 				#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
 				push!(tasks, tmp_results)			 # Add results to "tasks"
 #				end
@@ -5426,7 +5426,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 # 					if (parallel_TF == true)
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
-					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
+					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i];
 					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
 # 					end
 
@@ -5521,9 +5521,9 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			# Store run information
 			res.calc_start_time[current_nodeIndex] = calc_start_time
 			tasks_fetched_TF[i] = true
-			res.thread_for_each_branchOp[current_nodeIndex] = res.thread_for_each_branchOp[node_to_copy_from]
+			res.thread_for_each_branchOp[current_nodeIndex] = res.thread_for_each_branchOp[node_to_copy_from] + 0
 
-			nodeData_at_bottom = res.likes_at_each_nodeIndex_branchBot[node_to_copy_from]
+			nodeData_at_bottom = res.likes_at_each_nodeIndex_branchBot[node_to_copy_from] .+ 0.0
 			sum_nodeData_at_bottom = sum(nodeData_at_bottom)
 			res.likes_at_each_nodeIndex_branchBot[current_nodeIndex] = nodeData_at_bottom .+ 0.0
 			res.normlikes_at_each_nodeIndex_branchBot[current_nodeIndex] = (nodeData_at_bottom .+ 0.0) ./ sum_nodeData_at_bottom
@@ -5565,7 +5565,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 
 			# Update the state of the current node
 			res.node_state[current_nodeIndex] = "done"
-			res.node_method[spawned_nodeIndex] = "copied"
+			res.node_method[current_nodeIndex] = "copied"
 
 			calc_end_time = Dates.now()
 			res.calc_end_time[current_nodeIndex] = calc_end_time
