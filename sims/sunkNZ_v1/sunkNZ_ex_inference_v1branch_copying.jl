@@ -98,6 +98,15 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+res.node_method[res.node_method .!=  "branchOp_ClaSSE_Ds_v12"]
+
+copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001);
+res.node_method[copy_from .!= -999]
+res.calc_duration[copy_from .!= -999]
+
+ @benchmark (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
 # Branch copying
 """
 # Without branch copying
@@ -118,16 +127,16 @@ BenchmarkTools.Trial: 12 samples with 1 evaluation.
 # With branch copying
  @benchmark (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 BenchmarkTools.Trial: 12 samples with 1 evaluation.
- Range (min … max):  426.602 ms … 445.565 ms  ┊ GC (min … max): 9.37% … 10.71%
- Time  (median):     435.471 ms               ┊ GC (median):    9.68%
- Time  (mean ± σ):   435.772 ms ±   5.334 ms  ┊ GC (mean ± σ):  9.66% ±  0.60%
+ Range (min … max):  383.137 ms … 441.360 ms  ┊ GC (min … max):  0.00% … 10.95%
+ Time  (median):     431.979 ms               ┊ GC (median):    10.07%
+ Time  (mean ± σ):   428.389 ms ±  15.009 ms  ┊ GC (mean ± σ):   9.48% ±  3.02%
 
-  █          █   █  █    █   █ █     █  █ █         █         █  
-  █▁▁▁▁▁▁▁▁▁▁█▁▁▁█▁▁█▁▁▁▁█▁▁▁█▁█▁▁▁▁▁█▁▁█▁█▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁█ ▁
-  427 ms           Histogram: frequency by time          446 ms <
+                                                █      ▁▁        
+  ▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▆▁▁▁██▁▁▆▁▁▆ ▁
+  383 ms           Histogram: frequency by time          441 ms <
 
- Memory estimate: 197.45 MiB, allocs estimate: 1394023.
-"""
+ Memory estimate: 184.66 MiB, allocs estimate: 1308150.
+ """
 
 #######################################################
 # Maximum likelihood inference
@@ -227,6 +236,12 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 #  0.028
 #  0.292
 #  0.384
+
+copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001)
+TF = copy_from .!= -999
+res.calc_duration[TF]
+copy_from[TF]
+
 
 
 
