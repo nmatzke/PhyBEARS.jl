@@ -98,6 +98,13 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+res.node_method[res.node_method .!=  "branchOp_ClaSSE_Ds_v12"]
+
+copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001);
+res.node_method[copy_from .!= -999]
+res.calc_duration[copy_from .!= -999]
+
+
 # Branch copying
 """
 # Without branch copying
@@ -227,6 +234,12 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 #  0.028
 #  0.292
 #  0.384
+
+copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001)
+TF = copy_from .!= -999
+res.calc_duration[TF]
+copy_from[TF]
+
 
 
 
