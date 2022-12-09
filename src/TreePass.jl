@@ -5400,10 +5400,8 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 
 			# Check if you can copy the sister branch
 			node_to_copy_from = copy_from[current_nodeIndex]
-			if (node_to_copy_from != -999)
-				if (res.node_state[node_to_copy_from] == "done")
-					res.node_state[current_nodeIndex] = "copy"
-				end
+			if ((node_to_copy_from != -999) && (res.node_state[node_to_copy_from] == "done"))
+				res.node_state[current_nodeIndex] = "copy"
 			else
 				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
 				#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
