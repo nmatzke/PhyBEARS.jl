@@ -5399,16 +5399,19 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 #			else
 
 			# Check if you can copy the sister branch
-			node_to_copy_from = copy_from[current_nodeIndex]
+"""			node_to_copy_from = copy_from[current_nodeIndex]
 			if ((node_to_copy_from != -999) && (res.node_state[node_to_copy_from] == "done"))
 				res.node_state[current_nodeIndex] = "copy"
 			else
+"""
 				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options)
 				#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
 				push!(tasks, tmp_results)			 # Add results to "tasks"
 #				end
 				push!(tasks_fetched_TF, false) # Add a "false" to tasks_fetched_TF
+"""
 			end # END if (node_to_copy_from != -999)
+"""
 		end # END for current_nodeIndex in indexes_ready
 
 	
@@ -5510,6 +5513,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			end # END if (tasks_fetched_TF[i] == false)
 		end # END for i in 1:num_tasks
 
+"""
 		# Update nodes that need data COPIED from pre-calculated nodes
 		indexes_to_copy_to = findall(res.node_state .== "copy")
 		for current_nodeIndex in indexes_to_copy_to
@@ -5567,6 +5571,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			res.calc_end_time[current_nodeIndex] = calc_end_time
 			res.calc_duration[current_nodeIndex] = (calc_end_time - calc_start_time).value / 1000.0
 		end # END COPYING CALCULATIONS FROM SISTER BRANCHES
+"""
 		
 		# Update which nodes are SINGLETONS and are complete
 		TF1 = res.node_state .== "not_ready"
