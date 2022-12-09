@@ -5524,7 +5524,6 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			end
 			# Store run information
 			res.calc_start_time[current_nodeIndex] = calc_start_time
-			tasks_fetched_TF[i] = true
 			res.thread_for_each_branchOp[current_nodeIndex] = res.thread_for_each_branchOp[node_to_copy_from] + 0
 
 			nodeData_at_bottom = res.likes_at_each_nodeIndex_branchBot[node_to_copy_from] .+ 0.0
