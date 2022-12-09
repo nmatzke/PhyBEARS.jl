@@ -142,6 +142,7 @@ function construct_Res_old()
 
 	n = 1 # number of states
 	node_state = ["ready_for_branchOp", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready"]
+	node_method = collect(repeat(["unknown"], length(node_state)))
 	node_Lparent_state = ["NA", "NA", "not_ready", "NA", "not_ready", "NA", "not_ready"]
 	node_Rparent_state = ["NA", "NA", "not_ready", "NA", "not_ready", "NA", "not_ready"]
 	root_nodeIndex = 7
@@ -170,7 +171,7 @@ function construct_Res_old()
 	likes_at_each_nodeIndex_branchBot = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
 	normlikes_at_each_nodeIndex_branchBot = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
 
-	res = Res(regime, node_state, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, 
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, 
 thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
 	return res
 end
@@ -192,6 +193,7 @@ function construct_Res()
 	regime = collect(repeat([1], numNodes))
 
 	node_state = ["ready_for_branchOp", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready"]
+	node_method = collect(repeat(["unknown"], numNodes))
 	node_Lparent_state = ["NA", "NA", "not_ready", "NA", "not_ready", "NA", "not_ready"]
 	node_Rparent_state = ["NA", "NA", "not_ready", "NA", "not_ready", "NA", "not_ready"]
 	root_nodeIndex = 7
@@ -230,8 +232,7 @@ function construct_Res()
 
 	calctime_iterations = [0.0, 0.0]
 
-	res = Res(regime, node_state, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, 
-thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
 	return res
 end
 
@@ -310,6 +311,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 	
 	# Fill in the node_states
 	node_state = collect(repeat(["not_ready"], numNodes))
+	node_method = collect(repeat(["unknown"], numNodes))
 	node_state[tipsTF] .= "ready_for_branchOp"
 	node_Lparent_state = collect(repeat(["not_ready"], numNodes))
 	node_Rparent_state = collect(repeat(["not_ready"], numNodes))
@@ -331,8 +333,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, 
-thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
 	return res
 end
 
@@ -403,6 +404,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	
 	# Fill in the node_states
 	node_state = collect(repeat(["not_ready"], numNodes))
+	node_method = collect(repeat(["unknown"], numNodes))
 	node_state[tipsTF] .= "ready_for_branchOp"
 	node_Lparent_state = collect(repeat(["not_ready"], numNodes))
 	node_Rparent_state = collect(repeat(["not_ready"], numNodes))
@@ -422,8 +424,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, 
-thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot)
 	return res
 end # END function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 
@@ -5506,6 +5507,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 	
 					# Update the state of the current node
 					res.node_state[spawned_nodeIndex] = "done"
+					res.node_method[spawned_nodeIndex] = "branchOp_ClaSSE_Ds_v12"
 				#end
 			end # END if (tasks_fetched_TF[i] == false)
 		end # END for i in 1:num_tasks
@@ -5562,6 +5564,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 
 			# Update the state of the current node
 			res.node_state[current_nodeIndex] = "done"
+			res.node_method[spawned_nodeIndex] = "copied"
 
 			calc_end_time = Dates.now()
 			res.calc_end_time[current_nodeIndex] = calc_end_time
