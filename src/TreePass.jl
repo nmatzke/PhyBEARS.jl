@@ -96,6 +96,7 @@ struct Res
 	# "calculating" (value at branch bottom being calculated)
 	# "done" (value at branch bottom available)
 	node_state::Array{String}
+	node_method::Array{String}
 	node_Lparent_state::Array{String}
 	node_Rparent_state::Array{String}
 	
