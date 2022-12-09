@@ -5402,7 +5402,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 
 			# Check if you can copy the sister branch
 			node_to_copy_from = copy_from[current_nodeIndex]
-			if ((node_to_copy_from != -999) && (res.node_state[node_to_copy_from] == "done"))
+			if ((node_to_copy_from != -999) && ( (res.node_state[node_to_copy_from] == "calculating_branchOp") || (res.node_state[node_to_copy_from] == "done"))
 				res.node_state[current_nodeIndex] = "copy"
 			else
 				tmp_results = branchOp_ClaSSE_Ds_v12(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v12=p_Ds_v12, solver_options=solver_options);
@@ -5518,6 +5518,10 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 		for current_nodeIndex in indexes_to_copy_to
 			calc_start_time = Dates.now()
 			node_to_copy_from = copy_from[current_nodeIndex]
+			# Only copy if finished!
+			if (res.node_state[node_to_copy_from] != "done")
+				next()
+			end
 			# Store run information
 			res.calc_start_time[current_nodeIndex] = calc_start_time
 			tasks_fetched_TF[i] = true
