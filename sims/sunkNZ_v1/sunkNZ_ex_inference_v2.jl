@@ -105,10 +105,17 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 inputs.bmo.type[inputs.bmo.rownames .== "j"] .= "free"
 inputs.bmo.type[inputs.bmo.rownames .== "birthRate"] .= "free"
 inputs.bmo.type[inputs.bmo.rownames .== "deathRate"] .= "free"
+
+inputs.bmo.type[inputs.bmo.rownames .== "u"] .= "fixed"
+inputs.bmo.est[inputs.bmo.rownames .== "u"] .= 0.0
+inputs.bmo.init[inputs.bmo.rownames .== "u"] .= 0.0
+
 pars = deepcopy(inputs.bmo.est[inputs.bmo.type .== "free"])
 parnames = inputs.bmo.rownames[inputs.bmo.type .== "free"]
 func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="lnL", printlevel=1)
 #pars = [0.04, 0.001, 0.0001, 0.1, inputs.bmo.estinputs.[bmo.rownames .== "birthRate"][1], 0.0]
+
+
 
 func(pars)
 function func2(pars, dummy_gradient!)
