@@ -577,6 +577,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	# and treetable (trdf)
 	res = inputs.res
 	trdf = inputs.trdf
+	solver_options = inputs.solver_options
 	
 	# Set the result if parameters out of bounds
 	nan_lnL = -Inf
