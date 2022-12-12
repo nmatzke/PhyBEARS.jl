@@ -1459,7 +1459,12 @@ function bmo_updater_v2(bmo, bmo_rows)
 		#bmo.est[bmo_rows.u_mu] = u
 		bmo.est[bmo_rows.u_mu] = bmo.est[bmo_rows.u_mu]
 	end	
-
+	
+	# Update deathRate based on birthRate?
+	if bmo.type[bmo_rows.deathRate] == "birthRate"
+		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
+	end
+	
 	# Update mx01's based on mx01?
 
 
