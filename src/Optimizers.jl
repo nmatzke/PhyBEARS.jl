@@ -1448,6 +1448,8 @@ function bmo_updater_v2(bmo, bmo_rows)
 	bmo.est[bmo_rows.s] = s
 	bmo.est[bmo_rows.v] = v
 
+
+
 	# Does this make it slower?? YES, 2x slowdown!
 	# Update u_e and u_mu based on u?
 	if bmo.type[bmo_rows.u_e] == "u"
@@ -1458,7 +1460,7 @@ function bmo_updater_v2(bmo, bmo_rows)
 	if bmo.type[bmo_rows.u_mu] == "u"
 		#u = bmo.est[bmo_rows.u]
 		#bmo.est[bmo_rows.u_mu] = u
-		bmo.est[bmo_rows.u_mu] = bmo.est[bmo_rows.u_mu]
+		bmo.est[bmo_rows.u_mu] = bmo.est[bmo_rows.u]
 	end	
 	
 	# Update deathRate based on birthRate?
