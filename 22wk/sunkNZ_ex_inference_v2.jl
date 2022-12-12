@@ -166,6 +166,17 @@ sol_Es_v12 = solve(prob_Es_v12, inputs.solver_options.solver, save_everystep=inp
 p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 Rnames(p_Ds_v12.interpolators)
+
+p_Ds_v12.interpolators.area_of_areas_interpolator(20.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(21.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(22.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(23.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(24.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(25.0)
+p_Ds_v12.interpolators.area_of_areas_interpolator(26.0)
+
+
+
 p_Ds_v12.interpolators.mu_vals_interpolator(0.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(1.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(20.0)
@@ -175,14 +186,6 @@ p_Ds_v12.interpolators.mu_vals_interpolator(23.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(23.5)
 p_Ds_v12.interpolators.mu_vals_interpolator(24.0)
 p_Ds_v12.interpolators.mu_vals_interpolator(60.0)
-
-p_Ds_v12.interpolators.area_of_areas_interpolator(20.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(21.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(22.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(23.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(24.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(25.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(26.0)
 
 
 # Calculate the Ds, and final log-likelihood etc.
