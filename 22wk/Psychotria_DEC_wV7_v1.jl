@@ -101,29 +101,6 @@ opt.upper_bounds = upper::Union{AbstractVector,Real}
 #opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
-#opt.ftol_rel = 0.01 # tolerance on log-likelihood
-#opt.xtol_abs = 0.0001 # tolerance on parameters
-# (-16.91509708891156, [0.04786084799206467, 1.0e-12, 5.467412494208904], :SUCCESS)
-# Unconstrained:
-# d=0.04791,	e=0.0,	xv=5.47159,	Julia_sum_lq=-56.8738, rootstates_lnL=3.8986,	Julia_total_lnLs1=-52.9752, bgb_lnL=-15.0759
-# (-15.075897880145341, [0.04791423273879585, 1.0e-12, 5.4715887419793905], :ROUNDOFF_LIMITED)
-# 
-# opt.ftol_abs = 0.001 # tolerance on log-likelihood
-# opt.xtol_abs = 0.0001 # tolerance on parameters
-# d=0.04793,	e=0.0,	xv=5.46762,	Julia_sum_lq=-77.7007, rootstates_lnL=3.7721,	Julia_total_lnLs1=-73.9286, bgb_lnL=-36.7417
-# (-16.91509708891156, [0.04786084799206467, 1.0e-12, 5.467412494208904], :SUCCESS)
-# d=0.07304,	e=1.0e-5,	xv=5.43854,	Julia_sum_lq=-60.3596, rootstates_lnL=3.5499,	Julia_total_lnLs1=-56.8098, bgb_lnL=-19.2144
-# 16.077195154750136, [0.07303955699440073, 1.0e-12, 5.438560655327038], :SUCCESS)
-
-# d=0.07303,	e=0.0,	xv=5.43862,	Julia_sum_lq=-57.9226, rootstates_lnL=3.4612,	Julia_total_lnLs1=-54.4613, bgb_lnL=-16.3902
-# (-16.390191978494094, [0.07303402776871623, 1.0e-12, 5.438618806149209], :ROUNDOFF_LIMITED)
-
-# d=0.07303,	e=0.0,	xv=5.43862,	Julia_sum_lq=-57.9226, rootstates_lnL=3.4612,	Julia_total_lnLs1=-54.4613, bgb_lnL=-16.3902
-# (-16.390191978494094, [0.07303402776871623, 1.0e-12, 5.438618806149209], :ROUNDOFF_LIMITED)
-
-# Unconstrained, 5 parameters:
-# d=0.05993,	e=0.0108,	x=-0.23754,	xv=5.10425,	birthRate=0.3646,	deathRate=0.19304,	Julia_sum_lq=-56.6835, rootstates_lnL=6.7275,	Julia_total_lnLs1=-49.9559, bgb_lnL=-12.8284
-# (-12.828352684984715, [0.059932699102433235, 0.010797111791669806, -0.23754106458148194, 5.104251203844556, 0.3645992824829854, 0.19303903497496325], :ROUNDOFF_LIMITED)
 
 
 
@@ -132,7 +109,7 @@ pars = optx
 #pars = [0.9747407112459348, 0.8, 0.11]
 #pars = [100.0, 1.8, 0.11]
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
-inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+inputs.bmo.est[:] = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 p_Es_v7 = TimeDep.construct_QC_interpolators(p_Ds_v7, p_Ds_v7.interpolators.times_for_SSE_interpolators);

@@ -1385,11 +1385,11 @@ function bmo_updater_v1(bmo)
 	s = ysv*1/3
 	v = ysv*1/3
 	
-	bmo.est[bmo.rownames .== "ysv"] .= ysv
-	bmo.est[bmo.rownames .== "ys"] .= ys
-	bmo.est[bmo.rownames .== "y"] .= y
-	bmo.est[bmo.rownames .== "s"] .= s
-	bmo.est[bmo.rownames .== "v"] .= v
+	bmo.est[bmo.rownames .== "ysv"] = ysv
+	bmo.est[bmo.rownames .== "ys"] = ys
+	bmo.est[bmo.rownames .== "y"] = y
+	bmo.est[bmo.rownames .== "s"] = s
+	bmo.est[bmo.rownames .== "v"] = v
 	
 	
 	# Update u_e and u_mu based on u?
@@ -1441,11 +1441,11 @@ function bmo_updater_v2(bmo, bmo_rows)
 	s = ysv*1/3
 	v = ysv*1/3
 	
-	bmo.est[bmo_rows.ysv] .= ysv
-	bmo.est[bmo_rows.ys] .= ys
-	bmo.est[bmo_rows.y] .= y
-	bmo.est[bmo_rows.s] .= s
-	bmo.est[bmo_rows.v] .= v
+	bmo.est[bmo_rows.ysv] = ysv
+	bmo.est[bmo_rows.ys] = ys
+	bmo.est[bmo_rows.y] = y
+	bmo.est[bmo_rows.s] = s
+	bmo.est[bmo_rows.v] = v
 
 	# Does this make it slower?? YES, 2x slowdown!
 	# Update u_e and u_mu based on u?
