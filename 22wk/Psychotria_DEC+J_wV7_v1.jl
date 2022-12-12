@@ -38,13 +38,13 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0000001, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
-#bmo.type[bmo.rownames .== "j"] .= "free";
+bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
-bmo.est[bmo.rownames .== "d"] .= 0.034;
-bmo.est[bmo.rownames .== "e"] .= 0.028;
+bmo.est[bmo.rownames .== "d"] .= 1e-12;
+bmo.est[bmo.rownames .== "e"] .= 1e-12;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.0;
+bmo.est[bmo.rownames .== "j"] .= 0.11;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 #bmo.est[bmo.rownames .== "xv"] .= 0.1;
@@ -73,14 +73,15 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 #######################################################
 #bmo.type[bmo.rownames .== "xv"] .= "free"
 bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
+bmo.type[bmo.rownames .== "deathRate"] .= "free"
+#bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
 #bmo.type[bmo.rownames .== "x"] .= "free"
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
 func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
-#pars = [0.04, 0.01, 0.34, 0.0]
-pars = [0.04, 0.01, 0.34]
+#pars = [0.04, 0.01, 0.001, 0.34, 0.0]
+#pars = [0.04, 0.01, 0.001, 0.34]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
