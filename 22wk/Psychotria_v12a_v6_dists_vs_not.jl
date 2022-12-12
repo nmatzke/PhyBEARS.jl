@@ -44,21 +44,18 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
 bmo.est[bmo.rownames .== "d"] .= 0.034;
 bmo.est[bmo.rownames .== "e"] .= 0.028;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.0000001;
+bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 #bmo.est[bmo.rownames .== "xv"] .= 0.1;
 bmo.max[bmo.rownames .== "xv"] .= 10.0;
 
-bmo.est .= bmo_updater_v1(bmo);
+bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
-
-
-p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 
 
@@ -123,10 +120,10 @@ lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 opt.lower_bounds = lower::Union{AbstractVector,Real}
 opt.upper_bounds = upper::Union{AbstractVector,Real}
-#opt.ftol_abs = 0.0001 # tolerance on log-likelihood
-#opt.ftol_rel = 0.01 # tolerance on log-likelihood
-#opt.xtol_abs = 0.00001 # tolerance on parameters
-#opt.xtol_rel = 0.001 # tolerance on parameters
+opt.ftol_abs = 0.0001 # tolerance on log-likelihood
+opt.ftol_rel = 0.01 # tolerance on log-likelihood
+opt.xtol_abs = 0.00001 # tolerance on parameters
+opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
 #opt.ftol_rel = 0.01 # tolerance on log-likelihood
