@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -597,7 +597,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	bmo_updater_v2(inputs.bmo);
+	inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	if printlevel >= 2
 		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
@@ -930,7 +930,7 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	bmo_updater_v2(inputs.bmo);
+	inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	if printlevel >= 2
 		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
@@ -2391,7 +2391,8 @@ end # END function inputs_updater_v1!(inputs)
 """
 function inputs_updater_v2!(inputs)
 	#global inputs
-	bmo_updater_v2!(inputs.bmo)
+	#bmo_updater_v1!(inputs.bmo)
+	inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	return inputs
 end # END function inputs_updater_v1!(inputs)
 

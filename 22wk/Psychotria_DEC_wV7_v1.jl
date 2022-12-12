@@ -132,7 +132,8 @@ pars = optx
 #pars = [0.9747407112459348, 0.8, 0.11]
 #pars = [100.0, 1.8, 0.11]
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
-bmo_updater_v1!(inputs.bmo)
+inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 p_Es_v7 = TimeDep.construct_QC_interpolators(p_Ds_v7, p_Ds_v7.interpolators.times_for_SSE_interpolators);
 
