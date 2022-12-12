@@ -592,21 +592,21 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	
 	# Update
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	bmo_updater_v1(inputs.bmo);
+	bmo_updater_v2(inputs.bmo);
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est .= bmo.est
 
 	if printlevel >= 2
 		pdf_before = prtCp(p_Ds_v5)
-		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v1:")
+		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v2:")
 		print(round.(pdf_before.wt[1:5], digits=4))
 	end
 #	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
@@ -641,7 +641,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	# iteration 1, node 19
 	if inbounds == true
 		# Solve the Es
-		prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5)
+		prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, inputs.Es_tspan, p_Ds_v5)
 		# This solution is an interpolator
 		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 		p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
@@ -741,15 +741,15 @@ function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", 
 	
 	# Update
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	inputs_updater_v1!(inputs);
+	inputs_updater_v2!(inputs);
 	
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est .= bmo.est
@@ -925,21 +925,21 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 	
 	# Update
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est before bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	bmo_updater_v1(inputs.bmo);
+	bmo_updater_v2(inputs.bmo);
 	if printlevel >= 2
-		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v1(): ")
+		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est .= bmo.est
 
 	if printlevel >= 2
 		pdf_before = prtCp(p_Ds_v12)
-		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v1:")
+		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v2:")
 		print(round.(pdf_before.wt[1:5], digits=4))
 	end
 #	output = p_Ds_v5_updater_v1(p_Ds_v12, inputs);  # WORKS 2022-03-10
@@ -2383,6 +2383,15 @@ end # end update_Cijk_vals2!()
 function inputs_updater_v1!(inputs)
 	#global inputs
 	bmo_updater_v1!(inputs.bmo)
+	return inputs
+end # END function inputs_updater_v1!(inputs)
+
+"""
+# Update the BioGeoBEARS_inputs_object after changing e.g. "j"
+"""
+function inputs_updater_v2!(inputs)
+	#global inputs
+	bmo_updater_v2!(inputs.bmo)
 	return inputs
 end # END function inputs_updater_v1!(inputs)
 
