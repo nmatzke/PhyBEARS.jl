@@ -586,8 +586,8 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	
 	# Get parameter names and lower/upper bounds
 	parnames = inputs.bmo.rownames[inputs.bmo.type.=="free"];
-	lower = inputs.bmo.min[bmo.type .== "free"]
-	upper = inputs.bmo.max[bmo.type .== "free"]
+	lower = inputs.bmo.min[inputs.bmo.type .== "free"]
+	upper = inputs.bmo.max[inputs.bmo.type .== "free"]
 	#bmo = inputs.bmo
 	
 	# Update

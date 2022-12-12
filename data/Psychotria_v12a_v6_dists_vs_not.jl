@@ -56,11 +56,20 @@ bmo.est .= bmo_updater_v1(bmo);
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
+
+
+p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
+
+
+
+#######################################################
+# v12 calculator
+#######################################################
 #######################################################
 # Read in and parse distances and area-of-areas
 #######################################################
 files.times_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_times.txt"
-files.distances_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
+files.distances_fn = "/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
 files.area_of_areas_fn = "/Users/nickm/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
 
 files.times_fn = "Hawaii_KOMH_times.txt"
@@ -70,6 +79,7 @@ files.area_of_areas_fn = ""
 # Construct interpolators, times-at-which-to-interpolate QC
 p = p_Ds_v5;
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=100.0);
+Rnames(interpolators)
 
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
