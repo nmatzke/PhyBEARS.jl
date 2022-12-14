@@ -32,6 +32,7 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers		# Parsers to read e.g. geography file
 using PhyBEARS.MaxentInterp # for relative_probabilities_of_vicariants(), etc.
+using PhyBEARS.Parsers		# for states_list_to_txt()
 
 print("...done.\n")
 
