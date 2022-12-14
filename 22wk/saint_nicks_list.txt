@@ -1,0 +1,34 @@
+Saint Nick's list for what we want in PhyBEARS
+(Ho ho ho!)
+
+1. Text list of areas / ranges
+
+(add these to output table also)
+
+2. Ancestral state calculation not just marginal likelihoods (downpass likelihoods)
+
+3. Stochastic mapping
+
+4. Node constraints (likelihood multipliers by node)
+
+5. Export table to R, load in BioGeoBEARS, plot
+
+xxx. distance between something and itself should be 0
+
+6. invent bacronym for PhyBEARS
+
+7. automatically extract lnLs & parameters to table
+
+8. In BioGeoBEARS -- Biogeobears to SSE likelihood converter
+
+9. Labels on output parameters
+
+10. print arbitrary additions
+# 
+trait-dependent dispersal models
+- with stochastic mapping
+
+bS+SM stochastic + simulation
+
+9. Linking Gplates distances
+

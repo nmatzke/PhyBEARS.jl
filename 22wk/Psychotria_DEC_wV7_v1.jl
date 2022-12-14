@@ -50,6 +50,7 @@ bmo.est[bmo.rownames .== "x"] .= 0.0;
 #bmo.est[bmo.rownames .== "xv"] .= 0.1;
 bmo.max[bmo.rownames .== "xv"] .= 10.0;
 
+#bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
@@ -133,3 +134,6 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 #  0.0  0.0  0.0  0.0  0.0  0.002  0.003  0.947  0.0  0.003  0.0  0.001  0.024  0.02  0.0  0.0
+
+# Names of areas
+

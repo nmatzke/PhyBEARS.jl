@@ -34,7 +34,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12
+export states_list_to_txt, extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12
 
 #######################################################
 # Temporary file to store functions under development
@@ -48,6 +48,22 @@ cd("/GitHub/PhyBEARS.jl/notes/")
 include("Parsers.jl")
 """
 #######################################################
+
+
+"""
+states_list = [[1], [2], [1,2]]
+area_names = ["A", "B"]
+txt_states_list = states_list_to_txt(states_list, area_names)
+"""
+function states_list_to_txt(states_list, area_names)
+	txt_states_list = collect(repeat([""], length(states_list)))
+	for i in 1:length(states_list)
+		txt_states_list[i] = paste0(area_names[states_list[i]])
+	end
+	return(txt_states_list)
+end # END function states_list_to_txt(states_list, area_names)
+
+
 
 
 
@@ -72,8 +88,6 @@ import .Parsers
 lgdata_fn = "/GitHub/PhyBEARS.jl/Rsrc/Psychotria_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 """
-
-
 function extract_first_integer_from_string(str)
 	tmp = [filter(isdigit, collect(s)) for s in str]
 	tmp2 = tmp[length.(tmp) .> 0]

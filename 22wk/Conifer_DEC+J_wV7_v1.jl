@@ -26,7 +26,7 @@ cd(wd)
 trfn = "Klaus_Matzke_2020_PodoArau_197sp.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
-oldest_possible_age = 100.0
+oldest_possible_age = 300.0
 
 lgdata_fn = "Podocarpaceae_197_9areas_5Araucariaceae.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);

@@ -91,6 +91,13 @@ p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.in
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
 sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
+sol_Es_v12(0.0)
+sol_Es_v12(22.0)
+sol_Es_v12(23.0)
+sol_Es_v12(24.0)
+sol_Es_v12(25.0)
+sol_Es_v12(26.0)
+
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 # Solve the Ds
@@ -133,9 +140,9 @@ lower = bmo.min[bmo.type .== "free"];
 upper = bmo.max[bmo.type .== "free"];
 opt.lower_bounds = lower::Union{AbstractVector,Real};
 opt.upper_bounds = upper::Union{AbstractVector,Real};
-opt.ftol_abs = 0.0001 # tolerance on log-likelihood
+#opt.ftol_abs = 0.0001 # tolerance on log-likelihood
 #opt.ftol_rel = 0.01 # tolerance on log-likelihood
-opt.xtol_abs = 0.00001 # tolerance on parameters
+#opt.xtol_abs = 0.00001 # tolerance on parameters
 #opt.xtol_rel = 0.001 # tolerance on parameters
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
@@ -146,8 +153,8 @@ pars = optx;
 
 # Give the simulation a substantial death rate
 func(pars)
-pars[parnames .== "deathRate"] .= 0.5*pars[parnames .== "birthRate"]
-pars[parnames .== "u"] .= -1.0
+#pars[parnames .== "deathRate"] .= 0.5*pars[parnames .== "birthRate"]
+#pars[parnames .== "u"] .= -1.0
 func(pars)
 
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars;
