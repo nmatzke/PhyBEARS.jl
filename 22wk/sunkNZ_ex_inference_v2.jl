@@ -53,11 +53,16 @@ bmo.type[bmo.rownames .== "birthRate"] .= "free";
 bmo.type[bmo.rownames .== "deathRate"] .= "birthRate";
 
 
-bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
+
+inputs.setup.txt_states_list
+
+
 
 #######################################################
 # Read in and parse distances and area-of-areas

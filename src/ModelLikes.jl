@@ -26,13 +26,12 @@ using PhyloBits.PNtypes
 #using Plots						# for plot
 using DataFrames          # for DataFrame()
 using PhyBEARS.MaxentInterp # for discrete_maxent_distrib_of_smaller_daughter_ranges
-using PhyBEARS.StateSpace
+using PhyBEARS.StateSpace	# for states_list_to_txt()
 using PhyloBits.TreeTable
 using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers		# Parsers to read e.g. geography file
 using PhyBEARS.MaxentInterp # for relative_probabilities_of_vicariants(), etc.
-using PhyBEARS.Parsers		# for states_list_to_txt()
 
 print("...done.\n")
 
