@@ -1,7 +1,7 @@
 Saint Nick's list for what we want in PhyBEARS
 (Ho ho ho!)
 
-1. Text list of areas / ranges
+1. Text list of areas / ranges to: inputs.setup.states_list_txt
 
 (add these to output table also)
 
