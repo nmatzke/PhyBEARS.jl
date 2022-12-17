@@ -206,21 +206,33 @@ p_Ds_v12.interpolators.mu_vals_interpolator(60.0)
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 
-# 0.0
-#  0.0
-#  0.0
-#  0.0
-#  0.296
-#  0.028
-#  0.292
-#  0.384
-
-copy_from = identify_identical_sisters(res, trdf; max_tip_age=0.0001)
-TF = copy_from .!= -999
-res.calc_duration[TF]
-copy_from[TF]
+# 0.06
+# 0.613
+# 0.327
 
 
+# ancestral_range_estimation
+# This term is preferable to e.g. "ancestral area reconstruction"
+
+Rnames(res)
+
+rootnode = inputs.res.root_nodeIndex
+
+lnode = trdf[rootnode,"leftNodeIndex"]
+rnode = trdf[rootnode,"rightNodeIndex"]
+
+# ACE for left descendant
+nodenum = rootnode
+nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
+
+
+
+
+tspan
+
+uppass_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums, deepcopy(u0), tspan, p_Ds_v12)
+
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 
 # Install modified "castor" package in R
