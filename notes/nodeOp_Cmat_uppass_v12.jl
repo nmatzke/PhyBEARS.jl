@@ -10,16 +10,16 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
-		uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop .= normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop .= normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 
 	# Tip or internal nodes require passing probs up from branch bottom
 	else
 		# The uppass ancestral state probs will have been previously 
 		# calculated at the branch bottom
 		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
-		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex]
+		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
 		time_start = trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
 		time_end = trdf.node_age[current_nodeIndex]
 		tspan = [time_start, time_end]
@@ -30,8 +30,10 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
 		uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
-	end
+	end # END if (current_nodeIndex == res.root_nodeIndex)
+			# END uppass from branch below
 	
+	# Combine info through node; Store results
 	# Check if its a tip node
 	if (trdf.nodeType[current_nodeIndex] == "tip")
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
@@ -42,7 +44,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	# Internal nodes (not root)
 	elseif (trdf.nodeType[current_nodeIndex] == "intern")
 		# (Ignore direct ancestors for now)
-		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex][1] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
@@ -82,9 +84,8 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
 
-	end
-
-end
+	end # END elseif internal nodes
+end # END nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
 # Get the conditional probabilities of all cladogenesis
 # scenarios, conditional on ancestral range probs, Lprobs, Rprobs

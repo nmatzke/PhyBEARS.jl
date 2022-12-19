@@ -180,8 +180,8 @@ function construct_Res_old()
 	lq_at_branchBot = collect(repeat([0.0], numNodes))
 	like_at_branchBot = collect(repeat([0.0], numNodes))
 
-	node_constraints_branchTop = repeat([collect(repeat([1.0], n))], numNodes)
-	corner_constraints_branchBot = repeat([collect(repeat([1.0], n))], numNodes)
+	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 	Es_at_each_nodeIndex_branchTop = collect(repeat([0.0], numNodes))
 	Es_at_each_nodeIndex_branchBot = collect(repeat([0.0], numNodes))
@@ -238,30 +238,30 @@ function construct_Res()
 # 	likes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchTop = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
-	node_constraints_branchTop = repeat([collect(repeat([1.0], n))], numNodes)
-	corner_constraints_branchBot = repeat([collect(repeat([1.0], n))], numNodes)
+	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
-	Es_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	Es_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
-	fakeX0s_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	likes_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	likes_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
-	normlikes_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	normlikes_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
+	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	fakeX0s_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	likes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	likes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
 	# Fixed states by user (e.g. by hypothesis, or fossils
 	# (the old BioGeoBEARS "fixnodes" and "fixprobs"
 	# These are multipliers applied at these nodes
-	fixNodesMult_at_each_nodeIndex_branchBot = repeat([collect(repeat([1.0], n))], numNodes)
-	fixNodesMult_at_each_nodeIndex_branchTop = repeat([collect(repeat([1.0], n))], numNodes)
+	fixNodesMult_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	fixNodesMult_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
-	anc_estimates_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	anc_estimates_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
 	
 	default_likes_at_each_nodeIndex_branchTop = [1.0, 2.0, 3.0, 4.0, 0.0, 0.0, 0.0]
@@ -331,31 +331,31 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 # 	likes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
-	node_constraints_branchTop = repeat([collect(repeat([1.0], n))], numNodes)
-	corner_constraints_branchBot = repeat([collect(repeat([1.0], n))], numNodes)
-	Es_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	Es_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
-	fakeX0s_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
+	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	fakeX0s_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
-	likes_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	likes_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	normlikes_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	normlikes_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	likes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	likes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
 
 	# Fixed states by user (e.g. by hypothesis, or fossils
 	# (the old BioGeoBEARS "fixnodes" and "fixprobs"
 	# These are multipliers applied at these nodes
-	fixNodesMult_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([1.0], n))], numNodes))
-	fixNodesMult_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([1.0], n))], numNodes))
+	fixNodesMult_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	fixNodesMult_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	anc_estimates_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
 
 	# Put in the tip node numbers as the fake likelihoods
@@ -447,15 +447,15 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 # 	likes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
-	node_constraints_branchTop = repeat([collect(repeat([1.0], n))], numNodes)
-	corner_constraints_branchBot = repeat([collect(repeat([1.0], n))], numNodes)
-	Es_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	Es_at_each_nodeIndex_branchBot = repeat([collect(repeat([0.0], n))], numNodes)
-	fakeX0s_at_each_nodeIndex_branchTop = repeat([collect(repeat([0.0], n))], numNodes)
-	likes_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	likes_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	normlikes_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	normlikes_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	fakeX0s_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	likes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	likes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	normlikes_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
 	# Give tip nodeIndexes a likelihood of 1 at all states
 	indexNum_table = get_nodeIndex_PNnumber(tr)
@@ -478,16 +478,16 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	# Fixed states by user (e.g. by hypothesis, or fossils
 	# (the old BioGeoBEARS "fixnodes" and "fixprobs"
 	# These are multipliers applied at these nodes
-	fixNodesMult_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([1.0], n))], numNodes))
-	fixNodesMult_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([1.0], n))], numNodes))
+	fixNodesMult_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	fixNodesMult_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 	
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	anc_estimates_at_each_nodeIndex_branchBot = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
-	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([collect(repeat([0.0], n))], numNodes))
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	
 	# Fill in the node_states
 	node_state = collect(repeat(["not_ready"], numNodes))
