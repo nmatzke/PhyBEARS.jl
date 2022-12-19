@@ -83,13 +83,6 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
 
 	end
-	
-	# Calculate the post-cladogenesis uppass probabilities for the Left node
-	Ldownpass_likes = collect(repeat([1.0], n))
-	
-	Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchTop
-	relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
-
 
 end
 
