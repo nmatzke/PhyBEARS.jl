@@ -229,7 +229,8 @@ nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
 
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
-
+current_nodeIndex = 6
+x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
 
 

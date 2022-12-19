@@ -187,7 +187,7 @@ function nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes
 	# ...it *IS* legitimate to sum the conditional probabilities of
 	#    all scenarios, then divide by the sum
 	relprob_each_split_scenario = descprobs_by_scenario
-	relprob_each_split_scenario = descprobs_by_scenario ./ sum(descprobs_by_scenario)
+	relprob_each_split_scenario .= descprobs_by_scenario ./ sum(descprobs_by_scenario)
 	
   return(relprob_each_split_scenario)
 end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
