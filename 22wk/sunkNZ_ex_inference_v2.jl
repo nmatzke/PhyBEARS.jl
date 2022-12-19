@@ -228,6 +228,12 @@ nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
 
 
 
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+
+
+
+
 tspan
 
 uppass_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums, deepcopy(u0), tspan, p_Ds_v12)

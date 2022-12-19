@@ -7,10 +7,10 @@
 #    L or R descendant
 
 function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
-	n = numstates = length(normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
+	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
-		uppass_probs_just_below_node = normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop .= normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
 
@@ -35,17 +35,17 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	# Check if its a tip node
 	if (trdf.nodeType[current_nodeIndex] == "tip")
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		anc_estimates_at_each_nodeIndex_branchTop .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-		anc_estimates_at_each_nodeIndex_branchTop = anc_estimates_at_each_nodeIndex_branchTop ./ sum(anc_estimates_at_each_nodeIndex_branchTop)
-		res.anc_estimates_at_each_nodeIndex_branchTop .= anc_estimates_at_each_nodeIndex_branchTop .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop)
+		res.anc_estimates_at_each_nodeIndex_branchTop .= res.anc_estimates_at_each_nodeIndex_branchTop .+ 0.0
 	
 	# Internal nodes (not root)
 	elseif (trdf.nodeType[current_nodeIndex] == "intern")
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		anc_estimates_at_each_nodeIndex_branchTop .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-		anc_estimates_at_each_nodeIndex_branchTop = anc_estimates_at_each_nodeIndex_branchTop ./ sum(anc_estimates_at_each_nodeIndex_branchTop)
-		res.anc_estimates_at_each_nodeIndex_branchTop .= anc_estimates_at_each_nodeIndex_branchTop .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 		
 		# Get uppass probs for Left and Right daughter branches
 		node_above_Left_corner = trdf.leftNodeIndex[current_nodeIndex]
@@ -56,8 +56,8 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		Ldownpass_likes = collect(repeat([1.0], n))
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchTop[node_above_Right_corner]
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
-		
-		for (j in 1:n)
+
+		for j in 1:n
 			jTF = p_Ds_v12.p_indices.Carray_jvals .== j
 			res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner][j] = sum(relprob_each_split_scenario[jTF])
 		end
@@ -69,7 +69,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchTop[node_above_Left_corner]
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
 		
-		for (k in 1:n)
+		for k in 1:n
 			kTF = p_Ds_v12.p_indices.Carray_jvals .== k
 			res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner][k] = sum(relprob_each_split_scenario[kTF])
 		end
@@ -88,7 +88,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	Ldownpass_likes = collect(repeat([1.0], n))
 	
 	Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchTop
-	relprob_each_split_scenario = odeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
+	relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
 
 
 end
@@ -97,16 +97,16 @@ end
 # scenarios, conditional on ancestral range probs, Lprobs, Rprobs
 #
 # On an uppass, either Lprobs or Rprobs will be a vector of 1s
-function nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true) -> begin
+function nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
 	p = p_Ds_v12;
 	
 	# Figure out if you are solving for the left or right descendant
 	# (if both are all 1.0s, assumes left)
 	# (also assumes left if both are non-1st; but throws warning)
 	left_or_right = ""
-	if (all(Rprobs .== 1.0) == true)
+	if (all(Rdownpass_likes .== 1.0) == true)
 		left_or_right = "right"
-	elseif (all(Lprobs .== 1.0) == true)
+	elseif (all(Ldownpass_likes .== 1.0) == true)
 		left_or_right = "left"
 	else
 		left_or_right = "left"
@@ -186,7 +186,8 @@ function nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes
 	# - TO a vector of cladogenesis scenarios
 	# ...it *IS* legitimate to sum the conditional probabilities of
 	#    all scenarios, then divide by the sum
-	relprob_each_split_scenario .= descprobs_by_scenario ./ sum(descprobs_by_scenario)
+	relprob_each_split_scenario = descprobs_by_scenario
+	relprob_each_split_scenario = descprobs_by_scenario ./ sum(descprobs_by_scenario)
 	
   return(relprob_each_split_scenario)
 end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
