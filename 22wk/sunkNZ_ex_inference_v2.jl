@@ -232,7 +232,12 @@ include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
-
+res.uppass_probs_at_each_nodeIndex_branchBot
+res.anc_estimates_at_each_nodeIndex_branchBot
+res.uppass_probs_at_each_nodeIndex_branchTop
+res.anc_estimates_at_each_nodeIndex_branchTop
+res.fixNodesMult_at_each_nodeIndex_branchTop
+res.fixNodesMult_at_each_nodeIndex_branchBot
 
 
 tspan

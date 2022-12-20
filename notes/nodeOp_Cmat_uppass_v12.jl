@@ -44,7 +44,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	# Internal nodes (not root)
 	elseif (trdf.nodeType[current_nodeIndex] == "intern")
 		# (Ignore direct ancestors for now)
-		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex][1] .= uppass_probs_just_below_node .+ 0.0
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
@@ -186,3 +186,39 @@ function nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes
   return(relprob_each_split_scenario)
 end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
 
+
+
+function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+	uppass_edgematrix = res.uppass_edgematrix
+	
+	# Iterate through rows of the edge matrix, like in R
+	# Do it in pairs (left branch, then right branch)
+	# uppass_edgematrix: column 1 is ancestral node numbers (i.e. rows of trdf)
+	#                    column 2 is descendant node numbers (i.e. rows of trdf)
+	for i in odds(1:Rnrow(uppass_edgematrix))
+		j = i+1
+		# Error check: Check the uppass edge matrix; 
+		ancnode1 = uppass_edgematrix[i,1]
+		ancnode2 = uppass_edgematrix[j,1]
+		if (ancnode1 == ancnode2)
+			ancnode = ancnode1
+		else
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			print("\n")
+			print(stoptxt)
+			print("\n")
+			print(res.uppass_edgematrix[i:j,:])
+			print("\n")
+			error(stoptxt)
+		end # END if (ancnode1 == ancnode2)
+	
+		Lnode = uppass_edgematrix[i,2]
+		Rnode = uppass_edgematrix[j,2]
+		
+		# Work up through the nodes, starting from the root
+		current_nodeIndex = ancnode
+		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+	
+	end # for (i in odds(1:nrow(trdf))
+
+end
