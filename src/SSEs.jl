@@ -13,7 +13,7 @@ using PhyBEARS.TimeDep # for get_area_of_range etc.
 print("...done.\n")
 
 
-export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
+export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
 
 
 
@@ -1365,6 +1365,36 @@ end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 
 # Time-varying areas & extinction rates
 parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
+  # Interpolate the current Q_vals_t and C_rates_t
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+
+	# Pre-calculated solution of the Es
+	uE = p.sol_Es_v12(t)
+	#terms = Vector{Float64}(undef, 4)
+  @inbounds for i in 1:p.n
+		p.terms .= 0.0
+
+	# DIFFERENT:
+	# RIGHT: p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
+	# WRONG: p.params.Cijk_rates_t[p.p_TFs.Ci_sub_i[i]]
+#		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+#		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i_index[i]], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i_index[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+
+
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+  
+end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
+
+
+
+# Time-varying areas & extinction rates
+# No negative u allowed
+parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)

@@ -110,6 +110,54 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Single branch
+# Solve the Ds
+u0_Ds = res.likes_at_each_nodeIndex_branchTop[1]
+
+prob_Ds_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums, u0_Ds, Es_tspan, p_Ds_v12);
+sol_Ds_v12 = solve(prob_Ds_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v12(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12(2.0)
+sol_Ds_v12(22.0)
+sol_Ds_v12(23.0)
+sol_Ds_v12(24.0)
+sol_Ds_v12(25.0)
+sol_Ds_v12(26.0)
+
+# Single branch in reverse
+tmax = 1.0
+rev_tspan = (tmax, 0.0)
+#uMax_Ds = sol_Ds_v12(tmax) ./ sum(uMax_Ds)
+uMax_Ds = sol_Ds_v12(tmax)
+
+solver_options.abstol = 1e-15
+solver_options.reltol = 1e-15
+
+prob_Ds_v12rev = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums, uMax_Ds, rev_tspan, p_Ds_v12);
+sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+
+#truestart = sol_Ds_v12(0.0)
+#approx_start = sol_Ds_v12rev(0.0)
+sol_Ds_v12(0.0)
+sol_Ds_v12rev(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12rev(tmax)
+
+#sol_Ds_v12rev(0.0) ./ sum(sol_Ds_v12(tmax))
+
+
+sol_Ds_v12rev(2.0)
+sol_Ds_v12rev(22.0)
+sol_Ds_v12rev(23.0)
+sol_Ds_v12rev(24.0)
+sol_Ds_v12rev(25.0)
+sol_Ds_v12rev(26.0)
+
+
+
 
 #######################################################
 # Maximum likelihood inference
