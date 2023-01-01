@@ -1395,6 +1395,11 @@ end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 # Time-varying areas & extinction rates
 # No negative u allowed
 parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
+	# Negative values may be expected due to numerical approximations; to
+	# prevent these blowing up:
+	# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
+	u[i] = max(0.0,u[i]);
+
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
@@ -1417,10 +1422,6 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 
 		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
   
-		# Negative values may be expected due to numerical approximations; to
-		# prevent these blowing up:
-		# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
-  	u[i] = max(0.0,u[i]);
   end
   
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
