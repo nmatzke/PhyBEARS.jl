@@ -134,6 +134,7 @@ uMax_Ds = sol_Ds_v12(tmax)
 
 solver_options.abstol = 1e-15
 solver_options.reltol = 1e-15
+solver_options.save_everystep = true
 
 prob_Ds_v12rev = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums, uMax_Ds, rev_tspan, p_Ds_v12);
 sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
@@ -145,6 +146,24 @@ sol_Ds_v12(0.0)
 sol_Ds_v12rev(0.0)
 sol_Ds_v12(1.0)
 sol_Ds_v12rev(tmax)
+
+
+prob_Ds_v12rev_noNegs = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, uMax_Ds, rev_tspan, p_Ds_v12);
+sol_Ds_v12rev_noNegs = solve(prob_Ds_v12rev_noNegs, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+
+#truestart = sol_Ds_v12(0.0)
+#approx_start = sol_Ds_v12rev(0.0)
+sol_Ds_v12(0.0)
+sol_Ds_v12rev_noNegs(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12rev_noNegs(tmax)
+
+sol_Ds_v12rev_noNegs(tmax) .- sol_Ds_v12rev(tmax)
+
+@benchmark sol_Ds_v12rev_noNegs = solve(prob_Ds_v12rev_noNegs, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+@benchmark sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 #sol_Ds_v12rev(0.0) ./ sum(sol_Ds_v12(tmax))
 

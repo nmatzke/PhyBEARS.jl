@@ -1404,11 +1404,6 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 	uE = p.sol_Es_v12(t)
 	#terms = Vector{Float64}(undef, 4)
   @inbounds for i in 1:p.n
-		# Negative values may be expected due to numerical approximations; to
-		# prevent these blowing up:
-		# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
-		u[i] = max(0.0,u[i]);
-
 		p.terms .= 0.0
 
 	# DIFFERENT:
@@ -1422,7 +1417,16 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 
 
 		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
-  
+
+		# Negative values may be expected due to numerical approximations; to
+		# prevent these blowing up:
+		# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
+		#u[i] = max(0.0,u[i]);
+		if (u[i] < 0.0)
+			#du[i] = du[i] - (0.0 - u[i])
+			du[i] = du[i] + u[i]
+		end
+
   end
   
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
