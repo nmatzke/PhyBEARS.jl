@@ -132,12 +132,24 @@ rev_tspan = (tmax, 0.0)
 #uMax_Ds = sol_Ds_v12(tmax) ./ sum(uMax_Ds)
 uMax_Ds = sol_Ds_v12(tmax)
 
-solver_options.abstol = 1e-15
-solver_options.reltol = 1e-15
+solver_options.abstol = 1e-6
+solver_options.reltol = 1e-6
 solver_options.save_everystep = true
 
 prob_Ds_v12rev = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums, uMax_Ds, rev_tspan, p_Ds_v12);
-sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+# Callback to ensure u never goes below 0.0 or above 1.0
+# https://nextjournal.com/sosiris-de/ode-diffeq?change-id=CkQATVFdWBPaEkpdm6vuto
+# resid (residual) instead of du
+function g(resid,u,p,t)
+  max.(0.0, .-u)
+end
+
+cb = ManifoldProjection(g)
+
+?PositiveCallback
+
+sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol, callback=cb);
 
 
 #truestart = sol_Ds_v12(0.0)
