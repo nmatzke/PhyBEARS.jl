@@ -74,28 +74,25 @@ sol_Es_v7(0.0)
 sol_Es_v7(1.0)
 sol_Es_v7(1.5)
 
-p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
 
 # Solve the Ds
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 #######################################################
 # Maximum likelihood inference
 #######################################################
-inputs.bmo.type[inputs.bmo.rownames .== "j"] .= "free"
 inputs.bmo.type[inputs.bmo.rownames .== "birthRate"] .= "free"
-inputs.bmo.type[inputs.bmo.rownames .== "deathRate"] .= "birthRate"
-
-inputs.bmo.type[inputs.bmo.rownames .== "u"] .= "fixed"
-inputs.bmo.est[inputs.bmo.rownames .== "u"] .= -1.0
-inputs.bmo.init[inputs.bmo.rownames .== "u"] .= -1.0
+inputs.bmo.type[inputs.bmo.rownames .== "deathRate"] .= "free"
+inputs.bmo.min[inputs.bmo.rownames .== "d"] .= 0.0
+inputs.bmo.min[inputs.bmo.rownames .== "e"] .= 0.0
+inputs.bmo.min[inputs.bmo.rownames .== "deathRate"] .= 0.0
 
 pars = deepcopy(inputs.bmo.est[inputs.bmo.type .== "free"])
 parnames = inputs.bmo.rownames[inputs.bmo.type .== "free"]
-func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="lnL", printlevel=1)
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
 #pars = [0.04, 0.001, 0.0001, 0.1, inputs.bmo.est[bmo.rownames .== "birthRate"][1], 0.0]
 
 
@@ -124,55 +121,36 @@ opt.upper_bounds = upper::Union{AbstractVector,Real};
 #######################################################
 
 
+
+
 # Get the inputs & res:
 pars = optx;
 
 # Give the simulation a substantial death rate
 func(pars)
-#pars[parnames .== "deathRate"] .= 0.5*pars[parnames .== "birthRate"]
-#pars[parnames .== "u"] .= -1.0
-func(pars)
 
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars;
 inputs.bmo.est[bmo.rownames .== "birthRate"] = inputs.bmo.est[bmo.rownames .== "birthRate"] / 5
+
+inputs.bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
+inputs.bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
+inputs.bmo.est[bmo.rownames .== "d"] .= 0.0;
+inputs.bmo.est[bmo.rownames .== "e"] .= 0.0;
+
 inputs.bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows)
 res = inputs.res;
 
 # Solution, under best ML parameters
-p_Ds_v5_updater_v1!(p_Ds_v12, inputs);
-p_Es_v12 = TimeDep.construct_QC_interpolators(p_Ds_v12, p_Ds_v12.interpolators.times_for_SSE_interpolators);
+p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 
 # Solve the Es
-prob_Es_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, inputs.Es_tspan, p_Es_v12)
+prob_Es_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, inputs.Es_tspan, p_Es_v7)
 # This solution is an interpolator
-sol_Es_v12 = solve(prob_Es_v12, inputs.solver_options.solver, save_everystep=inputs.solver_options.save_everystep, abstol=inputs.solver_options.abstol, reltol=inputs.solver_options.reltol);
-p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
-
-Rnames(p_Ds_v12.interpolators)
-
-p_Ds_v12.interpolators.area_of_areas_interpolator(20.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(21.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(22.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(23.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(24.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(25.0)
-p_Ds_v12.interpolators.area_of_areas_interpolator(26.0)
-
-
-
-p_Ds_v12.interpolators.mu_vals_interpolator(0.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(1.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(20.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(21.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(22.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(23.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(23.5)
-p_Ds_v12.interpolators.mu_vals_interpolator(24.0)
-p_Ds_v12.interpolators.mu_vals_interpolator(60.0)
-
+sol_Es_v7 = solve(prob_Es_v7, inputs.solver_options.solver, save_everystep=inputs.solver_options.save_everystep, abstol=inputs.solver_options.abstol, reltol=inputs.solver_options.reltol);
+p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
 
 # Calculate the Ds, and final log-likelihood etc.
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
@@ -202,11 +180,11 @@ uppass_edgematrix = res.uppass_edgematrix
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
-x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+x = nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options)
 
 solver_options.abstol = 1.0e-9
 solver_options.reltol = 1.0e-9
-uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=true)
 
 res.uppass_probs_at_each_nodeIndex_branchBot
 res.anc_estimates_at_each_nodeIndex_branchBot

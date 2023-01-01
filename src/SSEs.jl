@@ -1386,7 +1386,13 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 
 
 		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+  
+		# Negative values may be expected due to numerical approximations; to
+		# prevent these blowing up:
+		# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
+  	u[i] = max(0.0,u[i]);
   end
+  
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 
 
