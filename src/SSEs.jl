@@ -1425,6 +1425,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 		if (u[i] < 0.0)
 			#du[i] = du[i] - (0.0 - u[i])
 			du[i] = du[i] + u[i]
+			u[i] = 0.0
 		end
 
   end
