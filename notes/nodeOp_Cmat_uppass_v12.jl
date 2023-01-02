@@ -44,7 +44,10 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# Correct for any values slipping below 0.0
 		TF = uppass_probs_just_below_node .<= 0.0
 		if (any(TF))
-			uppass_probs_just_below_node[TF] .= 0.0
+			# Round to zero
+			#uppass_probs_just_below_node[TF] .= 0.0
+			# versus add the minimum (may preserve magnitude better)
+			uppass_probs_just_below_node .= uppass_probs_just_below_node .+ minimum(uppass_probs_just_below_node)
 		end
 		
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
