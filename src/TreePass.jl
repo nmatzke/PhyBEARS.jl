@@ -1783,14 +1783,19 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
 	
-	solver_options.solver = Tsit5()
+	#solver_options.solver = Tsit5()
 	solver_options.abstol = 1e-14
 	solver_options.reltol = 1e-14
-	solver_options.save_everystep = false
+	#solver_options.save_everystep = false
 	
 	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, deepcopy(u0), tspan, p_Ds_v12)
 
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, isoutofdomain=(u,p,t) -> any(x -> x < 0, u));
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)#, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); # <- this seems to cause:
+	# Interrupted. Larger maxiters is needed. If you are using an 
+	# integrator for non-stiff ODEs or an automatic switching algorithm 
+	# (the default), you may want to consider using a method for stiff 
+	# equations. See the solver pages for more details 
+	# (e.g. https://diffeq.sciml.ai/stable/solvers/ode_solve/#Stiff-Problems
 		
 	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
 end

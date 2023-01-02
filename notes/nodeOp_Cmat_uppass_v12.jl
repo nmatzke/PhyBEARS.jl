@@ -41,7 +41,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		print(uppass_probs_just_below_node)
 		
 		# Correct for any values slipping below 0.0
-		TF = uppass_probs_just_below_node <= 0.0
+		TF = uppass_probs_just_below_node .<= 0.0
 		if (any(TF))
 			uppass_probs_just_below_node[TF] .= 0.0
 		end
