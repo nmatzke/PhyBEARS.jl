@@ -31,12 +31,21 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		print("\nStarting probs at branch bottom:")
 		print(u0)
 		
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		# Uses parameterized_ClaSSE_Ds_v12_simd_sums_noNegs
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
 		print("\nuppass_probs_just_below_node:")
 		print(uppass_probs_just_below_node)
+		
+		# Correct for any values slipping below 0.0
+		TF = uppass_probs_just_below_node <= 0.0
+		if (any(TF))
+			uppass_probs_just_below_node[TF] .= 0.0
+		end
+		
 		uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below

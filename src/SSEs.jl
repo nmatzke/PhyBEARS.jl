@@ -1422,7 +1422,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 		# prevent these blowing up:
 		# https://docs.sciml.ai/DiffEqDocs/stable/basics/faq/
 		#u[i] = max(0.0,u[i]);
-		if (u[i] < 0.0)
+		if (u[i] <= 0.0)
 			#du[i] = du[i] - (0.0 - u[i])
 			du[i] = du[i] + u[i]
 			u[i] = 0.0

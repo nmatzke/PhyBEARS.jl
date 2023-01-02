@@ -110,17 +110,98 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Single branch
+# Solve the Ds
+u0_Ds = res.likes_at_each_nodeIndex_branchTop[1]
+
+prob_Ds_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums, u0_Ds, Es_tspan, p_Ds_v12);
+sol_Ds_v12 = solve(prob_Ds_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v12(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12(2.0)
+sol_Ds_v12(22.0)
+sol_Ds_v12(23.0)
+sol_Ds_v12(24.0)
+sol_Ds_v12(25.0)
+sol_Ds_v12(26.0)
+
+# Single branch in reverse
+tmax = 1.0
+rev_tspan = (tmax, 0.00)
+#uMax_Ds = sol_Ds_v12(tmax) ./ sum(uMax_Ds)
+uMax_Ds = sol_Ds_v12(tmax)
 
 
-uppass_edgematrix = res.uppass_edgematrix
+prob_Ds_v12rev = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, uMax_Ds, rev_tspan, p_Ds_v12);
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
-current_nodeIndex = 6
-x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+# Callback to ensure u never goes below 0.0 or above 1.0
+# https://nextjournal.com/sosiris-de/ode-diffeq?change-id=CkQATVFdWBPaEkpdm6vuto
+# resid (residual) instead of du
+function g(resid,u,p,t)
+  min.(0.0, u)
+end
+cb = ManifoldProjection(g)
 
-solver_options.abstol = 1.0e-9
-solver_options.reltol = 1.0e-9
-uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+resid = repeat([0.0], length(uMax_Ds))
+
+t = 0.5
+g(resid,uMax_Ds,p_Ds_v12,t)
+
+cb = ManifoldProjection(g)
+cb = PositiveDomain(deepcopy(uMax_Ds))
+
+#solver_options.solver = Tsit5()
+solver_options.solver
+solver_options.abstol = 1e-14
+solver_options.reltol = 1e-14
+solver_options.save_everystep = false
+
+solver_options.saveat = reverse(seq(minimum(rev_tspan), 1.0, 0.05))
+
+sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, saveat=solver_options.saveat, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+
+#sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol, isoutofdomain=(u,p,t) -> any(x -> x < 0, u));
+
+#sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol, callback=cb;
+
+
+#truestart = sol_Ds_v12(0.0)
+#approx_start = sol_Ds_v12rev(0.0)
+sol_Ds_v12(0.0)
+sol_Ds_v12rev(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12rev(tmax)
+
+
+prob_Ds_v12rev_noNegs = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, uMax_Ds, rev_tspan, p_Ds_v12);
+sol_Ds_v12rev_noNegs = solve(prob_Ds_v12rev_noNegs, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+
+#truestart = sol_Ds_v12(0.0)
+#approx_start = sol_Ds_v12rev(0.0)
+sol_Ds_v12(0.0)
+sol_Ds_v12rev_noNegs(0.0)
+sol_Ds_v12(1.0)
+sol_Ds_v12rev_noNegs(tmax)
+
+sol_Ds_v12rev_noNegs(tmax) .- sol_Ds_v12rev(tmax)
+
+@benchmark sol_Ds_v12rev_noNegs = solve(prob_Ds_v12rev_noNegs, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+@benchmark sol_Ds_v12rev = solve(prob_Ds_v12rev, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+#sol_Ds_v12rev(0.0) ./ sum(sol_Ds_v12(tmax))
+
+
+sol_Ds_v12rev(2.0)
+sol_Ds_v12rev(22.0)
+sol_Ds_v12rev(23.0)
+sol_Ds_v12rev(24.0)
+sol_Ds_v12rev(25.0)
+sol_Ds_v12rev(26.0)
+
 
 
 

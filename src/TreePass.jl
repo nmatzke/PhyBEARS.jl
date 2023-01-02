@@ -39,7 +39,7 @@ using SpecialFunctions			# for e.g. logfactorial
 print("...done.\n")
 
 
-export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, identify_identical_sisters, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!  # branchOp_ClaSSE_Gflow_v2, 
+export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, identify_identical_sisters, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v12_noNegs, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!  # branchOp_ClaSSE_Gflow_v2, 
 
 
 
@@ -1765,6 +1765,35 @@ function branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v12, sol
 	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
 end
 
+
+# Using the reverse algorithm (just contains some correcting steps
+# for when u values are <= 0.0)
+# 
+# With time-changing mu, mu_t
+# parameterized_ClaSSE_Ds_v12_simd_sums_noNegs
+# Calculate Ds down a branch
+#
+# Modifies branchOp to do Ds calculation down a branch
+#
+# This function can read from res, but writing to res is VERY BAD as 
+# it created conflicts apparently when there were more @spawns than cores
+# Do all the writing to res in the while() loop
+function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
+	calc_start_time = Dates.now()
+	spawned_nodeIndex = current_nodeIndex
+	tmp_threadID = Threads.threadid()
+	
+	solver_options.solver = Tsit5()
+	solver_options.abstol = 1e-14
+	solver_options.reltol = 1e-14
+	solver_options.save_everystep = false
+	
+	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, deepcopy(u0), tspan, p_Ds_v12)
+
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, isoutofdomain=(u,p,t) -> any(x -> x < 0, u));
+		
+	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
+end
 
 
 
