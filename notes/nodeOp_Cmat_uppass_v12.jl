@@ -352,6 +352,7 @@ function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rate
 	# Do it in pairs (left branch, then right branch)
 	# uppass_edgematrix: column 1 is ancestral node numbers (i.e. rows of trdf)
 	#                    column 2 is descendant node numbers (i.e. rows of trdf)
+	# Go through internal nodes
 	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
 	for i in ivals_odd
 		j = i+1
@@ -382,5 +383,17 @@ function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rate
 		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 	
 	end # for (i in odds(1:nrow(trdf))
-
+	
+	# Then go through tip nodes
+	rownums = (1:Rnrow(trdf))[]
+	tipnodes = rownums[nodeType .== "tip"]
+	for ancnode in nodeType
+		# Work up through the nodes, starting from the root
+		current_nodeIndex = ancnode
+		
+		current_node_time = trdf.node_age[current_nodeIndex]
+		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
+		
+		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+	end
 end
