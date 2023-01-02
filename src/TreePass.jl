@@ -200,11 +200,11 @@ function construct_Res_old()
 
 
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
-	anc_estimates_at_each_nodeIndex_branchBot = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
+	uppass_probs_at_each_nodeIndex_branchBot = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
+	anc_estimates_at_each_nodeIndex_branchBot = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
 
-	uppass_probs_at_each_nodeIndex_branchTop = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
-	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], n))
+	uppass_probs_at_each_nodeIndex_branchTop = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
+	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
 
 
 	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, node_constraints_branchTop, corner_constraints_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
@@ -257,11 +257,11 @@ function construct_Res()
 
 
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 	
 	default_likes_at_each_nodeIndex_branchTop = [1.0, 2.0, 3.0, 4.0, 0.0, 0.0, 0.0]
@@ -351,11 +351,11 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 
 
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 
 	# Put in the tip node numbers as the fake likelihoods
@@ -483,11 +483,11 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 
 	
 	# Ancestral state estimation
-	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
-	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
-	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
+	uppass_probs_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
+	anc_estimates_at_each_nodeIndex_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 	
 	# Fill in the node_states
 	node_state = collect(repeat(["not_ready"], numNodes))

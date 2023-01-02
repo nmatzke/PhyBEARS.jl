@@ -25,7 +25,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		tspan = [time_start, time_end]
 		
 		# Seems to work 
-		txt = paste0(["Node #", current_nodeIndex])
+		txt = paste0(["\nNode #", current_nodeIndex])
 		print("\n")
 		print(txt)
 		print("\nStarting probs at branch bottom:")
@@ -37,7 +37,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
-		print("\nuppass_probs_just_below_node:")
+		print("\nuppass_probs_just_below_node, pre-correction:")
 		print(uppass_probs_just_below_node)
 		
 		# Correct for any values slipping below 0.0
@@ -46,7 +46,13 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 			uppass_probs_just_below_node[TF] .= 0.0
 		end
 		
+		# Normalize to sum to 1.0
 		uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
+
+		print("\nuppass_probs_just_below_node, post-correction:")
+		print(uppass_probs_just_below_node)
+		print("\n")
+
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
 	
