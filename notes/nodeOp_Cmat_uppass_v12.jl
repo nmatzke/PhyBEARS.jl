@@ -386,7 +386,7 @@ function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rate
 	
 	# Then go through tip nodes
 	rownums = (1:Rnrow(trdf))[]
-	tipnodes = rownums[nodeType .== "tip"]
+	tipnodes = rownums[trdf.nodeType .== "tip"]
 	for ancnode in nodeType
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
