@@ -118,8 +118,9 @@ include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
-solver_options.abstol = 1.0e-9
-solver_options.reltol = 1.0e-9
+#solver_options.solver = Tsit5()
+solver_options.abstol = 1.0e-12
+solver_options.reltol = 1.0e-12
 uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
 
