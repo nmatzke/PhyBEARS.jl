@@ -10,7 +10,8 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
-		uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		uppass_probs_just_below_node = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 	
@@ -46,13 +47,14 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 			uppass_probs_just_below_node[TF] .= 0.0
 		end
 		
-		# Normalize to sum to 1.0
-		uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
+		# Normalize to sum to 1.0, *IF* sum is greater than 1
+		if (sum(uppass_probs_just_below_node) > 1.0)		
+			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
-		print("\nuppass_probs_just_below_node, post-correction:")
-		print(uppass_probs_just_below_node)
-		print("\n")
-
+			print("\nuppass_probs_just_below_node, post-correction:")
+			print(uppass_probs_just_below_node)
+			print("\n")
+		end
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
 	
