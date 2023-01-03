@@ -1785,7 +1785,7 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	
 	#solver_options.solver = AutoTsit5(Rosenbrock23()) # gives 0 1 0
 	#solver_options.solver = lsoda() # no, doesn't use isoutofdomain
-	solver_options.solver = :auto
+	solver_options.solver = Rosenbrock23()
 	#solver_options.solver = 
 	#solver_options.abstol = 1e-14
 	#solver_options.reltol = 1e-14
