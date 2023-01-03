@@ -1783,9 +1783,9 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
 	
-	solver_options.solver = AutoTsit5(Rosenbrock23()) # gives 0 1 0
-	solver_options.solver = lsoda() # no, doesn't use isoutofdomain
-	
+	#solver_options.solver = AutoTsit5(Rosenbrock23()) # gives 0 1 0
+	#solver_options.solver = lsoda() # no, doesn't use isoutofdomain
+	solver_options.solver = :auto
 	#solver_options.solver = 
 	#solver_options.abstol = 1e-14
 	#solver_options.reltol = 1e-14
@@ -1793,7 +1793,7 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	
 	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, deepcopy(u0), tspan, p_Ds_v12)
 
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)#, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
 	# <- this seems to cause:
 	# Interrupted. Larger maxiters is needed. If you are using an 
 	# integrator for non-stiff ODEs or an automatic switching algorithm 
