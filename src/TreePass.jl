@@ -1783,7 +1783,7 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
 	
-	solver_options.solver = lsoda()
+	solver_options.solver = AutoTsit5(Rosenbrock23())
 	#solver_options.abstol = 1e-14
 	#solver_options.reltol = 1e-14
 	#solver_options.save_everystep = false
