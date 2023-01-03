@@ -20,6 +20,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# The uppass ancestral state probs will have been previously 
 		# calculated at the branch bottom
 		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
+		# Multiply by saved likelihood at the node to make very small (may avoid scaling issues)
 		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
 		time_start = trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
 		time_end = trdf.node_age[current_nodeIndex]
@@ -66,8 +67,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	if (trdf.nodeType[current_nodeIndex] == "tip")
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-		res.anc_estimates_at_each_nodeIndex_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop)
-		res.anc_estimates_at_each_nodeIndex_branchTop .= res.anc_estimates_at_each_nodeIndex_branchTop .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 	
 	# Internal nodes (not root)
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
@@ -385,9 +385,9 @@ function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rate
 	end # for (i in odds(1:nrow(trdf))
 	
 	# Then go through tip nodes
-	rownums = (1:Rnrow(trdf))[]
+	rownums = (1:Rnrow(trdf))
 	tipnodes = rownums[trdf.nodeType .== "tip"]
-	for ancnode in nodeType
+	for ancnode in tipnodes
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
 		
