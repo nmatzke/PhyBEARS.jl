@@ -1792,7 +1792,12 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	#solver_options.save_everystep = false
 	
 	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, deepcopy(u0), tspan, p_Ds_v12)
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)#, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
+	
+	# WORKS BASICALLY -- 2023-01-03
+	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	# TRY OVERNIGHT -- 2023-01-03
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
 
 #	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)#, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
 	# <- this seems to cause:
