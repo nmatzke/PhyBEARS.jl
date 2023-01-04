@@ -1797,7 +1797,7 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
 	# TRY OVERNIGHT -- 2023-01-03
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, cb=PositiveDomain)#isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol, callback=PositiveDomain)#isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
 
 #	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)#, isoutofdomain=(u,p,t) -> any(x -> x < 0, u)); 
 	# <- this seems to cause:
