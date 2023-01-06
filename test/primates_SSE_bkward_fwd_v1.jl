@@ -17,7 +17,7 @@ using PhyBEARS
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/notes/"
+wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
 # Simple tree
@@ -28,7 +28,7 @@ oldest_possible_age = 4.0
 
 lgdata_fn = "ancstates_tr_orang.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
-include_null_range = false
+include_null_range = true
 numareas = Rncol(geog_df)-1
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
@@ -38,21 +38,23 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 bmo = construct_BioGeoBEARS_model_object();
 #bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
-bmo.est[bmo.rownames .== "deathRate"] .= 1.5 * ML_yule_birthRate(tr);
-bmo.est[bmo.rownames .== "d"] .= 0.01;
-bmo.est[bmo.rownames .== "e"] .= 0.0;
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
+bmo.est[bmo.rownames .== "d"] .= 1.010557e-01;
+bmo.est[bmo.rownames .== "e"] .= 1.000000e-12;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.3;
+bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.min[bmo.rownames .== "u"] .= 0.0;
 bmo.max[bmo.rownames .== "u"] .= 0.0;
 
 bmo.type[bmo.rownames .== "j"] .= "fixed";
 bmo.type[bmo.rownames .== "u"] .= "fixed";
-bmo.type[bmo.rownames .== "birthRate"] .= "free";
+bmo.type[bmo.rownames .== "birthRate"] .= "fixed";
 bmo.type[bmo.rownames .== "deathRate"] .= "fixed";
 
-
+birthRate = 0.2222222222
+deathRate = 0.0
+bd_liks(tr, birthRate, deathRate)
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
