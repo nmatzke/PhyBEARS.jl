@@ -6,6 +6,8 @@
 # 3. Run nodeOp_Cmat_get_condprobs to get uppass probs for either 
 #    L or R descendant
 
+using PhyloBits.TrUtils # for odds
+
 function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
