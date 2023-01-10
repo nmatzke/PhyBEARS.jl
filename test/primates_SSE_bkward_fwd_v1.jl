@@ -104,3 +104,55 @@ all(sol_Ds_v7(0.0) .== sol_Ds_v7rev(0.0))
 all(sol_Ds_v7(1.0) .== sol_Ds_v7rev(1.0))
 all(sol_Ds_v7(1.5) .== sol_Ds_v7rev(1.5))
 
+
+
+
+
+
+#######################################################
+# Estimate ancestral states
+#######################################################
+
+
+#solver_options.solver = Tsit5()
+solver_options.solver = Vern9()
+solver_options.abstol = 1e-12
+solver_options.reltol = 1e-12
+solver_options.save_everystep = false
+# ancestral_range_estimation
+# This term is preferable to e.g. "ancestral area reconstruction"
+
+Rnames(res)
+
+rootnode = inputs.res.root_nodeIndex
+
+lnode = trdf[rootnode,"leftNodeIndex"]
+rnode = trdf[rootnode,"rightNodeIndex"]
+
+# ACE for left descendant
+nodenum = rootnode
+nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
+
+
+
+uppass_edgematrix = res.uppass_edgematrix
+
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+current_nodeIndex = 7
+x = nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options)
+
+solver_options.abstol = 1.0e-9
+solver_options.reltol = 1.0e-9
+uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+res.uppass_probs_at_each_nodeIndex_branchBot
+res.anc_estimates_at_each_nodeIndex_branchBot
+res.uppass_probs_at_each_nodeIndex_branchTop
+res.anc_estimates_at_each_nodeIndex_branchTop
+
+
+
+
+
+
