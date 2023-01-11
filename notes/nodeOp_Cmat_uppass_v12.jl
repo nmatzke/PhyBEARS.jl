@@ -75,7 +75,12 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		
+		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
+		if (trdf.nodeType[current_nodeIndex] != "root")
+			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		end
+		
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		
 		# Get uppass probs for Left and Right daughter branches
@@ -224,7 +229,11 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
-		uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		# Wrong: this incorporates downpass information from both branches above the root; 
+		# using information too many times!
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		
+		uppass_probs_just_below_node = repeat([1/n], n)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 	
@@ -266,7 +275,10 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
+		if (trdf.nodeType[current_nodeIndex] != "root")
+			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		end
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		
 		# Get uppass probs for Left and Right daughter branches
@@ -314,7 +326,12 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
 		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
-		uppass_probs_just_below_node = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		# Wrong: this incorporates downpass information from both branches above the root; 
+		# using information too many times!
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		
+		uppass_probs_just_below_node = repeat([1/n], n)
+
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
 	
@@ -376,17 +393,22 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		
+		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
+		if (trdf.nodeType[current_nodeIndex] != "root")
+			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		end
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		
 		# Get uppass probs for Left and Right daughter branches
-		node_above_Left_corner = trdf.leftNodeIndex[current_nodeIndex]
-		node_above_Right_corner = trdf.rightNodeIndex[current_nodeIndex]
+		node_above_Left_corner = trdf.rightNodeIndex[current_nodeIndex]
+		node_above_Right_corner = trdf.leftNodeIndex[current_nodeIndex]
 		# LEFT
 		
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
-		Ldownpass_likes = collect(repeat([1.0], n))
-		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		#Ldownpass_likes = collect(repeat([1.0], n))
+		Rdownpass_likes = collect(repeat([1.0], n))
+		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
 
 		for j in 1:n
@@ -416,12 +438,14 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
-
+	
+	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
+	
 	end # END elseif internal nodes
 end # END nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 
-function uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 	uppass_edgematrix = res.uppass_edgematrix
 	
 	# Iterate through rows of the edge matrix, like in R
@@ -430,6 +454,7 @@ function uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_
 	#                    column 2 is descendant node numbers (i.e. rows of trdf)
 	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
 	for i in ivals_odd
+		print(i)
 		j = i+1
 		# Error check: Check the uppass edge matrix; 
 		ancnode1 = uppass_edgematrix[i,1]
@@ -437,7 +462,7 @@ function uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_
 		if (ancnode1 == ancnode2)
 			ancnode = ancnode1
 		else
-			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
 			print("\n")
 			print(stoptxt)
 			print("\n")
@@ -456,11 +481,11 @@ function uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_
 	
 	end # END for (i in odds(1:nrow(trdf))
 
-end # END function uppass_ancstates_v7(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+end # END function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 
 
-function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+function uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 	uppass_edgematrix = res.uppass_edgematrix
 	
 	# Iterate through rows of the edge matrix, like in R
@@ -477,7 +502,7 @@ function uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rate
 		if (ancnode1 == ancnode2)
 			ancnode = ancnode1
 		else
-			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
 			print("\n")
 			print(stoptxt)
 			print("\n")
