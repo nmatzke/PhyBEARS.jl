@@ -125,10 +125,13 @@ solver_options.save_everystep = false
 
 # Check if solver is functional
 u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+u0 = [0, 0.1129853, 0.677912, 0.2091026]
+u0 = [0, 0.125, 0.75, 0.125]
 solver_options.solver
-#solver_options.save_everystep = true
-#solver_options.saveat = seq(2.0, 3.0, 0.1)
-tspan = (2.0, 3.0)
+solver_options.save_everystep = true
+solver_options.saveat = seq(2.0, 3.0, 0.1)
+tspan = (3.0, 2.0)
+#tspan = (2.0, 3.0)
 current_nodeIndex = 5
 (tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
 sol_Ds
@@ -137,6 +140,12 @@ sol_Ds(2.0)
 sol_Ds(2.1)
 sol_Ds(3.0)
 
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Ds_v7_simd_sums, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+sol_Ds_v7(2.0)
+sol_Ds_v7(2.1)
+sol_Ds_v7(3.0)
 
 
 Rnames(res)
