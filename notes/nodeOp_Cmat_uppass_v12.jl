@@ -258,6 +258,7 @@ end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
 
 
 function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+	p = p_Ds_v7
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
@@ -290,7 +291,22 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		print(u0)
 		
 		# Uses parameterized_ClaSSE_Ds_v7
+		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
 		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		
+		"""
+		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+		solver_options.solver = lsoda()
+		solver_options.save_everystep = true
+		solver_options.saveat = seq(2.0, 3.0, 0.1)
+		tspan = (2.0, 3.0)
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		
+		sol_Ds(1.0)
+		sol_Ds(2.1)
+		sol_Ds(2.0)
+		sol_Ds(2.1)
+		"""
 		
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
@@ -343,6 +359,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 
 		# LEFT NODE UPPASS
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
+		ctable = make_ctable_single_events(prtCp(p))
 		Ldownpass_likes = collect(repeat([1.0], n))
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)

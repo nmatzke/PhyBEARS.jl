@@ -115,7 +115,7 @@ all(sol_Ds_v7(1.5) .== sol_Ds_v7rev(1.5))
 
 
 #solver_options.solver = Tsit5()
-solver_options.solver = Vern9()
+#solver_options.solver = Vern9()
 solver_options.abstol = 1e-12
 solver_options.reltol = 1e-12
 solver_options.save_everystep = false
@@ -145,8 +145,8 @@ include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 7
 x = nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options)
 
-solver_options.abstol = 1.0e-9
-solver_options.reltol = 1.0e-9
+solver_options.abstol = 1.0e-13
+solver_options.reltol = 1.0e-13
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
