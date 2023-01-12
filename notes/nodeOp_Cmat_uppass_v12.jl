@@ -296,7 +296,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		
 		"""
 		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
-		solver_options.solver = lsoda()
+		solver_options.solver
 		solver_options.save_everystep = true
 		solver_options.saveat = seq(2.0, 3.0, 0.1)
 		tspan = (2.0, 3.0)

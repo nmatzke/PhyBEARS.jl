@@ -1679,7 +1679,10 @@ function branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solve
 	
 	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums, deepcopy(u0), tspan, p_Ds_v7)
 
-	sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	sol_Ds = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, saveat=solver_options.saveat, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
 	
 	# Error catch seems to slow it down!!
 	"""

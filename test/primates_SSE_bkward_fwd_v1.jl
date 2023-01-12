@@ -116,8 +116,8 @@ all(sol_Ds_v7(1.5) .== sol_Ds_v7rev(1.5))
 
 #solver_options.solver = Tsit5()
 #solver_options.solver = Vern9()
-solver_options.abstol = 1e-12
-solver_options.reltol = 1e-12
+solver_options.abstol = 1e-9
+solver_options.reltol = 1e-9
 solver_options.save_everystep = false
 # ancestral_range_estimation
 # This term is preferable to e.g. "ancestral area reconstruction"
@@ -126,15 +126,16 @@ solver_options.save_everystep = false
 # Check if solver is functional
 u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
 solver_options.solver
-solver_options.save_everystep = true
-solver_options.saveat = seq(2.0, 3.0, 0.1)
+#solver_options.save_everystep = true
+#solver_options.saveat = seq(2.0, 3.0, 0.1)
 tspan = (2.0, 3.0)
+current_nodeIndex = 5
 (tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+sol_Ds
 
-sol_Ds(1.0)
-sol_Ds(2.1)
 sol_Ds(2.0)
 sol_Ds(2.1)
+sol_Ds(3.0)
 
 
 
