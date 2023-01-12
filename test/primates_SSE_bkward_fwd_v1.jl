@@ -147,16 +147,60 @@ x = nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options
 
 solver_options.abstol = 1.0e-9
 solver_options.reltol = 1.0e-9
-uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=true)
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
 res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 
+res.normlikes_at_each_nodeIndex_branchTop[R_order,:]
 
+p = p_Ds_v7;
+ctable = prtCp(p)
+ctable2 = ctable[ctable.pair .== 2, :]
+tmpj = deepcopy(ctable2.j)
+tmpk = deepcopy(ctable2.k)
+ctable2.j .= tmpk
+ctable2.k .= tmpj
 
+ctable = Rrbind(ctable1, ctable2)
+ctable.prob .= ctable.prob ./ ctable.wt
+ctable.rate .= ctable.rate ./ ctable.wt
+ctable.val .= ctable.val ./ ctable.wt
+ctable.rates_t .= ctable.rates_t ./ ctable.wt
+ctable
 
+# Calculating uppass LEFT branch for Julia node 5 (R 6), sister Julia 6 (R 4)
+ancnode = 7
+lnode = 5
+rnode = 6
 
+res.normlikes_at_each_nodeIndex_branchTop[rnode]
 
+ancprobs = repeat([1.0/n], n)
+lprobs = repeat([1.0], n)
+rprobs = res.normlikes_at_each_nodeIndex_branchBot[rnode]
+
+ancprobs_by_scenario = ancprobs[ctable.i] 
+lprobs_by_scenario = lprobs[ctable.j] 
+rprobs_by_scenario = rprobs[ctable.k] 
+
+relprob_each_split_scenario = ancprobs_by_scenario .* lprobs_by_scenario .* rprobs_by_scenario .* ctable.val
+
+relprob_each_split_scenario = relprob_each_split_scenario ./ sum(relprob_each_split_scenario)
+
+uppass_lprobs = repeat([0.0], n)
+uppass_rprobs = repeat([0.0], n)
+
+for statei in 1:n
+	# Left
+	uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei])
+	uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei])
+end
+
+uppass_lprobs
+uppass_rprobs
+uppass_lprobs ./ sum(uppass_lprobs)
+uppass_rprobs ./ sum(uppass_rprobs)
 

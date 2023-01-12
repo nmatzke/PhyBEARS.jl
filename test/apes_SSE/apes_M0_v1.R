@@ -363,6 +363,28 @@ if (runslow)
     resDEC = res
     }
 
+
+
+
+
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = resDEC
+names(res)
+
+res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+res$ML_marginal_prob_each_state_at_branch_top_AT_node
+res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+
+
+
+
+
+
 #######################################################
 # Run DEC+J
 #######################################################
