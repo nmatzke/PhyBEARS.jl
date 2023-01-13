@@ -611,8 +611,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		Cijk_rates_sub_i_t[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
 		
 		# uppass
-		Cjik_rates_sub_j[i] = Carray.Cjik_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
-		Cjik_rates_sub_j_t[i] = Carray.Cjik_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
+		Cjik_rates_sub_j[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
+		Cjik_rates_sub_j_t[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
 
 	end
 
