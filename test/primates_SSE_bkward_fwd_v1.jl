@@ -81,6 +81,21 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+prtQp(p)
+p.p_TFs.Qj_sub_i
+p.p_TFs.Qij_vals_sub_i
+p.p_TFs.Qj_sub_j
+p.p_TFs.Qji_vals_sub_j
+
+
+prtCp(p)
+p.p_TFs.Ci_sub_i
+p.p_TFs.Cj_sub_i
+p.p_TFs.Ck_sub_i
+p.p_TFs.Qij_vals_sub_i
+p.p_TFs.Qj_sub_j
+p.p_TFs.Qji_vals_sub_j
+
 
 # Solve the Ds, single branch
 u0 = res.likes_at_each_nodeIndex_branchTop[1]
@@ -125,9 +140,13 @@ solver_options.save_everystep = false
 
 # Check if solver is functional
 u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
-u0 = [0, 0.1129853, 0.677912, 0.2091026]
+#u0 = [0, 0.1129853, 0.677912, 0.2091026]
 u0 = [0, 0.125, 0.75, 0.125]
-solver_options.solver
+solver_options.solver = CVODE_BDF(linear_solver=:GMRES)
+#solver_options.solver = Vern9()
+solver_options.abstol = 1.0e-13
+solver_options.reltol = 1.0e-13
+
 solver_options.save_everystep = true
 solver_options.saveat = seq(2.0, 3.0, 0.1)
 tspan = (3.0, 2.0)
@@ -146,6 +165,45 @@ sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_optio
 sol_Ds_v7(2.0)
 sol_Ds_v7(2.1)
 sol_Ds_v7(3.0)
+
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+tspan = (3.0, 2.0)
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+
+tspan = (2.0, 3.0)
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+sol_Ds_v7(3.0)
+
+# CLOSEST
+
+# julia> sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+# 4-element Vector{Float64}:
+#  8.039148447906605e-13
+#  0.11484497782742717
+#  0.6890698669637856
+#  0.19608515520798325
+# 
+# julia> sol_Ds_v7(3.0)
+# 4-element Vector{Float64}:
+#  8.749999999997373e-13
+#  0.12500000000016923
+#  0.7500000000001692
+#  0.21342373749997345
+
+
 
 
 Rnames(res)

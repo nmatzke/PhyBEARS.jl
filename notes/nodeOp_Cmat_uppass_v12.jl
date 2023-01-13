@@ -105,7 +105,7 @@ end
 
 
 
-parameterized_ClaSSE_Ds_v7_simd_sums_FWD = (du,u,p,t) -> begin
+parameterized_ClaSSE_Ds_v7_simd_sums_FWD3 = (du,u,p,t) -> begin
 
   # Possibly varying parameters
   n = p.n
@@ -157,9 +157,46 @@ parameterized_ClaSSE_Ds_v7_simd_sums_FWD = (du,u,p,t) -> begin
 	
 		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qi_sub_j[i]; term2=terms[2], term3=terms[3])
 		
-		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+		du[i] = -1 * (-(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4])
   end
 end
+
+
+# Quick
+calcDs_4states2 = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_jvals
+	Qarray_jvals = p.p_indices.Qarray_ivals
+	Carray_ivals = p.p_indices.Carray_jvals
+	Carray_jvals = p.p_indices.Carray_ivals
+	Carray_kvals = p.p_indices.Carray_kvals
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		# Calculation of "D" (likelihood of tip data)
+		du[i] = #-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) #+ 	# case 2	
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               # case 34: change + eventual extinction
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+  end
+end
+
+
+
+
 
 
 # DON'T USE

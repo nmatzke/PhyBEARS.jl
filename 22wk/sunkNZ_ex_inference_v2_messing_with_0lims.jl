@@ -321,6 +321,8 @@ nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
 
 
 
+R_order =  sort(trdf, :Rnodenums).nodeIndex
+
 uppass_edgematrix = res.uppass_edgematrix
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
@@ -331,12 +333,11 @@ solver_options.abstol = 1.0e-9
 solver_options.reltol = 1.0e-9
 uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
-res.uppass_probs_at_each_nodeIndex_branchBot
-res.anc_estimates_at_each_nodeIndex_branchBot
-res.uppass_probs_at_each_nodeIndex_branchTop
-res.anc_estimates_at_each_nodeIndex_branchTop
-res.fixNodesMult_at_each_nodeIndex_branchTop
-res.fixNodesMult_at_each_nodeIndex_branchBot
+res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
+res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
+res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+
 
 
 tspan
