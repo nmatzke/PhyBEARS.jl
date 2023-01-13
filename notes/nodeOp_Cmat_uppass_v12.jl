@@ -153,9 +153,9 @@ parameterized_ClaSSE_Ds_v7_simd_sums_FWD = (du,u,p,t) -> begin
 		terms .= 0.0
 
 #		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
-		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], p.p_TFs.Cjkk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i], p.p_TFs.Cj_sub_j[i], p.p_TFs.Ck_sub_j[i]; term1=terms[1], term4=terms[4])
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
 	
-		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i[i], p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qj_sub_i[i], p.p_TFs.Qj_sub_j[i]; term2=terms[2], term3=terms[3])
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qi_sub_j[i]; term2=terms[2], term3=terms[3])
 		
 		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
   end
@@ -165,7 +165,7 @@ end
 # DON'T USE
 # THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
 # (even putting in i 
-function sum_Cijk_rates_Ds_inbounds_simd_FWD_OLD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
+function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
 		""" # Original:
     @inbounds @simd for it=1:length(Cijk_rates_sub_i)
     	term1 += Cijk_rates_sub_i[it]
@@ -175,29 +175,27 @@ function sum_Cijk_rates_Ds_inbounds_simd_FWD_OLD(Cijk_rates_sub_i, Cjik_rates_su
 
     @inbounds @simd for it=1:length(Cijk_rates_sub_i)
     	term1 += Cijk_rates_sub_i[it]
-    end
-    @inbounds @simd for it=1:length(Cjik_rates_sub_j)
 #    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
-    	term4 += Cjik_rates_sub_j[it] * (tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_j[it]] + tmp_u[Cj_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
+    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]] + tmp_u[Cj_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
     end
     return term1, term4
 end;
 
 # THIS ONE IS DIFFERENT, as i->j and j->i can have different probabilities
-function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Qj_sub_i, Qj_sub_j; term2=Float64(0.0), term3=Float64(0.0))
+function sum_Qij_vals_inbounds_simd_FWD(Qji_vals_sub_j, tmp_u, Qi_sub_j; term2=Float64(0.0), term3=Float64(0.0))
 		""" # Original
     @inbounds @simd for it=1:length(Qij_vals_sub_i)
     	term2 += Qij_vals_sub_i[it]
     	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
     end
 		"""
-		# These should sum to the same: Qij_vals_sub_i, Qji_vals_sub_j, across all i/j
+		# These should sum to the same: Qij_vals_sub_i, Qji_vals_sub_j, across all i or j
 #    @inbounds @simd for it=1:length(Qij_vals_sub_i)
 #    	term2 += Qij_vals_sub_i[it]
 #    end
     @inbounds @simd for it=1:length(Qji_vals_sub_j)
-	    term2 += Qij_vals_sub_i[it]
-    	term3 += Qji_vals_sub_j[it] * tmp_u[Qj_sub_j[it]] # Different on uppass; Freyman paper
+	    term2 += Qji_vals_sub_j[it]
+    	term3 += Qji_vals_sub_j[it] * tmp_u[Qi_sub_j[it]] # Different on uppass; Freyman paper
     end
 
     return term2, term3
