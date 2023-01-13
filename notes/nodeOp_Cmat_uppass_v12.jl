@@ -44,7 +44,180 @@ end # END function make_ctable_single_events(ctable)
 
 
 
+#######################################################
+# Run the Ds calculation from old to new (up the tree),
+# reverse of the standard method.
+#######################################################
 
+
+# Calculate Ds UP a branch
+#
+# Modifies branchOp to do Ds calculation down a branch
+#
+# This function can read from res, but writing to res is VERY BAD as 
+# it created conflicts apparently when there were more @spawns than cores
+# Do all the writing to res in the while() loop
+function branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options)
+	calc_start_time = Dates.now()
+	spawned_nodeIndex = current_nodeIndex
+	tmp_threadID = Threads.threadid()
+	
+	# Example slow operation
+	#y = countloop(num_iterations, current_nodeIndex)
+# 	print("\n")
+# 	print("branchOp_ClaSSE_Ds_v5: d: ")
+# 	print(p_Ds_v5.params.Qij_vals[1])
+# 	print("branchOp_ClaSSE_Ds_v5: e: ")
+# 	print(p_Ds_v5.params.Qij_vals[length(p_Ds_v5.params.Qij_vals)])
+# 	print("\n")
+	
+	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
+
+	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	sol_Ds = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, saveat=solver_options.saveat, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	
+	# Error catch seems to slow it down!!
+	"""
+	try
+		sol_Ds = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	catch e
+		txt = paste0(["\nError in branchOp_ClaSSE_Ds_v5(): solve(prob_Ds_v5, ", SubString(string(solver_options.solver), 1:15), "..., save_everystep=", string(solver_options.save_everystep), ", abstol=", string(solver_options.abstol), ", reltol=", string(solver_options.reltol), "): this error may indicate an impossible parameter combination (e.g. all rates are 0.0). Returning 1e-15 for all Ds."])
+		print(txt)
+		# Return a fake sol_Ds function
+		nan_val = 1e-15
+		function sol_Ds_tmp(t, tmp_n)
+			res = collect(repeat([nan_val], tmp_n))
+		end
+		sol_Ds = t -> sol_Ds_tmp(t, length(u0)) # returns a array of nan_val, regardless of time t input
+	end
+	"""
+# 	print(sol_Ds[length(sol_Ds)])
+# 	print("\n")
+	
+	#nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex]
+	#nodeData_at_bottom = nodeData_at_top / 2.0
+	#nodeData_at_bottom = sol_Ds.u
+	
+	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
+end
+
+
+
+parameterized_ClaSSE_Ds_v7_simd_sums_FWD = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+#  Qij_vals = p.params.Qij_vals
+#  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+#	Qarray_ivals = p.p_indices.Qarray_ivals
+#	Qarray_jvals = p.p_indices.Qarray_jvals
+#	Carray_ivals = p.p_indices.Carray_ivals
+#	Carray_jvals = p.p_indices.Carray_jvals
+#	Carray_kvals = p.p_indices.Carray_kvals
+
+#	Qij_vals_sub_i = p.p_TFs.Qij_vals_sub_i
+#	Cijk_rates_sub_i = p.p_TFs.Cijk_rates_sub_i
+	
+	# Pre-calculated solution of the Es
+#	sol_Es = p.sol_Es_v5
+#	uE = p.uE
+	uE = p.sol_Es_v5(t)
+	terms = Vector{Float64}(undef, 4)
+  @inbounds @simd for i in 1:n
+		#Qi_sub_i = p.p_TFs.Qi_sub_i[i]
+#		Qj_sub_i = p.p_TFs.Qj_sub_i[i]
+		#Qi_eq_i  = p.p_TFs.Qi_eq_i[i]
+
+  	# These are the i's, j's, and k's FOR AN ANCESTOR I
+		#Ci_sub_i = p.p_TFs.Ci_sub_i[i]
+#		Cj_sub_i = p.p_TFs.Cj_sub_i[i]
+#		Ck_sub_i = p.p_TFs.Ck_sub_i[i]
+		# This is the TFs for an ancestor i - NEEDED FOR FETCHING Cij_vals!!
+		#Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
+
+		# Calculation of "D" (likelihood of tip data)
+#		du[i] = -(sum(Cijk_rates_sub_i[i]) + sum(Qij_vals_sub_i[i]) + mu[i])*u[i] +  # case 1: no event
+#			(sum(Qij_vals_sub_i[i] .* u[Qj_sub_i])) + 	# case 2	
+#			(sum(Cijk_rates_sub_i[i] .*                                               # case 3/4: change + eventual extinction
+#				 (u[Ck_sub_i].*uE[Cj_sub_i] 
+#			 .+ u[Cj_sub_i].*uE[Ck_sub_i]) ))
+		
+#		Cijk_rates_temp = @view p.p_TFs.Cijk_rates_sub_i[i]
+#		Qij_rates_temp = @view p.p_TFs.Qij_vals_sub_i[i]
+		
+		terms .= 0.0
+
+#		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], p.p_TFs.Cjkk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i], p.p_TFs.Cj_sub_j[i], p.p_TFs.Ck_sub_j[i]; term1=terms[1], term4=terms[4])
+	
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i[i], p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qj_sub_i[i], p.p_TFs.Qj_sub_j[i]; term2=terms[2], term3=terms[3])
+		
+		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+  end
+end
+
+
+# DON'T USE
+# THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
+# (even putting in i 
+function sum_Cijk_rates_Ds_inbounds_simd_FWD_OLD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
+		""" # Original:
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    end
+		"""
+
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    end
+    @inbounds @simd for it=1:length(Cjik_rates_sub_j)
+#    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    	term4 += Cjik_rates_sub_j[it] * (tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_j[it]] + tmp_u[Cj_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
+    end
+    return term1, term4
+end;
+
+# THIS ONE IS DIFFERENT, as i->j and j->i can have different probabilities
+function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Qj_sub_i, Qj_sub_j; term2=Float64(0.0), term3=Float64(0.0))
+		""" # Original
+    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+    	term2 += Qij_vals_sub_i[it]
+    	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
+    end
+		"""
+
+    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+    	term2 += Qij_vals_sub_i[it]
+    end
+    @inbounds @simd for it=1:length(Qji_vals_sub_j)
+    	term3 += Qji_vals_sub_j[it] * tmp_u[Qj_sub_j[it]] # Different on uppass; Freyman paper
+    end
+
+    return term2, term3
+end;
+
+
+# # Tturbo turned out to not be faster...
+# Simple array operation in parallel using julia
+# https://stackoverflow.com/questions/68424283/simple-array-operation-in-parallel-using-julia
+# using LoopVectorization
+# @tturbo
+"""
+
+function sum_Qij_vals_inbounds_simd(Qij_vals_sub_i, tmp_u, Qj_sub_i; term2=Float64(0.0), term3=Float64(0.0))
+    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+    	term2 += Qij_vals_sub_i[it]
+    	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
+    end
+    return term2, term3
+end;
+"""
 
 
 
