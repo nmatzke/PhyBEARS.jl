@@ -191,11 +191,12 @@ function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Q
     	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
     end
 		"""
-
-    @inbounds @simd for it=1:length(Qij_vals_sub_i)
-    	term2 += Qij_vals_sub_i[it]
-    end
+		# These should sum to the same: Qij_vals_sub_i, Qji_vals_sub_j, across all i/j
+#    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+#    	term2 += Qij_vals_sub_i[it]
+#    end
     @inbounds @simd for it=1:length(Qji_vals_sub_j)
+	    term2 += Qij_vals_sub_i[it]
     	term3 += Qji_vals_sub_j[it] * tmp_u[Qj_sub_j[it]] # Different on uppass; Freyman paper
     end
 
