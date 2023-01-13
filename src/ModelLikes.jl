@@ -626,7 +626,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Qj_eq_j=Qj_eq_j, Qi_eq_i_index=Qi_eq_i_index, Qj_eq_j_index=Qj_eq_j_index, Ci_eq_i=Ci_eq_i, Ci_eq_i_index=Ci_eq_i_index, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Qji_vals_sub_j=Qji_vals_sub_j, Qji_vals_sub_j_t=Qji_vals_sub_j_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t, Cjik_rates_sub=Cjik_rates_sub_j, Cjik_rates_sub_j_t=Cjik_rates_sub_j_t)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Qj_eq_j=Qj_eq_j, Qi_eq_i_index=Qi_eq_i_index, Qj_eq_j_index=Qj_eq_j_index, Ci_eq_i=Ci_eq_i, Ci_eq_i_index=Ci_eq_i_index, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Qji_vals_sub_j=Qji_vals_sub_j, Qji_vals_sub_j_t=Qji_vals_sub_j_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t, Cjik_rates_sub_j=Cjik_rates_sub_j, Cjik_rates_sub_j_t=Cjik_rates_sub_j_t)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
