@@ -592,8 +592,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		Qj_sub_i[i] = Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
 		Qij_vals_sub_i[i] = Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
 		Qij_vals_sub_i_t[i] = Qmat.Qij_vals[Qarray_ivals .== i]
-		Qji_vals_sub_i[i] = Qmat.Qji_vals[Qarray_jvals .== i]	# list of Qij rates lists for anc==i
-		Qji_vals_sub_i_t[i] = Qmat.Qji_vals[Qarray_jvals .== i]
+		Qji_vals_sub_i[i] = Qmat.Qij_vals[Qarray_jvals .== i]	# list of Qij rates lists for anc==i
+		Qji_vals_sub_i_t[i] = Qmat.Qij_vals[Qarray_jvals .== i]
 		
 		Ci_eq_i[i] = Carray.Carray_ivals .== i													# list of TF lists for anc==i
 		Ci_eq_i_index[i] = (1:length(Ci_eq_i[i]))[Ci_eq_i[i]]
