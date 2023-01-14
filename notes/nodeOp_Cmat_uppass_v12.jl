@@ -172,11 +172,11 @@ calcDs_4states2 = (du,u,p,t) -> begin
   Cijk_vals = p.params.Cijk_vals
 	
 	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
-	Qarray_ivals = p.p_indices.Qarray_jvals
-	Qarray_jvals = p.p_indices.Qarray_ivals
-	Carray_ivals = p.p_indices.Carray_jvals
-	Carray_jvals = p.p_indices.Carray_ivals
-	Carray_kvals = p.p_indices.Carray_kvals
+	Qarray_ivals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_kvals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_ivals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_jvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
 	
 	# Pre-calculated solution of the Es
 	sol_Es = p.sol_Es_v5
@@ -186,7 +186,8 @@ calcDs_4states2 = (du,u,p,t) -> begin
 	two = 1.0
   @inbounds for i in 1:n
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = #-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Carray_jvals .== i]) + sum(Qij_vals[Qarray_jvals .== i]) + mu[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) #+ 	# case 2	
 			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               # case 34: change + eventual extinction
 			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
@@ -195,6 +196,39 @@ calcDs_4states2 = (du,u,p,t) -> begin
 end
 
 
+# Quick
+calcDs_4states3 = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.mu_vals
+  Qij_vals = p.Qij_vals
+  Cijk_vals = p.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.Qarray_jvals		# switch these for uppass
+	Qarray_jvals = p.Qarray_ivals		# switch these for uppass
+	Carray_ivals = p.Carray_kvals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.Carray_ivals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.Carray_jvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		# Calculation of "D" (likelihood of tip data)
+		#du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+
+		du[i] = -(sum(Cijk_vals[Carray_jvals .== i]) + sum(Qij_vals[Qarray_jvals .== i]) + mu[i])*u[i] +  # case 1: no event
+			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) #+ 	# case 2	
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               # case 34: change + eventual extinction
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+  end
+end
 
 
 

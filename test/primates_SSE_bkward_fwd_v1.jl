@@ -128,18 +128,18 @@ all(sol_Ds_v7(1.5) .== sol_Ds_v7rev(1.5))
 # Estimate ancestral states
 #######################################################
 
-
+solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)
 #solver_options.solver = Tsit5()
-#solver_options.solver = Vern9()
-solver_options.abstol = 1e-9
-solver_options.reltol = 1e-9
+solver_options.solver = Vern9()
+solver_options.abstol = 1e-12
+solver_options.reltol = 1e-12
 solver_options.save_everystep = false
 # ancestral_range_estimation
 # This term is preferable to e.g. "ancestral area reconstruction"
 
 
 # Check if solver is functional
-u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+truth = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
 #u0 = [0, 0.1129853, 0.677912, 0.2091026]
 u0 = [0, 0.125, 0.75, 0.125]
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES)
@@ -172,9 +172,78 @@ tspan = (3.0, 2.0)
 prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
 sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(2.0)
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+tspan = (2.0, 3.0)
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
 sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
 sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0)
 sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+Rcbind(truth, best, err)
+
+# CLOSEST
+
+d_val = 0.1010557
+e_val = 1.0e-12
+
+
+Qmat = [0.0 0.0 0.0 0.0;
+e_val 0.0 0.0 d_val;
+e_val 0.0 0.0 d_val;
+0.0 e_val e_val 0.0]
+
+
+Qmat[make_diag_TF(dim(Qmat)[1])] .= -1 .* flat2(sum(Qmat; dims=2))
+unscaled = exp(transpose(Qmat)*1.0)*u0
+scaled = unscaled ./ sum(unscaled)
+
+exp_err = truth .- scaled
+sum(exp_err)
+sum(abs.(exp_err))
+
+
+
+
+# Try with written-out matrix
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+Cmat = make_ctable_single_events(prtCp(p))
+
+ptmp = (n=n, mu_vals=p.params.mu_vals, Qij_vals = p.params.Qij_vals, Cijk_vals=Cmat.val, Qarrady_ivals=p.p_indices.Qarray_ivals, Qarray_jvals=p.p_indices.Qarray_jvals, Carray_ivals=Cmat.i, 	Carray_jvals=Cmat.j, Carray_kvals=Cmat.k, sol_Es_v5=p.sol_Es_v5, uE=p.uE);
+
+
+tspan = (3.0, 2.0)
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states3, u0, tspan, ptmp);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+
 
 
 tspan = (2.0, 3.0)
@@ -184,10 +253,15 @@ sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_optio
 
 sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
 sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
-sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
 sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
 
-# CLOSEST
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+
 
 # julia> sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
 # 4-element Vector{Float64}:
