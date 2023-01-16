@@ -160,13 +160,10 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	# Reduces GC (Garbage Collection) from 40% to ~5%
 	# 10+ times speed improvement (!)
 	Qi_eq_i = Any[]
-	Qj_eq_j = Any[] # Uppass
 	Ci_eq_i = Any[]
 
 	Qi_sub_i = Any[]
 	Qj_sub_i = Any[]
-	Qj_sub_j = Any[]
-	Qi_sub_j = Any[] # uppass
 
 	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
 	Ci_sub_i = Any[]
@@ -181,11 +178,8 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	# This will have to change for non-Mk models
 	for i in 1:n
 		push!(Qi_eq_i, Qmat.Qarray_ivals .== i)
-		push!(Qj_eq_j, Qmat.Qarray_jvals .== i) # Uppass, transition starts with j instead of i
 		push!(Qi_sub_i, Qmat.Qarray_ivals[Qarray_ivals .== i])
 		push!(Qj_sub_i, Qmat.Qarray_jvals[Qarray_ivals .== i])
-		push!(Qj_sub_j, Qmat.Qarray_jvals[Qarray_jvals .== i])
-		push!(Qi_sub_j, Qmat.Qarray_ivals[Qarray_jvals .== i])
 
 		push!(Ci_eq_i, Carray.Carray_ivals .== i)
 		push!(Ci_sub_i, Carray.Carray_ivals[Carray.Carray_ivals .== i])
@@ -198,7 +192,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	end
 
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Qj_eq_j=Qj_eq_j, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qj_sub_j=Qj_sub_j, Qi_sub_j=Qi_sub_j,Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
@@ -550,26 +544,18 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 
 	# These are lists of TFs for anc==i
 	Qi_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
-	Qj_eq_j = [Vector{Bool}(undef, n) for _ = 1:n]
 	Ci_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
 	
 	# These are the indices (the rows of Qarray and Carray) corresponding to the above
 	Qi_eq_i_index = [Vector{Int}(undef, n) for _ = 1:n]
-	Qj_eq_j_index = [Vector{Int}(undef, n) for _ = 1:n]
 	Ci_eq_i_index = [Vector{Int}(undef, n) for _ = 1:n]
 	
 	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
 	Qi_sub_i = Vector{Vector{Int64}}(undef, n)
 	Qj_sub_i = Vector{Vector{Int64}}(undef, n)
-	Qj_sub_j = Vector{Vector{Int64}}(undef, n) # uppass
-	Qi_sub_j = Vector{Vector{Int64}}(undef, n) # uppass
 
 	Qij_vals_sub_i = Vector{Vector{Float64}}(undef, n)
 	Qij_vals_sub_i_t = Vector{Vector{Float64}}(undef, n)
-
-	Qji_vals_sub_j = Vector{Vector{Float64}}(undef, n)
-	Qji_vals_sub_j_t = Vector{Vector{Float64}}(undef, n)
-
 
 	Ci_sub_i = Vector{Vector{Int64}}(undef, n)
 	Cj_sub_i = Vector{Vector{Int64}}(undef, n)
@@ -592,18 +578,12 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# The push! operation may get slow at huge n
 	for i in 1:n
 		Qi_eq_i[i] = Qmat.Qarray_ivals .== i											# list of TF lists for anc==i
-		Qj_eq_j[i] = Qmat.Qarray_jvals .== i											# list of TF lists for anc==i
 		Qi_eq_i_index[i] = (1:length(Qi_eq_i[i]))[Qi_eq_i[i]]
-		Qj_eq_j_index[i] = (1:length(Qj_eq_j[i]))[Qj_eq_j[i]]
 		Qi_sub_i[i] = Qmat.Qarray_ivals[Qarray_ivals .== i]		# list of i's lists for anc==i
 		Qj_sub_i[i] = Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
-		Qj_sub_j[i] = Qmat.Qarray_jvals[Qarray_jvals .== i]		# list of j's lists for anc==j # uppass
-		Qi_sub_j[i] = Qmat.Qarray_ivals[Qarray_jvals .== i]		# list of i's lists for anc==j # uppass
 
 		Qij_vals_sub_i[i] = Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
 		Qij_vals_sub_i_t[i] = Qmat.Qij_vals[Qarray_ivals .== i]
-		Qji_vals_sub_j[i] = Qmat.Qij_vals[Qarray_jvals .== i]	# list of Qij rates lists for anc==i
-		Qji_vals_sub_j_t[i] = Qmat.Qij_vals[Qarray_jvals .== i]
 		
 		Ci_eq_i[i] = Carray.Carray_ivals .== i													# list of TF lists for anc==i
 		Ci_eq_i_index[i] = (1:length(Ci_eq_i[i]))[Ci_eq_i[i]]
@@ -636,7 +616,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Qj_eq_j=Qj_eq_j, Qi_eq_i_index=Qi_eq_i_index, Qj_eq_j_index=Qj_eq_j_index, Ci_eq_i=Ci_eq_i, Ci_eq_i_index=Ci_eq_i_index, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qj_sub_j=Qj_sub_j, Qi_sub_j=Qi_sub_j, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Qji_vals_sub_j=Qji_vals_sub_j, Qji_vals_sub_j_t=Qji_vals_sub_j_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t, Cjik_rates_sub_j=Cjik_rates_sub_j, Cjik_rates_sub_j_t=Cjik_rates_sub_j_t)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Qi_eq_i_index=Qi_eq_i_index, Ci_eq_i=Ci_eq_i, Ci_eq_i_index=Ci_eq_i_index, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t, Cjik_rates_sub_j=Cjik_rates_sub_j, Cjik_rates_sub_j_t=Cjik_rates_sub_j_t)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
@@ -856,16 +836,12 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	# Reduces GC (Garbage Collection) from 40% to ~5%
 	# 10+ times speed improvement (!)
 	Qi_eq_i = Any[]
-	Qj_eq_j = Any[] # uppass
 	Ci_eq_i = Any[]
 
 	Qi_sub_i = Any[]
 	Qj_sub_i = Any[]
-	Qj_sub_j = Any[] # uppass
-	Qi_sub_j = Any[] # uppass
 
 	Qij_vals_sub_i = Any[]
-	Qji_vals_sub_j = Any[] # uppass
 	
 	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
 	Ci_sub_i = Any[]
@@ -888,14 +864,10 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	# The push! operation may get slow at huge n
 	for i in 1:n
 		push!(Qi_eq_i, Qmat.Qarray_ivals .== i)									# list of TF lists for anc==i
-		push!(Qj_eq_j, Qmat.Qarray_jvals .== i)									# list of TF lists for anc==j # uppass
 		push!(Qi_sub_i, Qmat.Qarray_ivals[Qarray_ivals .== i])	# list of i's lists for anc==i
 		push!(Qj_sub_i, Qmat.Qarray_jvals[Qarray_ivals .== i])	# list of j's lists for anc==i
-		push!(Qj_sub_j, Qmat.Qarray_jvals[Qarray_jvals .== i])	# list of j's lists for anc==j # uppass
-		push!(Qi_sub_j, Qmat.Qarray_ivals[Qarray_jvals .== i])	# list of j's lists for anc==j # uppass
 
 		push!(Qij_vals_sub_i, Qmat.Qij_vals[Qarray_ivals .== i])	# list of Qij rates lists for anc==i
-		push!(Qji_vals_sub_j, Qmat.Qij_vals[Qarray_jvals .== i])	# list of Qij rates lists for anc==j # Uppass
 
 		push!(Ci_eq_i, Carray.Carray_ivals .== i)								# list of TF lists for anc==i
 		push!(Ci_sub_i, Carray.Carray_ivals[Carray.Carray_ivals .== i]) # list of i's lists for anc==i
@@ -922,7 +894,7 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	
 	# Inputs to the Es calculation
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Qj_eq_j=Qj_eq_j, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qj_sub_j=Qj_sub_j, Qi_sub_j=Qi_sub_j, Qij_vals_sub_i=Qij_vals_sub_i, Qji_vals_sub_j=Qji_vals_sub_j, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cjik_rates_sub_j=Cjik_rates_sub_j)
+	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cjik_rates_sub_j=Cjik_rates_sub_j)
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
