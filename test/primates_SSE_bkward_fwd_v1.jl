@@ -84,8 +84,6 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 prtQp(p)
 p.p_TFs.Qj_sub_i
 p.p_TFs.Qij_vals_sub_i
-p.p_TFs.Qj_sub_j
-p.p_TFs.Qji_vals_sub_j
 
 
 prtCp(p)
@@ -93,8 +91,6 @@ p.p_TFs.Ci_sub_i
 p.p_TFs.Cj_sub_i
 p.p_TFs.Ck_sub_i
 p.p_TFs.Qij_vals_sub_i
-p.p_TFs.Qj_sub_j
-p.p_TFs.Qji_vals_sub_j
 
 
 # Solve the Ds, single branch
@@ -234,9 +230,40 @@ tspan = (2.0, 3.0)
 birthRate = p_Ds_v7.bmo.est[p_Ds_v7.setup.bmo_rows.birthRate]
 p_Ds_v7.bmo.est[p_Ds_v7.setup.bmo_rows.deathRate] = 0.5 * birthRate
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
+p_Ds_v5_updater_v1!(p_Es_v7, inputs);
+p_Ds_v7.params.mu_vals
+p_Es_v7.params.mu_vals
+
+# Solve the Es
+prob_Es_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, Es_tspan, p_Es_v7);
+sol_Es_v7 = solve(prob_Es_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Es_v7(2.0)
+sol_Es_v7(2.5)
+sol_Es_v7(3.0)
+
+p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
 
 
 
+# Extinction equiprobable, clado left out, no change in ancestral states
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2A, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+ncA = Rcbind(truth, best, err)
+
+
+# Extinction equiprobable, clado included; no change in ancestral states
 prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2B, u0, tspan, p_Ds_v7);
 sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
@@ -250,10 +277,112 @@ err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
 sum(abs.(err))
 sum(err)
 
-Rcbind(truth, best, err)
+ncB = Rcbind(truth, best, err)
+
+
+# Extinction equiprobable, clado included; no change in ancestral states
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+ncC = Rcbind(truth, best, err)
 
 
 
+#######################################################
+# Try with unequal extinction
+#######################################################
+include("/Users/nickm/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+p_Es_v7.params.mu_vals[1] = 10.0	# null range has high extinction rate
+p_Es_v7.params.mu_vals[2] = 2 * p_Ds_v7.params.mu_vals[3]		#	range AB has 0.0 extinction rate
+p_Es_v7.params.mu_vals[4] = 0.0		#	range AB has 0.0 extinction rate
+p_Es_v7.params.mu_vals
+
+# Solve the Es
+prob_Es_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, Es_tspan, p_Es_v7);
+sol_Es_v7 = solve(prob_Es_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Es_v7(2.0)
+sol_Es_v7(2.5)
+sol_Es_v7(3.0)
+
+p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
+
+
+# Extinction equiprobable, clado left out, no change in ancestral states
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4statesA, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+solA = sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+wcA = Rcbind(truth, best, err)
+
+
+# Extinction equiprobable, clado included; no change in ancestral states
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2B, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+solB = sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+wcB = Rcbind(truth, best, err)
+
+
+# Extinction equiprobable, clado included; no change in ancestral states
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+solC = sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+wcC = Rcbind(truth, best, err)
+
+ncA .== ncB
+ncA .== ncC
+
+ncA .== wcA
+ncA .== wcB
+ncA .== wcC
+
+wcA .== wcB
+wcA .== wcC
+
+
+solA
+solB
+solC
 
 
 

@@ -370,246 +370,481 @@ names(res)#
 #
 res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS#
 res$ML_marginal_prob_each_state_at_branch_top_AT_node#
-res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
-tree_string = "(((chimp:1,human:1):1,gorilla:2):1,orang:3);"#
-tr = read.tree(file="", text=tree_string)#
-trtable = prt(tr, printflag=FALSE)#
+res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS#
 #
-numstates = 4#
-tmpres = get_Qmat_COOmat_from_res(resDEC, numstates=numstates, include_null_range=TRUE, max_range_size=NULL, timeperiod_i=1)#
+mats = get_Qmat_COOmat_from_res(res)#
+Qmat = mats$Qmat#
 #
-probs_ancstate = rep(0.25, numstates)#
-COO_weights_columnar = tmpres$COO_weights_columnar#
-include_null_range = TRUE#
-left_branch_downpass_likes = rep(1, numstates)#
-right_branch_downpass_likes = rep(1, numstates)#
-Rsp_rowsums = tmpres$Rsp_rowsums#
-clado_table = cbind(tmpres$COO_weights_columnar[[1]]+1+include_null_range, tmpres$COO_weights_columnar[[2]]+1+include_null_range, tmpres$COO_weights_columnar[[3]]+1+include_null_range, tmpres$COO_weights_columnar[[4]])#
+u0 = res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]#
+result = u0 %*% expm(Qmat)#
 #
-probs = rep(0, nrow(clado_table))#
-for (i in 1:length(probs))#
-	probs[i] = clado_table[i,4] / Rsp_rowsums[clado_table[i,1]-include_null_range]#
-end#
-clado_table = cbind(clado_table, probs)#
-clado_table_df = adf2(clado_table)#
-names(clado_table_df) = c("i", "j", "k", "wt", "prob")#
-clado_table_df
-calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes = NULL, right_branch_downpass_likes = NULL, #
-    Rsp_rowsums = NULL)
-numstates = ncol(resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node)#
-rootnode = 5#
-#probs_ancstate = resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node[5,]#
-probs_ancstate = rep(1/numstates, numstates)#
-calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes = NULL, right_branch_downpass_likes = NULL, #
-    Rsp_rowsums = NULL)
-left_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-right_branch_downpass_likes = rep(1.0, numstates)#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+result == res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+Qmat
+library(diversitree)
+install.packages("diversitree")
+library(diversitree)
+?asr
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(3)#
+phy <- trees(pars, "bisse", max.taxa=50, max.t=Inf, x0=0)[[1]]#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Right#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=.5)
+st
+library(diversitree)#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Right * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-calc / sum(calc)#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(3)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[4,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[4,]
-left_branch_downpass_likes = rep(1.0, numstates)#
-right_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=.5)
+set.seed(4)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Left#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-calc / sum(calc)#
+lik <- make.bisse(phy, phy$tip.state)
+nodelabels(thermo=t(st), piecol=c("red","blue"), cex=.5)
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(43)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
 #
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[6,]
-res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]#
-res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]#
-res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]#
-res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
-res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS#
-res$ML_marginal_prob_each_state_at_branch_top_AT_node#
-res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
-left_branch_downpass_likes = rep(1.0, numstates)#
-right_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Left#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=c("red","blue"), cex=.5)
+library(diversitree)#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-calc / sum(calc)#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(43)#
+phy <- trees(pars, "bisse", max.taxa=10, max.t=Inf, x0=0)[[1]]#
 #
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[6,]
-tmpres
-tmpres
-calc_uppass_probs_new2
-calc_uppass_probs_new2
-calc_uppass_scenario_probs_new2
-tmpres$relprobs_just_after_speciation_UPPASS_Left
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-calc / sum(calc)
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[6,]
-REF BNtmpres$relprobs_just_after_speciation_UPPASS_Left
-tmpres$relprobs_just_after_speciation_UPPASS_Left
-tmpres$relprobs_just_after_speciation_UPPASS_Left
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-calc / sum(calc)
-left_branch_downpass_likes = rep(1.0, numstates)#
-right_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Left
-right_branch_downpass_likes
-left_branch_downpass_likes
-42676 / 34278
-# Calculate uppass probabilities for RIGHT branch, the corner below node 4 (sister branch is node 6)#
-left_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-right_branch_downpass_likes = rep(1.0, numstates)#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=c("red","blue"), cex=.5)
+library(diversitree)#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Right#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(44)#
+phy <- trees(pars, "bisse", max.taxa=10, max.t=Inf, x0=0)[[1]]#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Right * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-calc / sum(calc)#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[4,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[4,]#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=1.0)
+library(diversitree)#
 #
-# > tmpres$relprobs_just_after_speciation_UPPASS_Right#
-# [1] 0.00000000 0.29260052 0.61644839 0.09095109#
-# > #
-# > calc = tmpres$relprobs_just_after_speciation_UPPASS_Right * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-# > calc / sum(calc)#
-# [1] 0.000000e+00 2.394214e-13 1.000000e+00 5.170425e-13#
-# > #
-# > resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[4,]#
-# [1] 0.00000000 0.29260052 0.61644839 0.09095109#
-# > resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[4,]#
-# [1] 0.000000e+00 2.394214e-13 1.000000e+00 5.170425e-13#
-# Calculate uppass probabilities for LEFT branch, the corner below node 6 (sister branch is node 4)#
-left_branch_downpass_likes = rep(1.0, numstates)#
-right_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+pars <- c(.1, .2, .03, .06, .01, .02)#
+set.seed(44)#
+phy <- trees(pars, "bisse", max.taxa=50, max.t=Inf, x0=0)[[1]]#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Left#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-calc / sum(calc)
-probs_ancstate
-COO_weights_columnar
-\
-calc_uppass_probs_new2
-COOmat_0based_to_Qmat_1based=2
-\  condprob_each_split_scenario_df2 = calc_uppass_scenario_probs_new2(probs_ancstate, #
-        COO_weights_columnar, numstates, include_null_range, #
-        left_branch_downpass_likes, right_branch_downpass_likes, #
-        Rsp_rowsums)#
-    condprob_each_split_scenario_df2 = matrix(data = c(condprob_each_split_scenario_df2), #
-        nrow = length(COO_weights_columnar[[1]]), byrow = FALSE)#
-    probs_each_split_scenario = condprob_each_split_scenario_df2/sum(condprob_each_split_scenario_df2)
-condprob_each_split_scenario_df2 = calc_uppass_scenario_probs_new2(probs_ancstate, #
-        COO_weights_columnar, numstates, include_null_range, #
-        left_branch_downpass_likes, right_branch_downpass_likes, #
-        Rsp_rowsums)#
-    condprob_each_split_scenario_df2 = matrix(data = c(condprob_each_split_scenario_df2), #
-        nrow = length(COO_weights_columnar[[1]]), byrow = FALSE)#
-    probs_each_split_scenario = condprob_each_split_scenario_df2/sum(condprob_each_split_scenario_df2)
-probs_each_split_scenario
-calc_uppass_scenario_probs_new2
-calc_uppass_scenario_probs_new2
-condprob_each_split_scenario_df = NULL#
-    ancprobs = probs_ancstate[COO_weights_columnar[[1]] + COOmat_0based_to_Qmat_1based]#
-    Lprobs = left_branch_downpass_likes[COO_weights_columnar[[2]] + #
-        COOmat_0based_to_Qmat_1based]#
-    Rprobs = right_branch_downpass_likes[COO_weights_columnar[[3]] + #
-        COOmat_0based_to_Qmat_1based]#
-    scenario_condprob = COO_weights_columnar[[4]]/Rsp_rowsums[COO_weights_columnar[[1]] + #
-        1]
-ancprobs
-Lprobs
-Rprobs
-scenario_condprob
-ancprobs_by_scenario
-left_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]#
-right_branch_downpass_likes = rep(1.0, numstates)#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=1.0)
+fit
+library(diversitree)#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Right#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(44)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]
+phy
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")
+lik <- make.bisse(phy, phy$tip.state)
+set.seed(45)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Right * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-calc / sum(calc)#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[4,]#
-resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node[4,]
-left_branch_downpass_likes = rep(1.0, numstates)#
-right_branch_downpass_likes = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[4,]#
-tmpres = calc_uppass_probs_new2(probs_ancstate, COO_weights_columnar, numstates, include_null_range = include_null_range, #
-    left_branch_downpass_likes=left_branch_downpass_likes, right_branch_downpass_likes=right_branch_downpass_likes, #
-    Rsp_rowsums = NULL)#
+lik <- make.bisse(phy, phy$tip.state)
+set.seed(46)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
 #
-tmpres$relprobs_just_after_speciation_UPPASS_Left#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-calc = tmpres$relprobs_just_after_speciation_UPPASS_Left * resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS[6,]
-res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS#
-res$ML_marginal_prob_each_state_at_branch_top_AT_node#
-res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
-res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
-x=res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
-x
-cat(x, sep=" ")
-cat(x, sep=", ")
-tmpmats
-tmpres
-tmpres = get_Qmat_COOmat_from_res(resDEC, numstates=numstates, include_null_range=TRUE, max_range_size=NULL, timeperiod_i=1)
-tmpres
-?rexpokit
-Qmat = matrix(c(-1.218, 0.504, 0.336, 0.378, 0.126, -0.882, 0.252, 0.504,#
-0.168, 0.504, -1.05, 0.378, 0.126, 0.672, 0.252, -1.05), nrow=4, byrow=TRUE)#
+lik <- make.bisse(phy, phy$tip.state)
+set.seed(47)#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
 #
-# Make a series of t values#
-tvals = c(0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5, 14)#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
 #
-# Exponentiate each with EXPOKIT's dgpadm (good for small dense matrices)#
-for (t in tvals)#
-	{#
-	Pmat = expokit_dgpadm_Qmat(Qmat=Qmat, t=t, transpose_needed=TRUE)#
-	cat("\n\nTime=", t, "\n", sep="")#
-	print(Pmat)#
-	}#
+lik <- make.bisse(phy, phy$tip.state)
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=1.0)
+library(diversitree)#
 #
-# Exponentiate each with EXPOKIT's dmexpv (should be fast for large sparse matrices)#
-for (t in tvals)#
-	{#
-	Pmat = expokit_dmexpv_Qmat(Qmat=Qmat, t=t, transpose_needed=TRUE)#
-	cat("\n\nTime=", t, "\n", sep="")#
-	print(Pmat)#
-	}
-expm(Qmat)
-expm(Qmat*0.1)
-u0 = c(0.0, 0.125, 0.75, 0.125)#
-expm(tmpres$Qmat) %*% u0
-u0 %*% expm(tmpres$Qmat)
-res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS#
-res$ML_marginal_prob_each_state_at_branch_top_AT_node#
-res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=0.)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=1:2, cex=0.5)
+?nodelabels
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+st <- asr.marginal(lik, coef(fit))
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot(h, phy, main="True history")#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))
+class(phy)
+class(h)
+?plot.history
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+st
+cft(st)
+class(st)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+# Seems accurate#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+#
+set.seed(47) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+st
+t(st)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+# Seems accurate#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+t(st)
+make.asr
+make.asr.marginal
+coef(fit)
+phy2 = phy
+phy2
+names(phy2)
+phy2$tip.state
+phy2 = phy#
+phy2$tip.state = c(1, 1, 1, 0)#
+#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(lik2, pars, method="subplex")#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+phy2$tip.state
+phy2 = phy#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)
+phy2$tip.state
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+# Seems accurate#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+# change to create some ambiguity#
+#
+phy2 = phy#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)#
+#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(lik2, pars, method="subplex")#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+phy2
+prt(phy2)
+phy2$edge.length
+tiplabels()
+plot(phy2)#
+tiplabels(text=phy2$tip.state, tip=1:4, col=cols[phy2$tip.state+1])
+?tiplabels
+phy2 = phy#
+phy2$edge.length[c(1,4)] = 1.0#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)#
+#
+plot(phy2)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])
+?plot.phylo
+phy2 = phy#
+phy2$edge.length[c(1,4)] = 1.0#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)#
+#
+plot(phy2, label.offset=1)
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+# Seems accurate#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+# change to create some ambiguity#
+#
+phy2 = phy#
+phy2$edge.length[c(1,4)] = 1.0#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(lik2, pars, method="subplex")#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+phy2 = phy#
+phy2$edge.length
+library(diversitree)#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+# Seems accurate#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+fit <- find.mle(lik, pars, method="subplex")#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+# change to create some ambiguity#
+#
+phy2 = phy#
+phy2$edge.length[c(1,4)] = c(1-phy2$edge.length[2], 1-phy2$edge.length[6])#
+phy2$tip.state[1:4] = c(1, 1, 1, 0)#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(lik2, pars, method="subplex")#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)

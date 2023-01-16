@@ -196,7 +196,7 @@ calcDs_4states2 = (du,u,p,t) -> begin
 end
 
 # Quick - WORKS, LOW ijk reordering
-calcDs_4states2A = (du,u,p,t) -> begin
+calcDs_4statesA = (du,u,p,t) -> begin
 
   # Possibly varying parameters
   n = p.n
@@ -271,7 +271,7 @@ calcDs_4states2B = (du,u,p,t) -> begin
 # Case 2: downpass
 #			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
 # Uppass:
-			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) #+ 	# case 2	
+			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) + 	# case 2	
 # Case 3 & 4: change + eventual extinction
 # Downpass:
 			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
@@ -318,7 +318,7 @@ calcDs_4states2C = (du,u,p,t) -> begin
 # Case 2: downpass
 #			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
 # Uppass:
-			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) #+ 	# case 2	
+			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) + 	# case 2	
 # Case 3 & 4: change + eventual extinction
 # Downpass:
 			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
