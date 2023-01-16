@@ -1343,7 +1343,7 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 	# Update Qij_vals_sub_i
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
-		p_Ds_v5.p_TFs.Qij_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_j[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_j[i]]
 	end
 
 

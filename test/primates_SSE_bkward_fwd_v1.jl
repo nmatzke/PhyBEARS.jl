@@ -183,7 +183,7 @@ sum(err)
 
 tspan = (2.0, 3.0)
 
-prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2A, u0, tspan, p_Ds_v7);
 sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
@@ -221,11 +221,55 @@ sum(abs.(exp_err))
 
 
 
+
+
+
+#######################################################
+# Try with full clado calculation, positive extinction
+#######################################################
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+tspan = (2.0, 3.0)
+
+birthRate = p_Ds_v7.bmo.est[p_Ds_v7.setup.bmo_rows.birthRate]
+p_Ds_v7.bmo.est[p_Ds_v7.setup.bmo_rows.deathRate] = 0.5 * birthRate
+p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
+
+
+
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2B, u0, tspan, p_Ds_v7);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
+sol_Ds_v7(3.0)
+sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0))
+
+best = (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+Rcbind(truth, best, err)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Try with written-out matrix
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 Cmat = make_ctable_single_events(prtCp(p))
 
-ptmp = (n=n, mu_vals=p.params.mu_vals, Qij_vals = p.params.Qij_vals, Cijk_vals=Cmat.val, Qarrady_ivals=p.p_indices.Qarray_ivals, Qarray_jvals=p.p_indices.Qarray_jvals, Carray_ivals=Cmat.i, 	Carray_jvals=Cmat.j, Carray_kvals=Cmat.k, sol_Es_v5=p.sol_Es_v5, uE=p.uE);
+ptmp = (n=n, mu_vals=p.params.mu_vals, Qij_vals = p.params.Qij_vals, Cijk_vals=Cmat.val, Qarray_ivals=p.p_indices.Qarray_ivals, Qarray_jvals=p.p_indices.Qarray_jvals, Carray_ivals=Cmat.i, 	Carray_jvals=Cmat.j, Carray_kvals=Cmat.k, sol_Es_v5=p.sol_Es_v5, uE=p.uE);
 
 
 tspan = (3.0, 2.0)
@@ -245,11 +289,19 @@ sum(err)
 
 
 
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+solver_options.solver = AutoTsit5(Rosenbrock23())
+#solver_options.solver = CVODE_BDF(linear_solver=:GMRES)
+#solver_options.solver = Vern9()
+solver_options.abstol = 1.0e-6
+solver_options.reltol = 1.0e-6
+
 
 tspan = (2.0, 3.0)
 
-prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v7);
-sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states3, u0, tspan, ptmp);
+sol_Ds_v7 = solve(prob_Ds_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol, dtmax=1.0/100000);
 
 sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
 sol_Ds_v7(2.1) ./ sum(sol_Ds_v7(2.1))
