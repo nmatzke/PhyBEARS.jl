@@ -16,31 +16,59 @@ pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
 set.seed(48) # Rare to have a transition, but observed here
 phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]
 cols = c("blue", "green3")
-
+lower = rep(0.0, times=length(pars))
+upper = rep(10.0, times=length(pars))
 
 ## Here is the true history
 h <- history.from.sim.discrete(phy, 0:1)
 diversitree:::plot.history(h, phy, main="True history", cols=cols)
 
 lik <- make.bisse(phy, phy$tip.state)
-fit <- find.mle(lik, pars, method="subplex")
+#fit <- find.mle(lik, pars, method="subplex")
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
+coef(fit)
 st <- asr.marginal(lik, coef(fit))
 nodelabels(thermo=t(st), piecol=cols, cex=0.5)
 
 
+
+#######################################################
+# Look at find.mle
+#######################################################
+methods("find.mle")
+diversitree:::find.mle.default
+diversitree:::find.mle.dtlik
+diversitree:::find.mle.mixed
+diversitree:::do.mle.search
 
 
 # change to create some ambiguity
 
 phy2 = phy
 phy2$edge.length[c(1,4)] = c(1-phy2$edge.length[2], 1-phy2$edge.length[6])
-phy2$tip.state[1:4] = c(1, 1, 1, 0)
+phy2$tip.state[1:4] = c(0, 1, 0, 1)
 
 plot(phy2, label.offset=0.1)
 tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])
 #diversitree:::plot.history(h, phy, main="True history", cols=cols)
 
 lik2 <- make.bisse(phy2, phy2$tip.state)
-fit2 <- find.mle(lik2, pars, method="subplex")
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)
+coef(fit2 )
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)
 st2 <- asr.marginal(lik2, coef(fit2))
 nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+t(st2)
+
+#######################################################
+# Edit to clarify node structure
+#######################################################
+st2[,1] = c(0.5, 0.5)
+st2[,2] = c(0.75, 0.25)
+st2[,3] = c(1.0, 0.0)
+
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+
+
+# So, this shows nodes 5,6,7:
+t(st2)

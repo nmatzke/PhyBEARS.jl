@@ -388,6 +388,20 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	a_val = bmo.est[bmo.rownames .== "a"][1]
 	j_val = bmo.est[bmo.rownames .== "j"][1]
 	
+	# Make list of allowed_event_types
+	allowed_event_types = []
+	if (d_val > 0.0)
+		push!(allowed_event_types, "d")
+	end
+	if (e_val > 0.0)
+		push!(allowed_event_types, "e")
+	end
+	if (a_val > 0.0)
+		push!(allowed_event_types, "a")
+	end
+	allowed_event_types
+	
+	
 	dmat_base = reshape(repeat([d_val], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	dmat_t = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
@@ -416,7 +430,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	distmat3 = reshape(repeat([1.0], (total_numareas^2)), (total_numareas,total_numareas))
 	
 	
-	Qmat = setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_event_types=["d","e"])
+	
+	
+	Qmat = setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_event_types=allowed_event_types)
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
