@@ -1943,9 +1943,11 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	
 	############################################
 	# Subset sympatry (range-copying)
+	# Loop through possible rangesizes, starting at rangesize=2 areas
+	# (because subset sympatry can only happen, starting from 2+ areas)
 	############################################
-	if (s_wt > min_precision)
-		# Start at rangesize 2
+	if ((s_wt > min_precision) && (length(range_size_category_indexes_dict) > 2))
+		# Loop through possible rangesizes, starting at rangesize=2 areas
 		for i in minimum(range_size_category_indexes_dict[2]):numstates
 			ancstate = states_list[i]
 			ancsize = length(ancstate)
@@ -1994,9 +1996,11 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	
 	############################################
 	# Vicariance (range-splitting)
+	# Loop through possible rangesizes, starting at rangesize=2 areas
+	# (because vicariance can only happen, starting from 2+ areas)
 	############################################
-	if (v_wt > min_precision)
-		# Start at rangesize 2
+	if ((v_wt > min_precision) && (length(range_size_category_indexes_dict) > 2))
+		# Loop through possible rangesizes, starting at rangesize=2 areas
 		for i in minimum(range_size_category_indexes_dict[2]):numstates
 			ancstate = states_list[i]
 			ancsize = length(ancstate)
