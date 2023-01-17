@@ -98,6 +98,35 @@ h <- history.from.sim.discrete(phy, 0:1)
 diversitree:::plot.history(h, phy, main="True history", cols=cols)
 
 lik <- make.bisse(phy, phy$tip.state)
+lik(pars)
+# -13.08989
+
+reslnls = lik(pars, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)
+# -15.63256
+sum(attr(reslnls,"intermediates")$lq)
+# -12.87511
+
+
+reslnls = lik(pars, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)
+# -12.87511
+sum(attr(reslnls,"intermediates")$lq)
+# -12.87511
+
+
+reslnls = lik(pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)
+# -15.63256
+sum(attr(reslnls,"intermediates")$lq)
+# -12.87511
+
+
+reslnls = lik(pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)
+# -12.87511
+sum(attr(reslnls,"intermediates")$lq)
+# -12.87511
+
+
+
+
 #fit <- find.mle(lik, pars, method="subplex")
 fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
 
@@ -133,12 +162,3 @@ write.tree(phy, file="")
 0.22222222 0.22222222 0.11111111 0.01111111 0.06000000 0.05000000
 
 
-
-
-
-
-set.seed(59) # Rare to have a transition, but observed here
-pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
-phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]
-h <- history.from.sim.discrete(phy, 0:1)
-diversitree:::plot.history(h, phy, main="True history", cols=cols)

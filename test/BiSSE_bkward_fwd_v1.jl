@@ -43,7 +43,7 @@ bmo = construct_BioGeoBEARS_model_object();
 bmo.est[bmo.rownames .== "birthRate"] .= 0.22222222;
 bmo.est[bmo.rownames .== "deathRate"] .= 0.11111111; # (for one of them)
 bmo.est[bmo.rownames .== "d"] .= 0.0;
-bmo.est[bmo.rownames .== "e"] .= 1.000000e-12;
+bmo.est[bmo.rownames .== "e"] .= 0.0;
 bmo.est[bmo.rownames .== "a"] .= 0.03; # (for one of them
 bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
@@ -63,6 +63,7 @@ bd_liks(tr, birthRate, deathRate)
 bmo_updater_v1!(bmo)
 
 # Set up the model
+manual_states_list=NaN; area_names=LETTERS(1:numareas)
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=include_null_range, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
@@ -73,6 +74,21 @@ bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 inputs.setup.txt_states_list
 
+
+
+#######################################################
+# Put in the parameters straight from diversitree
+#######################################################
+p_Ds_v5.params.Cijk_vals[1] = 0.22222222
+p_Ds_v5.params.Cijk_vals[2] = 0.22222222
+p_Ds_v5.params.mu_vals[1] = 0.11111111
+p_Ds_v5.params.mu_vals[2] = 0.01111111
+p_Ds_v5.params.Qij_vals[1] = 0.06000000
+p_Ds_v5.params.Qij_vals[2] = 0.05000000
+
+prtQp(p_Ds_v5)
+prtCp(p_Ds_v5)
+p_Ds_v5.params.mu_vals
 
 # Solve the Es
 p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
@@ -89,6 +105,15 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+prtQp(p_Ds_v7)
+prtCp(p_Ds_v7)
+p_Ds_v7.params.mu_vals
+
+# R:
+# lik(pars)
+# [1] -13.08989
+
 
 prtQp(p)
 p.p_TFs.Qj_sub_i
