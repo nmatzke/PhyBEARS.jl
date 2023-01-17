@@ -20,6 +20,19 @@ using PhyBEARS.TreePass
 using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
 
+using Interpolations	# for Linear, Gridded, interpolate
+using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
+										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+using Sundials				# for CVODE_BDF
+using Test						# for @test, @testset
+using PhyloBits
+using DataFrames
+using CSV
+
+using PhyBEARS
+using PhyBEARS.ModelLikes
+
+
 # 
 # """
 # using darwins finches

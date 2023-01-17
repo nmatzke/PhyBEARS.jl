@@ -104,7 +104,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
-	Qij_vals_t = Qmat.Qij_vals_t
+#	Qij_vals_t = Qmat.Qij_vals_t
 	
 	# Update Qij parameters, manually
 	dTF = Qarray_event_types .== "d"
