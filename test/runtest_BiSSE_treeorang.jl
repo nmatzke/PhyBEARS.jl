@@ -26,13 +26,13 @@ using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
 using PhyloBits
+using PhyloBits.TrUtils
 using DataFrames
 using CSV
 
 using PhyBEARS
 using PhyBEARS.StateSpace
 using PhyBEARS.TreePass
-using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
 using PhyBEARS.ModelLikes
 
@@ -81,8 +81,12 @@ numstates = 2
 n = 2
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params)
-(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs
+inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
+(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+prtQp(p_Ds_v5)
+prtCp(p_Ds_v5)
+
 
 # Change parameter inputs manually
 inputs.p_Ds_v5.params.Qij_vals[1] = 2*inputs.p_Ds_v5.params.Qij_vals[2]
