@@ -143,7 +143,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	# Set up mu (extinction) rates, manually
 	mu_vals = repeat([deathRate], n)
 
-	params = (mu_vals=mu_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=deepcopy(Qmat.Qij_vals), Cijk_weights=Cijk_weights, Cijk_probs=Cijk_probs, Cijk_vals=Carray.Cijk_vals, Cijk_rates=deepcopy(Carray.Cijk_vals), row_weightvals=Carray.row_weightvals)
+	params = (mu_vals=mu_vals, Qij_vals=Qmat.Qij_vals, Qij_vals_t=deepcopy(Qmat.Qij_vals), Cijk_weights=Cijk_weights, Cijk_probs=Cijk_probs, Cijk_vals=Carray.Cijk_vals, Cijk_rates=deepcopy(Carray.Cijk_vals), Cijk_rates_t=deepcopy(Carray.Cijk_vals), row_weightvals=Carray.row_weightvals)
 
 	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
 	p_indices = (Qarray_ivals=Qmat.Qarray_ivals, Qarray_jvals=Qmat.Qarray_jvals, Qarray_event_types=Qmat.Qarray_event_types, Carray_ivals=Carray.Carray_ivals, Carray_jvals=Carray.Carray_jvals, Carray_kvals=Carray.Carray_kvals, Carray_pair=Carray.Carray_pair, Carray_event_types=Carray.Carray_event_types)
