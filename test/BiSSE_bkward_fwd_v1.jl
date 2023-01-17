@@ -44,7 +44,7 @@ bmo.est[bmo.rownames .== "birthRate"] .= 0.22222222;
 bmo.est[bmo.rownames .== "deathRate"] .= 0.11111111; # (for one of them)
 bmo.est[bmo.rownames .== "d"] .= 0.0;
 bmo.est[bmo.rownames .== "e"] .= 1.000000e-12;
-bmo.est[bmo.rownames .== "a"] .= 0.0; # (for one of them
+bmo.est[bmo.rownames .== "a"] .= 0.03; # (for one of them
 bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.min[bmo.rownames .== "u"] .= 0.0;
@@ -59,9 +59,15 @@ birthRate = 0.2222222222
 deathRate = 0.1111111111
 bd_liks(tr, birthRate, deathRate)
 
+# Update the bmo, BEFORE setup_DEC_SSE2
+bmo_updater_v1!(bmo)
+
 # Set up the model
-inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=include_null_range, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+prtQi(inputs)
+prtCi(inputs)
 
 bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 

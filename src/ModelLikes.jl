@@ -456,8 +456,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	end
 	# Events "a" are e.g. moving from area A to area B ("range-switching")
 	for i in 1:length(a_rows)
-		losses[a_rows[i]] = states_list[Qarray_ivals[d_rows[i]]]	# from = i
-		gains[a_rows[i]] = states_list[Qarray_jvals[d_rows[i]]]		# to = j
+		losses[a_rows[i]] = states_list[Qarray_ivals[a_rows[i]]]	# from = i
+		gains[a_rows[i]] = states_list[Qarray_jvals[a_rows[i]]]		# to = j
 	end
 
 	Cparams = default_Cparams()
