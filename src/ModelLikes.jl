@@ -104,7 +104,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	Qarray_ivals = Qmat.Qarray_ivals
 	Qarray_jvals = Qmat.Qarray_jvals
 	Qij_vals = Qmat.Qij_vals
-#	Qij_vals_t = Qmat.Qij_vals_t
+	Qij_vals_t = Qmat.Qij_vals_t
 	
 	# Update Qij parameters, manually
 	dTF = Qarray_event_types .== "d"
@@ -114,7 +114,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	aTF = Qarray_event_types .== "a"
 	Qmat.Qij_vals[aTF] = Qmat.Qij_vals[aTF] .* in_params.a_val
 	
-	Qmat = (Qarray_event_types=Qarray_event_types, Qarray_ivals=Qarray_ivals, Qarray_jvals=Qarray_jvals, Qij_vals=Qij_vals)
+	Qmat = (Qarray_event_types=Qarray_event_types, Qarray_ivals=Qarray_ivals, Qarray_jvals=Qarray_jvals, Qij_vals=Qij_vals, Qij_vals_t=Qij_vals_t)
 	
 	# Default values of y, s, v, and j
 	Cparams = default_Cparams()

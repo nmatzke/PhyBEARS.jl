@@ -30,6 +30,10 @@ using DataFrames
 using CSV
 
 using PhyBEARS
+using PhyBEARS.StateSpace
+using PhyBEARS.TreePass
+using PhyBEARS.TrUtils
+using PhyBEARS.SSEs
 using PhyBEARS.ModelLikes
 
 
@@ -64,12 +68,12 @@ R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = NaN
 #######################################################
 
 
-include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
-import .TreePass
+#include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
+#import .TreePass
 
 # Repeat calculation in Julia
-include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
-import .ModelLikes
+#include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
+#import .ModelLikes
 
 tr = readTopology("(((chimp:1,human:1):1,gorilla:2):1,orang:3);")
 in_params = (birthRate=0.222222222, deathRate=1.2, d_val=0.0, e_val=0.0, a_val=0.2, j_val=0.0)
