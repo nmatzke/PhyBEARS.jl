@@ -103,11 +103,11 @@ root_age = maximum(trdf[!, :node_age])
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5)
+prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
 # This solution is a linear interpolator
 sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5)
+p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 
 # Parameters
 prtQi(inputs)
@@ -116,7 +116,9 @@ inputs.p_Ds_v5.params.mu_vals
 p_Ds_v5.sol_Es_v5(1.0)
 
 # Do downpass
-(total_calctime_in_sec, iteration_number) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10)
+(total_calctime_in_sec, iteration_number) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10);
+
+
 
 Rnames(res)
 res.likes_at_each_nodeIndex_branchTop
@@ -128,9 +130,14 @@ sum.(res.likes_at_each_nodeIndex_branchTop)
 log.(sum.(res.likes_at_each_nodeIndex_branchTop))
 sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
 Julia_sum_lq = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
+sum(res.lq_at_branchBot)
 
 # Does the total of the branch log-likelihoods (lq) match?
-@test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
+# @test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
+
+ttl_from_Julia = sum(res.lq_at_branchBot) +  sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
+@test round(R_result_total_LnLs1; digits=4) == round(ttl_from_Julia; digits=4)
+
 
 # Add the root probabilities
 
