@@ -1,16 +1,3 @@
-using Test, PhyBEARS, DataFrames
-
-using Dates									# for e.g. Dates.now(), DateTime
-using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
-using Distributed						# for e.g. @spawn
-using Combinatorics					# for e.g. combinations()
-using DataFrames
-
-using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
-										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
-using DataFrames  # for DataFrame
-using DifferentialEquations
-using OrdinaryDiffEq, Sundials, DiffEqDevTools, Plots, ODEInterfaceDiffEq, ODE, LSODA
 
 
 # List each PhyBEARS code file prefix here
@@ -94,7 +81,7 @@ inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_para
 inputs.p_Ds_v5.params.Cijk_vals[1] = 0.222222222
 inputs.p_Ds_v5.params.Cijk_vals[2] = 0.222222222
 inputs.p_Ds_v5.params.mu_vals[1] = 0.111111111
-inputs.p_Ds_v5.params.mu_vals[1] = 0.05
+inputs.p_Ds_v5.params.mu_vals[2] = 0.05
 inputs.p_Ds_v5.params.Qij_vals[1] = 0.1
 inputs.p_Ds_v5.params.Qij_vals[2] = 0.15
 
@@ -107,12 +94,12 @@ inputs.res.likes_at_each_nodeIndex_branchTop
 inputs.res.normlikes_at_each_nodeIndex_branchTop
 res.likes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
 res.likes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
-res.likes_at_each_nodeIndex_branchTop[3] = [1.0, 0.0]
 res.likes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
+res.likes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
 res.normlikes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
 res.normlikes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
-res.normlikes_at_each_nodeIndex_branchTop[3] = [1.0, 0.0]
 res.normlikes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
+res.normlikes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
 trdf = inputs.trdf
 p_Ds_v5 = inputs.p_Ds_v5;
 root_age = maximum(trdf[!, :node_age])

@@ -86,6 +86,9 @@ cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)
 
 
 
+EsDs = t(attr(res1t,"intermediates")$init)
+sum(log(rowSums(EsDs[,3:4])))
+attr(res1t,"intermediates")$lq
 
 #######################################################
 # Look at find.mle
