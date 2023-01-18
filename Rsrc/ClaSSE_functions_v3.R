@@ -96,7 +96,12 @@
 # f.pars <- diversitree:::make.pars.classe(k)
 # 
 
-
+# diversitree/R/util.R
+# https://github.com/richfitz/diversitree/blob/b24aa1417f99525bd08aaa55691306b831db157c/R/util.R
+quadratic.roots <- function(a, b, c)
+	{
+	(-b + c(-1, 1) * sqrt(b*b - 4*a*c))/(2 * a)
+	}
 
 # Made with make.bisse
 # bisse_2areas = make.bisse(tree=tr, states=states, sampling.f=sampling.f, strict=FALSE)
