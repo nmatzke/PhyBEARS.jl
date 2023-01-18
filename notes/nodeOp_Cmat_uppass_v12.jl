@@ -196,7 +196,7 @@ calcDs_4states2 = (du,u,p,t) -> begin
 end
 
 # Quick - WORKS, LOW ijk reordering
-calcDs_4statesA = (du,u,p,t) -> begin
+calcDs_4states2A = (du,u,p,t) -> begin
 
   # Possibly varying parameters
   n = p.n

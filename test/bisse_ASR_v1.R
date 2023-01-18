@@ -32,10 +32,13 @@ phy$tip.state
 
 bisse_2areas = lik
 #fit <- find.mle(lik, pars, method="subplex")
+# MLE doesn't make much sense with tiny data
 fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
 coef(fit)
 st <- asr.marginal(lik, coef(fit))
 nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+t(st)
+
 
 
 res1 = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)
@@ -84,11 +87,40 @@ exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))
 LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)
 cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)
 
+# Compare to Julia:
+# > LnLs1
+# [1] -9.574440 -6.670978
+# > LnLs1t
+# [1] -7.464283 -6.670978
 
 
 EsDs = t(attr(res1t,"intermediates")$init)
 sum(log(rowSums(EsDs[,3:4])))
 attr(res1t,"intermediates")$lq
+sum(attr(res1t,"intermediates")$lq)
+
+# This corresponds to:
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)
+# ...but is double-counting lnLs
+
+
+
+
+#######################################################
+# Look at ASRs
+#######################################################
+
+
+
+
+#######################################################
+# TRYING TO FIT TO SIMULATED DATA
+# This **FAILS** with such tiny data
+#######################################################
+
+
 
 #######################################################
 # Look at find.mle
@@ -103,8 +135,6 @@ diversitree:::do.mle.search
 # change to create some ambiguity
 
 phy2 = phy
-phy2$edge.length[c(1,4)] = c(1-phy2$edge.length[2], 1-phy2$edge.length[6])
-phy2$tip.state[1:4] = c(0, 1, 0, 1)
 
 plot(phy2, label.offset=0.1)
 tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])
@@ -116,6 +146,16 @@ coef(fit2 )
 #fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)
 st2 <- asr.marginal(lik2, coef(fit2))
 nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+t(st2)
+
+names(pars) = names(coef(fit2))
+st2 <- asr.marginal(lik2, pars)
+t(st2)
+
+# Turn off extinction; the speciation/extinction thing dominates on large branches I guess
+pars["mu0"] = 0
+pars["mu1"] = 0
+st2 <- asr.marginal(lik2, pars)
 t(st2)
 
 #######################################################

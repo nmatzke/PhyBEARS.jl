@@ -346,7 +346,7 @@ function update_Cijk_rates_sub_i_t!(p)
 	# Update the Cijk_rates_sub_i_t (where anc==i)
 	@inbounds @simd for i in 1:length(p.setup.states_list)
 		p.p_TFs.Cijk_rates_sub_i_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
-		p.p_TFs.Cjik_rates_sub_j_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Cj_eq_j[i]] # uppass
+#		p.p_TFs.Cjik_rates_sub_j_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Cj_eq_j[i]] # uppass
 	end
 end
 

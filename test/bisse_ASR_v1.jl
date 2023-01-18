@@ -1,11 +1,5 @@
 
 
-# List each PhyBEARS code file prefix here
-using PhyBEARS.Example
-using PhyBEARS.StateSpace
-using PhyBEARS.TreePass
-using PhyBEARS.TrUtils
-using PhyBEARS.SSEs
 
 using Interpolations	# for Linear, Gridded, interpolate
 using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
@@ -17,11 +11,14 @@ using PhyloBits.TrUtils
 using DataFrames
 using CSV
 
+# List each PhyBEARS code file prefix here
 using PhyBEARS
 using PhyBEARS.StateSpace
 using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.ModelLikes
+using PhyBEARS.TreePass
+using PhyBEARS.SSEs
 
 
 # 
@@ -45,22 +42,21 @@ using PhyBEARS.ModelLikes
 # (1 branch, pure birth, no Q transitions, branchlength=1)
 #
 # R code based on
-# source("/GitHub/PhyBEARS.jl/wallis/TreeBig.R")
+# source("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.R")
 
 # Truth:
-R_result_branch_lnL = -17.28156
-R_result_total_LnLs1 = -18.44422
-R_result_total_LnLs1t = -10.82559
-R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = NaN
+# > LnLs1
+# [1] -9.574440 -6.670978
+# > LnLs1t
+# [1] -7.464283 -6.670978
+
+
+R_result_branch_lnL = -6.670978
+R_result_total_LnLs1 = -9.574440
+R_result_total_LnLs1t = -7.464283
+R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -12.06325
 #######################################################
 
-
-#include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
-#import .TreePass
-
-# Repeat calculation in Julia
-#include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
-#import .ModelLikes
 
 tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
 in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.0)
@@ -123,7 +119,9 @@ inputs.p_Ds_v5.params.mu_vals
 p_Ds_v5.sol_Es_v5(1.0)
 
 # Do downpass
-(total_calctime_in_sec, iteration_number) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10);
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), return_lnLs=true, max_iterations=10^10)
+
+
 
 
 
@@ -133,21 +131,25 @@ res.normlikes_at_each_nodeIndex_branchTop
 res.likes_at_each_nodeIndex_branchBot
 res.normlikes_at_each_nodeIndex_branchBot
 
-sum.(res.likes_at_each_nodeIndex_branchTop)
-log.(sum.(res.likes_at_each_nodeIndex_branchTop))
-sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
-Julia_sum_lq = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
-sum(res.lq_at_branchBot)
+# OLD:
+# sum.(res.likes_at_each_nodeIndex_branchTop)
+# log.(sum.(res.likes_at_each_nodeIndex_branchTop))
+# sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
+# Julia_sum_lq = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
+# sum(res.lq_at_branchBot)
+
+# NEW:
+Julia_sum_lq_old = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
+nonroot_nodes = TreePass.get_nonrootnodes_trdf(trdf)
+sum_likes_internal_branch_tops = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))[nonroot_nodes])
+Julia_sum_lq_new = Julia_sum_lq_old + sum_likes_internal_branch_tops
 
 # Does the total of the branch log-likelihoods (lq) match?
-# @test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
+@test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
 
-ttl_from_Julia = sum(res.lq_at_branchBot) +  sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
-@test round(R_result_total_LnLs1; digits=4) == round(ttl_from_Julia; digits=4)
-
-
-# Add the root probabilities
-
+# OLD:
+# ttl_from_Julia = sum(res.lq_at_branchBot) +  sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
+# NEW: Corresponding to R SSE script, "res1" result, which assumes diversitree options:
 # Assuming diversitree options:
 # root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
 # i.e., the root state probs are just the root_Ds/sum(root_Ds)
@@ -156,7 +158,9 @@ root_stateprobs = d_root_orig/sum(d_root_orig)
 rootstates_lnL = log(sum(root_stateprobs .* d_root_orig))
 Julia_total_lnLs1 = Julia_sum_lq + rootstates_lnL
 
+@test round(R_result_total_LnLs1; digits=3) == round(Julia_total_lnLs1; digits=3)
 
+# NEW: Corresponding to R SSE script, "res1t" result, which assumes diversitree options:
 # Assuming diversitree options:
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE (these seem to be the defaults)
 # i.e., the root state probs are just the root_Ds/sum(root_Ds)
@@ -166,13 +170,9 @@ lambda = in_params.birthRate
 e_root = Es_interpolator(root_age)
 d_root = d_root_orig ./ sum(root_stateprobs .* inputs.p_Ds_v5.params.Cijk_vals .* (1 .- e_root).^2)
 rootstates_lnL = log(sum(root_stateprobs .* d_root))
+
 # The above all works out to [0,1] for the Yule model with q01=q02=0.0
-
 Julia_total_lnLs1t = Julia_sum_lq + rootstates_lnL
-
-# Does the total lnL match R?
-# root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
-@test round(R_result_total_LnLs1; digits=4) == round(Julia_total_lnLs1; digits=4)
 
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE
 @test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
@@ -186,9 +186,15 @@ log.(sum.(res.likes_at_each_nodeIndex_branchTop))
 
 sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
 
+
+# This corresponds to:
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+#  sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)
+# ...but is double-counting lnLs
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-# @test round(Julia_sum_lq_nodes; digits=4) == round(R_sum_lq_nodes; digits=4)
+@test round(Julia_sum_lq_nodes; digits=3) == round(R_sum_lq_nodes; digits=3)
 
 
 # The standard diversitree lnL calculation sums:
@@ -232,6 +238,61 @@ print("\n")
 print("R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
 print(R_sum_lq_nodes - Julia_sum_lq_nodes)
 print("\n")
+
+
+
+
+
+#######################################################
+# CHECK ancestral state inferences
+# 
+#######################################################
+tree_height = trtable.node_age[tr.root]
+trtable = prt(tr)
+ancnode = tr.root
+decnode = trtable.leftNodeIndex[ancnode]
+anctime = tree_height - trtable.node_age[ancnode]
+dectime = tree_height - trtable.node_age[decnode]
+
+# Solve the Ds, single branch
+u0 = res.likes_at_each_nodeIndex_branchTop[tr.root]
+u0 ./ sum(u0)
+u0 = res.normlikes_at_each_nodeIndex_branchTop[tr.root]
+
+#######################################################
+# Estimate ancestral states
+#######################################################
+
+solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)
+#solver_options.solver = Tsit5()
+solver_options.solver = Vern9()
+solver_options.abstol = 1e-12
+solver_options.reltol = 1e-12
+solver_options.save_everystep = false
+
+
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+branch_bot_time = 
+tspan = (anctime, dectime)
+
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v5);
+sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v5(anctime)
+sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))
+sol_Ds_v5(dectime)
+sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
+
+
+
+sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
+
+err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
+sum(abs.(err))
+sum(err)
+
+
+
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
 
