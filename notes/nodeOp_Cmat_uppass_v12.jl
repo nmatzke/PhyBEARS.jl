@@ -26,6 +26,42 @@ convert_df_datatypes!(ctable, datatypes)
 ctable
 
 """
+function prtC_single_events(ctable1)
+	ctable2 = ctable1[ctable1.pair .== 2, :]
+	tmpj = deepcopy(ctable2.j)
+	tmpk = deepcopy(ctable2.k)
+	ctable2.j .= tmpk
+	ctable2.k .= tmpj
+
+	ctable = Rrbind(ctable1, ctable2)
+	ctable.prob .= ctable.prob ./ ctable.wt
+	ctable.rate .= ctable.rate ./ ctable.wt
+	ctable.val .= ctable.val ./ ctable.wt
+	ctable.rates_t .= ctable.rates_t ./ ctable.wt
+
+	return ctable
+end # END function make_ctable_single_events(ctable)
+
+
+
+
+
+# Convert a cladogenesis table with paired events to one with non-paired events
+# adjust probs / vals / rates accordingly
+
+"""
+dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]"
+
+dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]"
+dfnames = Reval(dfnames_txt)
+
+datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]")
+
+ctable = DataFrame(Reval(dftxt), dfnames)
+convert_df_datatypes!(ctable, datatypes)
+ctable
+
+"""
 function make_ctable_single_events(ctable1)
 	ctable2 = ctable1[ctable1.pair .== 2, :]
 	tmpj = deepcopy(ctable2.j)
@@ -71,7 +107,8 @@ function branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, s
 # 	print(p_Ds_v5.params.Qij_vals[length(p_Ds_v5.params.Qij_vals)])
 # 	print("\n")
 	
-	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
+#	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
+	prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2G, deepcopy(u0), tspan, p_Ds_v7)
 
 	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -334,6 +371,7 @@ end
 
 
 # Quick - WORKS, no ijk reordering, plus clado guess #4
+# 2023-01-19 works the same on BiSSE uppass 
 calcDs_4states2E = (du,u,p,t) -> begin
 
   # Possibly varying parameters
@@ -378,6 +416,108 @@ calcDs_4states2E = (du,u,p,t) -> begin
 			 .+ u[Carray_kvals[Carray_ivals .== i]].*uE[Carray_jvals[Carray_ivals .== i]]) ))
   end
 end
+
+
+
+# 2023-01-19 works the same on BiSSE uppass 
+calcDs_4states2F = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_ivals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_jvals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_kvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		# Calculation of "D" (likelihood of tip data)
+
+# Case 1: downpass
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+# Uppass:
+		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+
+# Case 2: downpass
+#			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
+# Uppass:
+			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) + 	# case 2	
+# Case 3 & 4: change + eventual extinction
+# Downpass:
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+# Uppass: instead of just flipping i with j, following formula from Freyman & Hoehna
+			sum(Cijk_vals[Carray_ivals[Carray_jvals .== i]] .*                                               
+				 u[Carray_ivals[Carray_jvals .== i]].*uE[Carray_kvals[Carray_jvals .== i]]) +
+
+			sum(Cijk_vals[Carray_kvals[Carray_jvals .== i]] .*                                               
+				 u[Carray_kvals[Carray_jvals .== i]].*uE[Carray_kvals[Carray_jvals .== i]])
+  end
+end
+
+
+
+# 2023-01-19 works the same on BiSSE uppass ALSO
+calcDs_4states2G = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_ivals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_jvals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_kvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		# Calculation of "D" (likelihood of tip data)
+
+# Case 1: downpass
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+# Uppass:
+		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+
+# Case 2: downpass
+#			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
+# Uppass:
+			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) + 	# case 2	
+# Case 3 & 4: change + eventual extinction
+# Downpass:
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+# Uppass: instead of just flipping i with j, following formula from Freyman & Hoehna
+			sum(Cijk_vals[Carray_jvals .== i] .*                                               
+				 u[Carray_ivals[Carray_jvals .== i]].*uE[Carray_kvals[Carray_jvals .== i]]) +
+
+			sum(Cijk_vals[Carray_jvals .== i] .*                                               
+				 u[Carray_kvals[Carray_jvals .== i]].*uE[Carray_kvals[Carray_jvals .== i]])
+  end
+end
+
+
 
 
 
@@ -686,8 +826,10 @@ end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
 
 
 function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
-	p = p_Ds_v7
+	p = p_Ds_v7;
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
+	tree_height = trdf.node_age[trdf.nodeType .== "root"][1]
+
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
 		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
@@ -707,8 +849,8 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
 		# Multiply by saved likelihood at the node to make very small (may avoid scaling issues)
 		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
-		time_start = trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
-		time_end = trdf.node_age[current_nodeIndex]
+		time_start = tree_height - trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
+		time_end = tree_height - trdf.node_age[current_nodeIndex]
 		tspan = [time_start, time_end]
 		
 		# Seems to work 

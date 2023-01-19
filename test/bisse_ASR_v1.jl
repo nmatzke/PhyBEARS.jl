@@ -304,7 +304,7 @@ uppass_likes ./ sum(uppass_likes)
 # Diversitree: asr.marginal
 # 0.005395545 0.9946044545
 
-# calcDs_4states2, calcDs_4states2A 
+# calcDs_4states2, calcDs_4states2A. 2E, 2F, 2G <- all the same on BiSSE
 # 0.004611895520264392
 # 0.9953881044797356
 
@@ -317,10 +317,14 @@ uppass_likes ./ sum(uppass_likes)
 # 0.9947838697767504
 
 
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+
+ctable1 = prtCp(p_Ds_v5)
+make_ctable_single_events(ctable1)
 
 
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2G, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -329,18 +333,32 @@ sol_Ds_v5(dectime)
 rbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
 
 uppass_likes = rbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[rnode]
-uppass_likes ./ sum(uppass_likes)
-
-# Diversitree: asr.marginal
-# 0.999620338 0.0003796623
+asr_at_node7 = uppass_likes ./ sum(uppass_likes)
 
 # calcDs_4states2B, calcDs_4states2C   # <- closest! (and same)
 #  0.9996842305583383
 #  0.00031576944166156017
 
+
+
+# Diversitree: asr.marginal
+# 0.999620338 0.0003796623
+
+diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
+
+
+asr_at_node7 .== diversitree_bisse_Rnode7_01
+
+@test round(asr_at_node7[1]; digits=3) .== round(diversitree_bisse_Rnode7_01[1]; digits=3)
+@test round(asr_at_node7[2]; digits=3) .== round(diversitree_bisse_Rnode7_01[2]; digits=3)
+
+asr_at_node7[1] - diversitree_bisse_Rnode7_01[1]
+asr_at_node7[2] - diversitree_bisse_Rnode7_01[2]
+
+
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2E, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2F, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -388,24 +406,14 @@ normlikes_sqrt_root_states1 = 0.4650083587227312
 normlikes_sqrt_root_states2 = 0.5349916412772688
 
  
-# Downpass probs from the sister branch
+# Uppass through whole tree
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+current_nodeIndex = tr.root
+p_Ds_v7 = p_Ds_v5;
+nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-
-
-
-# (just take the ancestral states - no)
-anc = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
-
-
-
-sol_Ds_v7(2.0) ./ sum(sol_Ds_v7(2.0))
-
-err = truth .- (sol_Ds_v7(3.0) ./ sum(sol_Ds_v7(3.0)))
-sum(abs.(err))
-sum(err)
-
-
-
+res.anc_estimates_at_each_nodeIndex_branchTop
+res.uppass_probs_at_each_nodeIndex_branchTop
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
 
