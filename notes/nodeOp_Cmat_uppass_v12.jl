@@ -332,6 +332,55 @@ calcDs_4states2C = (du,u,p,t) -> begin
 end
 
 
+
+# Quick - WORKS, no ijk reordering, plus clado guess #4
+calcDs_4states2E = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_ivals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_jvals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_kvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		# Calculation of "D" (likelihood of tip data)
+
+# Case 1: downpass
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+# Uppass:
+		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+
+# Case 2: downpass
+#			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
+# Uppass:
+			(sum(Qij_vals[Qarray_jvals .== i] .* u[(Qarray_ivals[Qarray_jvals .== i])])) + 	# case 2	
+# Case 3 & 4: change + eventual extinction
+# Downpass:
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+# Uppass: instead of just flipping i with j, following formula from Freyman & Hoehna
+			(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+				 (u[Carray_jvals[Carray_ivals .== i]].*uE[Carray_kvals[Carray_ivals .== i]] 
+			 .+ u[Carray_kvals[Carray_ivals .== i]].*uE[Carray_jvals[Carray_ivals .== i]]) ))
+  end
+end
+
+
+
 # Quick
 calcDs_4states3 = (du,u,p,t) -> begin
 

@@ -247,10 +247,12 @@ print("\n")
 # CHECK ancestral state inferences
 # 
 #######################################################
+trtable = prt(tr)
 tree_height = trtable.node_age[tr.root]
 trtable = prt(tr)
 ancnode = tr.root
 decnode = trtable.leftNodeIndex[ancnode]
+sisnode = trtable.rightNodeIndex[ancnode]
 anctime = tree_height - trtable.node_age[ancnode]
 dectime = tree_height - trtable.node_age[decnode]
 
@@ -258,6 +260,19 @@ dectime = tree_height - trtable.node_age[decnode]
 u0 = res.likes_at_each_nodeIndex_branchTop[tr.root]
 u0 ./ sum(u0)
 u0 = res.normlikes_at_each_nodeIndex_branchTop[tr.root]
+u0 = [0.5, 0.5]
+
+# Calculate bisse ancestral states:
+ancnode = tr.root
+lnode = trdf.leftNodeIndex[ancnode]
+rnode = trdf.rightNodeIndex[ancnode]
+
+left_likes = res.normlikes_at_each_nodeIndex_branchBot[lnode]
+right_likes = res.normlikes_at_each_nodeIndex_branchBot[rnode]
+
+
+
+
 
 #######################################################
 # Estimate ancestral states
@@ -266,22 +281,120 @@ u0 = res.normlikes_at_each_nodeIndex_branchTop[tr.root]
 solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)
 #solver_options.solver = Tsit5()
 solver_options.solver = Vern9()
-solver_options.abstol = 1e-12
-solver_options.reltol = 1e-12
+solver_options.abstol = 1e-6
+solver_options.reltol = 1e-6
 solver_options.save_everystep = false
 
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
-branch_bot_time = 
 tspan = (anctime, dectime)
 
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2, u0, tspan, p_Ds_v5);
+u0 = right_likes
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
 sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))
 sol_Ds_v5(dectime)
-sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
+lbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
+
+uppass_likes = lbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[lnode]
+uppass_likes ./ sum(uppass_likes)
+
+# Diversitree: asr.marginal
+# 0.005395545 0.9946044545
+
+# calcDs_4states2, calcDs_4states2A 
+# 0.004611895520264392
+# 0.9953881044797356
+
+# calcDs_4states2B # <- closest!
+# 0.005216130223249679
+# 0.9947838697767504
+
+# calcDs_4states2C # <-- same
+# 0.005216130223249679
+# 0.9947838697767504
+
+
+
+
+u0 = left_likes
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v5);
+sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v5(anctime)
+sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))
+sol_Ds_v5(dectime)
+rbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
+
+uppass_likes = rbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[rnode]
+uppass_likes ./ sum(uppass_likes)
+
+# Diversitree: asr.marginal
+# 0.999620338 0.0003796623
+
+# calcDs_4states2B, calcDs_4states2C   # <- closest! (and same)
+#  0.9996842305583383
+#  0.00031576944166156017
+
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+u0 = left_likes
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2E, u0, tspan, p_Ds_v5);
+sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Ds_v5(anctime)
+sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))
+sol_Ds_v5(dectime)
+rbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
+
+uppass_likes = rbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[rnode]
+uppass_likes ./ sum(uppass_likes)
+# 0.9996842305583383
+# 0.00031576944166156017
+
+# 0.9996842305583383
+# 0.00031576944166156017
+
+
+#######################################################
+# These all match, but this doesn't prove the 
+# cladogenesis part works right when mu > 0 and 
+# non-sympatry clado > 0
+#######################################################
+
+
+
+
+
+# Root state probabilities
+res.normlikes_at_each_nodeIndex_branchTop[tr.root]
+# 0.43035780124527134
+# 0.5696421987547287
+normlikes_root_states1 = 0.43035780124527134
+normlikes_root_states2 = 0.5696421987547287
+
+# attr(res1t,"intermediates")$root.p
+# [1] 0.4303571 0.5696429
+res1t_root_states1 = 0.4303571
+res1t_root_states2 = 0.5696429
+
+
+sqrt.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]) ./ sum(sqrt.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]))
+# 2-element Vector{Float64}:
+#  0.4650083587227312
+#  0.5349916412772688
+normlikes_sqrt_root_states1 = 0.4650083587227312
+normlikes_sqrt_root_states2 = 0.5349916412772688
+
+ 
+# Downpass probs from the sister branch
+
+
+
+
+# (just take the ancestral states - no)
+anc = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
 
 
 
