@@ -194,18 +194,24 @@ orig_pars = pars
 names(pars) = names(coef(fit2))
 st2 <- asr.marginal(lik2, pars)
 t(st2)
-st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)
-t(st2)
-
 # t(st2)
 #             [,1]         [,2]
 # [1,] 0.430357148 0.5696428522  # <- matches res1 or res1t
-# [2,] 0.005145312 0.9948546878
-# [3,] 0.999681941 0.0003180585
+# [2,] 0.005145312 0.9948546878  # <- closest of the below
+# [3,] 0.999681941 0.0003180585  # <- closest of the below
+
+
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)
+t(st2)
+#             [,1]         [,2]
+# [1,] 0.430357148 0.5696428522
+# [2,] 0.005395545 0.9946044545
+# [3,] 0.999620338 0.0003796623
+
+
 st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, condition.surv=TRUE)
 t(st2)
-# > t(st2)
-#           [,1]        [,2]
+#            [,1]        [,2]
 # [1,] 0.49926227 0.500737731
 # [2,] 0.00570688 0.994293120
 # [3,] 0.99963639 0.000363611

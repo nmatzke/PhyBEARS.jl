@@ -108,7 +108,7 @@ function branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, s
 # 	print("\n")
 	
 #	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
-	prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2G, deepcopy(u0), tspan, p_Ds_v7)
+	prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v7)
 
 	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -370,6 +370,127 @@ end
 
 
 
+# Loop through j not i (just increases clarity)
+# 2023-01-20 works the same on BiSSE uppass 
+# 2023-01-20 BEST GUESS
+calcDs_4states2D = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_ivals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_jvals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_kvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+  @inbounds for j in 1:n
+		# Calculation of "D" (likelihood of tip data)
+
+# Case 1: downpass
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+# Uppass:
+		du[j] = -(sum(Cijk_vals[Carray_ivals .== j]) + sum(Qij_vals[Qarray_ivals .== j]) + mu[j])*u[j] +  # case 1: no event
+
+# Case 2: downpass
+#			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
+# Uppass:
+			(sum(Qij_vals[Qarray_jvals .== j] .* u[(Qarray_ivals[Qarray_jvals .== j])])) + 	# case 2	
+# Case 3 & 4: change + eventual extinction
+# Downpass:
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+# Uppass: instead of just flipping i with j, following formula from Freyman & Hoehna
+			sum(Cijk_vals[Carray_jvals .== j] .*                                               
+				 u[Carray_ivals[Carray_jvals .== j]].*uE[Carray_kvals[Carray_jvals .== j]]) +
+
+			sum(Cijk_vals[Carray_jvals .== j] .*                                               
+				 u[Carray_kvals[Carray_jvals .== j]].*uE[Carray_kvals[Carray_jvals .== j]])
+  end
+end
+
+
+
+parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+	uE = p.sol_Es_v5(t)
+	terms = Vector{Float64}(undef, 4)
+  @inbounds @simd for i in 1:n
+		terms .= 0.0
+
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+	
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i[i], p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qi_sub_j[i]; term2=terms[2], term3=terms[3])
+		
+		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+  end
+end
+
+
+
+# DON'T USE
+# THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
+# (even putting in i 
+function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
+		""" # Original:
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    end
+		"""
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    end
+
+		# For a given "j", "it" goes through all the hits
+    @inbounds @simd for it=1:length(Cjik_rates_sub_j)
+#    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    	term4 += Cjik_rates_sub_j[it] * (tmp_u[Ci_sub_j[it]] * tmp_uE[Ck_sub_j[it]] + tmp_u[Ck_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
+    end
+    return term1, term4
+end;
+
+# THIS ONE IS DIFFERENT, as i->j and j->i can have different probabilities
+function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Qi_sub_j; term2=Float64(0.0), term3=Float64(0.0))
+		""" # Original
+    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+    	term2 += Qij_vals_sub_i[it]
+    	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
+    end
+		"""
+		# These should sum to the same: Qij_vals_sub_i, Qji_vals_sub_j, across all i or j
+#    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+#    	term2 += Qij_vals_sub_i[it]
+#    end
+
+    @inbounds @simd for it=1:length(Qij_vals_sub_i)
+	    term2 += Qij_vals_sub_i[it]
+    end
+
+    @inbounds @simd for it=1:length(Qji_vals_sub_j)
+    	term3 += Qji_vals_sub_j[it] * tmp_u[Qi_sub_j[it]] # Different on uppass; Freyman paper
+    end
+
+    return term2, term3
+end;
+
+
+
+
 # Quick - WORKS, no ijk reordering, plus clado guess #4
 # 2023-01-19 works the same on BiSSE uppass 
 calcDs_4states2E = (du,u,p,t) -> begin
@@ -416,6 +537,7 @@ calcDs_4states2E = (du,u,p,t) -> begin
 			 .+ u[Carray_kvals[Carray_ivals .== i]].*uE[Carray_jvals[Carray_ivals .== i]]) ))
   end
 end
+
 
 
 
@@ -556,46 +678,6 @@ calcDs_4states3 = (du,u,p,t) -> begin
 end
 
 
-
-
-# DON'T USE
-# THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
-# (even putting in i 
-function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
-		""" # Original:
-    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
-    	term1 += Cijk_rates_sub_i[it]
-    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
-    end
-		"""
-
-    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
-    	term1 += Cijk_rates_sub_i[it]
-#    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
-    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]] + tmp_u[Cj_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
-    end
-    return term1, term4
-end;
-
-# THIS ONE IS DIFFERENT, as i->j and j->i can have different probabilities
-function sum_Qij_vals_inbounds_simd_FWD(Qji_vals_sub_j, tmp_u, Qi_sub_j; term2=Float64(0.0), term3=Float64(0.0))
-		""" # Original
-    @inbounds @simd for it=1:length(Qij_vals_sub_i)
-    	term2 += Qij_vals_sub_i[it]
-    	term3 += Qij_vals_sub_i[it] * tmp_u[Qj_sub_i[it]]
-    end
-		"""
-		# These should sum to the same: Qij_vals_sub_i, Qji_vals_sub_j, across all i or j
-#    @inbounds @simd for it=1:length(Qij_vals_sub_i)
-#    	term2 += Qij_vals_sub_i[it]
-#    end
-    @inbounds @simd for it=1:length(Qji_vals_sub_j)
-	    term2 += Qji_vals_sub_j[it]
-    	term3 += Qji_vals_sub_j[it] * tmp_u[Qi_sub_j[it]] # Different on uppass; Freyman paper
-    end
-
-    return term2, term3
-end;
 
 
 # # Tturbo turned out to not be faster...
@@ -862,7 +944,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		
 		# Uses parameterized_ClaSSE_Ds_v7
 		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
 		
 		"""
 		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
@@ -1012,8 +1094,17 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 		current_nodeIndex = ancnode
 				
 		nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
-	
 	end # END for (i in odds(1:nrow(trdf))
+
+	# Then go through tip nodes
+	rownums = (1:Rnrow(trdf))
+	tipnodes = rownums[trdf.nodeType .== "tip"]
+	for ancnode in tipnodes
+		# Work up through the nodes, starting from the root
+		current_nodeIndex = ancnode
+		current_node_time = trdf.node_age[current_nodeIndex]
+		nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
+	end
 
 end # END function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
@@ -1105,7 +1196,7 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 		print("\nStarting probs at branch bottom:")
 		print(u0)
 		
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
