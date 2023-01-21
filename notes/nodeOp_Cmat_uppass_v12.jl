@@ -93,6 +93,67 @@ end # END function make_ctable_single_events(ctable)
 # This function can read from res, but writing to res is VERY BAD as 
 # it created conflicts apparently when there were more @spawns than cores
 # Do all the writing to res in the while() loop
+function branchOp_ClaSSE_Ds_v5_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options)
+	calc_start_time = Dates.now()
+	spawned_nodeIndex = current_nodeIndex
+	tmp_threadID = Threads.threadid()
+	
+	# Example slow operation
+	#y = countloop(num_iterations, current_nodeIndex)
+# 	print("\n")
+# 	print("branchOp_ClaSSE_Ds_v5: d: ")
+# 	print(p_Ds_v5.params.Qij_vals[1])
+# 	print("branchOp_ClaSSE_Ds_v5: e: ")
+# 	print(p_Ds_v5.params.Qij_vals[length(p_Ds_v5.params.Qij_vals)])
+# 	print("\n")
+	
+#	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
+	prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v7)
+
+	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	sol_Ds = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, saveat=solver_options.saveat, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	
+	# Error catch seems to slow it down!!
+	"""
+	try
+		sol_Ds = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	catch e
+		txt = paste0(["\nError in branchOp_ClaSSE_Ds_v5(): solve(prob_Ds_v5, ", SubString(string(solver_options.solver), 1:15), "..., save_everystep=", string(solver_options.save_everystep), ", abstol=", string(solver_options.abstol), ", reltol=", string(solver_options.reltol), "): this error may indicate an impossible parameter combination (e.g. all rates are 0.0). Returning 1e-15 for all Ds."])
+		print(txt)
+		# Return a fake sol_Ds function
+		nan_val = 1e-15
+		function sol_Ds_tmp(t, tmp_n)
+			res = collect(repeat([nan_val], tmp_n))
+		end
+		sol_Ds = t -> sol_Ds_tmp(t, length(u0)) # returns a array of nan_val, regardless of time t input
+	end
+	"""
+# 	print(sol_Ds[length(sol_Ds)])
+# 	print("\n")
+	
+	#nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex]
+	#nodeData_at_bottom = nodeData_at_top / 2.0
+	#nodeData_at_bottom = sol_Ds.u
+	
+	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
+end
+
+
+#######################################################
+# Run the Ds calculation from old to new (up the tree),
+# reverse of the standard method.
+#######################################################
+
+
+# Calculate Ds UP a branch
+#
+# Modifies branchOp to do Ds calculation down a branch
+#
+# This function can read from res, but writing to res is VERY BAD as 
+# it created conflicts apparently when there were more @spawns than cores
+# Do all the writing to res in the while() loop
 function branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options)
 	calc_start_time = Dates.now()
 	spawned_nodeIndex = current_nodeIndex
@@ -108,7 +169,8 @@ function branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, s
 # 	print("\n")
 	
 #	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v7)
-	prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v7)
+#	prob_Ds_v7 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v7)
+	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v7)
 
 	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -429,10 +491,11 @@ parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD = (du,u,p,t) -> begin
   mu = p.params.mu_vals
 	uE = p.sol_Es_v5(t)
 	terms = Vector{Float64}(undef, 4)
-  @inbounds @simd for i in 1:n
+  @inbounds @simd for i in 1:n  # Really, you are going through ancestral states "j" here, 
+  															# as you are moving fwd in time from j to i
 		terms .= 0.0
 
-		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd(p.p_TFs.Cijk_rates_sub_i[i], u, uE, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=terms[1], term4=terms[4])
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd_FWD(p.p_TFs.Cijk_rates_sub_i[i], p.p_TFs.Cjik_rates_sub_j[i], u, uE, p.p_TFs.Ci_sub_j[i], p.p_TFs.Ck_sub_j[i]; term1=terms[1], term4=terms[4])
 	
 		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i[i], p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qi_sub_j[i]; term2=terms[2], term3=terms[3])
 		
@@ -442,10 +505,10 @@ end
 
 
 
-# DON'T USE
-# THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
+# THIS ONE IS DIFFERENT, as Cjik starts from j, leads to i and k
+# XXX old: THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
 # (even putting in i 
-function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Cj_sub_i, Ck_sub_i, Cj_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
+function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Ci_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
 		""" # Original:
     @inbounds @simd for it=1:length(Cijk_rates_sub_i)
     	term1 += Cijk_rates_sub_i[it]
@@ -907,6 +970,176 @@ end # END nodeOp_Cmat_get_condprobs = (tmpDs; tmp1, tmp2, p_Ds_v12) -> begin
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+	p = p_Ds_v7;
+	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
+	tree_height = trdf.node_age[trdf.nodeType .== "root"][1]
+
+	# Is this a root node?
+	if (current_nodeIndex == res.root_nodeIndex)
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		# Wrong: this incorporates downpass information from both branches above the root; 
+		# using information too many times!
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		
+		uppass_probs_just_below_node = repeat([1/n], n)
+
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+	
+	# Tip or internal nodes require passing probs up from branch bottom
+	else
+		# The uppass ancestral state probs will have been previously 
+		# calculated at the branch bottom
+		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
+		# Multiply by saved likelihood at the node to make very small (may avoid scaling issues)
+		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
+		time_start = tree_height - trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
+		time_end = tree_height - trdf.node_age[current_nodeIndex]
+		tspan = [time_start, time_end]
+		
+		# Seems to work 
+		txt = paste0(["\nNode #", current_nodeIndex])
+		print("\n")
+		print(txt)
+		print("\nStarting probs at branch bottom:")
+		print(u0)
+		
+		# Uses parameterized_ClaSSE_Ds_v7
+		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v5_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		
+		"""
+		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+		solver_options.solver
+		solver_options.save_everystep = true
+		solver_options.saveat = seq(2.0, 3.0, 0.1)
+		tspan = (2.0, 3.0)
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
+		
+		sol_Ds(1.0)
+		sol_Ds(2.1)
+		sol_Ds(2.0)
+		sol_Ds(2.1)
+		"""
+		
+		# These are really conditional probabilities upwards, they don't 
+		# have to add up to 1.0, unless normalized
+		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
+		print("\nuppass_probs_just_below_node, pre-correction:")
+		print(uppass_probs_just_below_node)
+		
+		# Correct for any values slipping below 0.0
+		TF = uppass_probs_just_below_node .<= 0.0
+		if (any(TF))
+			# Round to zero
+			#uppass_probs_just_below_node[TF] .= 0.0
+			# versus add the minimum (may preserve magnitude better)
+			uppass_probs_just_below_node .= uppass_probs_just_below_node .- minimum(uppass_probs_just_below_node)
+		end
+		
+		# Normalize to sum to 1.0, *IF* sum is greater than 1
+		if (sum(uppass_probs_just_below_node) > 1.0)		
+			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
+
+			print("\nuppass_probs_just_below_node, post-correction:")
+			print(uppass_probs_just_below_node)
+			print("\n")
+		end
+	end # END if (current_nodeIndex == res.root_nodeIndex)
+			# END uppass from branch below
+	
+	# Combine info through node; Store results
+	# Check if its a tip node
+	if (trdf.nodeType[current_nodeIndex] == "tip")
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+	
+	# Internal nodes (not root)
+	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
+		# (Ignore direct ancestors for now)
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		
+		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
+		if (trdf.nodeType[current_nodeIndex] != "root")
+			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		end
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+		
+		# Get uppass probs for Left and Right daughter branches
+		node_above_Left_corner = trdf.rightNodeIndex[current_nodeIndex]
+		node_above_Right_corner = trdf.leftNodeIndex[current_nodeIndex]
+
+
+		# LEFT NODE UPPASS
+		# Calculate the post-cladogenesis uppass probabilities for the Left node
+		ctable = make_ctable_single_events(prtCp(p))
+		Ldownpass_likes = collect(repeat([1.0], n))
+		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+
+		uppass_lprobs = repeat([0.0], n)
+		uppass_rprobs = repeat([0.0], n)
+
+		for statei in 1:n
+			uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei])
+			uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei]) # discarded
+		end
+
+		uppass_lprobs = uppass_lprobs ./ sum(uppass_lprobs)
+		uppass_rprobs = uppass_rprobs ./ sum(uppass_rprobs)
+		
+		res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner] .= uppass_lprobs
+
+		
+		# RIGHT NODE UPPASS
+		# Calculate the post-cladogenesis uppass probabilities for the Left node
+		Rdownpass_likes = collect(repeat([1.0], n))
+		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+
+		uppass_lprobs = repeat([0.0], n)
+		uppass_rprobs = repeat([0.0], n)
+
+		for statei in 1:n
+			uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei]) # discarded
+			uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei])
+		end
+
+		uppass_lprobs = uppass_lprobs ./ sum(uppass_lprobs)
+		uppass_rprobs = uppass_rprobs ./ sum(uppass_rprobs)
+		res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner] .= uppass_rprobs
+		
+		# Get ancestral range estimates for Left and Right daughter branches
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= Ldownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner])
+
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
+	
+	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
+	
+	end # END elseif internal nodes
+end # END nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+
+
+
+
+
+
 function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 	p = p_Ds_v7;
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
@@ -1059,6 +1292,56 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	
 	end # END elseif internal nodes
 end # END nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+
+
+function uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+	uppass_edgematrix = res.uppass_edgematrix
+	
+	# Iterate through rows of the edge matrix, like in R
+	# Do it in pairs (left branch, then right branch)
+	# uppass_edgematrix: column 1 is ancestral node numbers (i.e. rows of trdf)
+	#                    column 2 is descendant node numbers (i.e. rows of trdf)
+	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
+	for i in ivals_odd
+		print(i)
+		j = i+1
+		# Error check: Check the uppass edge matrix; 
+		ancnode1 = uppass_edgematrix[i,1]
+		ancnode2 = uppass_edgematrix[j,1]
+		if (ancnode1 == ancnode2)
+			ancnode = ancnode1
+		else
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			print("\n")
+			print(stoptxt)
+			print("\n")
+			print(res.uppass_edgematrix[i:j,:])
+			print("\n")
+			error(stoptxt)
+		end # END if (ancnode1 == ancnode2)
+	
+		Lnode = uppass_edgematrix[i,2]
+		Rnode = uppass_edgematrix[j,2]
+		
+		# Work up through the nodes, starting from the root
+		current_nodeIndex = ancnode
+				
+		nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
+	end # END for (i in odds(1:nrow(trdf))
+
+	# Then go through tip nodes
+	rownums = (1:Rnrow(trdf))
+	tipnodes = rownums[trdf.nodeType .== "tip"]
+	for ancnode in tipnodes
+		# Work up through the nodes, starting from the root
+		current_nodeIndex = ancnode
+		current_node_time = trdf.node_age[current_nodeIndex]
+		nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
+	end
+end # END function uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+
 
 
 function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
