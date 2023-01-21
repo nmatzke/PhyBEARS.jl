@@ -138,7 +138,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	Carray_event_types = repeat(["y"], n) # y=sYmpatric speciation (for MuSSE)
 	row_weightvals = repeat([1.0], n)
 	
-	Carray = (Carray_ivals=Carray_ivals, Carray_jvals=Carray_jvals, Carray_kvals=Carray_kvals, Carray_pair=Carray_pair, Cijk_weights=Cijk_weights, Cijk_vals=Cijk_vals, Carray_event_types=Carray_event_types, row_weightvals=row_weightvals)
+	Carray = (Carray_ivals=Carray_ivals, Carray_jvals=Carray_jvals, Carray_kvals=Carray_kvals, Carray_pair=Carray_pair, Cijk_weights=Cijk_weights, Cijk_vals=Cijk_vals, Cijk_rates=birthRate.*Cijk_probs, Carray_event_types=Carray_event_types, row_weightvals=row_weightvals)
 	
 	# Set up mu (extinction) rates, manually
 	mu_vals = repeat([deathRate], n)
