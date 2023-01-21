@@ -1343,6 +1343,7 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 	# Update Qij_vals_sub_i
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qji_vals[p_Ds_v5.p_TFs.Qi_eq_j[i]]
 	end
 
 
@@ -2358,6 +2359,7 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	# Update the Cijk_rates_sub_i (where anc==i)
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Cijk_rates_sub_i[i] .= Cijk_rates[p_Ds_v5.p_TFs.Ci_eq_i[i]]
+		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_TFs.Ci_eq_j[i]]
 	end
 	
 
@@ -2372,6 +2374,7 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	Cijk_rates = p_Ds_v5.params.Carray.Cijk_rates;
 	Cijk_vals = p_Ds_v5.params.Cijk_vals;
 	Cijk_rates_sub_i = p_Ds_v5.p_TFs.Cijk_rates_sub_i;
+	Cjik_rates_sub_i = p_Ds_v5.p_TFs.Cjik_rates_sub_j;
 	row_weightvals = p_Ds_v5.params.row_weightvals
 	DataFrame(event=Carray_event_types, i=Carray_ivals, j=Carray_jvals, k=Carray_kvals, wt=Cijk_weights, prob=Cijk_probs, rate=Cijk_rates, val=Cijk_vals)
 	"""
