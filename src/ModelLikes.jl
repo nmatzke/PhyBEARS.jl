@@ -175,24 +175,64 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	# Set up the p_TFs & subs (where anc==i)
 	# The push! operation may get slow at huge n
 	# This will have to change for non-Mk models
+# 	for i in 1:n
+# 		push!(Qi_eq_i, Qmat.Qarray_ivals .== i)
+# 		push!(Qi_sub_i, Qmat.Qarray_ivals[Qarray_ivals .== i])
+# 		push!(Qj_sub_i, Qmat.Qarray_jvals[Qarray_ivals .== i])
+# 
+# 		push!(Ci_eq_i, Carray.Carray_ivals .== i)
+# 		push!(Ci_sub_i, Carray.Carray_ivals[Carray.Carray_ivals .== i])
+# 		push!(Cj_sub_i, Carray.Carray_jvals[Carray.Carray_ivals .== i])
+# 		push!(Ck_sub_i, Carray.Carray_kvals[Carray.Carray_ivals .== i])
+# 
+# 		push!(Ci_sub_j, Carray.Carray_jvals[Carray.Carray_jvals .== i]) # uppass
+# 		push!(Cj_sub_j, Carray.Carray_jvals[Carray.Carray_jvals .== i]) # uppass
+# 		push!(Ck_sub_j, Carray.Carray_kvals[Carray.Carray_kvals .== i]) # uppass
+# 	end
+
+
+	# Set up the p_TFs & subs (where anc==i)
+	# The push! operation may get slow at huge n
 	for i in 1:n
-		push!(Qi_eq_i, Qmat.Qarray_ivals .== i)
-		push!(Qi_sub_i, Qmat.Qarray_ivals[Qarray_ivals .== i])
-		push!(Qj_sub_i, Qmat.Qarray_jvals[Qarray_ivals .== i])
+		Qi_eq_i[i] = Qmat.Qarray_ivals .== i											# list of TF lists for anc==i
+		Qi_eq_i_index[i] = (1:length(Qi_eq_i[i]))[Qi_eq_i[i]]
+		Qi_sub_i[i] = Qmat.Qarray_ivals[Qarray_ivals .== i]		# list of i's lists for anc==i
+		Qj_sub_i[i] = Qmat.Qarray_jvals[Qarray_ivals .== i]		# list of j's lists for anc==i
 
-		push!(Ci_eq_i, Carray.Carray_ivals .== i)
-		push!(Ci_sub_i, Carray.Carray_ivals[Carray.Carray_ivals .== i])
-		push!(Cj_sub_i, Carray.Carray_jvals[Carray.Carray_ivals .== i])
-		push!(Ck_sub_i, Carray.Carray_kvals[Carray.Carray_ivals .== i])
+		Qij_vals_sub_i[i] = Qmat.Qij_vals[Qarray_ivals .== i]	# list of Qij rates lists for anc==i
+		Qij_vals_sub_i_t[i] = Qmat.Qij_vals[Qarray_ivals .== i]
+		Qji_vals_sub_j[i] = Qmat.Qij_vals[Qarray_jvals .== i]	# list of Qij rates lists for anc==i
+		Qji_vals_sub_j_t[i] = Qmat.Qij_vals[Qarray_jvals .== i]
+		
+		Ci_eq_i[i] = Carray.Carray_ivals .== i													# list of TF lists for anc==i
+		Ci_eq_i_index[i] = (1:length(Ci_eq_i[i]))[Ci_eq_i[i]]
 
-		push!(Ci_sub_j, Carray.Carray_jvals[Carray.Carray_jvals .== i]) # uppass
-		push!(Cj_sub_j, Carray.Carray_jvals[Carray.Carray_jvals .== i]) # uppass
-		push!(Ck_sub_j, Carray.Carray_kvals[Carray.Carray_kvals .== i]) # uppass
+		Ci_sub_i[i] = Carray.Carray_ivals[Carray.Carray_ivals .== i]		# list of i's lists for anc==i
+		Cj_sub_i[i] = Carray.Carray_jvals[Carray.Carray_ivals .== i]		# list of j's lists for anc==i
+		Ck_sub_i[i] = Carray.Carray_kvals[Carray.Carray_ivals .== i]		# list of k's lists for anc==i
+
+		Ci_sub_j[i] = Carray.Carray_ivals[Carray.Carray_jvals .== i]		# list of i's lists for anc==j
+		Cj_sub_j[i] = Carray.Carray_jvals[Carray.Carray_jvals .== i]		# list of j's lists for anc==j
+		Ck_sub_j[i] = Carray.Carray_kvals[Carray.Carray_jvals .== i]		# list of k's lists for anc==j
+
+		Cijk_not_y_sub_i[i] = Carray.Carray_event_types[Carray.Carray_ivals .== i] .!= "y"	# gives true if not "y"
+		Cijk_pair_sub_i[i] = Carray.Carray_pair[Carray.Carray_ivals .== i]		# list of Cijk rates lists for anc==i
+		Cijk_rates_sub_i[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
+		Cijk_rates_sub_i_t[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
+		
+		# uppass
+		Cjik_rates_sub_j[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
+		Cjik_rates_sub_j_t[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
 
 	end
 
+
 	# Inputs to the Es calculation
-	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Ci_sub_j=Ci_sub_j, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j)
+#	p_TFs = (Qi_eq_i=Qi_eq_i, Ci_eq_i=Ci_eq_i, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Ci_sub_j=Ci_sub_j, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j)
+
+
+	p_TFs = (Qi_eq_i=Qi_eq_i, Qi_eq_i_index=Qi_eq_i_index, Ci_eq_i=Ci_eq_i, Ci_eq_i_index=Ci_eq_i_index, Qi_sub_i=Qi_sub_i, Qj_sub_i=Qj_sub_i, Qij_vals_sub_i=Qij_vals_sub_i, Qij_vals_sub_i_t=Qij_vals_sub_i_t, Qji_vals_sub_j=Qji_vals_sub_j, Qji_vals_sub_j_t=Qji_vals_sub_j_t, Ci_sub_i=Ci_sub_i, Cj_sub_i=Cj_sub_i, Ck_sub_i=Ck_sub_i, Ci_sub_j=Ci_sub_j, Cj_sub_j=Cj_sub_j, Ck_sub_j=Ck_sub_j, Qij_singleNum_sub_i=Qij_singleNum_sub_i, Cij_singleNum_sub_i=Cij_singleNum_sub_i, Cik_singleNum_sub_i=Cik_singleNum_sub_i, Cijk_not_y_sub_i=Cijk_not_y_sub_i, Cijk_pair_sub_i=Cijk_pair_sub_i, Cijk_rates_sub_i=Cijk_rates_sub_i, Cijk_rates_sub_i_t=Cijk_rates_sub_i_t, Cjik_rates_sub_j=Cjik_rates_sub_j, Cjik_rates_sub_j_t=Cjik_rates_sub_j_t)
+
 	p_orig = (n=n, params=params, p_indices=p_indices)
 	p = p_orig
 	
