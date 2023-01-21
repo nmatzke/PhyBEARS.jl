@@ -157,20 +157,61 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	# Pre-allocating the Carray_ivals .== i, Qarray_jvals[Qarray_ivals .== i
 	# Reduces GC (Garbage Collection) from 40% to ~5%
 	# 10+ times speed improvement (!)
-	Qi_eq_i = Any[]
-	Ci_eq_i = Any[]
+# 	Qi_eq_i = Any[]
+# 	Ci_eq_i = Any[]
+# 
+# 	Qi_sub_i = Any[]
+# 	Qj_sub_i = Any[]
+# 
+# 	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
+# 	Ci_sub_i = Any[]
+# 	Cj_sub_i = Any[]
+# 	Ck_sub_i = Any[]
+# 	
+# 	Ci_sub_j = Any[] # uppass		Carray_ivals[Carray_jvals .== j]
+# 	Cj_sub_j = Any[] # uppass		Carray_jvals[Carray_jvals .== j]
+# 	Ck_sub_j = Any[] # uppass		Carray_kvals[Carray_jvals .== j]
 
-	Qi_sub_i = Any[]
-	Qj_sub_i = Any[]
 
-	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
-	Ci_sub_i = Any[]
-	Cj_sub_i = Any[]
-	Ck_sub_i = Any[]
+
+	# These are lists of TFs for anc==i
+	Qi_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
+	Ci_eq_i = [Vector{Bool}(undef, n) for _ = 1:n]
 	
-	Ci_sub_j = Any[] # uppass		Carray_ivals[Carray_jvals .== j]
-	Cj_sub_j = Any[] # uppass		Carray_jvals[Carray_jvals .== j]
-	Ck_sub_j = Any[] # uppass		Carray_kvals[Carray_jvals .== j]
+	# These are the indices (the rows of Qarray and Carray) corresponding to the above
+	Qi_eq_i_index = [Vector{Int}(undef, n) for _ = 1:n]
+	Ci_eq_i_index = [Vector{Int}(undef, n) for _ = 1:n]
+	
+	# These are the (e.g.) j state-indices (left descendant) when the ancestor==state i
+	Qi_sub_i = Vector{Vector{Int64}}(undef, n)
+	Qj_sub_i = Vector{Vector{Int64}}(undef, n)
+
+	Qij_vals_sub_i = Vector{Vector{Float64}}(undef, n)
+	Qij_vals_sub_i_t = Vector{Vector{Float64}}(undef, n)
+
+	Qji_vals_sub_j = Vector{Vector{Float64}}(undef, n)
+	Qji_vals_sub_j_t = Vector{Vector{Float64}}(undef, n)
+
+
+	Ci_sub_i = Vector{Vector{Int64}}(undef, n)
+	Cj_sub_i = Vector{Vector{Int64}}(undef, n)
+	Ck_sub_i = Vector{Vector{Int64}}(undef, n)
+
+	Ci_sub_j = Vector{Vector{Int64}}(undef, n)	# uppass		Carray_ivals[Carray_jvals .== j]
+	Cj_sub_j = Vector{Vector{Int64}}(undef, n)	# uppass		Carray_jvals[Carray_jvals .== j]
+	Ck_sub_j = Vector{Vector{Int64}}(undef, n)	# uppass		Carray_kvals[Carray_jvals .== j]
+
+
+	Cijk_not_y_sub_i = Vector{Vector{Bool}}(undef, n)
+	Cijk_pair_sub_i = Vector{Vector{Int64}}(undef, n)
+	Cijk_rates_sub_i = Vector{Vector{Float64}}(undef, n)
+	Cijk_rates_sub_i_t = Vector{Vector{Float64}}(undef, n)
+
+	Cjik_rates_sub_j = Vector{Vector{Float64}}(undef, n)
+	Cjik_rates_sub_j_t = Vector{Vector{Float64}}(undef, n)
+	
+
+
 	
 	# Set up the p_TFs & subs (where anc==i)
 	# The push! operation may get slow at huge n
