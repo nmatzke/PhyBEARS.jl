@@ -8,6 +8,7 @@ using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
 using PhyloBits
 using PhyloBits.TrUtils
+using PhyloBits.TreeTable # for get_tree_height
 using DataFrames
 using CSV
 
@@ -65,6 +66,7 @@ R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -13.59901976984605
 
 numareas = 2
 tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
+oldest_possible_age = 2*get_tree_height(tr)
 geog_df = DataFrame(tipnames=["sp4","sp5","sp6","sp7"],A=[1,1,0,0],B=[0,0,1,1]);
 
 in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.25)
