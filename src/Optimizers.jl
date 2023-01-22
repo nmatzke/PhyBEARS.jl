@@ -1344,8 +1344,8 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 	for i in 1:length(states_list)
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
 		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
-		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
-		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qji_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
+		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
 	end
 
 
