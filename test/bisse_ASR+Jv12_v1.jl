@@ -182,10 +182,10 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 
 nodenum = 1
-u0 = res.likes_at_each_nodeIndex_branchTop[nodenum]
-du = repeat([0.0], length(u0))
+u = res.likes_at_each_nodeIndex_branchTop[nodenum]
+du = repeat([0.0], length(u))
 p = p_Es_v12
-t = 8.0
+t = 0.0
 v12res = parameterized_ClaSSE_Es_v12_simd_sums_print(du,u,p,t)
 
 p = p_Ds_v5
