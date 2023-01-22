@@ -406,18 +406,24 @@ tree_age = trdf.node_age[tr.root]
 t_end = tree_age - trdf.node_age[tmpnode]
 t_start = tree_age - trdf.node_age[trdf.rightNodeIndex[tr.root]]
 t = t_start
-i = 1
-j = 1
+i = 2
+j = 2
 it = 1
 du = repeat([0.0], 2)
-calcDs_4states2D_print(du,u,p,t)
 
+# Individual calculations
+res1 = calcDs_4states2D_print(du,u,p,t)
+res2 = parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD_print(du,u,p,t)
 
-Qij_vals_sub_i = p.p_TFs.Qij_vals_sub_i[i]
-Qji_vals_sub_j = p.p_TFs.Qji_vals_sub_j[i]
-Qi_sub_j = p.p_TFs.Qi_sub_j[i]
+@test all(res1 .== res2)
 
-parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD_print(du,u,p,t)
+# Check that these make sense!
+p_Ds_v5.p_TFs.Qij_vals_sub_i
+p_Ds_v5.p_TFs.Qji_vals_sub_j
+update_Qij_vals_subs!(p_Ds_v5)
+p_Ds_v5.p_TFs.Qij_vals_sub_i
+p_Ds_v5.p_TFs.Qji_vals_sub_j
+
 
 uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
@@ -486,6 +492,11 @@ round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; di
 Julia_bisse_anc_estimates .- R_bisse_anc_estimates
 
 
+@benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+
+
+@benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 
 

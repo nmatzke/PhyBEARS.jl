@@ -855,21 +855,12 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		time_end = trdf.node_age[current_nodeIndex]
 		tspan = [time_start, time_end]
 		
-		# Seems to work 
-		txt = paste0(["\nNode #", current_nodeIndex])
-		print("\n")
-		print(txt)
-		print("\nStarting probs at branch bottom:")
-		print(u0)
-		
 		# Uses parameterized_ClaSSE_Ds_v12_simd_sums_noNegs
 		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
 		
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
-		print("\nuppass_probs_just_below_node, pre-correction:")
-		print(uppass_probs_just_below_node)
 		
 		# Correct for any values slipping below 0.0
 		TF = uppass_probs_just_below_node .<= 0.0
@@ -883,6 +874,15 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
+
+			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
+			print("\n")
+			print(txt)
+			print("\nStarting probs at branch bottom:")
+			print(u0)
+
+			print("\nuppass_probs_just_below_node, pre-correction:")
+			print(uppass_probs_just_below_node)
 
 			print("\nuppass_probs_just_below_node, post-correction:")
 			print(uppass_probs_just_below_node)
@@ -1083,12 +1083,6 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		time_end = tree_height - trdf.node_age[current_nodeIndex]
 		tspan = [time_start, time_end]
 		
-		# Seems to work 
-		txt = paste0(["\nNode #", current_nodeIndex])
-		print("\n")
-		print(txt)
-		print("\nStarting probs at branch bottom:")
-		print(u0)
 		
 		# Uses parameterized_ClaSSE_Ds_v7
 		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
@@ -1111,8 +1105,6 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
-		print("\nuppass_probs_just_below_node, pre-correction:")
-		print(uppass_probs_just_below_node)
 		
 		# Correct for any values slipping below 0.0
 		TF = uppass_probs_just_below_node .<= 0.0
@@ -1125,6 +1117,15 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
+			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
+			print("\n")
+			print(txt)
+			print("\nStarting probs at branch bottom:")
+			print(u0)
+
+			print("\nuppass_probs_just_below_node, pre-correction:")
+			print(uppass_probs_just_below_node)
+
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
 			print("\nuppass_probs_just_below_node, post-correction:")
@@ -1242,13 +1243,6 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		time_end = tree_height - trdf.node_age[current_nodeIndex]
 		tspan = [time_start, time_end]
 		
-		# Seems to work 
-		txt = paste0(["\nNode #", current_nodeIndex])
-		print("\n")
-		print(txt)
-		print("\nStarting probs at branch bottom:")
-		print(u0)
-		
 		# Uses parameterized_ClaSSE_Ds_v7
 		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
 		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v7_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v7, solver_options=solver_options);
@@ -1270,8 +1264,6 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
 		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
-		print("\nuppass_probs_just_below_node, pre-correction:")
-		print(uppass_probs_just_below_node)
 		
 		# Correct for any values slipping below 0.0
 		TF = uppass_probs_just_below_node .<= 0.0
@@ -1284,6 +1276,15 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
+			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
+			print("\n")
+			print(txt)
+			print("\nStarting probs at branch bottom:")
+			print(u0)
+
+			print("\nuppass_probs_just_below_node, pre-correction:")
+			print(uppass_probs_just_below_node)
+
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
 			print("\nuppass_probs_just_below_node, post-correction:")
