@@ -51,34 +51,38 @@ using PhyBEARS.SSEs
 # [1] -7.464283 -6.670978
 
 
-R_result_branch_lnL = -6.670978
-R_result_total_LnLs1 = -9.574440
-R_result_total_LnLs1t = -7.464283
-R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -12.06325
+
+
+R_rootstates_lnL = -2.8890159862220273
+R_bgb_lnL = -1.5934394791354638
+
+R_result_branch_lnL = -7.43186326229826
+R_result_total_LnLs1 = -10.320879248520288
+R_result_total_LnLs1t = -10.320879248520288
+R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -13.599019769846052
 #######################################################
 
 numareas = 2
 tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
 geog_df = DataFrame(tipnames=["sp4","sp5","sp6","sp7"],A=[1,1,0,0],B=[0,0,1,1]);
 
-in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.5)
+in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.25)
 # pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
 bmo = construct_BioGeoBEARS_model_object();
 bmo_rows = get_bmo_rows(bmo);
 bmo.est[bmo.rownames.=="d"] .= 0.0;
 bmo.est[bmo.rownames.=="e"] .= 0.0;
 bmo.est[bmo.rownames.=="a"] .= in_params.a_val;
-bmo.est[bmo.rownames.=="j"] .= 0.5;
+bmo.est[bmo.rownames.=="j"] .= in_params.j_val;
 bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate;
 bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate;
-bmo.est[bmo.rownames.=="j"] .= 0.5;
 
 bmo.type[bmo.rownames.=="d"] .= "fixed"
 bmo.type[bmo.rownames.=="e"] .= "fixed"
 bmo.type[bmo.rownames.=="a"] .= "free"
 bmo.type[bmo.rownames.=="j"] .= "free"
-bmo.type[bmo.rownames.=="a"] .= "birthRate"
-bmo.type[bmo.rownames.=="a"] .= "deathRate"
+bmo.type[bmo.rownames.=="birthRate"] .= "free"
+bmo.type[bmo.rownames.=="deathRate"] .= "free"
 
 
 
@@ -94,15 +98,13 @@ n = 2
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
-root_age_mult=1.5; max_range_size=1; include_null_range=false; bmo=NaN; manual_states_list=NaN; area_names=LETTERS(1:numareas)
-inputs = ModelLikes.setup_DEC_SSE2(numstates, tr, geog_df; root_age_mult=1.5, max_range_size=1, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas));
-(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
+root_age_mult=1.5; max_range_size=1; include_null_range=false; manual_states_list=NaN; area_names=LETTERS(1:numareas)
+inputs = ModelLikes.setup_DEC_SSE2(numstates, tr, geog_df; root_age_mult=1.5, max_range_size=1, include_null_range=false, bmo=bmo, manual_states_list=NaN, area_names=LETTERS(1:numareas));
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 prtQi(inputs)
 prtCi(inputs)
 
 # Change parameter inputs manually
-inputs.p_Ds_v5.params.Cijk_vals[1] = 0.222222222
-inputs.p_Ds_v5.params.Cijk_vals[2] = 0.222222222
 inputs.p_Ds_v5.params.mu_vals[1] = 0.111111111
 inputs.p_Ds_v5.params.mu_vals[2] = 0.05
 inputs.p_Ds_v5.params.Qij_vals[1] = 0.1
@@ -115,16 +117,17 @@ update_Qij_vals_subs!(p_Ds_v5)
 inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
 inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
 
+# Tip likelihoods
 inputs.res.likes_at_each_nodeIndex_branchTop
 inputs.res.normlikes_at_each_nodeIndex_branchTop
-res.likes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
-res.likes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
-res.likes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
-res.likes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
-res.normlikes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
-res.normlikes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
-res.normlikes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
-res.normlikes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
+# res.likes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
+# res.likes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
+# res.likes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
+# res.likes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
+# res.normlikes_at_each_nodeIndex_branchTop[1] = [0.0, 1.0]
+# res.normlikes_at_each_nodeIndex_branchTop[2] = [0.0, 1.0]
+# res.normlikes_at_each_nodeIndex_branchTop[4] = [1.0, 0.0]
+# res.normlikes_at_each_nodeIndex_branchTop[5] = [1.0, 0.0]
 trdf = inputs.trdf
 p_Ds_v5 = inputs.p_Ds_v5;
 root_age = maximum(trdf[!, :node_age])
@@ -469,9 +472,11 @@ res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 # [2,] 0.005145312 0.9948546878  # <- closest of the below
 # [3,] 0.999681941 0.0003180585  # <- closest of the below
 
-R_bisse_anc_estimates = [0.430357148 0.5696428522; # <- matches res1 or res1t
+#R_bisse_anc_estimates = [0.430357148 0.5696428522; # <- matches res1 or res1t
 0.005145312 0.9948546878;  # <- closest of the below
 0.999681941 0.0003180585]
+
+R_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,]
 
 Julia_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,:]
 Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimates)
