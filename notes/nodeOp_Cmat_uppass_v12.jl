@@ -1379,7 +1379,7 @@ function uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 	#                    column 2 is descendant node numbers (i.e. rows of trdf)
 	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
 	for i in ivals_odd
-		print(i)
+		#print(i)
 		j = i+1
 		# Error check: Check the uppass edge matrix; 
 		ancnode1 = uppass_edgematrix[i,1]
@@ -1428,7 +1428,7 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 	#                    column 2 is descendant node numbers (i.e. rows of trdf)
 	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
 	for i in ivals_odd
-		print(i)
+		#print(i)
 		j = i+1
 		# Error check: Check the uppass edge matrix; 
 		ancnode1 = uppass_edgematrix[i,1]
