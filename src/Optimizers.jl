@@ -1246,7 +1246,7 @@ Qmat1_df
 Qmat2_df
 
 """
-function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))), elist=repeat([1.0], length(areas_list)), amat=dmat; return_df=false)
+function update_Qij_vals2a!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))), elist=repeat([1.0], length(areas_list)), amat=dmat; return_df=false)
 
 	numstates = length(states_list)
 	statenums = collect(1:numstates)
@@ -1309,7 +1309,7 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 			ending_areanum = decstate   # because it has size=1 by def.
 
 			# Store the result
-			rates[z] = amat[starting_areanum,ending_areanum]
+			rates[z] = amat[starting_areanum,ending_areanum][]  # 2023-01-22 needs the [] to de-Matrixify
 		end
 		Qij_vals[TF] = rates
 	end # End update of a event weights
@@ -1342,8 +1342,8 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 
 	# Update Qij_vals_sub_i
 	for i in 1:length(states_list)
-		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
-		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qji_vals[p_Ds_v5.p_TFs.Qi_eq_j[i]]
+		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qji_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
 	end
 
 

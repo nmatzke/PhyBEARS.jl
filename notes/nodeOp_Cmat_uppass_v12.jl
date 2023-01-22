@@ -484,6 +484,57 @@ end
 
 
 
+calcDs_4states2D_print = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals		# switch these for uppass
+	Qarray_jvals = p.p_indices.Qarray_jvals		# switch these for uppass
+	Carray_ivals = p.p_indices.Carray_ivals   # Best so far: k, i, j; SAME as k,j,i; 0.0140907
+	Carray_jvals = p.p_indices.Carray_jvals		# 2nd best: jik, jki  sum(abs.(err)) = 0.0419
+	Carray_kvals = p.p_indices.Carray_kvals		# 3rd best: ijk, ikj  sum(abs.(err)) = 0.0735427
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+	terms = Vector{Float64}(undef, 4)
+
+  @inbounds for j in 1:n
+		# Calculation of "D" (likelihood of tip data)
+# Case 1: downpass
+#		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+# Uppass:
+		du[j] = -(sum(Cijk_vals[Carray_ivals .== j]) + sum(Qij_vals[Qarray_ivals .== j]) + mu[j])*u[j] +  # case 1: no event
+
+# Case 2: downpass
+#			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
+# Uppass:
+			(sum(Qij_vals[Qarray_jvals .== j] .* u[(Qarray_ivals[Qarray_jvals .== j])])) + 	# case 2	
+# Case 3 & 4: change + eventual extinction
+# Downpass:
+			#(sum(Cijk_vals[Carray_ivals .== i] .*                                               
+			#	 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
+			# .+ u[(Carray_jvals[Carray_ivals .== i])].*uE[Carray_kvals[Carray_ivals .== i]]) ))
+# Uppass: instead of just flipping i with j, following formula from Freyman & Hoehna
+			sum(Cijk_vals[Carray_jvals .== j] .*                                               
+				 u[Carray_ivals[Carray_jvals .== j]].*uE[Carray_kvals[Carray_jvals .== j]]) +
+
+			sum(Cijk_vals[Carray_jvals .== j] .*                                               
+				 u[Carray_kvals[Carray_jvals .== j]].*uE[Carray_kvals[Carray_jvals .== j]])
+  end
+  return(du)
+end
+
+
+
 parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD = (du,u,p,t) -> begin
 
   # Possibly varying parameters
@@ -504,28 +555,26 @@ parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD = (du,u,p,t) -> begin
 end
 
 
+parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD_print = (du,u,p,t) -> begin
 
-# THIS ONE IS DIFFERENT, as Cjik starts from j, leads to i and k
-# XXX old: THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
-# (even putting in i 
-function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Ci_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
-		""" # Original:
-    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
-    	term1 += Cijk_rates_sub_i[it]
-    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
-    end
-		"""
-    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
-    	term1 += Cijk_rates_sub_i[it]
-    end
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+	uE = p.sol_Es_v5(t)
+	terms = Vector{Float64}(undef, 4)
+  @inbounds @simd for i in 1:n  # Really, you are going through ancestral states "j" here, 
+  															# as you are moving fwd in time from j to i
+		terms .= 0.0
 
-		# For a given "j", "it" goes through all the hits
-    @inbounds @simd for it=1:length(Cjik_rates_sub_j)
-#    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
-    	term4 += Cjik_rates_sub_j[it] * (tmp_u[Ci_sub_j[it]] * tmp_uE[Ck_sub_j[it]] + tmp_u[Ck_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
-    end
-    return term1, term4
-end;
+		terms[1], terms[4] = sum_Cijk_rates_Ds_inbounds_simd_FWD(p.p_TFs.Cijk_rates_sub_i[i], p.p_TFs.Cjik_rates_sub_j[i], u, uE, p.p_TFs.Ci_sub_j[i], p.p_TFs.Ck_sub_j[i]; term1=terms[1], term4=terms[4])
+	
+		terms[2], terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i[i], p.p_TFs.Qji_vals_sub_j[i], u, p.p_TFs.Qi_sub_j[i]; term2=terms[2], term3=terms[3])
+		
+		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+  end
+  return du
+end
+
 
 # THIS ONE IS DIFFERENT, as i->j and j->i can have different probabilities
 function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Qi_sub_j; term2=Float64(0.0), term3=Float64(0.0))
@@ -549,6 +598,31 @@ function sum_Qij_vals_inbounds_simd_FWD(Qij_vals_sub_i, Qji_vals_sub_j, tmp_u, Q
     end
 
     return term2, term3
+end;
+
+
+
+
+# THIS ONE IS DIFFERENT, as Cjik starts from j, leads to i and k
+# XXX old: THIS ONE IS THE SAME FORMULA, JUST ADD IN "j" instead of "i" as the thing to iterate over
+# (even putting in i 
+function sum_Cijk_rates_Ds_inbounds_simd_FWD(Cijk_rates_sub_i, Cjik_rates_sub_j, tmp_u, tmp_uE, Ci_sub_j, Ck_sub_j; term1=Float64(0.0), term4=Float64(0.0))
+		""" # Original:
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    end
+		"""
+    @inbounds @simd for it=1:length(Cijk_rates_sub_i)
+    	term1 += Cijk_rates_sub_i[it]
+    end
+
+		# For a given "j", "it" goes through all the hits
+    @inbounds @simd for it=1:length(Cjik_rates_sub_j)
+#    	term4 += Cijk_rates_sub_i[it] * (tmp_u[Ck_sub_i[it]] * tmp_uE[Cj_sub_i[it]] + tmp_u[Cj_sub_i[it]] * tmp_uE[Ck_sub_i[it]])
+    	term4 += Cjik_rates_sub_j[it] * (tmp_u[Ci_sub_j[it]] * tmp_uE[Ck_sub_j[it]] + tmp_u[Ck_sub_j[it]] * tmp_uE[Ck_sub_j[it]])
+    end
+    return term1, term4
 end;
 
 

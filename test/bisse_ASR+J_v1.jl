@@ -72,6 +72,8 @@ n = 2
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
 (setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
+rn(p_Ds_v5.p_TFs)
+
 
 # Change parameter inputs manually
 inputs.p_Ds_v5.params.Cijk_vals[1] = 0.222222222
@@ -84,6 +86,20 @@ inputs.p_Ds_v5.params.Qij_vals[2] = 0.15
 prtQp(p_Ds_v5)
 prtCp(p_Ds_v5)
 
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
+
+areas_list = [1,2]
+states_list = [[1],[2]]
+dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list)))
+elist=repeat([1.0], length(areas_list))
+amat=dmat
+return_df=false
+
+
+update_Qij_vals2!(inputs.p_Ds_v5, areas_list, states_list, dmat, elist, amat; return_df)
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
 
 
 inputs.res.likes_at_each_nodeIndex_branchTop
@@ -381,7 +397,73 @@ uppass_likes ./ sum(uppass_likes)
 # non-sympatry clado > 0
 #######################################################
 
+# v5 algorithm
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+R_order = sort(trdf, :Rnodenums).nodeIndex
+p_Ds_v7 = p_Ds_v5;
+tmpnode = 6
+u = res.uppass_probs_at_each_nodeIndex_branchBot[tmpnode]
+p = p_Ds_v7;
 
+p.params.Qij_vals
+prtQp(p)
+p.p_indices.Qarray_ivals
+p.p_indices.Qarray_jvals
+
+p.p_TFs.Qij_vals_sub_i
+p.p_TFs.Qji_vals_sub_j
+
+
+tree_age = trdf.node_age[tr.root]
+t_end = tree_age - trdf.node_age[tmpnode]
+t_start = tree_age - trdf.node_age[trdf.rightNodeIndex[tr.root]]
+t = t_start
+i = 1
+j = 1
+it = 1
+du = repeat([0.0], 2)
+calcDs_4states2D_print(du,u,p,t)
+
+
+Qij_vals_sub_i = p.p_TFs.Qij_vals_sub_i[i]
+Qji_vals_sub_j = p.p_TFs.Qji_vals_sub_j[i]
+Qi_sub_j = p.p_TFs.Qi_sub_j[i]
+
+parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD_print(du,u,p,t)
+
+uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+rn(res)
+res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
+res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
+res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+
+# Julia:
+#  [0.43035780124527134, 0.5696421987547287]
+#  [0.005216130223249679, 0.9947838697767503]
+#  [0.9996911604384737, 0.0003088395615262636]
+
+# R diversitrree
+# t(st2)
+#             [,1]         [,2]
+# [1,] 0.430357148 0.5696428522  # <- matches res1 or res1t
+# [2,] 0.005145312 0.9948546878  # <- closest of the below
+# [3,] 0.999681941 0.0003180585  # <- closest of the below
+
+R_bisse_anc_estimates = [0.430357148 0.5696428522; # <- matches res1 or res1t
+0.005145312 0.9948546878;  # <- closest of the below
+0.999681941 0.0003180585]
+
+Julia_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,:]
+Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimates)
+round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3)
+@test all(round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3))
+
+Julia_bisse_anc_estimates .- R_bisse_anc_estimates
+
+
+
+# v7 algorithm
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 R_order = sort(trdf, :Rnodenums).nodeIndex
 p_Ds_v7 = p_Ds_v5;
@@ -413,8 +495,11 @@ Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimat
 round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3)
 @test all(round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3))
 
-
 Julia_bisse_anc_estimates .- R_bisse_anc_estimates
+
+
+
+
 
 
 
