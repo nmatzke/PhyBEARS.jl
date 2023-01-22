@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -1204,6 +1204,46 @@ function update_Qij_vals(Qmat, areas_list, states_list, dmat=reshape(repeat([1.0
 	return Qmat2
 end # end function update_Qij_vals
 
+"""
+# update_Qij_vals_subs!(p_Ds_v5)
+# 
+# Updates: Qij_vals_sub_i, Qij_vals_sub_j. 
+# 
+# For example: after manually changing the Qij_vals
+#
+# Example:
+p_Ds_v5 = (n = 2, params = (mu_vals = [0.111111111, 0.05], Qij_vals = [0.1, 0.15], Qij_vals_t = [0.1, 0.1], Cijk_weights = [1.0, 1.0], Cijk_probs = [1.0, 1.0], Cijk_vals = [0.222222222, 0.222222222], Cijk_rates = [0.222222222, 0.222222222], Cijk_rates_t = [0.222222222, 0.222222222], row_weightvals = [1.0, 1.0]), p_indices = (Qarray_ivals = [1, 2], Qarray_jvals = [2, 1], Qarray_event_types = ["a", "a"], Carray_ivals = [1, 2], Carray_jvals = [1, 2], Carray_kvals = [1, 2], Carray_pair = [1, 1], Carray_event_types = ["y", "y"]), p_TFs = (Qi_eq_i = Vector{Bool}[[1, 0], [0, 1]], Qi_eq_i_index = [[1], [2]], Ci_eq_i = Vector{Bool}[[1, 0], [0, 1]], Ci_eq_i_index = [[1], [2]], Qi_sub_i = [[1], [2]], Qj_sub_i = [[2], [1]], Qi_sub_j = [[2], [1]], Qij_vals_sub_i = [[0.1], [0.1]], Qij_vals_sub_i_t = [[0.1], [0.1]], Qji_vals_sub_j = [[0.15], [0.1]], Qji_vals_sub_j_t = [[0.1], [0.1]], Ci_sub_i = [[1], [2]], Cj_sub_i = [[1], [2]], Ck_sub_i = [[1], [2]], Ci_sub_j = [[1], [2]], Cj_sub_j = [[1], [2]], Ck_sub_j = [[1], [2]], Qij_singleNum_sub_i = Vector{Any}[[3], [2]], Cij_singleNum_sub_i = Vector{Any}[[1], [4]], Cik_singleNum_sub_i = Vector{Any}[[1], [4]], Cijk_not_y_sub_i = Vector{Bool}[[0], [0]], Cijk_pair_sub_i = [[1], [1]], Cijk_rates_sub_i = [[0.222222222], [0.222222222]], Cijk_rates_sub_i_t = [[0.222222222], [0.222222222]], Cjik_rates_sub_j = [[0.222222222], [0.222222222]], Cjik_rates_sub_j_t = [[0.222222222], [0.222222222]]), uE = [0.0, 0.0])
+
+# Manual changes
+p_Ds_v5.params.Cijk_vals[1] = 0.222222222
+p_Ds_v5.params.Cijk_vals[2] = 0.222222222
+p_Ds_v5.params.mu_vals[1] = 0.111111111
+p_Ds_v5.params.mu_vals[2] = 0.05
+p_Ds_v5.params.Qij_vals[1] = 0.1
+p_Ds_v5.params.Qij_vals[2] = 0.15
+
+# View the subs
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
+
+# Update
+update_Qij_vals_subs!(p_Ds_v5)
+
+# View the updated subs
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
+"""
+function update_Qij_vals_subs!(p_Ds_v5)
+
+	# Update Qij_vals_sub_i
+	for i in 1:p_Ds_v5.n
+		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
+		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
+	end
+	
+end # END update_Qij_vals_subs!(p_Ds_v5)
 
 
 
@@ -1215,6 +1255,8 @@ end # end function update_Qij_vals
 # elist is "e" for each area
 
 # Update Qij_vals2
+
+# Assumes a previously set-up p_Ds_v5 for a 3-area system (see below for run-from-scratch)
 numareas = 3
 areas_list = collect(1:numareas)
 states_list = areas_list_to_states_list(areas_list, 3, true)
@@ -1244,6 +1286,63 @@ Qmat2_df = hcat(Qarray_ivals, Qarray_jvals, Qij_vals, Qarray_event_types)
 
 Qmat1_df
 Qmat2_df
+
+
+# Setup for a 2-area, MuSSE (ie BiSSE) model
+p_Ds_v5 = (n = 2, params = (mu_vals = [0.111111111, 0.05], Qij_vals = [0.1, 0.15], Qij_vals_t = [0.1, 0.1], Cijk_weights = [1.0, 1.0], Cijk_probs = [1.0, 1.0], Cijk_vals = [0.222222222, 0.222222222], Cijk_rates = [0.222222222, 0.222222222], Cijk_rates_t = [0.222222222, 0.222222222], row_weightvals = [1.0, 1.0]), p_indices = (Qarray_ivals = [1, 2], Qarray_jvals = [2, 1], Qarray_event_types = ["a", "a"], Carray_ivals = [1, 2], Carray_jvals = [1, 2], Carray_kvals = [1, 2], Carray_pair = [1, 1], Carray_event_types = ["y", "y"]), p_TFs = (Qi_eq_i = Vector{Bool}[[1, 0], [0, 1]], Qi_eq_i_index = [[1], [2]], Ci_eq_i = Vector{Bool}[[1, 0], [0, 1]], Ci_eq_i_index = [[1], [2]], Qi_sub_i = [[1], [2]], Qj_sub_i = [[2], [1]], Qi_sub_j = [[2], [1]], Qij_vals_sub_i = [[0.1], [0.1]], Qij_vals_sub_i_t = [[0.1], [0.1]], Qji_vals_sub_j = [[0.15], [0.1]], Qji_vals_sub_j_t = [[0.1], [0.1]], Ci_sub_i = [[1], [2]], Cj_sub_i = [[1], [2]], Ck_sub_i = [[1], [2]], Ci_sub_j = [[1], [2]], Cj_sub_j = [[1], [2]], Ck_sub_j = [[1], [2]], Qij_singleNum_sub_i = Vector{Any}[[3], [2]], Cij_singleNum_sub_i = Vector{Any}[[1], [4]], Cik_singleNum_sub_i = Vector{Any}[[1], [4]], Cijk_not_y_sub_i = Vector{Bool}[[0], [0]], Cijk_pair_sub_i = [[1], [1]], Cijk_rates_sub_i = [[0.222222222], [0.222222222]], Cijk_rates_sub_i_t = [[0.222222222], [0.222222222]], Cjik_rates_sub_j = [[0.222222222], [0.222222222]], Cjik_rates_sub_j_t = [[0.222222222], [0.222222222]]), uE = [0.0, 0.0])
+
+numareas = p_Ds_v5.n
+areas_list = collect(1:numareas)
+states_list = areas_list_to_states_list(areas_list, 1, false)
+numstates = length(states_list)
+amat = reshape(collect(1:(numareas^2)), (numareas,numareas))
+dmat = reshape(collect(1:(numareas^2)), (numareas,numareas)) ./ 100
+elist = repeat([0.123], numstates)
+allowed_event_types=["a"]
+return_df=false
+
+Qmat = setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_event_types=allowed_event_types)
+Qarray_ivals = Qmat.Qarray_ivals
+Qarray_jvals = Qmat.Qarray_jvals
+Qij_vals = Qmat.Qij_vals
+Qarray_event_types = Qmat.Qarray_event_types
+Qmat1_df = hcat(Qarray_ivals, Qarray_jvals, Qij_vals, Qarray_event_types)
+
+# Update!
+dmat = reshape(repeat([0.5], numareas^2), (numareas,numareas))
+Qmat2 = update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat, elist, amat; return_df=return_df)
+Qmat2
+
+Qarray_ivals = Qmat2.p_indices.Qarray_ivals
+Qarray_jvals = Qmat2.p_indices.Qarray_jvals
+Qij_vals = Qmat2.params.Qij_vals
+Qarray_event_types = Qmat2.p_indices.Qarray_event_types
+Qmat2_df = hcat(Qarray_ivals, Qarray_jvals, Qij_vals, Qarray_event_types)
+
+Qmat1_df
+Qmat2_df
+
+
+# Update just the subs, update_Qij_vals_subs!
+
+# Manual changes
+p_Ds_v5.params.Cijk_vals[1] = 0.222222222
+p_Ds_v5.params.Cijk_vals[2] = 0.222222222
+p_Ds_v5.params.mu_vals[1] = 0.111111111
+p_Ds_v5.params.mu_vals[2] = 0.05
+p_Ds_v5.params.Qij_vals[1] = 0.1
+p_Ds_v5.params.Qij_vals[2] = 0.15
+
+# View the subs
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
+
+# Update
+update_Qij_vals_subs!(p_Ds_v5)
+
+# View the updated subs
+inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
+inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
 
 """
 function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))), elist=repeat([1.0], length(areas_list)), amat=dmat; return_df=false)
@@ -1341,7 +1440,7 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 	end # End update of a event weights
 
 	# Update Qij_vals_sub_i
-	for i in 1:length(states_list)
+	for i in 1:p_Ds_v5.n
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
 		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)

@@ -83,24 +83,12 @@ inputs.p_Ds_v5.params.mu_vals[2] = 0.05
 inputs.p_Ds_v5.params.Qij_vals[1] = 0.1
 inputs.p_Ds_v5.params.Qij_vals[2] = 0.15
 
-prtQp(p_Ds_v5)
-prtCp(p_Ds_v5)
-
+# Update the subs, after updating the individual values manually
 inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
 inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
-
-areas_list = [1,2]
-states_list = [[1],[2]]
-dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list)))
-elist=repeat([1.0], length(areas_list))
-amat=dmat
-return_df=false
-
-
-update_Qij_vals2!(inputs.p_Ds_v5, areas_list, states_list, dmat, elist, amat; return_df)
+update_Qij_vals_subs!(p_Ds_v5)
 inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
 inputs.p_Ds_v5.p_TFs.Qji_vals_sub_j
-
 
 inputs.res.likes_at_each_nodeIndex_branchTop
 inputs.res.normlikes_at_each_nodeIndex_branchTop
