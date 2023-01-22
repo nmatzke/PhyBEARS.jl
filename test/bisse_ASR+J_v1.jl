@@ -473,10 +473,11 @@ res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 # [3,] 0.999681941 0.0003180585  # <- closest of the below
 
 #R_bisse_anc_estimates = [0.430357148 0.5696428522; # <- matches res1 or res1t
-0.005145312 0.9948546878;  # <- closest of the below
-0.999681941 0.0003180585]
+#0.005145312 0.9948546878;  # <- closest of the below
+#0.999681941 0.0003180585]
 
 R_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,]
+R_bisse_anc_estimates = mapreduce(permutedims, vcat, R_bisse_anc_estimates)
 
 Julia_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,:]
 Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimates)
