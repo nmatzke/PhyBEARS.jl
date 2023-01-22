@@ -60,8 +60,20 @@ R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -12.06325
 numareas = 2
 tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
 geog_df = DataFrame(tipnames=["sp4","sp5","sp6","sp7"],A=[1,1,0,0],B=[0,0,1,1]);
-in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.0)
+
+in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.5)
 # pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
+bmo = construct_BioGeoBEARS_model_object();
+bmo_rows = get_bmo_rows(bmo);
+bmo.est[bmo.rownames.=="d"] .= 0.0;
+bmo.est[bmo.rownames.=="e"] .= 0.0;
+bmo.est[bmo.rownames.=="a"] .= in_params.a_val;
+bmo.est[bmo.rownames.=="j"] .= 0.5;
+bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate;
+bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate;
+bmo.est[bmo.rownames.=="j"] .= 0.5;
+bmo.est .= bmo_updater_v2(bmo, bmo_rows);
+bmo
 
 # phy$tip.state
 # sp4 sp5 sp6 sp7 
@@ -73,11 +85,9 @@ n = 2
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
 inputs = ModelLikes.setup_DEC_SSE2(numstates, tr, geog_df; root_age_mult=1.5, max_range_size=1, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas));
-setup_DEC_SSE2
-
 (setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
-rn(p_Ds_v5.p_TFs)
-
+prtQi(inputs)
+prtCi(inputs)
 
 # Change parameter inputs manually
 inputs.p_Ds_v5.params.Cijk_vals[1] = 0.222222222
