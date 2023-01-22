@@ -57,8 +57,9 @@ R_result_total_LnLs1t = -7.464283
 R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -12.06325
 #######################################################
 
-
+numareas = 2
 tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
+geog_df = DataFrame(tipnames=["sp4","sp5","sp6","sp7"],A=[1,1,0,0],B=[0,0,1,1]);
 in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.0)
 # pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
 
@@ -70,7 +71,10 @@ numstates = 2
 n = 2
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
+#inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
+inputs = ModelLikes.setup_DEC_SSE2(numstates, tr, geog_df; root_age_mult=1.5, max_range_size=1, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas));
+setup_DEC_SSE2
+
 (setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
 rn(p_Ds_v5.p_TFs)
 
@@ -501,36 +505,6 @@ Julia_bisse_anc_estimates .- R_bisse_anc_estimates
 
 
 
-
-# Root state probabilities
-res.normlikes_at_each_nodeIndex_branchTop[tr.root]
-# 0.43035780124527134
-# 0.5696421987547287
-normlikes_root_states1 = 0.43035780124527134
-normlikes_root_states2 = 0.5696421987547287
-
-# attr(res1t,"intermediates")$root.p
-# [1] 0.4303571 0.5696429
-res1t_root_states1 = 0.4303571
-res1t_root_states2 = 0.5696429
-
-
-sqrt.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]) ./ sum(sqrt.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]))
-# 2-element Vector{Float64}:
-#  0.4650083587227312
-#  0.5349916412772688
-normlikes_sqrt_root_states1 = 0.4650083587227312
-normlikes_sqrt_root_states2 = 0.5349916412772688
-
- 
-# Uppass through whole tree
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
-current_nodeIndex = tr.root
-p_Ds_v7 = p_Ds_v5;
-nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
-
-res.anc_estimates_at_each_nodeIndex_branchTop
-res.uppass_probs_at_each_nodeIndex_branchTop
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
 

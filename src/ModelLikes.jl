@@ -264,8 +264,8 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 		Cijk_rates_sub_i_t[i] = Carray.Cijk_rates[Carray.Carray_ivals .== i]	# list of Cijk rates lists for anc==i
 		
 		# uppass
-		Cjik_rates_sub_j[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
-		Cjik_rates_sub_j_t[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==i
+		Cjik_rates_sub_j[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==j
+		Cjik_rates_sub_j_t[i] = Carray.Cijk_rates[Carray.Carray_jvals .== i]	# list of Cijk rates lists for anc==j
 
 	end
 
@@ -416,13 +416,6 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	areas_list = collect(1:numareas)
 	total_numareas = length(areas_list)
 	
-	# Fixed constants
-	# The row of bmo that refers to "u", the effect of area on extinction rate
- 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
- 	# u_row = 8
- 	# u_e_row = 9
- 	# u_mu_row = 10
-	bmo_rows = get_bmo_rows(bmo)
 
 	# Extinction rate controls
  	max_extinction_rate = 100.0
@@ -433,7 +426,15 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	if startswith(type_string, "DataFrame") == false
 		bmo = construct_BioGeoBEARS_model_object()
 	end
-	
+
+	# Fixed constants
+	# The row of bmo that refers to "u", the effect of area on extinction rate
+ 	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	# u_row = 8
+ 	# u_e_row = 9
+ 	# u_mu_row = 10
+	bmo_rows = get_bmo_rows(bmo)
+
 	# Create a list of files
 	files = construct_files_list()
 	
