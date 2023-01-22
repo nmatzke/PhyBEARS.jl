@@ -780,6 +780,21 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	numstates = length(states_list)
 	statenums = collect(1:numstates)
 	observed_statenums = collect(repeat([0], numtips))
+
+	# The _froms and _tos are Vectors of Ints, i.e. starting and ending area numbers
+	# (they are NOT in lists; this is to avoid loops-within-loops)
+	a_froms = Vector{Int64}(undef, 0)
+	a_tos = Vector{Int64}(undef, 0)
+	a_arows = Vector{Int64}(undef, 0)
+	for i in 1:length(a_rows)
+		starting_areas = states_list[Qarray_ivals[a_rows[i]]]
+		ending_area = gains[a_rows[i]]
+		for j in 1:length(starting_areas)
+			push!(a_froms, starting_areas[j])
+			push!(a_tos, ending_area[1])
+			push!(a_arows, a_rows[i])
+		end
+	end
 	
 	# The _froms and _tos are Vectors of Ints, i.e. starting and ending area numbers
 	# (they are NOT in lists; this is to avoid loops-within-loops)

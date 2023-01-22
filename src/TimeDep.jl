@@ -21,7 +21,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_Qij_d_vals_t!, get_dmat_at_time_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, update_mus_time_t!, update_QC_mats_time_t!, construct_QC_interpolators
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_dmat_at_time_t_t!, update_amat_at_time_t_t!, update_Qij_a_vals_t!, update_Qij_d_vals_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, update_mus_time_t!, update_QC_mats_time_t!, construct_QC_interpolators
 
 
 """
@@ -231,6 +231,13 @@ function update_dmat_at_time_t_t!(p)
 	end
 end
 
+function update_amat_at_time_t_t!(p)
+	@inbounds @simd for i in 1:length(p.setup.amat_t)
+		p.setup.amat_t[i] = p.setup.amat_base[i] * p.setup.dispersal_multipliers_mat[i]^p.bmo.est[p.setup.bmo_rows.w] * p.setup.distmat[i]^p.bmo.est[p.setup.bmo_rows.x] * p.setup.envdistmat[i]^p.bmo.est[p.setup.bmo_rows.n] * p.setup.distmat2[i]^p.bmo.est[p.setup.bmo_rows.x2] * p.setup.distmat3[i]^p.bmo.est[p.setup.bmo_rows.x3]
+	end
+end
+
+
 # Update the vicariance distances (e.g. minimum distance between two ranges) at time t
 # (NOTE: dmat_t must be updated FIRST)
 # 
@@ -271,12 +278,20 @@ function get_mindist_between_pair_of_ranges(distmat, jrange, krange; mindist=1.0
 	return(mindist)
 end
 
+function update_Qij_a_vals_t!(p)
+	@inbounds @simd for i in 1:length(p.setup.a_arows)
+		p.params.Qij_vals_t[p.setup.a_arows[i]] += p.setup.dmat_t[p.setup.a_froms[i], p.setup.a_tos[i]]
+		p.params.Qij_vals_t[p.setup.a_arows[i]] += p.setup.dmat_t[p.setup.a_froms[i], p.setup.a_tos[i]]
+	end
+end
+
 function update_Qij_d_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.d_drows)
 		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 	end
 end
+
 
 
 # 2022-09-26:
@@ -362,6 +377,7 @@ end
 # 1. Update parameter 'd' based on a distance matrix (NOTE: MUST BE ALREADY DETERMINED for time 't')
 # 2. Propagate that through the Q matrix, in the form of updating the Qij_vals
 # (save multiple distance matrices for later)
+# (also update the "a" vals)
 """
 function update_Qij_d_vals!(p)
 	
@@ -404,6 +420,7 @@ function update_Qij_d_vals!(p)
 		#p.params.Qij_vals[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 	#	p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat[p.setup.d_froms[i], p.setup.d_tos[i]]
 	#end
+	update_Qij_a_vals_t!(p)
 	update_Qij_d_vals_t!(p)
 	
 #	@inbounds @simd for i in 1:p.setup.num_e_rows

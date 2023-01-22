@@ -266,8 +266,60 @@ parameterized_ClaSSE_v5 = (du,u,p,t) -> begin
 			 .+ u[(n.+Cj_sub_i)].*u[Ck_sub_i]) ))
   end
 end
- 
- 
+
+
+
+
+
+
+
+
+parameterized_ClaSSE_Es_v5_print = (du,u,p,t) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals
+	Qarray_jvals = p.p_indices.Qarray_jvals
+	Carray_ivals = p.p_indices.Carray_ivals
+	Carray_jvals = p.p_indices.Carray_jvals
+	Carray_kvals = p.p_indices.Carray_kvals
+	
+	two = 1.0
+  @inbounds for i in 1:n
+		Qi_sub_i = p.p_TFs.Qi_sub_i[i]
+		Qj_sub_i = p.p_TFs.Qj_sub_i[i]
+		Qi_eq_i  = p.p_TFs.Qi_eq_i[i]
+
+  	# These are the i's, j's, and k's FOR AN ANCESTOR I
+		Ci_sub_i = p.p_TFs.Ci_sub_i[i]
+		Cj_sub_i = p.p_TFs.Cj_sub_i[i]
+		Ck_sub_i = p.p_TFs.Ck_sub_i[i]
+		# This is the TFs for an ancestor i - NEEDED FOR FETCHING Cij_vals!!
+		Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
+
+		# Calculation of "E" (prob. of extinction)
+		du[i] = mu[i] +                                         # case 1: lineage extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
+			(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
+			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
+			# Because Carray contains all nonzero i->j,k rates, iterating once through on a particular
+			# "i" does the double-summation required
+  end
+  
+  return(du)
+end
+
+
+
+
+
+
 parameterized_ClaSSE_Es_v5 = (du,u,p,t) -> begin
 
   # Possibly varying parameters
@@ -1341,6 +1393,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
@@ -1361,6 +1414,40 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
+
+
+parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
+  # Update all rates in p.params
+  
+  # We don't even need this, since we have the interpolator
+  # update_QC_mats_time_t!(p, t)
+  
+  # Interpolate the current Q_vals_t and C_rates_t
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+   
+  # Update 
+  # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
+  # p.p_TFs.Qij_vals_sub_i_t[i]   is replaced by p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]]
+  
+   
+  # Populate changing "e" with time
+	#terms = Vector{Float64}(undef, 4)
+
+  @inbounds for i in 1:p.n
+		p.terms .= 0.0
+		
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Es_inbounds_simd(p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]], u, p.p_TFs.Cj_sub_i[i], p.p_TFs.Ck_sub_i[i]; term1=p.terms[1], term4=p.terms[4])
+	
+		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+  
+  return(du)
+end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
+
 
 
 # Time-varying areas & extinction rates
