@@ -72,6 +72,16 @@ bmo.est[bmo.rownames.=="j"] .= 0.5;
 bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate;
 bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate;
 bmo.est[bmo.rownames.=="j"] .= 0.5;
+
+bmo.type[bmo.rownames.=="d"] .= "fixed"
+bmo.type[bmo.rownames.=="e"] .= "fixed"
+bmo.type[bmo.rownames.=="a"] .= "free"
+bmo.type[bmo.rownames.=="j"] .= "free"
+bmo.type[bmo.rownames.=="a"] .= "birthRate"
+bmo.type[bmo.rownames.=="a"] .= "deathRate"
+
+
+
 bmo.est .= bmo_updater_v2(bmo, bmo_rows);
 bmo
 
@@ -84,6 +94,7 @@ n = 2
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_MuSSE_biogeo(numstates, tr; root_age_mult=1.5, in_params=in_params);
+root_age_mult=1.5; max_range_size=1; include_null_range=false; bmo=NaN; manual_states_list=NaN; area_names=LETTERS(1:numareas)
 inputs = ModelLikes.setup_DEC_SSE2(numstates, tr, geog_df; root_age_mult=1.5, max_range_size=1, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas));
 (setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
 prtQi(inputs)
