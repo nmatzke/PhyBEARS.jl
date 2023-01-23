@@ -281,13 +281,11 @@ end
 function update_Qij_a_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.a_arows)
 		p.params.Qij_vals_t[p.setup.a_arows[i]] += p.setup.amat_t[p.setup.a_froms[i], p.setup.a_tos[i]]
-		p.params.Qij_vals_t[p.setup.a_arows[i]] += p.setup.amat_t[p.setup.a_froms[i], p.setup.a_tos[i]]
 	end
 end
 
 function update_Qij_d_vals_t!(p)
 	@inbounds @simd for i in 1:length(p.setup.d_drows)
-		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 		p.params.Qij_vals_t[p.setup.d_drows[i]] += p.setup.dmat_t[p.setup.d_froms[i], p.setup.d_tos[i]]
 	end
 end

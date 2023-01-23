@@ -188,9 +188,11 @@ p = p_Es_v12
 t = 0.0
 v12res = parameterized_ClaSSE_Es_v12_simd_sums_print(du,u,p,t)
 
+du = repeat([0.0], length(u))
 p = p_Ds_v5
 v5res = parameterized_ClaSSE_Es_v5_print(du,u,p,t)
 
+v12res .- v5res
 v12res .== v5res
 
 
