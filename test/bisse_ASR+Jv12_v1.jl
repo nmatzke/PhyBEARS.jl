@@ -184,7 +184,14 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 nodenum = 1
 u = res.likes_at_each_nodeIndex_branchTop[nodenum]
 du = repeat([0.0], length(u))
+
+
+# We have to manually update one of the "a" values, to match the BiSSE example,
+# as the default updater only allows 1 "a"
+p_Es_v12.params.Qij_vals_t .= p_Es_v12.params.Qij_vals
+
 p = p_Es_v12
+
 t = 0.0
 v12res = parameterized_ClaSSE_Es_v12_simd_sums_print(du,u,p,t)
 
@@ -194,6 +201,16 @@ v5res = parameterized_ClaSSE_Es_v5_print(du,u,p,t)
 
 v12res .- v5res
 v12res .== v5res
+
+#######################################################
+# THESE MATCH, *IF*:
+
+# a is equal across states, or
+# #p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+# is commented out of 
+#
+# parameterized_ClaSSE_Es_v12_simd_sums_print
+#######################################################
 
 
 

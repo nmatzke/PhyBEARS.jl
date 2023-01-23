@@ -1423,7 +1423,7 @@ parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
   # update_QC_mats_time_t!(p, t)
   
   # Interpolate the current Q_vals_t and C_rates_t
-  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  #p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
    
