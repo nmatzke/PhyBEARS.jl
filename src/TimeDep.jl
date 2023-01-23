@@ -368,7 +368,7 @@ end
 function update_Qji_vals_sub_j_t!(p)
 	# Update the Qij_vals_sub_j_t (where anc==i)
 	@inbounds @simd for j in 1:length(p.setup.states_list)
-		p.p_TFs.Qji_rates_sub_j_t[j] .= p.params.Qij_vals_t[p.p_indices.Qarray_jvals .== j] # uppass
+		p.p_TFs.Qji_vals_sub_j_t[j] .= p.params.Qij_vals_t[p.p_indices.Qarray_jvals .== j] # uppass
 	end
 end
 

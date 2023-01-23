@@ -627,12 +627,12 @@ uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-v7_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-v7_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v12_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+v12_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 
-@test all( (v7_anc_branchBot[5] .- v5_anc_branchBot[5]) .< 1e-6) 
-@test all( (v7_anc_branchBot[6] .- v5_anc_branchBot[6]) .< 1e-6) 
-@test all( (v7_anc_branchBot[7] .- v5_anc_branchBot[7]) .< 1e-6) 
+@test all( (v7_anc_branchBot[5] .- v12_anc_branchBot[5]) .< 1e-6) 
+@test all( (v7_anc_branchBot[6] .- v12_anc_branchBot[6]) .< 1e-6) 
+@test all( (v7_anc_branchBot[7] .- v12_anc_branchBot[7]) .< 1e-6) 
 
 
 

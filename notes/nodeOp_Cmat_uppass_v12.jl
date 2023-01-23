@@ -833,124 +833,6 @@ function sum_Qij_vals_inbounds_simd(Qij_vals_sub_i, tmp_u, Qj_sub_i; term2=Float
 end;
 """
 
-# 2023-01-25; COMPARE TO v7
-
-function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
-	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
-	# Is this a root node?
-	if (current_nodeIndex == res.root_nodeIndex)
-		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
-		uppass_probs_just_below_node = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
-		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
-	
-	# Tip or internal nodes require passing probs up from branch bottom
-	else
-		# The uppass ancestral state probs will have been previously 
-		# calculated at the branch bottom
-		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
-		# Multiply by saved likelihood at the node to make very small (may avoid scaling issues)
-		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
-		time_start = trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
-		time_end = trdf.node_age[current_nodeIndex]
-		tspan = [time_start, time_end]
-		
-		# Uses parameterized_ClaSSE_Ds_v12_simd_sums_noNegs
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
-		
-		# These are really conditional probabilities upwards, they don't 
-		# have to add up to 1.0, unless normalized
-		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
-		
-		# Correct for any values slipping below 0.0
-		TF = uppass_probs_just_below_node .<= 0.0
-		if (any(TF))
-			# Round to zero
-			#uppass_probs_just_below_node[TF] .= 0.0
-			# versus add the minimum (may preserve magnitude better)
-			uppass_probs_just_below_node .= uppass_probs_just_below_node .- minimum(uppass_probs_just_below_node)
-		end
-		
-		# Normalize to sum to 1.0, *IF* sum is greater than 1
-		if (sum(uppass_probs_just_below_node) > 1.0)		
-			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
-
-			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
-			print("\n")
-			print(txt)
-			print("\nStarting probs at branch bottom:")
-			print(u0)
-
-			print("\nuppass_probs_just_below_node, pre-correction:")
-			print(uppass_probs_just_below_node)
-
-			print("\nuppass_probs_just_below_node, post-correction:")
-			print(uppass_probs_just_below_node)
-			print("\n")
-		end
-	end # END if (current_nodeIndex == res.root_nodeIndex)
-			# END uppass from branch below
-	
-	# Combine info through node; Store results
-	# Check if its a tip node
-	if (trdf.nodeType[current_nodeIndex] == "tip")
-		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
-	
-	# Internal nodes (not root)
-	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
-		# (Ignore direct ancestors for now)
-		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
-		
-		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
-		if (trdf.nodeType[current_nodeIndex] != "root")
-			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-		end
-		
-		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
-		
-		# Get uppass probs for Left and Right daughter branches
-		node_above_Left_corner = trdf.leftNodeIndex[current_nodeIndex]
-		node_above_Right_corner = trdf.rightNodeIndex[current_nodeIndex]
-		# LEFT
-		
-		# Calculate the post-cladogenesis uppass probabilities for the Left node
-		Ldownpass_likes = collect(repeat([1.0], n))
-		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
-
-		for j in 1:n
-			jTF = p_Ds_v12.p_indices.Carray_jvals .== j
-			res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner][j] = sum(relprob_each_split_scenario[jTF])
-		end
-		
-		# Don't normalize this
-		#res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner] ./ sum(res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner])
-		
-		# RIGHT
-		# Calculate the post-cladogenesis uppass probabilities for the Left node
-		Rdownpass_likes = collect(repeat([1.0], n))
-		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=true)
-		
-		for k in 1:n
-			kTF = p_Ds_v12.p_indices.Carray_jvals .== k
-			res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner][k] = sum(relprob_each_split_scenario[kTF])
-		end
-		# Don't normalize this
-		#res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner])
-		
-		# Get ancestral range estimates for Left and Right daughter branches
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= Ldownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner]
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner])
-
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
-
-	end # END elseif internal nodes
-end # END nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
-
 
 
 function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
@@ -980,7 +862,8 @@ end
 
 
 parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
-
+	
+	# Get the interpolated parameters at time t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
@@ -1223,7 +1106,7 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		ctable = make_ctable_single_events(prtCp(p))
 		Ldownpass_likes = collect(repeat([1.0], n))
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t) # use_Cijk_rates_t=false for v5
 
 		uppass_lprobs = repeat([0.0], n)
 		uppass_rprobs = repeat([0.0], n)
@@ -1243,7 +1126,7 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
 		Rdownpass_likes = collect(repeat([1.0], n))
 		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t) # use_Cijk_rates_t=false for v5
 
 		uppass_lprobs = repeat([0.0], n)
 		uppass_rprobs = repeat([0.0], n)
@@ -1382,7 +1265,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		ctable = make_ctable_single_events(prtCp(p))
 		Ldownpass_likes = collect(repeat([1.0], n))
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=false for v7
 
 		uppass_lprobs = repeat([0.0], n)
 		uppass_rprobs = repeat([0.0], n)
@@ -1402,7 +1285,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
 		Rdownpass_likes = collect(repeat([1.0], n))
 		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=false for v7
 
 		uppass_lprobs = repeat([0.0], n)
 		uppass_rprobs = repeat([0.0], n)
@@ -1461,7 +1344,8 @@ function uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 		
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
-				
+		
+		# use_Cijk_rates_t=false for v5
 		nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
 	end # END for (i in odds(1:nrow(trdf))
 
@@ -1510,7 +1394,8 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 		
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
-				
+		
+	  # use_Cijk_rates_t=false for v7	
 		nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=use_Cijk_rates_t)
 	end # END for (i in odds(1:nrow(trdf))
 
@@ -1525,6 +1410,170 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 	end
 
 end # END function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+
+
+
+function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+	p = p_Ds_v12;
+	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
+	tree_height = trdf.node_age[trdf.nodeType .== "root"][1]
+	time_above_root_at_current_nodeIdex = tree_height - trdf.node_age[current_nodeIndex]
+	
+	# Is this a root node?
+	if (current_nodeIndex == res.root_nodeIndex)
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		# Wrong: this incorporates downpass information from both branches above the root; 
+		# using information too many times!
+		#uppass_probs_just_below_node = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+		
+		uppass_probs_just_below_node = repeat([1/n], n)
+
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex] .+ 0.0
+	
+	# Tip or internal nodes require passing probs up from branch bottom
+	else
+		# The uppass ancestral state probs will have been previously 
+		# calculated at the branch bottom
+		# BGB's "relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS"
+		# Multiply by saved likelihood at the node to make very small (may avoid scaling issues)
+		u0 = probs_at_branch_bottom = res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .+ 0.0
+		time_start = tree_height - trdf.node_age[trdf.ancNodeIndex[current_nodeIndex]]
+		time_end = tree_height - trdf.node_age[current_nodeIndex]
+		tspan = [time_start, time_end]
+		
+		# Uses parameterized_ClaSSE_Ds_v12
+		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		
+		"""
+		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
+		solver_options.solver
+		solver_options.save_everystep = true
+		solver_options.saveat = seq(2.0, 3.0, 0.1)
+		tspan = (2.0, 3.0)
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		
+		sol_Ds(1.0)
+		sol_Ds(2.1)
+		sol_Ds(2.0)
+		sol_Ds(2.1)
+		"""
+		
+		# These are really conditional probabilities upwards, they don't 
+		# have to add up to 1.0, unless normalized
+		uppass_probs_just_below_node = sol_Ds.u[length(sol_Ds.u)]
+		
+		# Correct for any values slipping below 0.0
+		TF = uppass_probs_just_below_node .<= 0.0
+		if (any(TF))
+			# Round to zero
+			#uppass_probs_just_below_node[TF] .= 0.0
+			# versus add the minimum (may preserve magnitude better)
+			uppass_probs_just_below_node .= uppass_probs_just_below_node .- minimum(uppass_probs_just_below_node)
+		end
+		
+		# Normalize to sum to 1.0, *IF* sum is greater than 1
+		if (sum(uppass_probs_just_below_node) > 1.0)		
+			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
+			print("\n")
+			print(txt)
+			print("\nStarting probs at branch bottom:")
+			print(u0)
+
+			print("\nuppass_probs_just_below_node, pre-correction:")
+			print(uppass_probs_just_below_node)
+
+			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
+
+			print("\nuppass_probs_just_below_node, post-correction:")
+			print(uppass_probs_just_below_node)
+			print("\n")
+		end
+	end # END if (current_nodeIndex == res.root_nodeIndex)
+			# END uppass from branch below
+	
+	# Combine info through node; Store results
+	# Check if its a tip node
+	if (trdf.nodeType[current_nodeIndex] == "tip")
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+	
+	# Internal nodes (not root)
+	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
+		# (Ignore direct ancestors for now)
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		
+		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
+		if (trdf.nodeType[current_nodeIndex] != "root")
+			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		end
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+		
+		# Get uppass probs for Left and Right daughter branches
+		node_above_Left_corner = trdf.rightNodeIndex[current_nodeIndex]
+		node_above_Right_corner = trdf.leftNodeIndex[current_nodeIndex]
+
+
+		# LEFT NODE UPPASS
+		# Calculate the post-cladogenesis uppass probabilities for the Left node
+		ctable = make_ctable_single_events(prtCp(p))
+		Ldownpass_likes = collect(repeat([1.0], n))
+		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		
+		# This needs to be updated at this exact node time (in case previous uppasses on branches etc. change it)
+		current_node_time = time_above_root_at_current_nodeIdex;
+		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=true for v12
+
+		uppass_lprobs = repeat([0.0], n)
+		uppass_rprobs = repeat([0.0], n)
+
+		for statei in 1:n
+			uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei])
+			uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei]) # discarded
+		end
+
+		uppass_lprobs = uppass_lprobs ./ sum(uppass_lprobs)
+		uppass_rprobs = uppass_rprobs ./ sum(uppass_rprobs)
+		
+		res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner] .= uppass_lprobs
+
+		
+		# RIGHT NODE UPPASS
+		# Calculate the post-cladogenesis uppass probabilities for the Left node
+		Rdownpass_likes = collect(repeat([1.0], n))
+		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
+
+		current_node_time = time_above_root_at_current_nodeIdex;
+		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=true for v12
+
+		uppass_lprobs = repeat([0.0], n)
+		uppass_rprobs = repeat([0.0], n)
+
+		for statei in 1:n
+			uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei]) # discarded
+			uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei])
+		end
+
+		uppass_lprobs = uppass_lprobs ./ sum(uppass_lprobs)
+		uppass_rprobs = uppass_rprobs ./ sum(uppass_rprobs)
+		res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner] .= uppass_rprobs
+		
+		# Get ancestral range estimates for Left and Right daughter branches
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= Ldownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner])
+
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
+	
+	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
+	
+	end # END elseif internal nodes
+end # END nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=false)
 
 
 
@@ -1577,7 +1626,8 @@ function uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rat
 		current_node_time = trdf.node_age[current_nodeIndex]
 		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 		
-		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+		# use_Cijk_rates_t=true for v12
+		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options, use_Cijk_rates_t=use_Cijk_rates_t)
 	end
 end
 
@@ -1649,7 +1699,7 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
 		Ldownpass_likes = collect(repeat([1.0], n))
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t) # use_Cijk_rates_t=false for v5
 
 		for j in 1:n
 			jTF = p_Ds_v7.p_indices.Carray_jvals .== j
@@ -1661,7 +1711,7 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 		# Calculate the post-cladogenesis uppass probabilities for the Left node
 		Rdownpass_likes = collect(repeat([1.0], n))
 		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
-		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t)
+		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=use_Cijk_rates_t) # use_Cijk_rates_t=false for v5
 		
 		for k in 1:n
 			kTF = p_Ds_v7.p_indices.Carray_jvals .== k
