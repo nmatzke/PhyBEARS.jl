@@ -835,7 +835,7 @@ end;
 
 
 
-function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
+function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options, tree_height)
 	calc_start_time = Dates.now()
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
@@ -851,7 +851,7 @@ function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12,
 	
 #	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v12)
 #	prob_Ds_v12 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v12)
-	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v12)
+	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v12, tree_height)
 
 	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -861,12 +861,13 @@ function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12,
 end
 
 
-parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
+parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t, tree_height) -> begin
+	time_below_tips = tree_height-t
 	
 	# Get the interpolated parameters at time t
-  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
-  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(time_below_tips)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(time_below_tips)
+  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(time_below_tips)
 	
 	# Convey the interpolated Cijk_rates_t to the sub_i and sub_j
 	update_Qij_vals_sub_i_t!(p)
@@ -875,7 +876,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
 	update_Cijk_rates_sub_j_t!(p)
 
 	# Pre-calculated solution of the Es
-	uE = p.sol_Es_v12(t)
+	uE = p.sol_Es_v12(time_below_tips)
 	#terms = Vector{Float64}(undef, 4)
   @inbounds @simd for i in 1:p.n
  # Really, you are going through ancestral states "j" here, 
@@ -1418,7 +1419,8 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	p = p_Ds_v12;
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
 	tree_height = trdf.node_age[trdf.nodeType .== "root"][1]
-	time_above_root_at_current_nodeIdex = tree_height - trdf.node_age[current_nodeIndex]
+	time_above_root_at_current_nodeIndex = tree_height - trdf.node_age[current_nodeIndex]
+	time_below_tips_at_current_nodeIndex = trdf.node_age[current_nodeIndex]
 	
 	# Is this a root node?
 	if (current_nodeIndex == res.root_nodeIndex)
@@ -1445,7 +1447,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		
 		# Uses parameterized_ClaSSE_Ds_v12
 		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options, tree_height=tree_height);
 		
 		"""
 		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
@@ -1524,7 +1526,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
 		
 		# This needs to be updated at this exact node time (in case previous uppasses on branches etc. change it)
-		current_node_time = time_above_root_at_current_nodeIdex;
+		current_node_time = time_below_tips_at_current_nodeIndex;
 		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=true for v12
 
@@ -1547,7 +1549,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		Rdownpass_likes = collect(repeat([1.0], n))
 		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
 
-		current_node_time = time_above_root_at_current_nodeIdex;
+		current_node_time = time_below_tips_at_current_nodeIndex;
 		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 		relprob_each_split_scenario = nodeOp_Cmat_get_condprobs(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes, p_Ds_v12; use_Cijk_rates_t=use_Cijk_rates_t)  # use_Cijk_rates_t=true for v12
 
@@ -1609,10 +1611,12 @@ function uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rat
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
 		
+		# Update rates at that node time (time before PRESENT, not time above root)
 		current_node_time = trdf.node_age[current_nodeIndex]
 		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 		
-		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+		# use_Cijk_rates_t=true for v12
+		nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options, use_Cijk_rates_t=use_Cijk_rates_t)
 	
 	end # for (i in odds(1:nrow(trdf))
 	
@@ -1623,6 +1627,7 @@ function uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rat
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
 		
+		# Update rates at that node time (time before PRESENT, not time above root)
 		current_node_time = trdf.node_age[current_nodeIndex]
 		update_QC_mats_time_t!(p_Ds_v12, current_node_time)
 		
