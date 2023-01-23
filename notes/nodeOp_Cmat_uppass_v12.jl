@@ -835,7 +835,7 @@ end;
 
 
 
-function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options, tree_height)
+function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
 	calc_start_time = Dates.now()
 	spawned_nodeIndex = current_nodeIndex
 	tmp_threadID = Threads.threadid()
@@ -851,7 +851,7 @@ function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12,
 	
 #	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v12)
 #	prob_Ds_v12 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v12)
-	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v12, tree_height)
+	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v12)
 
 	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -861,8 +861,10 @@ function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12,
 end
 
 
-parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t, tree_height) -> begin
-	time_below_tips = tree_height-t
+parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
+	# The distances, areas, and rates are a function of TIME BEFORE PRESENT
+	# (which is the opposite of "t", on an uppass)
+	time_below_tips = p.setup.tree_height - t
 	
 	# Get the interpolated parameters at time t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(time_below_tips)
@@ -1447,7 +1449,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		
 		# Uses parameterized_ClaSSE_Ds_v12
 		# u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options, tree_height=tree_height);
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
 		
 		"""
 		u0 = [8.322405e-13, 0.1129853, 0.677912, 0.2091026]

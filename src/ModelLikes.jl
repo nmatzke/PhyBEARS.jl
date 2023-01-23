@@ -65,9 +65,10 @@ prtCi(inputs)
 
 """
 
-function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"); root_age_mult=1.5, in_params=NaN)
+function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"); root_age_mult=1.5, in_params=NaN, area_names=LETTERS(1:numstates))
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
+	tree_height = get_tree_height(tr)
 	areas_list = collect(1:numstates)
 	total_numareas = length(areas_list)
 	numareas = length(areas_list)
@@ -79,6 +80,21 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	
 	states_list = collect(1:numstates)
 	n = length(states_list)
+ 	max_extinction_rate = 100.0
+	# Make a list of text labels for the ranges
+	txt_states_list = states_list_to_txt(states_list, area_names)	
+	
+	# These are hard-coded for MuSSE / BiSSE
+	max_range_size = 1
+	include_null_range=false
+	root_age_mult - 1.5
+
+
+	# Minimum step size for interpolation
+	# (We will eventually run the interpolators at all node dates; but probably we 
+	#  should have a minimum step size as well, especially for long branches etc.
+	min_stepsize = 1.0
+
 
 	res = construct_Res(tr, n)
 	rootnodenum = tr.root
@@ -332,7 +348,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	numstates = length(states_list)
 	statenums = collect(1:numstates)
 	observed_statenums = collect(repeat([0], numtips))
-	setup = (areas_list=areas_list, states_list=states_list, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas)
+	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas)
 		
 	#p_Ds_v5 = (n=n, params=params, p_indices=p_indices, p_TFs=p_TFs, prob=prob_Es_v5, sol_Es_v5=sol_Es_v5, uE=uE)
 	p_Ds_v5 = (n=n, params=params, p_indices=p_indices, p_TFs=p_TFs, uE=uE)
@@ -415,7 +431,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# For time-varying analyses
 	areas_list = collect(1:numareas)
 	total_numareas = length(areas_list)
-	
+	tree_height = get_tree_height(tr)
 
 	# Extinction rate controls
  	max_extinction_rate = 100.0
@@ -834,7 +850,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	min_stepsize = 1.0
 	
 	
-	setup = (area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
+	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
 	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)
