@@ -2479,7 +2479,8 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	# Update the Cijk_rates_sub_i (where anc==i)
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Cijk_rates_sub_i[i] .= Cijk_rates[p_Ds_v5.p_TFs.Ci_eq_i[i]]
-		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_TFs.Ci_eq_j[i]]
+		# p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_TFs.Ci_eq_j[i]]
+		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_indices.Carray_jvals .== i] # uppass
 	end
 	
 
@@ -2570,7 +2571,8 @@ end # END
 
 
 """
-# p_Ds_v5 updater #1
+# p_Ds_v5 updater #1 - Updates p_Ds_v5 **FROM AN INPUTS OBJECT**
+# 
 # p_Ds_v5 contains the actual rates that go straight into the lnL calculations
 
 pars = [0.03505038, 0.02832370]

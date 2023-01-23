@@ -538,8 +538,8 @@ uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-v5_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-v5_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v5_anc_branchBot = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:])
+v5_anc_branchTop = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:])
 
 # Julia:
 #  [0.43035780124527134, 0.5696421987547287]
@@ -579,8 +579,8 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-v7_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-v7_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v7_anc_branchBot = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:])
+v7_anc_branchTop = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:])
 
 @test all( (v7_anc_branchBot[5] .- v5_anc_branchBot[5]) .< 1e-6) 
 @test all( (v7_anc_branchBot[6] .- v5_anc_branchBot[6]) .< 1e-6) 
@@ -622,28 +622,129 @@ Julia_bisse_anc_estimates .- Julia_bisseJ_anc_estimates
 # v12 algorithm
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 R_order = sort(trdf, :Rnodenums).nodeIndex
-#p_Ds_v7 = p_Ds_v5;
 uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-v12_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-v12_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v12_anc_branchBot = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:])
+v12_anc_branchTop = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:])
 
 @test all( (v7_anc_branchBot[5] .- v12_anc_branchBot[5]) .< 1e-6) 
 @test all( (v7_anc_branchBot[6] .- v12_anc_branchBot[6]) .< 1e-6) 
 @test all( (v7_anc_branchBot[7] .- v12_anc_branchBot[7]) .< 1e-6) 
 
+@test all( (v5_anc_branchBot[5] .- v12_anc_branchBot[5]) .< 1e-6) 
+@test all( (v5_anc_branchBot[6] .- v12_anc_branchBot[6]) .< 1e-6) 
+@test all( (v5_anc_branchBot[7] .- v12_anc_branchBot[7]) .< 1e-6) 
 
 
 @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-
-
 @benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
+@benchmark uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+
+# julia> @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+# BenchmarkTools.Trial: 1335 samples with 1 evaluation.
+#  Range (min … max):  2.585 ms … 63.020 ms  ┊ GC (min … max): 0.00% … 74.05%
+#  Time  (median):     2.758 ms              ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   3.740 ms ±  4.008 ms  ┊ GC (mean ± σ):  9.66% ±  8.99%
+# 
+#   █▂         ▁▁                                               
+#   ███▇▇▇▆▆▇▇▆██▇▆▁▅▄▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▆ ▇
+#   2.59 ms      Histogram: log(frequency) by time     25.2 ms <
+# 
+#  Memory estimate: 2.53 MiB, allocs estimate: 40329.
+# 
+# julia> @benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+# BenchmarkTools.Trial: 2357 samples with 1 evaluation.
+#  Range (min … max):  1.455 ms … 72.653 ms  ┊ GC (min … max): 0.00% … 50.59%
+#  Time  (median):     1.550 ms              ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   2.116 ms ±  2.962 ms  ┊ GC (mean ± σ):  5.30% ±  3.95%
+# 
+#   ██▆▄▂▁                                   ▁▂▂▁▁▁            ▁
+#   █████████▆▇▇▅▆▆▇▇▅▅▅▆▆▆▆▆▅▇▃▅▆▆▆▆▄▆▅▃▆▆▆▇██████▆▇▃▅▄▄▄▃▁▃▅ █
+#   1.46 ms      Histogram: log(frequency) by time     5.03 ms <
+# 
+#  Memory estimate: 739.73 KiB, allocs estimate: 9054.
+# 
+# julia> @benchmark uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+# BenchmarkTools.Trial: 1529 samples with 1 evaluation.
+#  Range (min … max):  2.364 ms … 45.462 ms  ┊ GC (min … max): 0.00% … 72.03%
+#  Time  (median):     2.500 ms              ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   3.266 ms ±  3.362 ms  ┊ GC (mean ± σ):  8.26% ±  7.91%
+# 
+#   █▂         ▂                                                
+#   █████▆▇▇▇▅▇█▇▆▆▅▃▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄▅ ▇
+#   2.36 ms      Histogram: log(frequency) by time       24 ms <
+# 
+#  Memory estimate: 2.16 MiB, allocs estimate: 22494.
+
+#######################################################
+# These match the v5 and v7 calculations, because u=0, x=0
+#######################################################
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+res.anc_estimates_at_each_nodeIndex_branchBot[R_order,]
+res.anc_estimates_at_each_nodeIndex_branchTop[R_order,]
+
+# (0.008, 2, -7.437234631321882, -2.900308543034186, -10.337543174356068, -1.6056875884138435)
+# 
+# julia> res.anc_estimates_at_each_nodeIndex_branchTop
+# 7-element Vector{Vector{Float64}}:
+#  [1.0, 0.0]
+#  [1.0, 0.0]
+#  [0.9587283714306406, 0.04127162856935951]
+#  [0.0, 1.0]
+#  [0.0, 1.0]
+#  [0.005800402112135891, 0.9941995978878642]
+#  [0.4761851826108467, 0.5238148173891533]
+# 
+# julia> res.anc_estimates_at_each_nodeIndex_branchTop[R_order,]
+# 7-element Vector{Vector{Float64}}:
+#  [1.0, 0.0]
+#  [1.0, 0.0]
+#  [0.0, 1.0]
+#  [0.0, 1.0]
+#  [0.4761851826108467, 0.5238148173891533]
+#  [0.9587283714306406, 0.04127162856935951]
+#  [0.005800402112135891, 0.9941995978878642]
 
 
+
+#######################################################
+# Change the parameters to be distance-dependent and area-dependent
+#######################################################
+
+inputs.bmo.est[bmo.rownames.=="u"] .= 1.0;
+inputs.bmo.est[bmo.rownames.=="x"] .= 0.0;
+
+inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+inputs.bmo.est
+
+p_Ds_v5_updater_v1!(p_Es_v12, inputs; check_if_free_params_in_mat=true, printlevel=0)
+
+# Solve the Es
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Es_v5(ts)
+sol_Es_v7(ts)
+sol_Es_v12(ts)
+
+@test all(sol_Es_v7(ts).u[2] .== sol_Es_v5(ts).u[2])
+@test all( (sol_Es_v7(ts).u[2] .- sol_Es_v12(ts).u[2]) .< 1e-8)
+@test all(sol_Es_v7(ts).u[3] .== sol_Es_v5(ts).u[3])
+@test all( (sol_Es_v7(ts).u[3] .- sol_Es_v12(ts).u[3]) .< 1e-8)
+
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
