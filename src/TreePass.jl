@@ -2053,7 +2053,9 @@ function iterative_downpass_Gflow_nonparallel_v1!(res; trdf, p_Ds_v5, Gflow, sol
 					
 					# Differences for Gflow version
 					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
 					TF = nodeData_at_bottom .< 0.0
@@ -2336,7 +2338,9 @@ function iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5, Gflow, sol
 					
 					# Differences for Gflow version
 					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
 					TF = nodeData_at_bottom .< 0.0
@@ -2666,7 +2670,12 @@ function iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5, solver_op
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
+
+
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -2992,7 +3001,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6old!(res; trdf, p_Ds_v5, solver
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -3317,7 +3329,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_op
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -3635,7 +3650,10 @@ function iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_optio
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -3941,7 +3959,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -4259,7 +4280,10 @@ function iterative_downpass_parallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5, s
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -4574,7 +4598,10 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -4899,7 +4926,10 @@ function iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf, p_Ds_v10, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5229,7 +5259,10 @@ function iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf, p_Ds_v10, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5567,7 +5600,10 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i];
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5990,7 +6026,10 @@ function iterative_downpass_parallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_optio
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -6397,7 +6436,10 @@ function iterative_downpass_parallel_ClaSSE_v7d!(res; trdf, p_Ds_v7, solver_opti
 					
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[manual_iter])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -6811,7 +6853,9 @@ function iterative_downpass_parallel_ClaSSE_v7e!(res; trdf, p_Ds_v7, solver_opti
 #					push!(sol_Ds_alg, string(sol_Ds.alg))
 #					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
 					push!(sol_Ds_alg, "manual")
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -7195,7 +7239,9 @@ function iterative_downpass_parallel_ClaSSE_v7c!(res; trdf, p_Ds_v7, solver_opti
 #					push!(sol_Ds_alg, string(sol_Ds.alg))
 #					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
 					push!(sol_Ds_alg, "manual")
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 
 					#push!(sol_Ds_alg, string(sol_Ds.alg))
