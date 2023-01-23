@@ -833,7 +833,7 @@ function sum_Qij_vals_inbounds_simd(Qij_vals_sub_i, tmp_u, Qj_sub_i; term2=Float
 end;
 """
 
-
+# 2023-01-25; COMPARE TO v7
 
 function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 	n = numstates = length(res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex])
@@ -856,7 +856,7 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		tspan = [time_start, time_end]
 		
 		# Uses parameterized_ClaSSE_Ds_v12_simd_sums_noNegs
-		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
+		(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)= branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options);
 		
 		# These are really conditional probabilities upwards, they don't 
 		# have to add up to 1.0, unless normalized
@@ -950,6 +950,66 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 
 	end # END elseif internal nodes
 end # END nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
+
+
+
+function branchOp_ClaSSE_Ds_v12_FWD(current_nodeIndex, res; u0, tspan, p_Ds_v12, solver_options=solver_options)
+	calc_start_time = Dates.now()
+	spawned_nodeIndex = current_nodeIndex
+	tmp_threadID = Threads.threadid()
+	
+	# Example slow operation
+	#y = countloop(num_iterations, current_nodeIndex)
+# 	print("\n")
+# 	print("branchOp_ClaSSE_Ds_v5: d: ")
+# 	print(p_Ds_v5.params.Qij_vals[1])
+# 	print("branchOp_ClaSSE_Ds_v5: e: ")
+# 	print(p_Ds_v5.params.Qij_vals[length(p_Ds_v5.params.Qij_vals)])
+# 	print("\n")
+	
+#	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_FWD, deepcopy(u0), tspan, p_Ds_v12)
+#	prob_Ds_v12 = DifferentialEquations.ODEProblem(calcDs_4states2D, deepcopy(u0), tspan, p_Ds_v12)
+	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, deepcopy(u0), tspan, p_Ds_v12)
+
+	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, save_everystep=solver_options.save_everystep, saveat=solver_options.saveat, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	
+	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
+end
+
+
+parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
+
+  p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
+  p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
+  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+	
+	# Convey the interpolated Cijk_rates_t to the sub_i and sub_j
+	update_Qij_vals_sub_i_t!(p)
+	update_Qji_vals_sub_j_t!(p)
+	update_Cijk_rates_sub_i_t!(p)
+	update_Cijk_rates_sub_j_t!(p)
+
+	# Pre-calculated solution of the Es
+	uE = p.sol_Es_v12(t)
+	#terms = Vector{Float64}(undef, 4)
+  @inbounds @simd for i in 1:p.n
+ # Really, you are going through ancestral states "j" here, 
+  															# as you are moving fwd in time from j to i
+		p.terms .= 0.0
+
+		p.terms[1], p.terms[4] = sum_Cijk_rates_Ds_inbounds_simd_FWD(p.p_TFs.Cijk_rates_sub_i_t[i], p.p_TFs.Cjik_rates_sub_j_t[i], u, uE, p.p_TFs.Ci_sub_j[i], p.p_TFs.Ck_sub_j[i]; term1=p.terms[1], term4=p.terms[4])
+	
+		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i_t[i], p.p_TFs.Qji_vals_sub_j_t[i], u, p.p_TFs.Qi_sub_j[i]; term2=p.terms[2], term3=p.terms[3])
+		
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+  end
+end
+
+
+
+
 
 # Get the conditional probabilities of all cladogenesis
 # scenarios, conditional on ancestral range probs, Lprobs, Rprobs
@@ -1387,7 +1447,7 @@ function uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 		if (ancnode1 == ancnode2)
 			ancnode = ancnode1
 		else
-			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v5!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
 			print("\n")
 			print(stoptxt)
 			print("\n")
@@ -1436,7 +1496,7 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 		if (ancnode1 == ancnode2)
 			ancnode = ancnode1
 		else
-			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v12!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
+			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v5!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
 			print("\n")
 			print(stoptxt)
 			print("\n")

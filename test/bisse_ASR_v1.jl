@@ -284,7 +284,7 @@ right_likes = res.normlikes_at_each_nodeIndex_branchBot[rnode]
 
 solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)
 #solver_options.solver = Tsit5()
-solver_options.solver = Vern9()
+#solver_options.solver = Vern9()
 solver_options.abstol = 1e-6
 solver_options.reltol = 1e-6
 solver_options.save_everystep = false
@@ -294,7 +294,7 @@ include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 tspan = (anctime, dectime)
 
 u0 = right_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -328,7 +328,7 @@ make_ctable_single_events(ctable1)
 
 
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2G, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -348,7 +348,8 @@ asr_at_node7 = uppass_likes ./ sum(uppass_likes)
 # Diversitree: asr.marginal
 # 0.999620338 0.0003796623
 
-diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
+# BiSSE
+# diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
 
 
 asr_at_node7 .== diversitree_bisse_Rnode7_01
@@ -362,7 +363,7 @@ asr_at_node7[2] - diversitree_bisse_Rnode7_01[2]
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2F, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)

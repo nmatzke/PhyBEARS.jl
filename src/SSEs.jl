@@ -13,7 +13,7 @@ using PhyBEARS.TimeDep # for get_area_of_range etc.
 print("...done.\n")
 
 
-export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
+export parameterized_ClaSSE, parameterized_ClaSSE_Es, parameterized_ClaSSE_Ds, parameterized_ClaSSE_v5, parameterized_ClaSSE_Es_v5, parameterized_ClaSSE_Es_v5_print, parameterized_ClaSSE_Ds_v5, parameterized_ClaSSE_Es_v5orig, parameterized_ClaSSE_Ds_v5orig, parameterized_ClaSSE_Es_v6, parameterized_ClaSSE_Ds_v6, parameterized_ClaSSE_Es_v6orig, parameterized_ClaSSE_Ds_v6orig, parameterized_ClaSSE_Es_v7orig, parameterized_ClaSSE_Ds_v7orig, parameterized_ClaSSE_Ds_v7_forloops_sucks, parameterized_ClaSSE_Es_v7_simd_sums, parameterized_ClaSSE_Ds_v7_simd_sums, parameterized_ClaSSE_Es_v10_simd_sums, parameterized_ClaSSE_Ds_v10_simd_sums, parameterized_ClaSSE_Es_v11_simd_sums, parameterized_ClaSSE_Ds_v11_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums, parameterized_ClaSSE_Es_v12_simd_sums_print, parameterized_ClaSSE_Ds_v12_simd_sums, parameterized_ClaSSE_Ds_v12_simd_sums_noNegs, sum_range_inbounds_simd, sum_Cijk_rates_Ds_inbounds_simd, sum_Cijk_rates_Es_inbounds_simd, sum_Qij_vals_inbounds_simd
 
 
 
@@ -1461,7 +1461,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 	# Pre-calculated solution of the Es
 	uE = p.sol_Es_v12(t)
 	#terms = Vector{Float64}(undef, 4)
-  @inbounds for i in 1:p.n
+  @inbounds @simd for i in 1:p.n
 		p.terms .= 0.0
 
 	# DIFFERENT:

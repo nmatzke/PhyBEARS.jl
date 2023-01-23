@@ -55,13 +55,15 @@ wd = "/GitHub/PhyBEARS.jl/test/"
 cd(wd)
 
 
-R_rootstates_lnL = -2.8890159862220273
-R_bgb_lnL = -1.5934394791354638
+# These are archiving the Julia results;
+# R's diversitree does not do BiSSE+J
+R_rootstates_lnL = -2.9003085430341864
+R_bgb_lnL = -1.6056875884138417
 
-R_result_branch_lnL = -7.43186326229826
-R_result_total_LnLs1 = -10.320879248520288
-R_result_total_LnLs1t = -10.320879248520288
-R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -13.599019769846052
+R_result_branch_lnL = -7.437234631321879
+R_result_total_LnLs1 = -10.337543174356066
+R_result_total_LnLs1t = -10.337543174356066
+R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -13.589787226916526
 #######################################################
 
 numareas = 2
@@ -111,7 +113,8 @@ prtCi(inputs)
 inputs.p_Ds_v5.params.mu_vals[1] = 0.111111111
 inputs.p_Ds_v5.params.mu_vals[2] = 0.05
 inputs.p_Ds_v5.params.Qij_vals[1] = 0.1
-inputs.p_Ds_v5.params.Qij_vals[2] = 0.15
+#inputs.p_Ds_v5.params.Qij_vals[2] = 0.15
+inputs.p_Ds_v5.params.Qij_vals[2] = 0.1
 
 # Update the subs, after updating the individual values manually
 inputs.p_Ds_v5.p_TFs.Qij_vals_sub_i
@@ -153,10 +156,24 @@ interpolators.distances_interpolator(ts)
 interpolators.area_of_areas_interpolator(ts)
 
 
+
+
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 # Add Q, C interpolators
 p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+
+
+# Solve the Es
+print("\nSolving the Es once, for the whole tree timespan...")
+prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
+# This solution is a linear interpolator
+sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+Es_interpolator = sol_Es_v5;
+p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
+
+p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
+
 
 
 # Solve the Es
@@ -172,6 +189,10 @@ sol_Es_v5(ts)
 sol_Es_v7(ts)
 sol_Es_v12(ts)
 
+@test all(sol_Es_v7(ts).u[2] .== sol_Es_v5(ts).u[2])
+@test all( (sol_Es_v7(ts).u[2] .- sol_Es_v12(ts).u[2]) .< 1e-8)
+@test all(sol_Es_v7(ts).u[3] .== sol_Es_v5(ts).u[3])
+@test all( (sol_Es_v7(ts).u[3] .- sol_Es_v12(ts).u[3]) .< 1e-8)
 
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
@@ -257,14 +278,16 @@ d_root_orig = res.likes_at_each_nodeIndex_branchTop[length(res.likes_at_each_nod
 root_stateprobs = d_root_orig/sum(d_root_orig)
 lambda = in_params.birthRate
 e_root = Es_interpolator(root_age)
-d_root = d_root_orig ./ sum(root_stateprobs .* inputs.p_Ds_v5.params.Cijk_vals .* (1 .- e_root).^2)
+sum_Crates = sum_Cijk_rates_by_i(inputs.p_Ds_v5.params.Cijk_vals, inputs.p_Ds_v5.p_indices.Carray_ivals, inputs.p_Ds_v5.n)
+d_root = d_root_orig ./ sum(root_stateprobs .* sum_Crates .* (1 .- e_root).^2)
 rootstates_lnL = log(sum(root_stateprobs .* d_root))
 
 # The above all works out to [0,1] for the Yule model with q01=q02=0.0
 Julia_total_lnLs1t = Julia_sum_lq + rootstates_lnL
 
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE
-@test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
+# THE BELOW WORKS FOR BISSE, BUT NOT BISSE + J
+# @test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
 
 # Does the total of branch likelihoods (lq) + node likelihoods match R?
 # 
@@ -369,7 +392,7 @@ right_likes = res.normlikes_at_each_nodeIndex_branchBot[rnode]
 
 solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)
 #solver_options.solver = Tsit5()
-solver_options.solver = Vern9()
+#solver_options.solver = Vern9()
 solver_options.abstol = 1e-6
 solver_options.reltol = 1e-6
 solver_options.save_everystep = false
@@ -379,7 +402,7 @@ include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 tspan = (anctime, dectime)
 
 u0 = right_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2C, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v7);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -401,7 +424,7 @@ uppass_likes ./ sum(uppass_likes)
 # 0.005216130223249679
 # 0.9947838697767504
 
-# calcDs_4states2C # <-- same
+# calcDs_4states2D # <-- same
 # 0.005216130223249679
 # 0.9947838697767504
 
@@ -413,7 +436,7 @@ make_ctable_single_events(ctable1)
 
 
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2G, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -424,7 +447,7 @@ rbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))
 uppass_likes = rbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[rnode]
 asr_at_node7 = uppass_likes ./ sum(uppass_likes)
 
-# calcDs_4states2B, calcDs_4states2C   # <- closest! (and same)
+# calcDs_4states2B, calcDs_4states2D   # <- closest! (and same)
 #  0.9996842305583383
 #  0.00031576944166156017
 
@@ -433,21 +456,22 @@ asr_at_node7 = uppass_likes ./ sum(uppass_likes)
 # Diversitree: asr.marginal
 # 0.999620338 0.0003796623
 
-diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
+# Diversitree biSSE, with unequal "a"
+# diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
+julia_bisseJ_Rnode7_01 = [0.006446111346864297, 0.9935538886531358]
 
+asr_at_node7 .== julia_bisseJ_Rnode7_01
 
-asr_at_node7 .== diversitree_bisse_Rnode7_01
+#@test round(asr_at_node7[1]; digits=3) .== round(diversitree_bisse_Rnode7_01[1]; digits=3)
+#@test round(asr_at_node7[2]; digits=3) .== round(diversitree_bisse_Rnode7_01[2]; digits=3)
 
-@test round(asr_at_node7[1]; digits=3) .== round(diversitree_bisse_Rnode7_01[1]; digits=3)
-@test round(asr_at_node7[2]; digits=3) .== round(diversitree_bisse_Rnode7_01[2]; digits=3)
-
-asr_at_node7[1] - diversitree_bisse_Rnode7_01[1]
-asr_at_node7[2] - diversitree_bisse_Rnode7_01[2]
+asr_at_node7[1] - julia_bisseJ_Rnode7_01[1]
+asr_at_node7[2] - julia_bisseJ_Rnode7_01[2]
 
 
 include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 u0 = left_likes
-prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2F, u0, tspan, p_Ds_v5);
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Ds_v5(anctime)
@@ -514,8 +538,8 @@ uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v5_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+v5_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 
 # Julia:
 #  [0.43035780124527134, 0.5696421987547287]
@@ -533,12 +557,14 @@ res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 #0.005145312 0.9948546878;  # <- closest of the below
 #0.999681941 0.0003180585]
 
+# Trivial
 R_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,]
 R_bisse_anc_estimates = mapreduce(permutedims, vcat, R_bisse_anc_estimates)
 
 Julia_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,:]
 Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimates)
 round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3)
+
 @test all(round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3))
 
 Julia_bisse_anc_estimates .- R_bisse_anc_estimates
@@ -553,8 +579,12 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
 res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
 res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
-res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
-res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+v7_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+v7_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+
+@test all( (v7_anc_branchBot[5] .- v5_anc_branchBot[5]) .< 1e-6) 
+@test all( (v7_anc_branchBot[6] .- v5_anc_branchBot[6]) .< 1e-6) 
+@test all( (v7_anc_branchBot[7] .- v5_anc_branchBot[7]) .< 1e-6) 
 
 # Julia:
 #  [0.43035780124527134, 0.5696421987547287]
@@ -568,16 +598,42 @@ res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
 # [2,] 0.005145312 0.9948546878  # <- closest of the below
 # [3,] 0.999681941 0.0003180585  # <- closest of the below
 
-R_bisse_anc_estimates = [0.430357148 0.5696428522; # <- matches res1 or res1t
-0.005145312 0.9948546878;  # <- closest of the below
-0.999681941 0.0003180585]
+Julia_bisseJ_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,]
+Julia_bisseJ_anc_estimates = mapreduce(permutedims, vcat, Julia_bisseJ_anc_estimates)
+Julia_bisseJ_anc_estimates = [0.4761851826108468 0.5238148173891531; 0.9587285236937566 0.04127147630624328; 0.005800480504768555 0.9941995194952314]
+
+
 
 Julia_bisse_anc_estimates = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:][5:7,:]
 Julia_bisse_anc_estimates = mapreduce(permutedims, vcat, Julia_bisse_anc_estimates)
-round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3)
-@test all(round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3))
+round.(Julia_bisseJ_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3)
+@test all(round.(Julia_bisseJ_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; digits=3))
 
-Julia_bisse_anc_estimates .- R_bisse_anc_estimates
+Julia_bisse_anc_estimates .- Julia_bisseJ_anc_estimates
+
+
+
+
+
+
+
+
+
+# v12 algorithm
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+R_order = sort(trdf, :Rnodenums).nodeIndex
+#p_Ds_v7 = p_Ds_v5;
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+rn(res)
+res.uppass_probs_at_each_nodeIndex_branchBot[R_order,:]
+res.uppass_probs_at_each_nodeIndex_branchTop[R_order,:]
+v7_anc_branchBot = res.anc_estimates_at_each_nodeIndex_branchBot[R_order,:]
+v7_anc_branchTop = res.anc_estimates_at_each_nodeIndex_branchTop[R_order,:]
+
+@test all( (v7_anc_branchBot[5] .- v5_anc_branchBot[5]) .< 1e-6) 
+@test all( (v7_anc_branchBot[6] .- v5_anc_branchBot[6]) .< 1e-6) 
+@test all( (v7_anc_branchBot[7] .- v5_anc_branchBot[7]) .< 1e-6) 
+
 
 
 @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)

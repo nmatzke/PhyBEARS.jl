@@ -19,7 +19,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -81,6 +81,25 @@ function sumj(x)
 	sum(x .== "j")
 end
 
+
+"""
+# Sum the Cijk speciation rates by i
+
+# Example
+# julian_dput(prtCp(inputs.p_Ds_v5))
+Cdf = DataFrame(AbstractVector[["y", "j", "j", "y"], [1, 1, 2, 2], [1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [0.9166666666666666, 0.5, 0.5, 0.9166666666666666], [0.6470588235294118, 0.35294117647058826, 0.35294117647058826, 0.6470588235294118], [0.14379084952941176, 0.07843137247058823, 0.07843137247058823, 0.14379084952941176], [0.14379084952941176, 0.07843137247058823, 0.07843137247058823, 0.14379084952941176], [0.0, 0.0, 0.0, 0.0]], DataFrames.Index(Dict(:event => 1, :wt => 6, :val => 9, :j => 3, :k => 4, :rates_t => 10, :prob => 7, :i => 2, :rate => 8, :pair => 5), [:event, :i, :j, :k, :pair, :wt, :prob, :rate, :val, :rates_t]));
+Cdf
+Carray_ivals = Cdf.i
+Cijk_vals = Cdf.val
+"""
+function sum_Cijk_rates_by_i(Cijk_vals, Carray_ivals, numstates)
+	sums_by_i = repeat([0.0], numstates)
+	for i in 1:numstates
+		TF = Carray_ivals .== i
+		sums_by_i[i] = sum(Cijk_vals[TF])
+	end
+	return sums_by_i
+end # END function sum_Cijk_rates_by_i(Cijk_vals, Carray_ivals)
 
 
 """

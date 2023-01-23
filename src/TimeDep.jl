@@ -21,7 +21,7 @@ using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 print("...done.\n")
 
 
-export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_dmat_at_time_t_t!, update_amat_at_time_t_t!, update_Qij_a_vals_t!, update_Qij_d_vals_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Cijk_rates_sub_i_t!, update_mus_time_t!, update_QC_mats_time_t!, construct_QC_interpolators
+export area_of_areas_df_to_vectors, get_area_of_range, get_area_of_range_using_interpolator, update_Qij_e_vals!, update_Qij_d_vals!, get_elist_at_time_t!, update_Qij_e_vals_t!, update_dmat_at_time_t_t!, update_amat_at_time_t_t!, update_Qij_a_vals_t!, update_Qij_d_vals_t!, update_min_vdist_at_time_t_withp!, update_min_vdist_at_time_t!, get_mindist_between_pair_of_ranges, get_jmat_at_time_t!, update_Cijk_j_rates_t!, update_Cijk_j_rates!, update_Cijk_rates!, update_Cijk_v_rates!, update_Qij_vals_sub_i_t!, update_Qji_vals_sub_j_t! update_Cijk_rates_sub_i_t!, update_Cijk_rates_sub_j_t!, update_mus_time_t!, update_QC_mats_time_t!, construct_QC_interpolators
 
 
 """
@@ -354,16 +354,41 @@ function update_Cijk_v_rates!(p)
 	end
 end
 
+
+# Transfer Cijk rates to Qij_vals_sub_i
+function update_Qij_vals_sub_i_t!(p)
+	# Update the Qij_vals_sub_i_t (where anc==i)
+	@inbounds @simd for i in 1:length(p.setup.states_list)
+		p.p_TFs.Qij_vals_sub_i_t[i] .= p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]]
+	end
+end
+
+
+# Transfer Cijk rates to Qij_vals_sub_j
+function update_Qji_vals_sub_j_t!(p)
+	# Update the Qij_vals_sub_j_t (where anc==i)
+	@inbounds @simd for j in 1:length(p.setup.states_list)
+		p.p_TFs.Qji_rates_sub_j_t[j] .= p.params.Qij_vals_t[p.p_indices.Qarray_jvals .== j] # uppass
+	end
+end
+
+
 # Transfer Cijk rates to Cijk_rates_sub_i
 function update_Cijk_rates_sub_i_t!(p)
 	# Update the Cijk_rates_sub_i_t (where anc==i)
 	@inbounds @simd for i in 1:length(p.setup.states_list)
 		p.p_TFs.Cijk_rates_sub_i_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
-#		p.p_TFs.Cjik_rates_sub_j_t[i] .= p.params.Cijk_rates_t[p.p_TFs.Cj_eq_j[i]] # uppass
 	end
 end
 
 
+# Transfer Cijk rates to Cijk_rates_sub_j
+function update_Cijk_rates_sub_j_t!(p)
+	# Update the Cijk_rates_sub_j_t (where anc==i)
+	@inbounds @simd for j in 1:length(p.setup.states_list)
+		p.p_TFs.Cjik_rates_sub_j_t[j] .= p.params.Cijk_rates_t[p.p_indices.Carray_jvals .== j] # uppass
+	end
+end
 
 
 
