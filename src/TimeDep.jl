@@ -390,6 +390,7 @@ function update_Qij_d_vals!(p)
 	#p.setup.dmat .= p.setup.dmat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
 	
 	#p.setup.dmat .= 0.0
+	update_amat_at_time_t_t!(p)  # update the a matrix with a * distmats^powers
 	update_dmat_at_time_t_t!(p)
 	
 	#p.setup.amat_t .= p.setup.amat_base .* p.setup.dispersal_multipliers_mat.^p.bmo.est[p.setup.bmo_rows.w] .* p.setup.distmat.^p.bmo.est[p.setup.bmo_rows.x] .* p.setup.envdistmat.^p.bmo.est[p.setup.bmo_rows.n] .* p.setup.distmat2.^p.bmo.est[p.setup.bmo_rows.x2] .* p.setup.distmat3.^p.bmo.est[p.setup.bmo_rows.x3]
