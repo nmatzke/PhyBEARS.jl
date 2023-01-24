@@ -1053,6 +1053,8 @@ function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 		#nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
 		# Not a placeholder, because we are just passing the likelihoods 
 		# down from the bottom of the branch above (no Cmat calculation needed)
+		
+		# No fixNodes multiplier, since this is a branch-bottom, which has already been used
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
@@ -1143,6 +1145,10 @@ function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
@@ -1263,7 +1269,11 @@ function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat2(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
-
+		
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+		
+		
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
 		
@@ -1386,6 +1396,10 @@ function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)
+
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)

@@ -209,9 +209,9 @@ du = repeat([0.0], length(u))
 
 # We have to manually update one of the "a" values, to match the BiSSE example,
 # as the default updater only allows 1 "a"
-p_Es_v12.params.Qij_vals_t .= p_Es_v12.params.Qij_vals
+p_Es_v12.params.Qij_vals_t .= p_Es_v12.params.Qij_vals;
 
-p = p_Es_v12
+p = p_Es_v12;
 
 t = 0.0
 v12res = parameterized_ClaSSE_Es_v12_simd_sums_print(du,u,p,t)
@@ -717,34 +717,253 @@ res.anc_estimates_at_each_nodeIndex_branchTop[R_order,]
 #######################################################
 # Change the parameters to be distance-dependent and area-dependent
 #######################################################
+# For comparison (won't be the same):
 
-inputs.bmo.est[bmo.rownames.=="u"] .= 1.0;
-inputs.bmo.est[bmo.rownames.=="x"] .= 0.0;
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-inputs.bmo.est .= bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
-inputs.bmo.est
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-p_Ds_v5_updater_v1!(p_Es_v12, inputs; check_if_free_params_in_mat=true, printlevel=0)
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+v7_ancstates_bots_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v7_ancstates_tops_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+p_Es_v12_archive = deepcopy(p_Es_v12);
+p_Ds_v12_archive = deepcopy(p_Ds_v12);
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+
+prtQp(p_Ds_v5)
+prtQp(p_Ds_v7)
+prtQp(p_Ds_v12)
+
+prtCp(p_Ds_v5)
+prtCp(p_Ds_v7)
+prtCp(p_Ds_v12)
+
+# julia> prtCp(p_Ds_v5)
+# 4×10 DataFrame
+#  Row │ event   i      j      k      pair   wt        prob      rate       val        rates_t   
+#      │ String  Int64  Int64  Int64  Int64  Float64   Float64   Float64    Float64    Float64   
+# ─────┼─────────────────────────────────────────────────────────────────────────────────────────
+#    1 │ y           1      1      1      1  0.916667  0.647059  0.143791   0.143791   0.143791
+#    2 │ j           1      1      2      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    3 │ j           2      2      1      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    4 │ y           2      2      2      1  0.916667  0.647059  0.143791   0.143791   0.143791
+# 
+# julia> prtCp(p_Ds_v7)
+# 4×10 DataFrame
+#  Row │ event   i      j      k      pair   wt        prob      rate       val        rates_t   
+#      │ String  Int64  Int64  Int64  Int64  Float64   Float64   Float64    Float64    Float64   
+# ─────┼─────────────────────────────────────────────────────────────────────────────────────────
+#    1 │ y           1      1      1      1  0.916667  0.647059  0.143791   0.143791   0.143791
+#    2 │ j           1      1      2      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    3 │ j           2      2      1      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    4 │ y           2      2      2      1  0.916667  0.647059  0.143791   0.143791   0.143791
+# 
+# julia> prtCp(p_Ds_v12)
+# 4×10 DataFrame
+#  Row │ event   i      j      k      pair   wt        prob      rate       val        rates_t   
+#      │ String  Int64  Int64  Int64  Int64  Float64   Float64   Float64    Float64    Float64   
+# ─────┼─────────────────────────────────────────────────────────────────────────────────────────
+#    1 │ y           1      1      1      1  0.916667  0.647059  0.143791   0.143791   0.143791
+#    2 │ j           1      1      2      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    3 │ j           2      2      1      2  0.5       0.352941  0.0784314  0.0784314  0.0784314
+#    4 │ y           2      2      2      1  0.916667  0.647059  0.143791   0.143791   0.143791
+
+
+# Update v12
+p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 1.0;
+p_Es_v12.bmo.est[bmo.rownames.=="x"] .= 0.0;
+
+p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12.bmo.est
+
+p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+
+# Add Q, C interpolators
+p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
 # Solve the Es
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
 sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-sol_Es_v5(ts)
-sol_Es_v7(ts)
-sol_Es_v12(ts)
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
-@test all(sol_Es_v7(ts).u[2] .== sol_Es_v5(ts).u[2])
-@test all( (sol_Es_v7(ts).u[2] .- sol_Es_v12(ts).u[2]) .< 1e-8)
-@test all(sol_Es_v7(ts).u[3] .== sol_Es_v5(ts).u[3])
-@test all( (sol_Es_v7(ts).u[3] .- sol_Es_v12(ts).u[3]) .< 1e-8)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v2 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v2 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+
+
+
+
+
+p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 0.0;
+p_Es_v12.bmo.est[bmo.rownames.=="x"] .= -1.0;
+
+p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12.bmo.est
+
+p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+
+# Add Q, C interpolators
+p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+# Solve the Es
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
-# Solve the Ds
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v3 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v3 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+
+
+
+
+
+
+p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 1.0;
+p_Es_v12.bmo.est[bmo.rownames.=="x"] .= -1.0;
+
+p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12.bmo.est
+
+p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+
+# Add Q, C interpolators
+p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+# Solve the Es
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v4 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v4 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+
+
+
+
+
+
+
+p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 0.0;
+p_Es_v12.bmo.est[bmo.rownames.=="x"] .= 0.0;
+
+p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12.bmo.est
+
+p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+
+# Add Q, C interpolators
+p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+# Solve the Es
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+rn(p_Ds_v12.interpolators)
+p_Ds_v12.interpolators.Q_vals_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.interpolators.C_rates_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.interpolators.mu_vals_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.params.mu_t_vals
+p_Ds_v7.params.mu_vals
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+
+
+
+
+
+
+
+
+
+# Add Q, C interpolators
+p_Es_v12_archive = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12_archive, p_Es_v12_archive.interpolators.times_for_SSE_interpolators);
+# Solve the Es
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12_archive);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+p_Es_v12 = p_Es_v12_archive
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+rn(p_Ds_v12.interpolators)
+p_Ds_v12.interpolators.Q_vals_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.interpolators.C_rates_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.interpolators.mu_vals_interpolator[seq(0.0, 5.0, 0.5)]
+p_Ds_v12.params.mu_t_vals
+p_Ds_v7.params.mu_vals
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+v7_ancstates_bots_v1
+v12_ancstates_bots_v6
+
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+prtQp(p_Ds_v5)
+prtQp(p_Ds_v7)
+prtQp(p_Ds_v12)
+
+prtCp(p_Ds_v5)
+prtCp(p_Ds_v7)
+prtCp(p_Ds_v12)
+
+
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+v12_ancstates_bots_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
+v12_ancstates_tops_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+
+v7_ancstates_bots_v1
+v12_ancstates_bots_v5
+
+v12_ancstates_bots_v2
+v12_ancstates_bots_v3
+v12_ancstates_bots_v4
+
+
+v7_ancstates_tops_v1
+v12_ancstates_tops_v5
+
+v12_ancstates_tops_v2
+v12_ancstates_tops_v3
+v12_ancstates_tops_v4
 
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
