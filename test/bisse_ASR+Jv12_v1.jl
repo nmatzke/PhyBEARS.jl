@@ -20,6 +20,7 @@ using PhyBEARS.SSEs
 using PhyBEARS.ModelLikes
 using PhyBEARS.TreePass
 using PhyBEARS.SSEs
+using PhyBEARS.TimeDep
 
 
 # 
@@ -638,11 +639,11 @@ v12_anc_branchTop = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_ord
 @test all( (v5_anc_branchBot[7] .- v12_anc_branchBot[7]) .< 1e-6) 
 
 
-@benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+#@benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-@benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+#@benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-@benchmark uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+#@benchmark uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
 # julia> @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 # BenchmarkTools.Trial: 1335 samples with 1 evaluation.
@@ -782,6 +783,8 @@ prtCp(p_Ds_v12)
 
 
 # Update v12
+# Different from v12, because different u
+
 p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 1.0;
 p_Es_v12.bmo.est[bmo.rownames.=="x"] .= 0.0;
 
@@ -793,6 +796,9 @@ p_Es_v12.params.mu_vals_t
 p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
 p_Es_v12.params.mu_vals
 p_Es_v12.params.mu_vals_t
+
+# Add the mu[2]=0.05 back in, manually
+p_Es_v12.params.mu_vals[2] = 0.05
 
 # Add Q, C interpolators
 p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
@@ -813,7 +819,7 @@ v12_ancstates_tops_v2 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R
 
 
 
-
+# Different from v12, because different x
 
 p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 0.0;
 p_Es_v12.bmo.est[bmo.rownames.=="x"] .= -1.0;
@@ -825,6 +831,7 @@ p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printl
 
 # Make sure the base deathRate stays different
 p_Es_v12.params.mu_vals
+# Add the mu[2]=0.05 back in, manually
 p_Es_v12.params.mu_vals[2] = 0.05
 
 # Add Q, C interpolators
@@ -847,8 +854,7 @@ v12_ancstates_tops_v3 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R
 
 
 
-
-
+# Different from v12, because different u & x
 p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 1.0;
 p_Es_v12.bmo.est[bmo.rownames.=="x"] .= -1.0;
 
@@ -856,6 +862,8 @@ p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
 p_Es_v12.bmo.est
 
 p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+# Add the mu[2]=0.05 back in, manually
+p_Es_v12.params.mu_vals[2] = 0.05
 
 # Add Q, C interpolators
 p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
@@ -878,7 +886,7 @@ v12_ancstates_tops_v4 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R
 
 
 
-
+# Back to matching
 
 p_Es_v12.bmo.est[bmo.rownames.=="u"] .= 0.0;
 p_Es_v12.bmo.est[bmo.rownames.=="x"] .= 0.0;
@@ -887,6 +895,18 @@ p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
 p_Es_v12.bmo.est
 
 p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+# Add the mu[2]=0.05 back in, manually
+p_Es_v12.params.mu_vals[2] = 0.05
+
+t = 1.0
+update_Qij_vals_sub_i_t!(p_Es_v12)
+update_Qji_vals_sub_j_t!(p_Es_v12)
+update_Cijk_rates_sub_i_t!(p_Es_v12, t)
+update_Cijk_rates_sub_j_t!(p_Es_v12, t)
+update_mus_time_t!(p_Es_v12, 1.0)
+
+p_Es_v12.params.mu_vals[2] = 0.05
+
 
 # Add Q, C interpolators
 p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
@@ -925,7 +945,7 @@ p_Es_v12_archive = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12_archive,
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12_archive);
 sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-p_Es_v12 = p_Es_v12_archive
+p_Es_v12 = p_Es_v12_archive;
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 rn(p_Ds_v12.interpolators)
