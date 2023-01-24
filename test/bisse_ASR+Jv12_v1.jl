@@ -217,7 +217,7 @@ t = 0.0
 v12res = parameterized_ClaSSE_Es_v12_simd_sums_print(du,u,p,t)
 
 du = repeat([0.0], length(u))
-p = p_Ds_v5
+p = p_Ds_v5;
 v5res = parameterized_ClaSSE_Es_v5_print(du,u,p,t)
 
 v12res .- v5res
@@ -822,6 +822,10 @@ p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
 p_Es_v12.bmo.est
 
 p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+
+# Make sure the base deathRate stays different
+p_Es_v12.params.mu_vals
+p_Es_v12.params.mu_vals[2] = 0.05
 
 # Add Q, C interpolators
 p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);

@@ -869,7 +869,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
 	# Get the interpolated parameters at time t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(time_below_tips)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(time_below_tips)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(time_below_tips)
+  p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(time_below_tips)
 	
 	# Convey the interpolated Cijk_rates_t to the sub_i and sub_j
 	update_Qij_vals_sub_i_t!(p)
@@ -889,7 +889,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD = (du,u,p,t) -> begin
 	
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd_FWD(p.p_TFs.Qij_vals_sub_i_t[i], p.p_TFs.Qji_vals_sub_j_t[i], u, p.p_TFs.Qi_sub_j[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end
 
