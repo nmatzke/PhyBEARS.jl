@@ -931,7 +931,15 @@ v12_ancstates_bots_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R
 v12_ancstates_tops_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
 
 v7_ancstates_bots_v1
+v12_ancstates_bots_v0
 v12_ancstates_bots_v6
+v12_ancstates_bots_v5
+
+v7_ancstates_tops_v1
+v12_ancstates_tops_v0
+v12_ancstates_tops_v6
+v12_ancstates_tops_v5
+
 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
