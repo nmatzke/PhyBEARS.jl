@@ -1088,7 +1088,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
-  mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   @inbounds for i in 1:n
@@ -1151,7 +1151,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
-  mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   @inbounds for i in 1:n
@@ -1265,7 +1265,7 @@ parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
-  ##mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  ##mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   ##@inbounds for i in 1:n
@@ -1327,7 +1327,7 @@ parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
-  ##mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  ##mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   ##@inbounds for i in 1:n
@@ -1393,7 +1393,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+  p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
@@ -1411,7 +1411,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 
@@ -1425,7 +1425,7 @@ parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   #p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+  p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
@@ -1443,7 +1443,7 @@ parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = p.params.mu_t_vals[i] -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
   
   return(du)
@@ -1456,7 +1456,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+  p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
 
 	# Pre-calculated solution of the Es
 	uE = p.sol_Es_v12(t)
@@ -1474,7 +1474,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i_index[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 
 
-		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
   
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
@@ -1488,7 +1488,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
   # Interpolate the current Q_vals_t and C_rates_t
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
-  p.params.mu_t_vals .= p.interpolators.mu_vals_interpolator(t)
+  p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
 
 	# Pre-calculated solution of the Es
 	uE = p.sol_Es_v12(t)
@@ -1506,7 +1506,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i_index[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 
 
-		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_t_vals[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
 
 		# Negative values may be expected due to numerical approximations; to
 		# prevent these blowing up:
