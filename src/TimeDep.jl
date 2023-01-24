@@ -475,17 +475,17 @@ end # END function update_Qij_d_vals!(p)
 
 function update_mus_time_t!(p, t)
   #mu = p.params.mu_vals # base extinction rate of each range
-  #mu_t = p.params.mu_t_vals # mu_t = mu at time t
+  #mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   @inbounds @simd for i in 1:p.n
   	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	p.params.mu_t_vals[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
+  	p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
   end
   # Correct "Inf" max_extinction_rates
- 	p.params.mu_t_vals[p.params.mu_t_vals .> p.setup.max_extinction_rate] .= p.setup.max_extinction_rate
+ 	p.params.mu_vals_t[p.params.mu_vals_t .> p.setup.max_extinction_rate] .= p.setup.max_extinction_rate
  	if (p.setup.multi_area_ranges_have_zero_mu == true)
-	 	p.params.mu_t_vals[length.(p.states_as_areas_lists) .> 1] .= 0.0
+	 	p.params.mu_vals_t[length.(p.states_as_areas_lists) .> 1] .= 0.0
 	end
 
 
@@ -538,7 +538,7 @@ end # END function update_QC_mats_time_t!(p, t)
 # Also interpolate mus
 function construct_QC_interpolators(p, tvals)
 	# Construct interpolators for Q_vals_t and C_rates_t
-	mu_vals_by_t = [Vector{Float64}(undef, length(p.params.mu_t_vals)) for _ = 1:length(tvals)]
+	mu_vals_by_t = [Vector{Float64}(undef, length(p.params.mu_vals_t)) for _ = 1:length(tvals)]
 	Q_vals_by_t = [Vector{Float64}(undef, length(p.params.Qij_vals_t)) for _ = 1:length(tvals)]
 	C_rates_by_t = [Vector{Float64}(undef, length(p.params.Cijk_rates_t)) for _ = 1:length(tvals)]
 
@@ -551,7 +551,7 @@ function construct_QC_interpolators(p, tvals)
 		update_QC_mats_time_t!(p, tvals[i])
 	
 		# Save these rates
-		mu_vals_by_t[i] .= p.params.mu_t_vals
+		mu_vals_by_t[i] .= p.params.mu_vals_t
 		Q_vals_by_t[i] .= p.params.Qij_vals_t
 		C_rates_by_t[i] .= p.params.Cijk_rates_t
 	end

@@ -733,11 +733,14 @@ v7_ancstates_tops_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_
 p_Es_v12_archive = deepcopy(p_Es_v12);
 p_Ds_v12_archive = deepcopy(p_Ds_v12);
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12_archive, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
 uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 v12_ancstates_bots_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
 v12_ancstates_tops_v0 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
 
-
+res_v0 = deepcopy(res)
 
 prtQp(p_Ds_v5)
 prtQp(p_Ds_v7)
@@ -785,7 +788,11 @@ p_Es_v12.bmo.est[bmo.rownames.=="x"] .= 0.0;
 p_Es_v12.bmo.est .= bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
 p_Es_v12.bmo.est
 
+p_Es_v12.params.mu_vals
+p_Es_v12.params.mu_vals_t
 p_Ds_v5_updater_v1!(p_Es_v12, p_Es_v12; check_if_free_params_in_mat=true, printlevel=0);
+p_Es_v12.params.mu_vals
+p_Es_v12.params.mu_vals_t
 
 # Add Q, C interpolators
 p_Es_v12 = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
@@ -889,7 +896,7 @@ rn(p_Ds_v12.interpolators)
 p_Ds_v12.interpolators.Q_vals_interpolator[seq(0.0, 5.0, 0.5)]
 p_Ds_v12.interpolators.C_rates_interpolator[seq(0.0, 5.0, 0.5)]
 p_Ds_v12.interpolators.mu_vals_interpolator[seq(0.0, 5.0, 0.5)]
-p_Ds_v12.params.mu_t_vals
+p_Ds_v12.params.mu_vals_t
 p_Ds_v7.params.mu_vals
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
@@ -921,7 +928,7 @@ rn(p_Ds_v12.interpolators)
 p_Ds_v12.interpolators.Q_vals_interpolator[seq(0.0, 5.0, 0.5)]
 p_Ds_v12.interpolators.C_rates_interpolator[seq(0.0, 5.0, 0.5)]
 p_Ds_v12.interpolators.mu_vals_interpolator[seq(0.0, 5.0, 0.5)]
-p_Ds_v12.params.mu_t_vals
+p_Ds_v12.params.mu_vals_t
 p_Ds_v7.params.mu_vals
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
@@ -929,6 +936,8 @@ p_Ds_v7.params.mu_vals
 uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 v12_ancstates_bots_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
 v12_ancstates_tops_v6 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
+
+res_v6 = deepcopy(res)
 
 v7_ancstates_bots_v1
 v12_ancstates_bots_v0
