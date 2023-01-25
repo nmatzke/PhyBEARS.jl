@@ -93,7 +93,7 @@ bmo.est[bmo.rownames .== "x"] .= 0.0;
 #bmo.est[bmo.rownames .== "xv"] .= 0.1;
 bmo.max[bmo.rownames .== "xv"] .= 10.0;
 
-bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
+bmo.est[:] = bmo_updater_v1_OLD(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
