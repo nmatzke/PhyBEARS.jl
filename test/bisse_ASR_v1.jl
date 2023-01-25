@@ -349,7 +349,7 @@ asr_at_node7 = uppass_likes ./ sum(uppass_likes)
 # 0.999620338 0.0003796623
 
 # BiSSE
-# diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
+diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]
 
 
 asr_at_node7 .== diversitree_bisse_Rnode7_01
