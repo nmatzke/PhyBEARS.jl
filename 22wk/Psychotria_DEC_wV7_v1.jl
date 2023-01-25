@@ -79,14 +79,16 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 #######################################################
 #bmo.type[bmo.rownames .== "xv"] .= "free"
 bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
+bmo.type[bmo.rownames .== "deathRate"] .= "fixed"
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0
+#bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
 #bmo.type[bmo.rownames .== "x"] .= "free"
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
-#pars = [0.04, 0.01, 0.34, 0.0]
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
 pars = [0.04, 0.01, 0.34]
+#pars = [0.034, 0.028, ML_yule_birthRate(tr)]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
