@@ -1279,8 +1279,8 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		
 		# Get uppass probs for Left and Right daughter branches
-		node_above_Left_corner = trdf.rightNodeIndex[current_nodeIndex]
-		node_above_Right_corner = trdf.leftNodeIndex[current_nodeIndex]
+		node_above_Left_corner = trdf.lefttNodeIndex[current_nodeIndex]  # it doesn't seem to matter which, it all propagates through
+		node_above_Right_corner = trdf.rightNodeIndex[current_nodeIndex]	# it doesn't seem to matter which, it all propagates through
 		brlen_above_Left_corner = trdf.brlen[node_above_Left_corner]
 		brlen_above_Right_corner = trdf.brlen[node_above_Right_corner]
 		
