@@ -14,6 +14,7 @@ using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
 using PhyloBits
+using PhyloBits.TrUtils	# for vvdf
 using PhyBEARS
 using DataFrames
 using CSV
@@ -21,6 +22,52 @@ using CSV
 # Change the working directory as needed
 wd = "/GitHub/PhyBEARS.jl/data/"
 cd(wd)
+
+# BioGeoBEARS ancestral states under DEC
+tmp_bgb_ancstates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0.2785, 
+0.8009, 0.6717, 0.0111, 1e-04, 0, 0, 0, 0, 0, 0.9901, 0.635, 
+0.2215, 0.0794, 0.0124, 0.9923, 0.0805, 0.9689, 0, 0, 1, 1, 0, 
+0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0.0019, 8e-04, 0.0022, 
+0.0045, 0.4162, 0, 0.0026, 0, 0.9824, 0, 0, 4e-04, 0.0014, 0.0952, 
+0.0093, 0, 0.0037, 1e-04, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 2e-04, 6e-04, 5e-04, 0.0046, 0.0326, 
+0.0066, 0.9882, 0, 0.9996, 0, 2e-04, 7e-04, 0.0546, 0.069, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 6e-04, 0.0529, 0.0673, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0.5166, 0.0727, 0.1342, 0.4805, 0.0133, 0, 2e-04, 0, 0.0022, 
+0, 0.0068, 0.1043, 0.1892, 0.0664, 0.002, 0.0028, 0.8563, 0.0197, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0306, 
+0.0318, 0.0609, 0.0699, 0.0016, 5e-04, 2e-04, 0.0017, 0, 1e-04, 
+0.002, 0.0604, 0.1126, 0.0414, 0.0442, 0.0024, 0.0035, 0.0054, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0172, 
+0.0104, 0.0155, 1e-04, 0, 0, 0, 0, 0, 0, 9e-04, 0.0538, 0.1092, 
+0.0411, 0.0441, 0.0023, 0.0035, 0.0054, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.001, 1e-04, 0.0018, 0.0022, 
+0.5495, 0.9552, 0.98, 0.0095, 0.0149, 3e-04, 0, 1e-04, 8e-04, 
+0.1421, 0.0322, 0, 2e-04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 4e-04, 1e-04, 7e-04, 1e-04, 7e-04, 0, 
+0, 0, 5e-04, 0, 0, 1e-04, 8e-04, 0.1378, 0.032, 0, 2e-04, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+2e-04, 0, 1e-04, 1e-04, 0, 5e-04, 0, 0, 0, 0, 2e-04, 0.0212, 
+0.5377, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0.073, 0.0372, 0.0536, 0.4256, 0.0121, 0.0101, 0.0088, 
+0, 0, 0, 0, 0.0417, 0.1115, 0.0322, 0.0033, 0, 0.0253, 2e-04, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0465, 
+0.0145, 0.0177, 0.0025, 0, 0, 0, 0, 0, 0, 0, 0.038, 0.107, 0.0317, 
+0.0033, 0, 0.0252, 2e-04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0.0061, 0.0074, 0.0076, 5e-04, 0, 0, 0, 
+0, 0, 0, 0, 0.0165, 0.0335, 0.0146, 0.0813, 0, 2e-04, 2e-04, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5e-04, 
+1e-04, 0.0016, 1e-04, 0.0018, 0.0014, 0.0015, 0, 0, 0, 0, 1e-04, 
+0.0012, 0.1745, 0.0579, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0275, 0.0239, 0.0317, 0.0021, 1e-04, 
+0, 0, 0, 0, 0, 0, 0.0494, 0.1097, 0.015, 0.004, 0, 0.0014, 0];
+
+bgb_ancstates_df = DataFrame(reshape(tmp_bgb_ancstates, (37, 16)), :auto)
+
 
 # Psychotria tree from Ree & Smith 2008
 trfn = "Psychotria_tree.newick"
@@ -133,8 +180,22 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Root ancestral states:
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 #  0.0  0.0  0.0  0.0  0.0  0.002  0.003  0.947  0.0  0.003  0.0  0.001  0.024  0.02  0.0  0.0
+
+# All ancestral states:
+R_order = sort(trdf, :Rnodenums).nodeIndex
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+rn(res)
+
+# Show ancestral state probability estimates
+
+# Branch bottoms ("corners")
+round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]), digits=3)
+# Branch tops ("corners")
+round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=3)
+
 
 
