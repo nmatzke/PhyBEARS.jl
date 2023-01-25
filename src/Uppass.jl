@@ -39,11 +39,10 @@ using SpecialFunctions			# for e.g. logfactorial
 
 using PhyloBits.PNtypes	# for e.g. HybridNetwork
 using PhyloBits.TrUtils # for e.g. flat2, odds, Rrbind, convert_df_datatypes!
-using PhyloBits.StateSpace	# for e.g. prtCp
 using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
 
 
-prtCp
+using PhyBEARS.StateSpace	# for e.g. prtCp
 using PhyBEARS.SSEs 
 using PhyBEARS.TimeDep	# for update_QC_mats_time_t!
 #using PhyBEARS.Flow 
