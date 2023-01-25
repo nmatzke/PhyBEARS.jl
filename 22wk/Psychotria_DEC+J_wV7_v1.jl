@@ -16,6 +16,7 @@ using Test						# for @test, @testset
 using PhyloBits
 using PhyloBits.TrUtils	# for vvdf
 using PhyBEARS
+using PhyBEARS.Uppass
 using DataFrames
 using CSV
 
@@ -120,6 +121,9 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 #bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
 #bmo.type[bmo.rownames .== "x"] .= "free"
 #bmo.type[bmo.rownames .== "x"] .= "free"
+
+bmo[bmo.type .== "free",:]
+
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
@@ -153,6 +157,7 @@ opt.upper_bounds = upper::Union{AbstractVector,Real}
 
 # Get the inputs & res:
 pars = optx
+pars
 #pars = [0.9747407112459348, 0.8, 0.11]
 #pars = [100.0, 1.8, 0.11]
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
@@ -186,5 +191,7 @@ rn(res)
 round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]), digits=3)
 # Branch tops ("corners")
 round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=3)
+
 bgb_ancstates_df
 
+bgb_ancstates_df .- round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=4)
