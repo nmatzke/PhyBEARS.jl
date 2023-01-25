@@ -19,6 +19,7 @@ using PhyBEARS.SSEs
 using PhyBEARS.ModelLikes
 using PhyBEARS.TreePass
 using PhyBEARS.SSEs
+using PhyBEARS.Uppass
 
 
 # 
@@ -290,7 +291,7 @@ solver_options.reltol = 1e-6
 solver_options.save_everystep = false
 
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 tspan = (anctime, dectime)
 
 u0 = right_likes
@@ -321,7 +322,7 @@ uppass_likes ./ sum(uppass_likes)
 # 0.9947838697767504
 
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 
 ctable1 = prtCp(p_Ds_v5)
 make_ctable_single_events(ctable1)
@@ -361,7 +362,7 @@ asr_at_node7[1] - diversitree_bisse_Rnode7_01[1]
 asr_at_node7[2] - diversitree_bisse_Rnode7_01[2]
 
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 u0 = left_likes
 prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
@@ -387,7 +388,7 @@ uppass_likes ./ sum(uppass_likes)
 #######################################################
 
 # v5 algorithm
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 R_order = sort(trdf, :Rnodenums).nodeIndex
 p_Ds_v7 = p_Ds_v5;
 tmpnode = 6
@@ -459,7 +460,7 @@ Julia_bisse_anc_estimates .- R_bisse_anc_estimates
 
 
 # v7 algorithm
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 R_order = sort(trdf, :Rnodenums).nodeIndex
 p_Ds_v7 = p_Ds_v5;
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)

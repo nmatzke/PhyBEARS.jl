@@ -7,16 +7,23 @@
 #    L or R descendant
 
 
+#######################################################
+# Likelihood calculations: input tree, tipdata, model,
+#                          get likelihood back
+#######################################################
 
+module Uppass
+__precompile__(false)  # will cause using / import to load it directly into the 
+                       # current process and skip the precompile and caching. 
+                       # This also thereby prevents the module from being 
+                       # imported by any other precompiled module.
+                       # https://docs.julialang.org/en/v1/manual/modules/
+
+print("PhyBEARS: loading Uppass dependencies...")
+#using BenchmarkTools # for @time
 
 using DifferentialEquations
 
-using PhyloBits.PNtypes	# for e.g. HybridNetwork
-using PhyloBits.TrUtils # for e.g. flat2, odds, Rrbind, convert_df_datatypes!
-using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
-using PhyBEARS.SSEs 
-using PhyBEARS.TimeDep	# for update_QC_mats_time_t!
-#using PhyBEARS.Flow 
 using Hwloc						# for e.g. getinfo()[:Core] # the current core, I think
 using Distributed			# for e.g. Distributed.@spawnat
 using DataFrames			# for e.g. DataFrame()
@@ -30,6 +37,13 @@ using Sundials				# for CVODE_BDF(linear_solver=:GMRES)
 using LinearAlgebra		# for factorize()
 using SpecialFunctions			# for e.g. logfactorial
 
+using PhyloBits.PNtypes	# for e.g. HybridNetwork
+using PhyloBits.TrUtils # for e.g. flat2, odds, Rrbind, convert_df_datatypes!
+using PhyloBits.TreeTable	# for e.g. get_nonrootnodes_trdf
+using PhyBEARS.SSEs 
+using PhyBEARS.TimeDep	# for update_QC_mats_time_t!
+#using PhyBEARS.Flow 
+print("...done.\n")
 
 
 export branchOp_ClaSSE_Ds_v5_FWD, branchOp_ClaSSE_Ds_v7_FWD, calcDs_4states2D, calcDs_4states2D_print, parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD, parameterized_ClaSSE_Ds_v7_simd_sums_2D_FWD_print, sum_Qij_vals_inbounds_simd_FWD, sum_Cijk_rates_Ds_inbounds_simd_FWD, branchOp_ClaSSE_Ds_v12_FWD, parameterized_ClaSSE_Ds_v12_simd_sums_2D_FWD, nodeOp_Cmat_get_condprobs, nodeOp_Cmat_uppass_v5!, nodeOp_Cmat_uppass_v7!, uppass_ancstates_v5!, uppass_ancstates_v7!, nodeOp_Cmat_uppass_v12!, uppass_ancstates_v12!
@@ -1805,3 +1819,7 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 	end # END elseif internal nodes
 end # END nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
+
+
+
+end # END module ModelLikes

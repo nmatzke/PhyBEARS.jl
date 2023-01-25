@@ -1,0 +1,91 @@
+Kia ora everyone!
+
+I am excited to be teaching the BioGeoBEARS and PhyBEARS workshop at the ANU AES meeting next week!
+
+I have attached some installation instructions.  Please attempt these before the workshop if you can.  
+
+The Julia instructions, in particular, might take awhile to run (Julia optimizes computing speed, but this means the initial compilation of packages can be slow).  We can work on kinks in the Julia installation after the BioGeoBEARS / R workshop on Monday -- this is my first time doing a Julia workshop, so there could be kinks!
+
+I've also pasted in the info on the workshop location etc.
+
+Cheers!
+
+Nick Matzke
+Senior Lecturer
+Rutherford Discovery Fellow
+School of Biological Sciences
+University of Auckland, New Zealand
+
+
+
+
+
+IBS Workshop Zoom ID-Passcode
+Inbox
+
+Seda Akkurt Gumus
+Thu, Jan 19, 1:54 AM (6 days ago)
+to me
+
+Hi Nick,
+Hope you’re fine! We’ve finalized the attendee list, and 30 people will join the workshop. 
+I set up a Zoom meeting for the workshop. It’s a recurring meeting so you'll use the same meeting id and passcode (below) for each day. It will start at 11 pm my time. I’ll attend at the beginning, do the checks, stay a bit, and will leave after if it’s also ok for you. 
+Please let me know if you have any questions.
+
+IBS ZOOM WEBINAR (25-26 Jan, 12 - 4 pm PST)
+Meeting id: 811 0821 5111
+Passcode: 647001
+
+Cheers,
+Seda.
+— 
+Seda Akkurt Gumus, PhD (she/her)
+MCBU-GIS department, Türkiye
+Admin Assistant, The International Biogeography Society - https://www.biogeography.org
+
+11th Biennial Conference of the International Biogeography Society
+Prague, Czechia - January 8-12, 2024
+https://www.biogeography.org/meetings/prague-2024/
+
+
+Day 1: 4 hours
+California: Wednesday January 25, 2023, 12 noon - 4 pm
+London: Wednesday January 25, 2023, 8pm-midnight
+New Zealand: Thursday January 26, 2023, 9am-1 pm
+Australia: Thursday January 26, 2023, 7am-11am
+
+Day 2: 4 hours
+California: Thursday January 26, 2023, 12 noon - 4 pm
+London: Thursday January 26, 2023, 8pm-midnight
+New Zealand: Friday January 27, 2023, 9am-1 pm
+Australia: Friday January 27, 2023, 7am-11am
+
+PRICE: However IBS wants to set it. All proceeds go to IBS.
+
+LOCATION: Zoom
+
+DESCRIPTION (there is a graphic you can get from: https://cba.anu.edu.au/news-events/events/estimating-biogeographic-history-biogeobears-and-phybears ) 
+
+Estimating biogeographic history with BioGeoBEARS and PhyBEARS
+============================
+Register now
+
+Historical biogeography methods have long been dominated by the "dispersal versus vicariance" debate, and different computer programs (e.g. DIVA, Lagrange, BayArea) have made different fixed assumptions about the importance of these processes. Researchers typically just run the different programs, and observe whether or not the inferences differ, but they have no ability to judge, statistically, which of the models best fits the data, or whether another model (for example, one including founder-event speciation) might be better than any of these.
+
+The R package BioGeoBEARS, developed by Nicholas Matzke, allows users to build models that give different probability to vicariance, dispersal, and other processes, as well as build more complex models (dispersal probability as a function of distance, island emergence and submergence, inclusion of fossil data). All of the models are directly comparable in the common framework of statistical model choice.
+
+However, all biogeographic reconstruction models based on discrete areas are computationally limited by the resulting number of range states, which grows exponentially with the number of areas. The standard biogeography models have also been criticized for ignoring the process of lineage extinction. In the last decade another kind of models, the State-dependent Speciation and Extinction (SSE) models, have been developed incorporating birth-death processes where the speciation and extinction rates are dependent on the state of an evolving character (such as the distribution range).
+
+The package PhyBEARS, also developed by Matzke, makes SSE-type models accessible for large numbers of states/ranges. It is implemented in Julia, a more computationally efficient language than R. PhyBEARS can run the same models as BioGeoBEARS more efficiently, and then add lineage extinction, as well as more variants such as extinction dependent on area size.
+
+ 
+Aims
+
+This workshop aims to bring cutting edge knowledge on biogeography phylogenetic comparative methods to the research community in Canberra and other researchers attending the AES conference in the following days.
+
+Attendees of this workshop will learn how to build and test models in BioGeoBEARS and PhyBEARS, as well as necessary skills in R, Julia and statistical model selection.
+
+ 
+Target audience
+Researchers, particularly early-career ones, interested in historical biogeography and ancestral range estimation. Some previous experience in R or other programming language is preferable.
+============================

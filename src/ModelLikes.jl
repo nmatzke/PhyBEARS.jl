@@ -1434,9 +1434,5 @@ end # end setup_DEC_Cmat2_OLD()
 
 
 
-function calclike_DEC_SSE(tr, tipdata)
-end
-
-
 end # end module ModelLikes
 
