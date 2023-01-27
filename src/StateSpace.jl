@@ -160,31 +160,23 @@ end
 # adjust probs / vals / rates accordingly
 
 """
-dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]"
+dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]";
 
-dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]"
-dfnames = Reval(dfnames_txt)
+dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]";
+dfnames = Reval(dfnames_txt);
 
-datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]")
+datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]");
 
-ctable = DataFrame(Reval(dftxt), dfnames)
-convert_df_datatypes!(ctable, datatypes)
-ctable
+ctable1 = DataFrame(Reval(dftxt), dfnames);
+convert_df_datatypes!(ctable, datatypes);
+ctable1
+
+ctable = make_ctable_single_events(ctable1);
 
 """
-function prtC_single_events(ctable1)
-	ctable2 = ctable1[ctable1.pair .== 2, :]
-	tmpj = deepcopy(ctable2.j)
-	tmpk = deepcopy(ctable2.k)
-	ctable2.j .= tmpk
-	ctable2.k .= tmpj
-
-	ctable = Rrbind(ctable1, ctable2)
-	ctable.prob .= ctable.prob ./ ctable.wt
-	ctable.rate .= ctable.rate ./ ctable.wt
-	ctable.val .= ctable.val ./ ctable.wt
-	ctable.rates_t .= ctable.rates_t ./ ctable.wt
-
+function prtCp_single_events(p)
+	ctable1 = prtCp(p)
+	ctable = make_ctable_single_events(ctable1)
 	return ctable
 end # END function make_ctable_single_events(ctable)
 
@@ -196,16 +188,18 @@ end # END function make_ctable_single_events(ctable)
 # adjust probs / vals / rates accordingly
 
 """
-dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]"
+dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]";
 
-dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]"
-dfnames = Reval(dfnames_txt)
+dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]";
+dfnames = Reval(dfnames_txt);
 
-datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]")
+datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]");
 
-ctable = DataFrame(Reval(dftxt), dfnames)
-convert_df_datatypes!(ctable, datatypes)
-ctable
+ctable1 = DataFrame(Reval(dftxt), dfnames);
+convert_df_datatypes!(ctable, datatypes);
+ctable1
+
+ctable = make_ctable_single_events(ctable1);
 
 """
 function make_ctable_single_events(ctable1)
@@ -216,10 +210,10 @@ function make_ctable_single_events(ctable1)
 	ctable2.k .= tmpj
 
 	ctable = Rrbind(ctable1, ctable2)
-	ctable.prob .= ctable.prob ./ ctable.wt
-	ctable.rate .= ctable.rate ./ ctable.wt
-	ctable.val .= ctable.val ./ ctable.wt
-	ctable.rates_t .= ctable.rates_t ./ ctable.wt
+	ctable.prob .= ctable.prob ./ Float64.(ctable.pair)
+	ctable.rate .= ctable.rate ./ Float64.(ctable.pair)
+	ctable.val .= ctable.val ./ Float64.(ctable.pair)
+	ctable.rates_t .= ctable.rates_t ./ Float64.(ctable.pair)
 
 	return ctable
 end # END function make_ctable_single_events(ctable)

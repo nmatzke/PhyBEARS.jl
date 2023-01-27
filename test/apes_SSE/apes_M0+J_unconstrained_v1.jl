@@ -25,6 +25,12 @@ wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
 
+#######################################################
+# Answers from BioGeoBEARS
+#######################################################
+R_bgb_lnL = -1.170587
+
+
 # BioGeoBEARS ancestral states under DEC+J
 tmp_bgb_ancstates = [];
 
@@ -75,13 +81,29 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/uppass_clado_v7A.jl")
+
+
+uppass_from_root_to_node6_branchBot = [0.0, 0.875, 0.0, 0.12500000]
+root_states_uppass = [0.0, 0.3333333333, 0.3333333333, 0.3333333333]
+
+
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
-uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+uppass_ancstates_v7A!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
-vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+# Branch bottoms ("corners")
+round.(vvdf(res.uppass_probs_at_each_nodeIndex_branchBot[R_order]), digits=4)
+round.(vvdf(res.uppass_probs_at_each_nodeIndex_branchTop[R_order]), digits=4)
 
+
+round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]), digits=3)
+# Branch tops ("corners")
+round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=3)
+
+R_bgb_lnL
+bgb_lnL
+@test ( (R_bgb_lnL - bgb_lnL) < 0.0001)
 
 
 
