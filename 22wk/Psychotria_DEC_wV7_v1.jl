@@ -74,6 +74,9 @@ bgb_ancstates_df = DataFrame(reshape(tmp_bgb_ancstates, (37, 16)), :auto)
 trfn = "Psychotria_tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
+
+sort(trdf, :Rnodenums)
+
 oldest_possible_age = 100.0
 
 lgdata_fn = "Psychotria_geog.data"
@@ -104,17 +107,32 @@ bmo.max[bmo.rownames .== "xv"] .= 10.0;
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
+# Names of items in object
+Rnames(inputs)
+rn(inputs)
+
+# E.g.
+rn(inputs.setup)
+inputs.setup.txt_states_list
+
+
 bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 
 p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
 
+# Look at the anagetic (Q) and cladogenetic (C) matrices
 prtQp(p_Es_v7)
 prtCp(p_Es_v7)
 
 # Solve the Es
 prob_Es_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, Es_tspan, p_Es_v7);
 sol_Es_v7 = solve(prob_Es_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+# Look at the interpolator
+sol_Es_v7(0.0)
+sol_Es_v7(1.0)
+sol_Es_v7(2.0)
 
 p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
 
@@ -128,8 +146,8 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 #bmo.type[bmo.rownames .== "xv"] .= "free"
 bmo.type[bmo.rownames .== "birthRate"] .= "free"
 bmo.type[bmo.rownames .== "deathRate"] .= "fixed"
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-#bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
+#bmo.est[bmo.rownames .== "deathRate"] .= 0.0
+bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
 #bmo.type[bmo.rownames .== "x"] .= "free"
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
@@ -188,7 +206,7 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
-uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 rn(res)
 
 # Show ancestral state probability estimates

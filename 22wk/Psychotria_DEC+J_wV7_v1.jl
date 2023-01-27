@@ -195,3 +195,6 @@ round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=3)
 bgb_ancstates_df
 
 bgb_ancstates_df .- round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=4)
+
+
+round.(vvdf(res.likes_at_each_nodeIndex_branchBot[R_order]), digits=4)

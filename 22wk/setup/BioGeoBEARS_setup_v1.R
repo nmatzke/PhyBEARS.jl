@@ -124,6 +124,7 @@ numstates_from_numareas(numareas=4, maxareas=1, include_null_range=FALSE)
 
 
 # Try some basic commands: Tree reading with APE
+newick_string = "(orang:12.0,((chimp:6.0,(human:2.5,Lucy:0.5):3.5):1.0,gorilla:7.0):5.0);"
 newick_string = "((((human:2.5,Lucy:0.5):3.5,chimp:6.0):1.0,gorilla:7.0):5.0,orang:12.0);"
 tr = read.tree(file="", text=newick_string)
 tr

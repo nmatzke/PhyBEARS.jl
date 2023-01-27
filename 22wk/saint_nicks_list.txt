@@ -1,17 +1,17 @@
 Saint Nick's list for what we want in PhyBEARS
 (Ho ho ho!)
 
-1. Text list of areas / ranges to: inputs.setup.states_list_txt
+YES - 1. Text list of areas / ranges to: inputs.setup.states_list_txt
 
 (add these to output table also)
 
-2. Ancestral state calculation not just marginal likelihoods (downpass likelihoods)
+YES, BUT - 2. Ancestral state calculation not just marginal likelihoods (downpass likelihoods)
 
 3. Stochastic mapping
 
-4. Node constraints (likelihood multipliers by node)
+YES - 4. Node constraints (likelihood multipliers by node)
 
-5. Export table to R, load in BioGeoBEARS, plot
+NO - 5. Export table to R, load in BioGeoBEARS, plot
 
 xxx. distance between something and itself should be 0
 
@@ -30,5 +30,5 @@ trait-dependent dispersal models
 
 bS+SM stochastic + simulation
 
-9. Linking Gplates distances
+CONTACT PHD STUDENT WALLIS BLAND - 9. Linking Gplates distances
 
