@@ -364,11 +364,6 @@ if (runslow)
     }
 
 
-
-
-
-
-
 #######################################################
 # For comparison to PhyBEARS
 #######################################################
@@ -386,6 +381,16 @@ u0 = res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
 result = u0 %*% expm(Qmat)
 
 result == res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+res$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(res$ML_marginal_prob_each_state_at_branch_top_AT_node)
+
+
+
+
+
+
 
 #######################################################
 # Run DEC+J
@@ -470,6 +475,31 @@ if (runslow)
     load(resfn)
     resDECj = res
     }
+
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = resDECj
+names(res)
+
+res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+res$ML_marginal_prob_each_state_at_branch_top_AT_node
+res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(res)
+Qmat = mats$Qmat
+
+u0 = res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+res$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(res$ML_marginal_prob_each_state_at_branch_top_AT_node)
+
 
 #######################################################
 # PDF plots

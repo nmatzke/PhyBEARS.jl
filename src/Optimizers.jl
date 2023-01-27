@@ -1488,11 +1488,11 @@ function bmo_updater_v1_OLD(bmo)
 	s = ysv*1/3
 	v = ysv*1/3
 	
-	bmo.est[bmo.rownames .== "ysv"] = ysv
-	bmo.est[bmo.rownames .== "ys"] = ys
-	bmo.est[bmo.rownames .== "y"] = y
-	bmo.est[bmo.rownames .== "s"] = s
-	bmo.est[bmo.rownames .== "v"] = v
+	bmo.est[bmo.rownames .== "ysv"] .= ysv
+	bmo.est[bmo.rownames .== "ys"] .= ys
+	bmo.est[bmo.rownames .== "y"] .= y
+	bmo.est[bmo.rownames .== "s"] .= s
+	bmo.est[bmo.rownames .== "v"] .= v
 	
 	
 	# Update u_e and u_mu based on u?
