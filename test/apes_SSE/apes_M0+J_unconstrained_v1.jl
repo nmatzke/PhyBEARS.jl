@@ -83,9 +83,46 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 
 include("/GitHub/PhyBEARS.jl/test/apes_SSE/uppass_clado_v7A.jl")
 
-
+# Truth
 uppass_from_root_to_node6_branchBot = [0.0, 0.875, 0.0, 0.12500000]
-root_states_uppass = [0.0, 0.3333333333, 0.3333333333, 0.3333333333]
+
+# Reproduce
+uppass_probs_just_below_node = [0.0, 0.3333333333, 0.3333333333, 0.3333333333]
+uppass_probs_just_below_node = [0.25, 0.25, 0.25, 0.25]
+Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[3]
+Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[4]
+Ldownpass_likes_ones = [1.0, 1.0, 1.0, 1.0]
+Rdownpass_likes_ones = [1.0, 1.0, 1.0, 1.0]
+
+relprob_each_split_scenario = nodeOp_Cmat_get_condprobs_v7A(uppass_probs_just_below_node, Ldownpass_likes_ones, Rdownpass_likes, p_Ds_v7; use_Cijk_rates_t=false)
+
+ctable1 = prtCp(p)
+ctable = make_ctable_single_events(ctable1)
+
+uppass_lprobs = repeat([0.0], n)
+uppass_rprobs = repeat([0.0], n)
+for statei in 1:n
+	uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei])
+	#uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei]) # discarded, non-target corner
+end
+uppass_lprobs
+
+
+relprob_each_split_scenario = nodeOp_Cmat_get_condprobs_v7A(uppass_probs_just_below_node, Ldownpass_likes, Rdownpass_likes_ones, p_Ds_v7; use_Cijk_rates_t=false)
+
+ctable1 = prtCp(p)
+ctable = make_ctable_single_events(ctable1)
+
+uppass_lprobs = repeat([0.0], n)
+uppass_rprobs = repeat([0.0], n)
+for statei in 1:n
+	#uppass_lprobs[statei] = sum(relprob_each_split_scenario[ctable.j .== statei])
+	uppass_rprobs[statei] = sum(relprob_each_split_scenario[ctable.k .== statei]) # discarded, non-target corner
+end
+uppass_rprobs
+
+uppass_from_root_to_node6_branchBot
+
 
 
 # All ancestral states:

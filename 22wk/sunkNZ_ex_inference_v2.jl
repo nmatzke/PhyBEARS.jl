@@ -97,6 +97,10 @@ prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSS
 sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 sol_Es_v12(0.0)
+
+sol_Es_v12(1.0)
+sol_Es_v12(2.0)
+
 sol_Es_v12(22.0)
 sol_Es_v12(23.0)
 sol_Es_v12(24.0)
@@ -121,7 +125,7 @@ x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_optio
 #solver_options.solver = Tsit5()
 solver_options.abstol = 1.0e-12
 solver_options.reltol = 1.0e-12
-uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
 
 

@@ -39,8 +39,8 @@ bmo = construct_BioGeoBEARS_model_object();
 #bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
-bmo.est[bmo.rownames .== "d"] .= 0.0;
-bmo.est[bmo.rownames .== "e"] .= 0.0;
+bmo.est[bmo.rownames .== "d"] .= 0.0000000001;
+bmo.est[bmo.rownames .== "e"] .= 0.0000000001;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
 bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
@@ -79,7 +79,15 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false, min_branchlength=1.0e-6)
+rn(res)
 
+R_order = sort(trdf, :Rnodenums).nodeIndex
+res.anc_estimates_at_each_nodeIndex_branchBot[R_order]
+res.anc_estimates_at_each_nodeIndex_branchTop[R_order]
+
+ :uppass_probs_at_each_nodeIndex_branchTop
+ :anc_estimates_at_each_nodeIndex_branchTop
 
 #######################################################
 # Maximum likelihood inference
