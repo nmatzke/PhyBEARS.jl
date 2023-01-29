@@ -1104,6 +1104,7 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 			uppass_lprobs = repeat([0.0], n)
 			uppass_rprobs = repeat([0.0], n)
 			for statei in 1:n
+				# multiply by the downpass likelihoods from the non-target branch (brings in that info)
 				uppass_lprobs[statei] = uppass_probs_just_below_node[statei] * Rdownpass_likes[statei]
 				uppass_rprobs[statei] = uppass_probs_just_below_node[statei] * Ldownpass_likes[statei]
 			end
@@ -1153,10 +1154,14 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		end # END if (hookTF == true)
 		
 		# Get ancestral range estimates for Left and Right daughter branches
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= Ldownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		# Combine uppass and downpass at this corner
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Left_corner] .* res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		# Normalize
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Left_corner])
 
-		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= Rdownpass_likes .* res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		# Combine uppass and downpass at this corner
+		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.uppass_probs_at_each_nodeIndex_branchBot[node_above_Right_corner] .* res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+		# Normalize
 		res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] .= res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner] ./ sum(res.anc_estimates_at_each_nodeIndex_branchBot[node_above_Right_corner])
 	
 	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
