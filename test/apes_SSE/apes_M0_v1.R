@@ -387,7 +387,8 @@ resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node
 cft(resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
 cft(resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
 
-
+paste0(c(resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node), collapse=", ")
+paste0(c(resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node), collapse=", ")
 
 
 
