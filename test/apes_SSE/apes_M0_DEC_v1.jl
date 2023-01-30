@@ -84,8 +84,7 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 
@@ -121,17 +120,15 @@ end
 #######################################################
 # Maximum likelihood inference
 #######################################################
-#bmo.type[bmo.rownames .== "xv"] .= "free"
-bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "fixed"
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
+inputs.bmo.type[inputs.bmo.rownames .== "birthRate"] .= "free"
+inputs.bmo.type[inputs.bmo.rownames .== "deathRate"] .= "fixed"
+inputs.bmo.est[inputs.bmo.rownames .== "deathRate"] .= 0.0
+inputs.bmo[inputs.bmo.type .== "free",:]
 
-bmo[bmo.type .== "free",:]
-
-pars = bmo.est[bmo.type .== "free"]
-parnames = bmo.rownames[bmo.type .== "free"]
+pars = inputs.bmo.est[inputs.bmo.type .== "free"]
+parnames = inputs.bmo.rownames[inputs.bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
 #pars = [0.04, 0.01, 0.001, 0.34, 0.0]
 #pars = [0.04, 0.01, 0.001, 0.34]
 func(pars)
@@ -182,23 +179,42 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Root ancestral states:
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
-#  0.0  0.0  0.0  0.0  0.0  0.002  0.003  0.947  0.0  0.003  0.0  0.001  0.024  0.02  0.0  0.0
 
 # All ancestral states:
+# Show ancestral state probability estimates
 R_order = sort(trdf, :Rnodenums).nodeIndex
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
-rn(res)
 
-# Show ancestral state probability estimates
+df1 = df1bot = bgb_ancstates_AT_branchBots_df
+df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+df1 = df1top = bgb_ancstates_AT_nodes_df
+df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
 
-# Branch bottoms ("corners")
-round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]), digits=3)
-# Branch tops ("corners")
-round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=3)
+compare_dfs(df1bot, df2bot; tol=1e-4)
+get_max_df_diffs_byCol(df1bot, df2bot)
 
-bgb_ancstates_df
+compare_dfs(df1top, df2top; tol=1e-4)
+get_max_df_diffs_byCol(df1top, df2top)
 
-bgb_ancstates_df .- round.(vvdf(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]), digits=4)
+@testset "Apes DEC ancstates vs. Julia ML ancstates" begin
+	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
+	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
+end
+
+#######################################################
+# NOTE: 
+# 
+# ML_yule_birthRate(tr), following APE's Yule, gets a birthRate of 0.222222
+#
+# However, ML optimization here, optimizing on bgb_lnl, gives a birthRate of 0.333333
+#
+# This is a matter of counting, or not, an extra speciation rate (the root), i.e.
+# conditioning on survival.
+#
+#######################################################
 
 
-round.(vvdf(res.likes_at_each_nodeIndex_branchBot[R_order]), digits=4)
+
+
+
+
