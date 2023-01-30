@@ -83,19 +83,11 @@ df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
 
-compare_dfs(df1bot, df2bot)
+compare_dfs(df1bot, df2bot; tol=1e-6)
 get_max_df_diffs_byCol(df1bot, df2bot)
 
-
-difs = eachcol(bgb_ancstates_AT_branchBots_df) .- eachcol(vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]))
-@test all( maximum(abs.(difs)) .< 1e-4)
-
-compare_dfs
-get_max_df_diffs_byRow
-
-
-difs = eachcol(bgb_ancstates_AT_nodes_df) .- eachcol(vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]))
-@test all( maximum(abs.(difs)) .< 1e-4)
+compare_dfs(df1top, df2top)
+get_max_df_diffs_byCol(df1top, df2top)
 
 
 
