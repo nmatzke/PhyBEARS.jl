@@ -1079,12 +1079,17 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+
+		# For a root node, the branchBot uppass and ancestral estimates are undefined
+		# (you have no data below the root node)
+		if (trdf.nodeType[current_nodeIndex] == "root")
+			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+		end
 		
 		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
 		if (trdf.nodeType[current_nodeIndex] != "root")
 			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
-			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
 		end # END if (trdf.nodeType[current_nodeIndex] != "root")
 		
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
@@ -1277,12 +1282,17 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+
+		# For a root node, the branchBot uppass and ancestral estimates are undefined
+		# (you have no data below the root node)
+		if (trdf.nodeType[current_nodeIndex] == "root")
+			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+		end
 		
 		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
 		if (trdf.nodeType[current_nodeIndex] != "root")
 			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
-			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
 		end # END if (trdf.nodeType[current_nodeIndex] != "root")
 		
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
@@ -1575,12 +1585,17 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+
+		# For a root node, the branchBot uppass and ancestral estimates are undefined
+		# (you have no data below the root node)
+		if (trdf.nodeType[current_nodeIndex] == "root")
+			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+		end
 		
 		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
 		if (trdf.nodeType[current_nodeIndex] != "root")
 			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
-			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
 		end # END if (trdf.nodeType[current_nodeIndex] != "root")
 		
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
@@ -1799,11 +1814,17 @@ function nodeOp_Cmat_uppass_v7old!(res, current_nodeIndex, trdf, p_Ds_v7, solver
 	elseif ((trdf.nodeType[current_nodeIndex] == "intern") || (trdf.nodeType[current_nodeIndex] == "root") )
 		# (Ignore direct ancestors for now)
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+
+		# For a root node, the branchBot uppass and ancestral estimates are undefined
+		# (you have no data below the root node)
+		if (trdf.nodeType[current_nodeIndex] == "root")
+			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([NaN], n)
+		end
+
 		# The root node does NOT need to be multiplied; this would produce anc_estimates.^2
 		if (trdf.nodeType[current_nodeIndex] != "root")
 			res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
-			res.uppass_probs_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
-			res.anc_estimates_at_each_nodeIndex_branchBot[current_nodeIndex] .= repeat([1.0], n)
 		end
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
 		
