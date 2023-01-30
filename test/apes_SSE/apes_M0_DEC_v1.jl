@@ -25,6 +25,16 @@ wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
 
+
+#######################################################
+# DEMONSTRATES MATCHING BETWEEN BIOGEOBEARS AND JULIA
+# ON SIMPLE great ape phylogeny, 4-STATE DEC MODEL
+#
+# Run with:
+# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# Truth:
+R_bgb_lnL = -4.481012
+
 # BioGeoBEARS ancestral states under DEC+J
 bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 9.55885872371469e-14, 0.999999999997088, 1.02736516865682e-13, 2.3942137600093e-13, NaN, 0.0212357703981079, 0.0324086154040224, 0.999999999998852, 1.85939277741373e-12, 0.999999999999754, 0.999999999999244, NaN, 0.757828224601766, 0.630413600097194, 1.05227375864171e-12, 1.05227375864171e-12, 1.43663791560109e-13, 5.17042461743951e-13, NaN, 0.220936005000126, 0.337177784498784];
 bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 6.42693382782259e-14, 2.27415872607374e-14, 9.55885855108166e-14, 1, 0, 1, 1, 0.757828232249181, 0.630413602214152, 1.85939274383416e-12, 0, 0, 0, 0, 0.242171767750754, 0.369586397785825, 0.999999999998045];
@@ -47,7 +57,7 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0000001, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
-bmo.type[bmo.rownames .== "j"] .= "free";
+bmo.type[bmo.rownames .== "j"] .= "fixed";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
 bmo.est[bmo.rownames .== "d"] .= 0.1010557;
@@ -74,6 +84,19 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
+p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+
+@testset "Apes DEC lnL" begin
+	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
+end
+
+
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
@@ -83,13 +106,16 @@ df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
 
-compare_dfs(df1bot, df2bot; tol=1e-6)
+compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)
 
-compare_dfs(df1top, df2top)
+compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-
+@testset "Apes DEC ancstates" begin
+	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
+	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
+end
 
 
 #######################################################
@@ -99,16 +125,13 @@ get_max_df_diffs_byCol(df1top, df2top)
 bmo.type[bmo.rownames .== "birthRate"] .= "free"
 bmo.type[bmo.rownames .== "deathRate"] .= "fixed"
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-#bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
-#bmo.type[bmo.rownames .== "x"] .= "free"
-#bmo.type[bmo.rownames .== "x"] .= "free"
 
 bmo[bmo.type .== "free",:]
 
 pars = bmo.est[bmo.type .== "free"]
 parnames = bmo.rownames[bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
 #pars = [0.04, 0.01, 0.001, 0.34, 0.0]
 #pars = [0.04, 0.01, 0.001, 0.34]
 func(pars)

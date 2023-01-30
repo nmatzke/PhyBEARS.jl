@@ -1238,9 +1238,29 @@ function update_Qij_vals_subs!(p_Ds_v5)
 	# Update Qij_vals_sub_i
 	for i in 1:p_Ds_v5.n
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
-		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		# 2023-01-30_THIS WAS A HORRIBLE MISTAKE, GO BACK
+
+		# For this:
+		# 6×5 DataFrame
+		#  Row │ event   i      j      val       vals_t  
+		#      │ String  Int64  Int64  Float64   Float64 
+		# ─────┼─────────────────────────────────────────
+		#    1 │ d           2      4  0.101056      0.0
+		#    2 │ d           3      4  0.101056      0.0
+		#    3 │ e           2      1  1.0e-12       0.0
+		#    4 │ e           3      1  1.0e-12       0.0
+		#    5 │ e           4      2  1.0e-12       0.0
+		#    6 │ e           4      3  1.0e-12       0.0
+
+		# Qi_sub_i, when i=2, gives "2 2"
+		# Qi_eq_i, when i=2, gives TFs for rows 1 & 3
+		# Qi_sub_j, when j=2, gives "4" (the i resulting when j==2)
+		# But Qj_eq_j, when j=2, gives TFs for row 5
+
+		#p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)
-		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qj_eq_j[i]]
 	end
 	
 end # END update_Qij_vals_subs!(p_Ds_v5)
@@ -1442,9 +1462,29 @@ function update_Qij_vals2!(p_Ds_v5, areas_list, states_list, dmat=reshape(repeat
 	# Update Qij_vals_sub_i
 	for i in 1:p_Ds_v5.n
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i
-		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		# 2023-01-30_THIS WAS A HORRIBLE MISTAKE, GO BACK
+
+		# For this:
+		# 6×5 DataFrame
+		#  Row │ event   i      j      val       vals_t  
+		#      │ String  Int64  Int64  Float64   Float64 
+		# ─────┼─────────────────────────────────────────
+		#    1 │ d           2      4  0.101056      0.0
+		#    2 │ d           3      4  0.101056      0.0
+		#    3 │ e           2      1  1.0e-12       0.0
+		#    4 │ e           3      1  1.0e-12       0.0
+		#    5 │ e           4      2  1.0e-12       0.0
+		#    6 │ e           4      3  1.0e-12       0.0
+
+		# Qi_sub_i, when i=2, gives "2 2"
+		# Qi_eq_i, when i=2, gives TFs for rows 1 & 3
+		# Qi_sub_j, when j=2, gives "4" (the i resulting when j==2)
+		# But Qj_eq_j, when j=2, gives TFs for row 5
+				
+		#p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)
-		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_j[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qj_eq_j[i]]
 	end
 
 
@@ -2629,8 +2669,8 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	x = inputs.bmo.est[inputs.bmo.rownames .== "x"][1]
 	w = inputs.bmo.est[inputs.bmo.rownames .== "w"][1]
 	n = inputs.bmo.est[inputs.bmo.rownames .== "n"][1]
-	x2 = 1.0
-	x3 = 1.0 
+	x2 = inputs.bmo.est[inputs.bmo.rownames .== "x2"][1]
+	x3 = inputs.bmo.est[inputs.bmo.rownames .== "x3"][1]
 	u = inputs.bmo.est[inputs.bmo.rownames .== "u"][1]
 	
 	# Update the dmat and elist
