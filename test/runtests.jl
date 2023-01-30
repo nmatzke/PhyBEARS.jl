@@ -1,20 +1,22 @@
 using Test, PhyBEARS, DataFrames
 
 using Dates									# for e.g. Dates.now(), DateTime
-using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+#using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames						# for DataFrame()
 
 # List each PhyBEARS code file prefix here
+using PhyloBits.TrUtils
+using PhyloBits.TreeTable
 using PhyBEARS.BGExample
 using PhyBEARS.StateSpace
-using PhyBEARS.TreeTable
+#using PhyBEARS.TreeTable
 using PhyBEARS.TreePass
-using PhyBEARS.TrUtils
+#using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
-#using PhyBEARS.Parsers
-include("/GitHub/PhyBEARS.jl/notes/Parsers.jl")
+using PhyBEARS.Parsers
+#include("/GitHub/PhyBEARS.jl/notes/Parsers.jl")
 
 """
 # Run with:
@@ -30,7 +32,7 @@ end
 
 
 @testset "PhyBEARS" begin
-	@test hello_PhyBEARS("Julia") == "PhyBEARS says, hi Julia"
+	@test hello_PhyBEARS("Julia") == "hello_PhyBEARS() says 'Julia'"
 	@test add_one_PhyBEARS(2.0) ≈ 3.0   # note the approximate equals (compare ≈=)
 end
 
