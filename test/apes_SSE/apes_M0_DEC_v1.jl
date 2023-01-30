@@ -26,9 +26,10 @@ cd(wd)
 
 
 # BioGeoBEARS ancestral states under DEC+J
-tmp_bgb_ancstates = [];
-
-bgb_ancstates_df = DataFrame(reshape(tmp_bgb_ancstates, (37, 16)), :auto)
+bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 9.55885872371469e-14, 0.999999999997088, 1.02736516865682e-13, 2.3942137600093e-13, NaN, 0.0212357703981079, 0.0324086154040224, 0.999999999998852, 1.85939277741373e-12, 0.999999999999754, 0.999999999999244, NaN, 0.757828224601766, 0.630413600097194, 1.05227375864171e-12, 1.05227375864171e-12, 1.43663791560109e-13, 5.17042461743951e-13, NaN, 0.220936005000126, 0.337177784498784];
+bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 6.42693382782259e-14, 2.27415872607374e-14, 9.55885855108166e-14, 1, 0, 1, 1, 0.757828232249181, 0.630413602214152, 1.85939274383416e-12, 0, 0, 0, 0, 0.242171767750754, 0.369586397785825, 0.999999999998045];
+bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
+bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :auto)
 
 # Psychotria tree from Ree & Smith 2008
 trfn = "apes_tree.newick"
@@ -77,10 +78,24 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 R_order = sort(trdf, :Rnodenums).nodeIndex
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
-vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+df1 = df1bot = bgb_ancstates_AT_branchBots_df
+df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+df1 = df1top = bgb_ancstates_AT_nodes_df
+df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+
+compare_dfs(df1bot, df2bot)
+get_max_df_diffs_byRow(df1bot, df2bot)
 
 
+difs = eachcol(bgb_ancstates_AT_branchBots_df) .- eachcol(vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]))
+@test all( maximum(abs.(difs)) .< 1e-4)
+
+compare_dfs
+get_max_df_diffs_byRow
+
+
+difs = eachcol(bgb_ancstates_AT_nodes_df) .- eachcol(vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]))
+@test all( maximum(abs.(difs)) .< 1e-4)
 
 
 
