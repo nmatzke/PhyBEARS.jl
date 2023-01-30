@@ -19,7 +19,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, prtC_single_events, make_ctable_single_events, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -82,6 +82,25 @@ function sumj(x)
 end
 
 
+"""
+# Sum the Cijk speciation rates by i
+
+# Example
+# julian_dput(prtCp(inputs.p_Ds_v5))
+Cdf = DataFrame(AbstractVector[["y", "j", "j", "y"], [1, 1, 2, 2], [1, 1, 2, 2], [1, 2, 1, 2], [1, 2, 2, 1], [0.9166666666666666, 0.5, 0.5, 0.9166666666666666], [0.6470588235294118, 0.35294117647058826, 0.35294117647058826, 0.6470588235294118], [0.14379084952941176, 0.07843137247058823, 0.07843137247058823, 0.14379084952941176], [0.14379084952941176, 0.07843137247058823, 0.07843137247058823, 0.14379084952941176], [0.0, 0.0, 0.0, 0.0]], DataFrames.Index(Dict(:event => 1, :wt => 6, :val => 9, :j => 3, :k => 4, :rates_t => 10, :prob => 7, :i => 2, :rate => 8, :pair => 5), [:event, :i, :j, :k, :pair, :wt, :prob, :rate, :val, :rates_t]));
+Cdf
+Carray_ivals = Cdf.i
+Cijk_vals = Cdf.val
+"""
+function sum_Cijk_rates_by_i(Cijk_vals, Carray_ivals, numstates)
+	sums_by_i = repeat([0.0], numstates)
+	for i in 1:numstates
+		TF = Carray_ivals .== i
+		sums_by_i[i] = sum(Cijk_vals[TF])
+	end
+	return sums_by_i
+end # END function sum_Cijk_rates_by_i(Cijk_vals, Carray_ivals)
+
 
 """
 # Print a Qarray to a data.frame
@@ -134,6 +153,75 @@ function prtCp(p_Ds_v5)
 	Cdf = DataFrame(event=p_Ds_v5.p_indices.Carray_event_types, i=p_Ds_v5.p_indices.Carray_ivals, j=p_Ds_v5.p_indices.Carray_jvals, k=p_Ds_v5.p_indices.Carray_kvals, pair=p_Ds_v5.p_indices.Carray_pair, wt=p_Ds_v5.params.Cijk_weights, prob=p_Ds_v5.params.Cijk_probs, rate=p_Ds_v5.params.Cijk_rates, val=p_Ds_v5.params.Cijk_vals, rates_t=p_Ds_v5.params.Cijk_rates_t)
 	return Cdf
 end
+
+
+
+# Convert a cladogenesis table with paired events to one with non-paired events
+# adjust probs / vals / rates accordingly
+
+"""
+dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]";
+
+dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]";
+dfnames = Reval(dfnames_txt);
+
+datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]");
+
+ctable1 = DataFrame(Reval(dftxt), dfnames);
+convert_df_datatypes!(ctable, datatypes);
+ctable1
+
+ctable = make_ctable_single_events(ctable1);
+
+"""
+function prtCp_single_events(p)
+	ctable1 = prtCp(p)
+	ctable = make_ctable_single_events(ctable1)
+	return ctable
+end # END function make_ctable_single_events(ctable)
+
+
+
+
+
+# Convert a cladogenesis table with paired events to one with non-paired events
+# adjust probs / vals / rates accordingly
+
+"""
+dftxt = "Any[\"y\" 2 2 2 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"y\" 3 3 3 1 1.0 1.0 0.2222222222222222 0.2222222222222222 0.0; \"v\" 4 3 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 2 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 4 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"v\" 4 2 3 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 2 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0; \"s\" 4 3 4 2 2.0 0.16666666666666666 0.037037037037037035 0.037037037037037035 0.0]";
+
+dfnames_txt = "[\"event\", \"i\", \"j\", \"k\", \"pair\", \"wt\", \"prob\", \"rate\", \"val\", \"rates_t\"]";
+dfnames = Reval(dfnames_txt);
+
+datatypes = Reval("DataType[String, Int64, Int64, Int64, Int64, Float64, Float64, Float64, Float64, Float64]");
+
+ctable1 = DataFrame(Reval(dftxt), dfnames);
+convert_df_datatypes!(ctable, datatypes);
+ctable1
+
+ctable = make_ctable_single_events(ctable1);
+
+"""
+function make_ctable_single_events(ctable1)
+	ctable2 = ctable1[ctable1.pair .== 2, :]
+	tmpj = deepcopy(ctable2.j)
+	tmpk = deepcopy(ctable2.k)
+	ctable2.j .= tmpk
+	ctable2.k .= tmpj
+
+	ctable = Rrbind(ctable1, ctable2)
+	ctable.prob .= ctable.prob ./ Float64.(ctable.pair)
+	ctable.rate .= ctable.rate ./ Float64.(ctable.pair)
+	ctable.val .= ctable.val ./ Float64.(ctable.pair)
+	ctable.rates_t .= ctable.rates_t ./ Float64.(ctable.pair)
+
+	return ctable
+end # END function make_ctable_single_events(ctable)
+
+
+
+
+
 
 """
 # Problem: a simulation allowed null-range speciation (null->null, null or 000->000,000)

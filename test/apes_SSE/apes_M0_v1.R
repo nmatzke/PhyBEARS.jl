@@ -122,7 +122,7 @@ list.files(extdata_dir)
 # This is the example Newick file for Hawaiian apes
 # (from Ree & Smith 2008)
 # "trfn" = "tree file name"
-trfn = "tree.newick"
+trfn = "apes_tree.newick"
 
 # Look at the raw Newick file:
 moref(trfn)
@@ -364,28 +364,35 @@ if (runslow)
     }
 
 
-
-
-
-
-
 #######################################################
 # For comparison to PhyBEARS
 #######################################################
 res = resDEC
 names(res)
 
-res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
-res$ML_marginal_prob_each_state_at_branch_top_AT_node
-res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+resDEC$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node
+resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
 
-mats = get_Qmat_COOmat_from_res(res)
+mats = get_Qmat_COOmat_from_res(resDEC)
 Qmat = mats$Qmat
 
-u0 = res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+u0 = resDEC$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
 result = u0 %*% expm(Qmat)
 
-result == res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+result == resDEC$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+paste0(c(resDEC$ML_marginal_prob_each_state_at_branch_bottom_below_node), collapse=", ")
+paste0(c(resDEC$ML_marginal_prob_each_state_at_branch_top_AT_node), collapse=", ")
+
+
+
+
 
 #######################################################
 # Run DEC+J
@@ -470,6 +477,33 @@ if (runslow)
     load(resfn)
     resDECj = res
     }
+
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = resDECj
+names(res)
+
+resDECj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resDECj$ML_marginal_prob_each_state_at_branch_top_AT_node
+resDECj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(resDECj)
+Qmat = mats$Qmat
+
+u0 = resDECj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == resDECj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resDECj$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resDECj$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resDECj$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+
 
 #######################################################
 # PDF plots

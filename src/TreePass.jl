@@ -120,9 +120,6 @@ struct Res
 	lq_at_branchBot::Array{Float64}
 	like_at_branchBot::Array{Float64}
 
-	node_constraints_branchTop::Array{Array{Float64,1},1}
-	corner_constraints_branchBot::Array{Array{Float64,1},1}
-
 	Es_at_each_nodeIndex_branchTop::Array{Array{Float64,1},1}
 	Es_at_each_nodeIndex_branchBot::Array{Array{Float64,1},1}
 	fakeX0s_at_each_nodeIndex_branchTop::Array{Array{Float64,1},1}
@@ -180,9 +177,6 @@ function construct_Res_old()
 	lq_at_branchBot = collect(repeat([0.0], numNodes))
 	like_at_branchBot = collect(repeat([0.0], numNodes))
 
-	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
-	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
-
 	Es_at_each_nodeIndex_branchTop = collect(repeat([0.0], numNodes))
 	Es_at_each_nodeIndex_branchBot = collect(repeat([0.0], numNodes))
 	fakeX0s_at_each_nodeIndex_branchTop = collect(repeat([0.0], numNodes))
@@ -207,7 +201,7 @@ function construct_Res_old()
 	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
 
 
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, node_constraints_branchTop, corner_constraints_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -238,8 +232,6 @@ function construct_Res()
 # 	likes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchTop = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
-	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
-	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 
 	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
@@ -285,7 +277,7 @@ function construct_Res()
 
 	calctime_iterations = [0.0, 0.0]
 
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  node_constraints_branchTop, corner_constraints_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -331,8 +323,6 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 # 	likes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
-	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
-	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	fakeX0s_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
@@ -404,7 +394,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  node_constraints_branchTop, corner_constraints_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -447,8 +437,6 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 # 	likes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
-	node_constraints_branchTop = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
-	corner_constraints_branchBot = [Vector{Float64}(ones(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	fakeX0s_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
@@ -511,7 +499,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot,  node_constraints_branchTop, corner_constraints_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end # END function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 
@@ -567,6 +555,7 @@ function identify_identical_sisters(res, trdf; max_tip_age=0.0001)
 	
 	return(copy_from)
 end # END identify_identical_sisters
+
 
 
 
@@ -1052,6 +1041,8 @@ function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 		#nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
 		# Not a placeholder, because we are just passing the likelihoods 
 		# down from the bottom of the branch above (no Cmat calculation needed)
+		
+		# No fixNodes multiplier, since this is a branch-bottom, which has already been used
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
@@ -1142,6 +1133,10 @@ function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
@@ -1262,7 +1257,11 @@ function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat2(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
-
+		
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+		
+		
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
 		
@@ -1385,6 +1384,10 @@ function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
 		nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)
+
+		# Multiply by the fixNodes multipliers (usually 1.0)
+		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+
 
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		sum_likes_at_node = sum(nodeData_at_top)
@@ -2052,7 +2055,9 @@ function iterative_downpass_Gflow_nonparallel_v1!(res; trdf, p_Ds_v5, Gflow, sol
 					
 					# Differences for Gflow version
 					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
 					TF = nodeData_at_bottom .< 0.0
@@ -2335,7 +2340,9 @@ function iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5, Gflow, sol
 					
 					# Differences for Gflow version
 					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
 					TF = nodeData_at_bottom .< 0.0
@@ -2665,7 +2672,12 @@ function iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5, solver_op
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
+
+
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -2991,7 +3003,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6old!(res; trdf, p_Ds_v5, solver
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -3316,7 +3331,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_op
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -3634,7 +3652,10 @@ function iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_optio
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -3940,7 +3961,10 @@ function iterative_downpass_nonparallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -4258,7 +4282,10 @@ function iterative_downpass_parallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5, s
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 					# Store run information
 					res.calc_start_time[spawned_nodeIndex] = calc_start_time
@@ -4573,7 +4600,10 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -4898,7 +4928,10 @@ function iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf, p_Ds_v10, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5228,7 +5261,10 @@ function iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf, p_Ds_v10, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5566,7 +5602,10 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 # 						(tmp_threadID, nodeData_at_bottom, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 # 					else
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i];
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -5989,7 +6028,10 @@ function iterative_downpass_parallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_optio
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = tasks[i]
 					(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[i])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -6396,7 +6438,10 @@ function iterative_downpass_parallel_ClaSSE_v7d!(res; trdf, p_Ds_v7, solver_opti
 					
 					#(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time) = fetch(tasks[manual_iter])
 					push!(sol_Ds_alg, string(sol_Ds.alg))
-					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+					#nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
+
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -6810,7 +6855,9 @@ function iterative_downpass_parallel_ClaSSE_v7e!(res; trdf, p_Ds_v7, solver_opti
 #					push!(sol_Ds_alg, string(sol_Ds.alg))
 #					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
 					push!(sol_Ds_alg, "manual")
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 # 					end
 
 					# Error checks for conditional likelihoods below 0.0 or above 1.0:
@@ -7194,7 +7241,9 @@ function iterative_downpass_parallel_ClaSSE_v7c!(res; trdf, p_Ds_v7, solver_opti
 #					push!(sol_Ds_alg, string(sol_Ds.alg))
 #					nodeData_at_bottom = sol_Ds.u[length(sol_Ds.u)] .+ 0.0
 					push!(sol_Ds_alg, "manual")
-					nodeData_at_bottom = sol_Ds .+ 0.0
+					#nodeData_at_bottom = sol_Ds .+ 0.0
+					# Include the fixNode user-specified likelihood multipliers at branch bottoms (usually 1.0s)
+					nodeData_at_bottom = sol_Ds .* res.fixNodesMult_at_each_nodeIndex_branchBot[spawned_nodeIndex]
 
 
 					#push!(sol_Ds_alg, string(sol_Ds.alg))

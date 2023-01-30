@@ -27,6 +27,7 @@ include("ModelLikes.jl")		# likelihood calculations
 include("Flow.jl")		# downpass and uppass through the phylogeny
 include("Gmaps.jl")		# Gmaps arrays etc.
 include("Optimizers.jl")
+include("Uppass.jl")
 
 
 export hello_PhyBEARS, add_one_PhyBEARS

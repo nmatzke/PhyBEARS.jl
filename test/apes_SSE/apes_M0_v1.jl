@@ -21,57 +21,22 @@ using DataFrames
 using CSV
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/data/"
+wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
 
 # BioGeoBEARS ancestral states under DEC+J
-tmp_bgb_ancstates = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0.4868, 
-0.9079, 0.8901, 0.811, 0, 0, 0, 0, 0, 0, 1, 0.9534, 0.8522, 0, 
-0, 1, 0.479, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 
-0, 0, 0, 1, 0.0582, 0.0117, 0.03, 0.1039, 0.6563, 0.3098, 0.3835, 
-0, 1, 0, 0, 0.0181, 0.0716, 0.5041, 0, 0, 0.2609, 0, 1, 1, 0, 
-0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6e-04, 0.0036, 
-0.0117, 0.0494, 0.3389, 0.6882, 0.6151, 1, 0, 1, 0, 0.0067, 0.0331, 
-0.2485, 0.501, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 
-0, 0, 0, 0, 0, 0, 1e-04, 4e-04, 0.0013, 0, 0, 0, 0, 0, 0, 0, 
-0, 0.0052, 0.0314, 0.2464, 0.4988, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.4225, 0.0469, 0.0404, 
-0.0217, 0, 0, 0, 0, 0, 0, 0, 0.0093, 0.0064, 0, 0, 0, 0.2601, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0136, 
-0.0191, 0.0165, 0.0093, 0, 0, 0, 0, 0, 0, 0, 0.0034, 0.0023, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0.0021, 0.003, 0.0028, 0, 0, 0, 0, 0, 0, 0, 0, 0.0028, 
-0.002, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 8e-04, 2e-04, 6e-04, 0.0011, 0.0047, 0.0021, 
-0.0014, 0, 0, 0, 0, 0, 1e-04, 4e-04, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 0, 1e-04, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 4e-04, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 2e-04, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0129, 0.0059, 0.0054, 
-0.0036, 0, 0, 0, 0, 0, 0, 0, 4e-04, 3e-04, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0018, 
-8e-04, 7e-04, 0, 0, 0, 0, 0, 0, 0, 0, 4e-04, 3e-04, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-2e-04, 3e-04, 2e-04, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 1e-04, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 0, 0, 0, 
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3e-04, 
-2e-04, 2e-04, 0, 0, 0, 0, 0, 0, 0, 0, 1e-04, 1e-04, 0, 0, 0, 
-0, 0];
+tmp_bgb_ancstates = [];
 
 bgb_ancstates_df = DataFrame(reshape(tmp_bgb_ancstates, (37, 16)), :auto)
 
 # Psychotria tree from Ree & Smith 2008
-trfn = "Psychotria_tree.newick"
+trfn = "apes_tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
 oldest_possible_age = 100.0
 
-lgdata_fn = "Psychotria_geog.data"
+lgdata_fn = "geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
 include_null_range = true
 numareas = Rncol(geog_df)-1
@@ -87,13 +52,13 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
 bmo.est[bmo.rownames .== "d"] .= 1e-12;
 bmo.est[bmo.rownames .== "e"] .= 1e-12;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.11;
+bmo.est[bmo.rownames .== "j"] .= 2.99999;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 #bmo.est[bmo.rownames .== "xv"] .= 0.1;
 bmo.max[bmo.rownames .== "xv"] .= 10.0;
 
-bmo.est[:] = bmo_updater_v1_OLD(bmo);
+bmo.est[:] .= bmo_updater_v1_OLD(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
@@ -109,6 +74,17 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+# All ancestral states:
+R_order = sort(trdf, :Rnodenums).nodeIndex
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+
+vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+
+
+
+
 
 
 #######################################################
