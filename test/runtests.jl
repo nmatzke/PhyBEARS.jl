@@ -25,8 +25,8 @@ include("/GitHub/PhyBEARS.jl/test/runtests.jl")
 """
 
 # default directory for data etc.
-pathof(PhyBEARS)
-dd = pp("PhyBEARS")
+pathof_result = pathof(PhyBEARS)
+dd = pp(pathof_result, "PhyBEARS")
 dd = "/GitHub/PhyBEARS.jl"
 
 
@@ -256,9 +256,10 @@ end
 	@test class(F) == "String"
 	@test Rclass(F) == "String"
 	
-	#is there a reason slashslash() has the internal code repeated several times?
+	# Q: is there a reason slashslash() has the internal code repeated several times?
+	# A: to remove any cases of ///, ////, etc.
 	@test slashslash("//GitHub/PhyBEARS.jl//src//PhyBEARS.jl") == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
-	@test addslash("/GitHub/PhyBEARS.jl", "/src/PhyBEARS.jl") == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl/"
+	@test slashslash(paste0([addslash("/GitHub/PhyBEARS.jl"), "/src/PhyBEARS.jl"])) == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
 
 	tmpmatrix = [3 1; 3 2; 5 3; 5 4; 7 5; 7 6]
 	tmpstr = repr(tmpmatrix)
@@ -409,7 +410,6 @@ end
 	@test trdf[!, :node_age] == node_ages_in_prt
 end
 
-
 @testset "SSEs" begin
 	# parameterized_ClaSSE
 	# parameterized_ClaSSE_Es
@@ -423,7 +423,22 @@ end
 @testset "Parsers" begin
 	lgdata_fn = paste0([dd, "/data/Psychotria/Psychotria_geog.data"])
 	geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
+end
 
-	
+
+@testset "Checks against BioGeoBEARS" begin
+include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
