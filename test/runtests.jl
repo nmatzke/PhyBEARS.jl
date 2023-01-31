@@ -1,7 +1,7 @@
 using Test, PhyBEARS, DataFrames
 
 using Dates									# for e.g. Dates.now(), DateTime
-#using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+#using PhyloBits.PNtypes					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames						# for DataFrame()
@@ -16,13 +16,18 @@ using PhyBEARS.TreePass
 #using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers
-#include("/GitHub/PhyBEARS.jl/notes/Parsers.jl")
+#include(paste0([dd, "/notes/Parsers.jl"]))
 
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/test/")
 include("/GitHub/PhyBEARS.jl/test/runtests.jl")
 """
+
+# default directory for data etc.
+pathof(PhyBEARS)
+dd = pp("PhyBEARS")
+dd = "/GitHub/PhyBEARS.jl"
 
 
 @testset "Example" begin
@@ -221,11 +226,11 @@ end
 	@test Rgetwd() == pwd()
 	@test Rgetwd() == "/Users"
 
-	tmparray = recursive_find("/GitHub/PhyBEARS.jl")
-	@test tmparray[1] == "/GitHub/PhyBEARS.jl/src/BGExample.jl"
+	tmparray = recursive_find(dd)
+	@test tmparray[1] == paste0([dd, "/src/BGExample.jl"])
 
-	tmparray = include_jls("/GitHub/PhyBEARS.jl")
-	#@test tmparray[1] == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
+	#tmparray = include_jls(dd)
+	#@test tmparray[1] == paste0([dd, "/src/PhyBEARS.jl"])
 
 	A = ones(3,3)
 	B = ones(3,3)
@@ -253,7 +258,7 @@ end
 	
 	#is there a reason slashslash() has the internal code repeated several times?
 	@test slashslash("//GitHub/PhyBEARS.jl//src//PhyBEARS.jl") == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
-	@test addslash("/GitHub/PhyBEARS.jl/src/PhyBEARS.jl") == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl/"
+	@test addslash("/GitHub/PhyBEARS.jl", "/src/PhyBEARS.jl") == "/GitHub/PhyBEARS.jl/src/PhyBEARS.jl/"
 
 	tmpmatrix = [3 1; 3 2; 5 3; 5 4; 7 5; 7 6]
 	tmpstr = repr(tmpmatrix)
@@ -269,7 +274,7 @@ end
 	tr = readTopology(great_ape_newick_string)
 	@test Rnames(tr)[1] == :numTaxa
 	@test Rtypes(tr)[1] == Int64
-	@test ont(tr) == Any[:numTaxa Int64; :numNodes Int64; :numEdges Int64; :node Array{PhyloNetworks.Node,1}; :edge Array{PhyloNetworks.Edge,1}; :root Int64; :names Array{String,1}; :hybrid Array{PhyloNetworks.Node,1}; :numHybrids Int64; :cladewiseorder_nodeIndex Array{Int64,1}; :visited Array{Bool,1}; :edges_changed Array{PhyloNetworks.Edge,1}; :nodes_changed Array{PhyloNetworks.Node,1}; :leaf Array{PhyloNetworks.Node,1}; :ht Array{Float64,1}; :numht Array{Int64,1}; :numBad Int64; :hasVeryBadTriangle Bool; :index Array{Int64,1}; :loglik Float64; :blacklist Array{Int64,1}; :partition Array{PhyloNetworks.Partition,1}; :cleaned Bool; :isRooted Bool]
+	@test ont(tr) == Any[:numTaxa Int64; :numNodes Int64; :numEdges Int64; :node Array{PhyloBits.PNtypes.Node,1}; :edge Array{PhyloBits.PNtypes.Edge,1}; :root Int64; :names Array{String,1}; :hybrid Array{PhyloBits.PNtypes.Node,1}; :numHybrids Int64; :cladewiseorder_nodeIndex Array{Int64,1}; :visited Array{Bool,1}; :edges_changed Array{PhyloBits.PNtypes.Edge,1}; :nodes_changed Array{PhyloBits.PNtypes.Node,1}; :leaf Array{PhyloBits.PNtypes.Node,1}; :ht Array{Float64,1}; :numht Array{Int64,1}; :numBad Int64; :hasVeryBadTriangle Bool; :index Array{Int64,1}; :loglik Float64; :blacklist Array{Int64,1}; :partition Array{PhyloBits.PNtypes.Partition,1}; :cleaned Bool; :isRooted Bool]
 
 
 	@test Rnrow(A) == 3
@@ -303,11 +308,11 @@ end
 	@test single_element_array_to_scalar(tmparray) == 1
 
 	tmpline = print("1 module PhyBEARS")
-	@test headf("/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"; numlines=1) == tmpline
+	@test headf(mpf([dd, "/src/PhyBEARS.jl"]); numlines=1) == tmpline
 
 	# How to test these?
 	# @test df_to_Rdata
-	# @test source("/GitHub/PhyBEARS.jl/src/PhyBEARS.jl") == include("/GitHub/PhyBEARS.jl/src/PhyBEARS.jl")
+	# @test source(paste0([dd, "/src/PhyBEARS.jl"])) == include(paste0([dd, "/src/PhyBEARS.jl"]))
 	# @test headLR(df, num_startcols=4, num_endcols=4) ==
 	# @test flat2(arr) ==
 	# @test moref(fn) ==
@@ -416,7 +421,7 @@ end
 end
 
 @testset "Parsers" begin
-	lgdata_fn = "/GitHub/PhyBEARS.jl/Rsrc/Psychotria_geog.data"
+	lgdata_fn = paste0([dd, "/data/Psychotria/Psychotria_geog.data"])
 	geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 	
