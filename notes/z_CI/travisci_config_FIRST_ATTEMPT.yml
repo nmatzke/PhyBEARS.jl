@@ -1,0 +1,12 @@
+# Travis CI: Continuous Integration technology
+# Travis CI Tutorial - How to Use Travis CI with Github for Continuous Integration
+# https://www.youtube.com/watch?v=Uft5KBimzyk
+
+language: julia
+julia:
+  - nightly
+  - 1.0.6
+  - 1.5.2
+  
+  codecov: true
+coveralls: true

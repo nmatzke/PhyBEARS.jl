@@ -24,7 +24,9 @@ using CSV
 wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
-
+"""
+include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
+"""
 
 #######################################################
 # DEMONSTRATES MATCHING BETWEEN BIOGEOBEARS AND JULIA
@@ -128,7 +130,7 @@ inputs.bmo[inputs.bmo.type .== "free",:]
 pars = inputs.bmo.est[inputs.bmo.type .== "free"]
 parnames = inputs.bmo.rownames[inputs.bmo.type .== "free"]
 #func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="lnL", printlevel=1)
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v7; returnval="bgb_lnL", printlevel=1)
 #pars = [0.04, 0.01, 0.001, 0.34, 0.0]
 #pars = [0.04, 0.01, 0.001, 0.34]
 func(pars)
@@ -162,6 +164,10 @@ pars
 #pars = [0.9747407112459348, 0.8, 0.11]
 #pars = [100.0, 1.8, 0.11]
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
+
+# (enforce the birthRate)
+#inputs.bmo.est[inputs.bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr)
+
 bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 inputs.bmo.est[:] = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 
