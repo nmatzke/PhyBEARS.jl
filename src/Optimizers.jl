@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1_OLD, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1_SLOW, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -72,7 +72,7 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
 	inputs_updater_v1!(inputs);
 	
 	if printlevel >= 2
@@ -231,7 +231,7 @@ function func_to_optimize_nonparallel_v7(pars, parnames, inputs, p_Ds_v5; return
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
 	inputs_updater_v1!(inputs);
 	
 	if printlevel >= 2
@@ -411,7 +411,7 @@ function func_to_optimize_parallel_v7(pars, parnames, inputs, p_Ds_v5; returnval
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
 	inputs_updater_v1!(inputs);
 	
 	if printlevel >= 2
@@ -597,8 +597,8 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	inputs.bmo.est[:] = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
+	inputs.bmo.est = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	if printlevel >= 2
 		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
@@ -746,7 +746,7 @@ function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", 
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
 	inputs_updater_v2!(inputs);
 	
 	if printlevel >= 2
@@ -930,8 +930,8 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
-	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	inputs.bmo.est[:] = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+	#inputs.bmo.est = bmo_updater_v1(inputs.bmo);
+	inputs.bmo.est = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	if printlevel >= 2
 		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v2(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
@@ -1503,8 +1503,14 @@ end # end function update_Qij_vals2!
 
 """
 # Update the BioGeoBEARS_model_object after changing e.g. "j"
+# Full updater (as of 2023-02-02)
+#
+# bmo_updater_v1_SLOW -- full updater, slow due to lots of == 
+# bmo_updater_v1! -- very fast, but requires inputs.setup.bmo_rows, and doesn't update "u" etc.
+# bmo_updater_v2 -- 2x slower, requires inputs.setup.bmo_rows, but *DOES* update "u" etc.
+# 
 """
-function bmo_updater_v1_OLD(bmo)
+function bmo_updater_v1_SLOW(bmo)
 	# Update cladogenesis parameters
 	j_wt = bmo.est[bmo.rownames .== "j"][1]
 	ysv = bmo.est[bmo.rownames .== "ysv"][1]
@@ -1514,7 +1520,7 @@ function bmo_updater_v1_OLD(bmo)
 	v = bmo.est[bmo.rownames .== "v"][1]
 	
 	# Update y, s, v (sympatry, subset sympatry, vicariance)
-	ysv_func = bmo.type[bmo.rownames .== "ysv"]
+	ysv_func = bmo.type[bmo.rownames .== "ysv"][1] # YOU NEED THE [1] IN HERE
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
 	end
@@ -1553,14 +1559,32 @@ function bmo_updater_v1_OLD(bmo)
 	end
 	
 	# Update mx01's based on mx01?
+
+	# Update deathRate based on birthRate?
+	if bmo.type[bmo.rownames .== "deathRate"][1] == "birthRate"
+		bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "birthRate"]
+	end
+	
+	# Update xv based on x?
+	# i.e., an x of -1 gives an xv of 1
+	if bmo.type[bmo.rownames .== "xv"][1] == "-x"
+		#u = bmo.est[bmo_rows.u]
+		#bmo.est[bmo_rows.u_e] = u
+		bmo.est[bmo.rownames .== "xv"] = -1.0 * bmo.est[bmo.rownames .== "x"]
+	end
 	
 	
 	return bmo.est
-end # END bmo_updater_v1
+end # END bmo_updater_v1_SLOW
 
 
 """
+# FAST UPDATER WITH PRE-SPECIFIED bmo_rows (from inputs.setup.bmo_rows)
 # bmo_updater_v2! *DOES* update u, etc.
+
+# bmo_updater_v1_SLOW -- full updater, slow due to lots of == 
+# bmo_updater_v1! -- very fast, but requires inputs.setup.bmo_rows, and doesn't update "u" etc.
+# bmo_updater_v2 -- 2x slower, requires inputs.setup.bmo_rows, but *DOES* update "u" etc.
 
 # Example:
 numareas = 2
@@ -1589,7 +1613,7 @@ function bmo_updater_v2(bmo, bmo_rows)
 	v = bmo.est[bmo_rows.v][1]
 	
 	# Update
-	ysv_func = bmo.type[bmo_rows.ysv]
+	ysv_func = bmo.type[bmo_rows.ysv]  # NO [1] is needed here
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
 	end
@@ -2301,6 +2325,10 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	numstates = length(states_list)
 	total_numareas = length(areas_list)
 	
+	# Make sure bmo is up-to-date before running this
+	
+
+
 	# Get the parameters
 	# Weights
 	y_wt = bmo.est[bmo.rownames .== "y"][1]
@@ -2564,7 +2592,7 @@ function inputs_updater_v2!(inputs)
 	# bmo_updater_v1! doesn't update u etc.
 	#bmo_updater_v1!(inputs.bmo)
 	# bmo_updater_v2 DOES update u etc.
-	inputs.bmo.est[:] = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
+	inputs.bmo.est = bmo_updater_v2(inputs.bmo, inputs.setup.bmo_rows);
 	return inputs
 end # END function inputs_updater_v1!(inputs)
 
@@ -2573,7 +2601,13 @@ end # END function inputs_updater_v1!(inputs)
 """
 # Update the BioGeoBEARS_model_object after changing e.g. "j"
 #
-# bmo_updater_v1! *doesn't* update u, etc.
+# bmo_updater_v1! *doesn't* update u, etc. (speed advantage; use v2 for full version)
+#
+# bmo_updater_v1_SLOW -- full updater, slow due to lots of == 
+# bmo_updater_v1! -- very fast, but requires inputs.setup.bmo_rows, and doesn't update "u" etc.
+# bmo_updater_v2 -- 2x slower, requires inputs.setup.bmo_rows, but *DOES* update "u" etc.
+
+
 """
 function bmo_updater_v1!(bmo)
 	#global bmo
@@ -2585,7 +2619,7 @@ function bmo_updater_v1!(bmo)
 	v = bmo.est[bmo.rownames .== "v"][1]
 	
 	# Update
-	ysv_func = bmo.type[bmo.rownames .== "ysv"]
+	ysv_func = bmo.type[bmo.rownames .== "ysv"][1]
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
 	end

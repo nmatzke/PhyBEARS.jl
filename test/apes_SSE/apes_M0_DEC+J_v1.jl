@@ -35,11 +35,16 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
 # Run with:
 # source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
 # Truth:
-R_bgb_lnL = -4.481012
+R_bgb_lnL = -1.170587
+
+
+
+
+
 
 # BioGeoBEARS ancestral states under DEC+J
-bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 9.55885872371469e-14, 0.999999999997088, 1.02736516865682e-13, 2.3942137600093e-13, NaN, 0.0212357703981079, 0.0324086154040224, 0.999999999998852, 1.85939277741373e-12, 0.999999999999754, 0.999999999999244, NaN, 0.757828224601766, 0.630413600097194, 1.05227375864171e-12, 1.05227375864171e-12, 1.43663791560109e-13, 5.17042461743951e-13, NaN, 0.220936005000126, 0.337177784498784];
-bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 6.42693382782259e-14, 2.27415872607374e-14, 9.55885855108166e-14, 1, 0, 1, 1, 0.757828232249181, 0.630413602214152, 1.85939274383416e-12, 0, 0, 0, 0, 0.242171767750754, 0.369586397785825, 0.999999999998045];
+bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 5.483716e-31, 1, 2.000002e-24, 4.500005e-24, NaN, 0.940298, 0.9850746, 1, 7.463047e-39, 1, 1, NaN, 4.486683e-07, 5.890815e-13, 1.492539e-14, 1.492539e-14, 1.791046e-13, 8.059706e-13, NaN, 0.05970153, 0.01492539];
+bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4029848, 0.940298, 0.9850746, 1, 0, 1, 1, 0.4029853, 4.486684e-07, 6.338576e-13, 0, 0, 0, 0, 0.1940299, 0.05970153, 0.01492539];
 bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
 bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :auto)
 
@@ -59,17 +64,17 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0000001, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
-bmo.type[bmo.rownames .== "j"] .= "fixed";
+bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
-bmo.est[bmo.rownames .== "d"] .= 0.1010557;
+bmo.est[bmo.rownames .== "d"] .= 1e-12;
 bmo.est[bmo.rownames .== "e"] .= 1e-12;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.0;
+bmo.est[bmo.rownames .== "j"] .= 2.99999;
 bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 
-bmo.est[:] .= bmo_updater_v1_SLOW(bmo);
+bmo.est .= bmo_updater_v1_SLOW(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);

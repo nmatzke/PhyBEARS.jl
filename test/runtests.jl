@@ -426,8 +426,9 @@ end
 end
 
 
-@testset "Checks against BioGeoBEARS" begin
-include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
+@testset "Checks against BioGeoBEARS DEC model" begin
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
 
 end
 
