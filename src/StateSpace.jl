@@ -19,7 +19,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, prtC_single_events, make_ctable_single_events, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, prtC_single_events, make_ctable_single_events, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, bmo_DIVALIKE, bmo_BAYAREALIKE, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -975,6 +975,73 @@ function setup_DEC_DEmat(areas_list, states_list, dmat, elist, amat; allowed_eve
 	
 	return Qmat
 end # end setup_DEC_DEmat()
+
+
+
+"""
+Convert a DEC bmo (BioGeoBEARS-style model object, a DataFrame containing parameters) to a DIVALIKE setup
+"""
+function bmo_DIVALIKE(bmo)
+	# Set subset sympatry to 0
+	bmo.est[bmo.rownames .== "s"] .= 0.0;
+
+	# Change the weights structure (in PhyBEARS, all that is read is 2-j)
+	bmo.type[bmo.rownames .== "ysv"] .= "2-j";
+	bmo.type[bmo.rownames .== "ys"] .= "ysv*1/2";
+	bmo.type[bmo.rownames .== "y"] .= "ysv*1/2";
+	bmo.type[bmo.rownames .== "s"] .= "ysv*0";
+	bmo.type[bmo.rownames .== "v"] .= "ysv*1/2";
+	
+	# Change the minimums / maximums
+	bmo.max[bmo.rownames .== "j"] .= 1.99999;
+	bmo.max[bmo.rownames .== "ysv"] .= 2.0;
+	bmo.max[bmo.rownames .== "ys"] .= 2.0;
+	bmo.max[bmo.rownames .== "y"] .= 1.0;
+	bmo.max[bmo.rownames .== "s"] .= 1.0;
+	bmo.max[bmo.rownames .== "v"] .= 1.0;
+
+	# Change the weighting of smaller vs. larger daughters
+	bmo.est[bmo.rownames .== "mx01y"] .= 0.0; # default
+	
+	# Even weighting of all vicariant daughter range sizes
+	bmo.est[bmo.rownames .== "mx01v"] .= 0.5;
+
+	return bmo
+end # END
+
+
+"""
+Convert a DEC bmo (BioGeoBEARS-style model object, a DataFrame containing parameters) to a DIVALIKE setup
+"""
+function bmo_BAYAREALIKE(bmo)
+	# Set subset sympatry to 0
+	bmo.est[bmo.rownames .== "s"] .= 0.0;
+	bmo.est[bmo.rownames .== "v"] .= 0.0;
+
+	# Change the weights structure (in PhyBEARS, all that is read is 2-j)
+	bmo.type[bmo.rownames .== "ysv"] .= "1-j";
+	bmo.type[bmo.rownames .== "ys"] .= "ysv*1";
+	bmo.type[bmo.rownames .== "y"] .= "ysv*1";
+	bmo.type[bmo.rownames .== "s"] .= "ysv*0";
+	bmo.type[bmo.rownames .== "v"] .= "ysv*0";
+	
+	# Change the minimums / maximums
+	bmo.max[bmo.rownames .== "j"] .= 0.99999;
+	bmo.max[bmo.rownames .== "ysv"] .= 1.0;
+	bmo.max[bmo.rownames .== "ys"] .= 1.0;
+	bmo.max[bmo.rownames .== "y"] .= 1.0;
+	bmo.max[bmo.rownames .== "s"] .= 1.0;
+	bmo.max[bmo.rownames .== "v"] .= 1.0;
+
+	# Change the weighting of smaller vs. larger daughters
+	bmo.est[bmo.rownames .== "mx01y"] .= 0.9999; # all daughters are maximum (ancestral) size
+	
+	# Even weighting of all vicariant daughter range sizes
+	bmo.est[bmo.rownames .== "mx01v"] .= 0.0001; # default
+
+	return bmo
+end # END
+
 
 
 #######################################################
