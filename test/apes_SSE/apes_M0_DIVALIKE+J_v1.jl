@@ -71,9 +71,16 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
 bmo.est[bmo.rownames .== "d"] .= 1e-12;
 bmo.est[bmo.rownames .== "e"] .= 1e-12;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
+bmo.est[bmo.rownames .== "s"] .= 0.0;
+bmo.type[bmo.rownames .== "ysv"] .= "2-j";
+bmo.type[bmo.rownames .== "ys"] .= "ysv*1/2";
+bmo.type[bmo.rownames .== "y"] .= "ysv*1/2";
+bmo.type[bmo.rownames .== "s"] .= "ysv*0";
+bmo.type[bmo.rownames .== "v"] .= "ysv*1/2";
+bmo.est[bmo.rownames .== "mx01v"] .= 0.5;
 bmo.est[bmo.rownames .== "j"] .= 2.99999;
-bmo.est[bmo.rownames .== "u"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
+
 
 bmo.est .= bmo_updater_v1_SLOW(bmo);
 

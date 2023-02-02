@@ -497,7 +497,35 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_val = bmo.est[bmo.rownames .== "d"][1]
 	e_val = bmo.est[bmo.rownames .== "e"][1]
 	a_val = bmo.est[bmo.rownames .== "a"][1]
-	j_val = bmo.est[bmo.rownames .== "j"][1]
+	j_wt = j_val = bmo.est[bmo.rownames .== "j"][1]
+
+	# Update
+	ysv_func = bmo.type[bmo.rownames .== "ysv"][1]
+	if ysv_func == "3-j"
+		ysv = 3-j_wt
+		ys = ysv*2/3
+		y_val = ysv*1/3
+		s_val = ysv*1/3
+		v_val = ysv*1/3
+	end
+	if ysv_func == "2-j" # assumes "s" is 0.0
+		ysv = 2-j_wt
+		ys = ysv*1/2
+		y_val = ysv*1/2
+		v_val = ysv*1/2
+	end
+	if ysv_func == "1-j"
+		ysv = 1-j_wt
+		y_val = ysv*1
+	end
+	
+	bmo.est[bmo.rownames .== "ysv"] .= ysv
+	bmo.est[bmo.rownames .== "ys"] .= ys
+	bmo.est[bmo.rownames .== "y"] .= y_val
+	bmo.est[bmo.rownames .== "s"] .= s_val
+	bmo.est[bmo.rownames .== "v"] .= v_val
+
+
 	
 	# Make list of allowed_event_types
 	allowed_event_types = []
@@ -574,18 +602,20 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	Cparams = default_Cparams()
 	
 	Cparams.j = j_val
-	wt = (3.0 - j_val) / 3.0
-	Cparams.y = wt
-	Cparams.s = wt
-	Cparams.v = wt
+	Cparams.y = y_val
+	Cparams.s = s_val
+	Cparams.v = v_val
 	Cparams
 
 	
-	maxent_constraint_01 = 0.0
+	maxent_constraint_01 = bmo.est[bmo.rownames .== "mx01y"][1]
 	maxent01symp = relative_probabilities_of_subsets(total_numareas, maxent_constraint_01)
+
+	maxent_constraint_01 = bmo.est[bmo.rownames .== "mx01s"][1]
 	maxent01sub = relative_probabilities_of_subsets(total_numareas, maxent_constraint_01)
+	maxent_constraint_01 = bmo.est[bmo.rownames .== "mx01j"][1]
 	maxent01jump = relative_probabilities_of_subsets(total_numareas, maxent_constraint_01)
-	maxent_constraint_01 = 0.0
+	maxent_constraint_01 = 	maxent_constraint_01 = bmo.est[bmo.rownames .== "mx01v"][1]
 	maxent01vic = relative_probabilities_of_vicariants(total_numareas, maxent_constraint_01)
 	maxent01 = (maxent01symp=maxent01symp, maxent01sub=maxent01sub, maxent01vic=maxent01vic, maxent01jump=maxent01jump)
 	

@@ -100,7 +100,7 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 
 
 @testset "Apes DIVALIKE lnL" begin
-	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
+	@test abs(R_bgb_lnL - bgb_lnL) < 1e-6
 end
 
 
