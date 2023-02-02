@@ -576,6 +576,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	Cparams.s = wt
 	Cparams.v = wt
 	Cparams
+
 	
 	maxent_constraint_01 = 0.0
 	maxent01symp = relative_probabilities_of_subsets(total_numareas, maxent_constraint_01)
@@ -867,6 +868,12 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, files=files, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
 	# Parse the geography as well!  This updates inputs.res
 	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
+
+	# Update the p_Ds_v5, based on the bmo
+	p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
+	# Update the inputs, based on the bmo
+	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, files=files, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
+
 
 	"""
 	res = inputs.res
