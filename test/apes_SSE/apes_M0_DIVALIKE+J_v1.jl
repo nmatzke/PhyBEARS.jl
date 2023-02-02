@@ -26,15 +26,15 @@ cd(wd)
 
 """
 
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
 """
 
 #######################################################
 # DEMONSTRATES MATCHING BETWEEN BIOGEOBEARS AND JULIA
-# ON SIMPLE great ape phylogeny, 4-STATE DEC MODEL
+# ON SIMPLE great ape phylogeny, 4-STATE DIVALIKE MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DIVALIKE+J_v1.R")
 # Truth:
 R_bgb_lnL = -1.170587
 
@@ -43,7 +43,7 @@ R_bgb_lnL = -1.170587
 
 
 
-# BioGeoBEARS ancestral states under DEC+J
+# BioGeoBEARS ancestral states under DIVALIKE+J
 bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 5.483716e-31, 1, 2.000002e-24, 4.500005e-24, NaN, 0.940298, 0.9850746, 1, 7.463047e-39, 1, 1, NaN, 4.486683e-07, 5.890815e-13, 1.492539e-14, 1.492539e-14, 1.791046e-13, 8.059706e-13, NaN, 0.05970153, 0.01492539];
 bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4029848, 0.940298, 0.9850746, 1, 0, 1, 1, 0.4029853, 4.486684e-07, 6.338576e-13, 0, 0, 0, 0, 0.1940299, 0.05970153, 0.01492539];
 bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
@@ -62,7 +62,7 @@ numareas = Rncol(geog_df)-1
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 
-# DEC-type SSE model on Hawaiian Psychotria
+# DIVALIKE-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0000001, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
 bmo.type[bmo.rownames .== "j"] .= "free";
@@ -99,7 +99,7 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
-@testset "Apes DEC lnL" begin
+@testset "Apes DIVALIKE lnL" begin
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-4
 end
 
@@ -119,7 +119,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes DEC ancstates" begin
+@testset "Apes DIVALIKE ancstates" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
@@ -208,7 +208,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes DEC ancstates vs. Julia ML ancstates" begin
+@testset "Apes DIVALIKE ancstates vs. Julia ML ancstates" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end

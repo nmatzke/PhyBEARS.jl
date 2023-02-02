@@ -1523,18 +1523,21 @@ function bmo_updater_v1_SLOW(bmo)
 	ysv_func = bmo.type[bmo.rownames .== "ysv"][1] # YOU NEED THE [1] IN HERE
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
+		ys = ysv*2/3
+		y = ysv*1/3
+		s = ysv*1/3
+		v = ysv*1/3
 	end
-	if ysv_func == "2-j"
+	if ysv_func == "2-j" # assumes "s" is 0.0
 		ysv = 2-j_wt
+		ys = ysv*1/2
+		y = ysv*1/2
+		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
+		y = ysv*1
 	end
-	
-	ys = ysv*2/3
-	y = ysv*1/3
-	s = ysv*1/3
-	v = ysv*1/3
 	
 	bmo.est[bmo.rownames .== "ysv"] .= ysv
 	bmo.est[bmo.rownames .== "ys"] .= ys
@@ -1616,18 +1619,21 @@ function bmo_updater_v2(bmo, bmo_rows)
 	ysv_func = bmo.type[bmo_rows.ysv]  # NO [1] is needed here
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
+		ys = ysv*2/3
+		y = ysv*1/3
+		s = ysv*1/3
+		v = ysv*1/3
 	end
-	if ysv_func == "2-j"
+	if ysv_func == "2-j" # assumes "s" is 0.0
 		ysv = 2-j_wt
+		ys = ysv*1/2
+		y = ysv*1/2
+		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
+		y = ysv*1
 	end
-	
-	ys = ysv*2/3
-	y = ysv*1/3
-	s = ysv*1/3
-	v = ysv*1/3
 	
 	bmo.est[bmo_rows.ysv] = ysv
 	bmo.est[bmo_rows.ys] = ys
@@ -2622,18 +2628,22 @@ function bmo_updater_v1!(bmo)
 	ysv_func = bmo.type[bmo.rownames .== "ysv"][1]
 	if ysv_func == "3-j"
 		ysv = 3-j_wt
+		ys = ysv*2/3
+		y = ysv*1/3
+		s = ysv*1/3
+		v = ysv*1/3
 	end
-	if ysv_func == "2-j"
+	if ysv_func == "2-j" # assumes "s" is 0.0
 		ysv = 2-j_wt
+		ys = ysv*1/2
+		y = ysv*1/2
+		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
+		y = ysv*1
 	end
 	
-	ys = ysv*2/3
-	y = ysv*1/3
-	s = ysv*1/3
-	v = ysv*1/3
 	
 	bmo.est[bmo.rownames .== "ysv"] .= ysv
 	bmo.est[bmo.rownames .== "ys"] .= ys

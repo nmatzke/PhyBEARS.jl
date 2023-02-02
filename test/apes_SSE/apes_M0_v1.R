@@ -504,6 +504,10 @@ cft(resDECj$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
 cft(resDECj$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
 
 
+cat(c(resDECj$ML_marginal_prob_each_state_at_branch_bottom_below_node), sep=", ")
+
+cat(c(resDECj$ML_marginal_prob_each_state_at_branch_top_AT_node), sep=", ")
+
 
 #######################################################
 # PDF plots
@@ -649,6 +653,46 @@ if (runslow)
     resDIVALIKE = res
     }
 
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = resDIVALIKE
+names(res)
+
+resDIVALIKE$total_loglikelihood
+resDIVALIKE$outputs@params_table["d","est"]
+resDIVALIKE$outputs@params_table["e","est"]
+resDIVALIKE$outputs@params_table["j","est"]
+
+
+resDIVALIKE$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resDIVALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node
+resDIVALIKE$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(resDIVALIKE)
+Qmat = mats$Qmat
+
+u0 = resDIVALIKE$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == resDIVALIKE$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resDIVALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resDIVALIKE$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resDIVALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+
+cat(c(resDIVALIKE$ML_marginal_prob_each_state_at_branch_bottom_below_node), sep=", ")
+
+cat(c(resDIVALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node), sep=", ")
+
+
+
+
+
 #######################################################
 # Run DIVALIKE+J
 #######################################################
@@ -751,6 +795,46 @@ if (runslow)
     load(resfn)
     resDIVALIKEj = res
     }
+
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = resDIVALIKEj
+names(res)
+
+resDIVALIKEj$total_loglikelihood
+resDIVALIKEj$outputs@params_table["d","est"]
+resDIVALIKEj$outputs@params_table["e","est"]
+resDIVALIKEj$outputs@params_table["j","est"]
+
+
+resDIVALIKEj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resDIVALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node
+resDIVALIKEj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(resDIVALIKEj)
+Qmat = mats$Qmat
+
+u0 = resDIVALIKEj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == resDIVALIKEj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resDIVALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resDIVALIKEj$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resDIVALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+
+cat(c(resDIVALIKEj$ML_marginal_prob_each_state_at_branch_bottom_below_node), sep=", ")
+
+cat(c(resDIVALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node), sep=", ")
+
+
+
+
 
 pdffn = "apes_DIVALIKE_vs_DIVALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, width=6, height=6)
