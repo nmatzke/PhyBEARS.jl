@@ -428,7 +428,11 @@ end
 
 @testset "Checks against BioGeoBEARS DEC model" begin
 include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
 
 end
 

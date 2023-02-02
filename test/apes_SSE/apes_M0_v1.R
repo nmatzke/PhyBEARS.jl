@@ -1001,6 +1001,42 @@ if (runslow)
     }
 
 #######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = BAYAREALIKE
+names(res)
+
+resBAYAREALIKE$total_loglikelihood
+resBAYAREALIKE$outputs@params_table["d","est"]
+resBAYAREALIKE$outputs@params_table["e","est"]
+resBAYAREALIKE$outputs@params_table["j","est"]
+
+resBAYAREALIKE$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node
+resBAYAREALIKE$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(resBAYAREALIKE)
+Qmat = mats$Qmat
+
+u0 = resBAYAREALIKE$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == resBAYAREALIKE$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+
+cat(c(resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_bottom_below_node), sep=", ")
+
+cat(c(resBAYAREALIKE$ML_marginal_prob_each_state_at_branch_top_AT_node), sep=", ")
+
+
+
+
+#######################################################
 # Run BAYAREALIKE+J
 #######################################################
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
@@ -1119,6 +1155,46 @@ if (runslow)
     load(resfn)
     resBAYAREALIKEj = res
     }
+
+
+#######################################################
+# For comparison to PhyBEARS
+#######################################################
+res = BAYAREALIKEj
+names(res)
+
+resBAYAREALIKEj$total_loglikelihood
+resBAYAREALIKEj$outputs@params_table["d","est"]
+resBAYAREALIKEj$outputs@params_table["e","est"]
+resBAYAREALIKEj$outputs@params_table["j","est"]
+
+resBAYAREALIKEj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node
+resBAYAREALIKEj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+
+mats = get_Qmat_COOmat_from_res(resBAYAREALIKEj)
+Qmat = mats$Qmat
+
+u0 = resBAYAREALIKEj$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS[6,]
+result = u0 %*% expm(Qmat)
+
+result == resBAYAREALIKEj$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS[6,]
+
+resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node
+
+cft(resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_bottom_below_node, digits=4)
+cft(resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node, digits=4)
+
+
+cat(c(resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_bottom_below_node), sep=", ")
+
+cat(c(resBAYAREALIKEj$ML_marginal_prob_each_state_at_branch_top_AT_node), sep=", ")
+
+
+
+
+
+
 
 pdffn = "apes_BAYAREALIKE_vs_BAYAREALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, width=6, height=6)

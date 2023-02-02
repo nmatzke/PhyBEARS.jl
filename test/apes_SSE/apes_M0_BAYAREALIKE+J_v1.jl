@@ -36,7 +36,7 @@ include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
 # Run with:
 # source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_BAYAREALIKE+J_v1.R")
 # Truth:
-R_bgb_lnL = -1.170587
+R_bgb_lnL = -1.386306
 
 
 
@@ -44,8 +44,8 @@ R_bgb_lnL = -1.170587
 
 
 # BioGeoBEARS ancestral states under BAYAREALIKE+J
-bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 5.483716e-31, 1, 2.000002e-24, 4.500005e-24, NaN, 0.940298, 0.9850746, 1, 7.463047e-39, 1, 1, NaN, 4.486683e-07, 5.890815e-13, 1.492539e-14, 1.492539e-14, 1.791046e-13, 8.059706e-13, NaN, 0.05970153, 0.01492539];
-bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4029848, 0.940298, 0.9850746, 1, 0, 1, 1, 0.4029853, 4.486684e-07, 6.338576e-13, 0, 0, 0, 0, 0.1940299, 0.05970153, 0.01492539];
+bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 5.00005e-20, 1, 2.00002e-14, 4.500045e-14, NaN, 0.999995, 1, 1, 2.750131e-29, 1, 1, NaN, 5.000075e-06, 5.002075e-11, 2.000013e-21, 2.000013e-21, 3.200016e-20, 6.000033e-14, NaN, 6.000033e-14, 3.200016e-20];
+bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4999975, 0.999995, 1, 1, 0, 1, 1, 0.5000025, 5.000075e-06, 5.002575e-11, 0, 0, 0, 0, 6.000033e-14, 3.200017e-20, 2.000013e-21];
 bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
 bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :auto)
 
@@ -68,12 +68,26 @@ bmo = construct_BioGeoBEARS_model_object();
 bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
-bmo.est[bmo.rownames .== "d"] .= 1e-12;
-bmo.est[bmo.rownames .== "e"] .= 1e-12;
-bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 2.99999;
-bmo.est[bmo.rownames .== "u"] .= 0.0;
+bmo.est[bmo.rownames .== "d"] .= 1.0e-07;
+bmo.est[bmo.rownames .== "e"] .= 1.0e-07;
+bmo.est[bmo.rownames .== "mx01y"] .= 0.9999;
+bmo.est[bmo.rownames .== "mx01v"] .= 0.9999;
+bmo.est[bmo.rownames .== "j"] .= 0.99999;
+bmo.est[bmo.rownames .== "s"] .= 0.0;
+bmo.est[bmo.rownames .== "v"] .= 0.0;
+bmo.type[bmo.rownames .== "ysv"] .= "1-j";
+bmo.type[bmo.rownames .== "ys"] .= "ysv*1";
+bmo.type[bmo.rownames .== "y"] .= "ysv*1";
+bmo.type[bmo.rownames .== "s"] .= "ysv*0";
+bmo.type[bmo.rownames .== "v"] .= "ysv*0";
+bmo.max[bmo.rownames .== "j"] .= 0.99999;
+bmo.max[bmo.rownames .== "ysv"] .= 1.0;
+bmo.max[bmo.rownames .== "ys"] .= 1.0;
+bmo.max[bmo.rownames .== "y"] .= 1.0;
+bmo.est[bmo.rownames .== "mx01v"] .= 0.0001;
+bmo.est[bmo.rownames .== "mx01y"] .= 0.9999;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
+
 
 bmo.est .= bmo_updater_v1_SLOW(bmo);
 
