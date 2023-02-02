@@ -1257,11 +1257,11 @@ function update_Qij_vals_subs!(p_Ds_v5)
 		# Qi_sub_j, when j=2, gives "4" (the i resulting when j==2)
 		# But Qj_eq_j, when j=2, gives TFs for row 5
 
-		#p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
-		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
+		#p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_sub_i[i]]
+		p_Ds_v5.p_TFs.Qij_vals_sub_i[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qi_eq_i[i]]
 		# 2023-01-22 Qi_sub_i replaces Qi_eq_i  (PS: Yes, do Qji_vals not Qij_vals)
 		# 2023-01-30 NO! Use Qj_eq_j, see above
-		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= Qij_vals[p_Ds_v5.p_TFs.Qj_eq_j[i]]
+		p_Ds_v5.p_TFs.Qji_vals_sub_j[i] .= p_Ds_v5.params.Qij_vals[p_Ds_v5.p_TFs.Qj_eq_j[i]]
 	end
 	
 end # END update_Qij_vals_subs!(p_Ds_v5)
