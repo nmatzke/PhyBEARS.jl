@@ -74,11 +74,12 @@ bmo.est[bmo.rownames .== "mx01v"] .= 0.5;
 bmo.est[bmo.rownames .== "j"] .= 0.0;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 
-bmo.est[:] .= bmo_updater_v1_SLOW(bmo);
+bmo.est[:] .= bmo_updater_v1_SLOW(bmo)
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+prtCi(inputs)
 
 p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
 
