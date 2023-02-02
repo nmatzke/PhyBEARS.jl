@@ -497,6 +497,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	d_val = bmo.est[bmo.rownames .== "d"][1]
 	e_val = bmo.est[bmo.rownames .== "e"][1]
 	a_val = bmo.est[bmo.rownames .== "a"][1]
+	y_val = bmo.est[bmo.rownames .== "y"][1]
+	s_val = bmo.est[bmo.rownames .== "s"][1]
+	v_val = bmo.est[bmo.rownames .== "v"][1]
 	j_wt = j_val = bmo.est[bmo.rownames .== "j"][1]
 
 	# Update
@@ -513,11 +516,14 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 		ys = ysv*1/2
 		y_val = ysv*1/2
 		v_val = ysv*1/2
+		s_val = 0.0
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
 		ys = ysv*1.0
 		y_val = ysv*1.0
+		v_val = 0.0
+		s_val = 0.0
 	end
 	
 	bmo.est[bmo.rownames .== "ysv"] .= ysv
