@@ -516,7 +516,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
-		ys = ys*1.0
+		ys = ysv*1.0
 		y_val = ysv*1.0
 	end
 	

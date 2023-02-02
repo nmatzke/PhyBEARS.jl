@@ -1536,7 +1536,7 @@ function bmo_updater_v1_SLOW(bmo)
 	end
 	if ysv_func == "1-j"
 		ysv = 1.0-j_wt
-		ys = ys*1.0
+		ys = ysv*1.0
 		y_val = ysv*1.0
 	end
 	
@@ -1633,7 +1633,7 @@ function bmo_updater_v2(bmo, bmo_rows)
 	end
 	if ysv_func == "1-j"
 		ysv = 1.0-j_wt
-		ys = ys*1.0
+		ys = ysv*1.0
 		y_val = ysv*1.0
 	end
 	
@@ -2643,7 +2643,7 @@ function bmo_updater_v1!(bmo)
 	end
 	if ysv_func == "1-j"
 		ysv = 1.0-j_wt
-		ys = ys*1.0
+		ys = ysv*1.0
 		y_val = ysv*1.0
 	end
 	
