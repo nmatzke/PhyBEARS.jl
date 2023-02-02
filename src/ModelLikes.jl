@@ -502,21 +502,22 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Update
 	ysv_func = bmo.type[bmo.rownames .== "ysv"][1]
 	if ysv_func == "3-j"
-		ysv = 3-j_wt
+		ysv = 3.0-j_wt
 		ys = ysv*2/3
 		y_val = ysv*1/3
 		s_val = ysv*1/3
 		v_val = ysv*1/3
 	end
 	if ysv_func == "2-j" # assumes "s" is 0.0
-		ysv = 2-j_wt
+		ysv = 2.0-j_wt
 		ys = ysv*1/2
 		y_val = ysv*1/2
 		v_val = ysv*1/2
 	end
 	if ysv_func == "1-j"
 		ysv = 1-j_wt
-		y_val = ysv*1
+		ys = ys*1.0
+		y_val = ysv*1.0
 	end
 	
 	bmo.est[bmo.rownames .== "ysv"] .= ysv

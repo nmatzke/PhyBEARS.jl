@@ -1522,21 +1522,22 @@ function bmo_updater_v1_SLOW(bmo)
 	# Update y, s, v (sympatry, subset sympatry, vicariance)
 	ysv_func = bmo.type[bmo.rownames .== "ysv"][1] # YOU NEED THE [1] IN HERE
 	if ysv_func == "3-j"
-		ysv = 3-j_wt
+		ysv = 3.0-j_wt
 		ys = ysv*2/3
 		y = ysv*1/3
 		s = ysv*1/3
 		v = ysv*1/3
 	end
 	if ysv_func == "2-j" # assumes "s" is 0.0
-		ysv = 2-j_wt
+		ysv = 2.0-j_wt
 		ys = ysv*1/2
 		y = ysv*1/2
 		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
-		ysv = 1-j_wt
-		y = ysv*1
+		ysv = 1.0-j_wt
+		ys = ys*1.0
+		y_val = ysv*1.0
 	end
 	
 	bmo.est[bmo.rownames .== "ysv"] .= ysv
@@ -1618,21 +1619,22 @@ function bmo_updater_v2(bmo, bmo_rows)
 	# Update
 	ysv_func = bmo.type[bmo_rows.ysv]  # NO [1] is needed here
 	if ysv_func == "3-j"
-		ysv = 3-j_wt
+		ysv = 3.0-j_wt
 		ys = ysv*2/3
 		y = ysv*1/3
 		s = ysv*1/3
 		v = ysv*1/3
 	end
 	if ysv_func == "2-j" # assumes "s" is 0.0
-		ysv = 2-j_wt
+		ysv = 2.0-j_wt
 		ys = ysv*1/2
 		y = ysv*1/2
 		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
-		ysv = 1-j_wt
-		y = ysv*1
+		ysv = 1.0-j_wt
+		ys = ys*1.0
+		y_val = ysv*1.0
 	end
 	
 	bmo.est[bmo_rows.ysv] = ysv
@@ -2627,21 +2629,22 @@ function bmo_updater_v1!(bmo)
 	# Update
 	ysv_func = bmo.type[bmo.rownames .== "ysv"][1]
 	if ysv_func == "3-j"
-		ysv = 3-j_wt
+		ysv = 3.0-j_wt
 		ys = ysv*2/3
 		y = ysv*1/3
 		s = ysv*1/3
 		v = ysv*1/3
 	end
 	if ysv_func == "2-j" # assumes "s" is 0.0
-		ysv = 2-j_wt
+		ysv = 2.0-j_wt
 		ys = ysv*1/2
 		y = ysv*1/2
 		v = ysv*1/2
 	end
 	if ysv_func == "1-j"
-		ysv = 1-j_wt
-		y = ysv*1
+		ysv = 1.0-j_wt
+		ys = ys*1.0
+		y_val = ysv*1.0
 	end
 	
 	
