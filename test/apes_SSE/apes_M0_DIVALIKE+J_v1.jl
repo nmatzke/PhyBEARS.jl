@@ -36,7 +36,7 @@ include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
 # Run with:
 # source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DIVALIKE+J_v1.R")
 # Truth:
-R_bgb_lnL = -1.170587
+R_bgb_lnL = -0.9808317
 
 
 
@@ -44,8 +44,8 @@ R_bgb_lnL = -1.170587
 
 
 # BioGeoBEARS ancestral states under DIVALIKE+J
-bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 5.483716e-31, 1, 2.000002e-24, 4.500005e-24, NaN, 0.940298, 0.9850746, 1, 7.463047e-39, 1, 1, NaN, 4.486683e-07, 5.890815e-13, 1.492539e-14, 1.492539e-14, 1.791046e-13, 8.059706e-13, NaN, 0.05970153, 0.01492539];
-bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.4029848, 0.940298, 0.9850746, 1, 0, 1, 1, 0.4029853, 4.486684e-07, 6.338576e-13, 0, 0, 0, 0, 0.1940299, 0.05970153, 0.01492539];
+bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 1.253246e-30, 1, 2.000005e-24, 4.500011e-24, NaN, 0.9999992, 1, 1, 2.624503e-42, 1, 1, NaN, 8.354983e-07, 2.094164e-12, 0, 0, 0, 0, NaN, 0, 0];
+bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0.3333329, 0.9999992, 1, 1, 0, 1, 1, 0.3333338, 8.354983e-07, 2.094164e-12, 0, 0, 0, 0, 0.3333333, 1.000001e-12, 1.000001e-12];
 bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
 bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :auto)
 
@@ -83,7 +83,7 @@ bmo.max[bmo.rownames .== "ys"] .= 2.0;
 bmo.max[bmo.rownames .== "y"] .= 1.0;
 bmo.max[bmo.rownames .== "v"] .= 1.0;
 bmo.est[bmo.rownames .== "mx01v"] .= 0.5;
-bmo.est[bmo.rownames .== "j"] .= 2.99999;
+bmo.est[bmo.rownames .== "j"] .= 1.99999;
 bmo.est[bmo.rownames .== "x"] .= 0.0;
 
 
