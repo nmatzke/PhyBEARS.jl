@@ -21,9 +21,18 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Uppass
 
+
+
+"""
+cd("/GitHub/PhyBEARS.jl/test/")
+include("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
+"""
+
+
 # 
 # """
-# using darwins finches
+# using a small, 4-taxon tree; "+J" version of BiSSE model
+# (this is not replicable by BiSSE, as it has speciational change)
 # 
 # 
 # #######################################################
@@ -542,12 +551,12 @@ round.(Julia_bisseJ_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimate
 Julia_bisse_anc_estimates .- Julia_bisseJ_anc_estimates
 
 
+"""
+# Speed test
 @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-
-
 @benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
-
+"""
 
 
 

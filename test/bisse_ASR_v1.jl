@@ -21,10 +21,15 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Uppass
 
+"""
+cd("/GitHub/PhyBEARS.jl/test/")
+include("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
+"""
+
 
 # 
 # """
-# using darwins finches
+# using small, 4-taxon tree
 # 
 # 
 # #######################################################
@@ -34,7 +39,7 @@ using PhyBEARS.Uppass
 # # under a variety of simple and more complex models
 # #######################################################
 # 
-# @testset "runtests_BiSSE_tree_n3.jl" begin
+@testset "compare_bisse_ASR_v1.R_with_bisse_ASR_v1.jl" begin
 # 
 #######################################################
 # Calculation of Es and Ds on a single branch
@@ -493,18 +498,17 @@ round.(R_bisse_anc_estimates; digits=3) .== round.(Julia_bisse_anc_estimates; di
 
 Julia_bisse_anc_estimates .- R_bisse_anc_estimates
 
-
+"""
+# Check the timing
 @benchmark uppass_ancstates_v5!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-
-
 @benchmark uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+"""
 
 
 
 
-
-# end # END @testset "runtests_BiSSE_tree_n3" begin
+end # END @testset "runtests_BiSSE_4species_tree" begin
 
 
 
