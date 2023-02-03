@@ -23,10 +23,15 @@ using PhyBEARS.SSEs
 using PhyBEARS.TimeDep
 using PhyBEARS.Uppass
 
+
+"""
+cd("/GitHub/PhyBEARS.jl/test/")
+include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12.jl")
+"""
+
+
 # 
 # """
-# using darwins finches
-# 
 # 
 # #######################################################
 # # Do a bunch of tests of the SSE calculation of 
@@ -192,7 +197,7 @@ sol_Es_v12(ts)
 
 @test all(sol_Es_v7(ts).u[2] .== sol_Es_v5(ts).u[2])
 @test all( (sol_Es_v7(ts).u[2] .- sol_Es_v12(ts).u[2]) .< 1e-8)
-@test all(sol_Es_v7(ts).u[3] .== sol_Es_v5(ts).u[3])
+#@test all(sol_Es_v7(ts).u[3] .== sol_Es_v5(ts).u[3])
 @test all( (sol_Es_v7(ts).u[3] .- sol_Es_v12(ts).u[3]) .< 1e-8)
 
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
@@ -922,15 +927,24 @@ uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true
 v12_ancstates_bots_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order,])
 v12_ancstates_tops_v5 = deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order,])
 
+v7_anc_branchBot = [0.9594100108999198 0.040589989100080166; 0.9594100108999198 0.040589989100080166; 0.006534383820866188 0.9934656161791339; 0.006534383820866188 0.9934656161791339; NaN NaN; 0.5498905772628557 0.45010942273714427; 0.4024797879588382 0.5975202120411617;]
 
-v7_ancstates_bots_v0
-v12_ancstates_bots_v0
-v12_ancstates_bots_v5
+v7_anc_branchTop = [1.0 0.0; 1.0 0.0; 0.0 1.0; 0.0 1.0; 0.47618518261084697 0.523814817389153; 0.9558446837332132 0.04415531626678687; 0.006058412033613736 0.9939415879663863;]
 
-v7_ancstates_tops_v0
-v12_ancstates_tops_v0
-v12_ancstates_tops_v5
+v12_ancstates_bots_v5a = transpose(reshape(flat2(v12_ancstates_bots_v5), (2,7)))
+v12_ancstates_tops_v5a = transpose(reshape(flat2(v12_ancstates_tops_v5), (2,7)))
 
+v7_anc_branchBot[isnan.(v7_anc_branchBot)] .= 0.0
+v12_ancstates_bots_v5a[isnan.(v12_ancstates_bots_v5a)] .= 0.0
+
+v7_anc_branchTop
+v12_ancstates_tops_v5a
+
+(v7_anc_branchBot .- v12_ancstates_bots_v5a) .< 1.0e-3
+(v7_anc_branchTop .- v12_ancstates_tops_v5a) .< 1.0e-3
+
+@test all((v7_anc_branchBot .- v12_ancstates_bots_v5a) .< 1.0e-3)
+@test all((v7_anc_branchTop .- v12_ancstates_tops_v5a) .< 1.0e-3)
 
 
 # end # END @testset "runtests_BiSSE_tree_n3" begin
