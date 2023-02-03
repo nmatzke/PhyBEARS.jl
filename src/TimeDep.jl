@@ -368,7 +368,8 @@ end
 function update_Qji_vals_sub_j_t!(p)
 	# Update the Qij_vals_sub_j_t (where anc==i)
 	@inbounds @simd for j in 1:length(p.setup.states_list)
-		p.p_TFs.Qji_vals_sub_j_t[j] .= p.params.Qij_vals_t[p.p_indices.Qarray_jvals .== j] # uppass
+		#p.p_TFs.Qji_vals_sub_j_t[j] .= p.params.Qij_vals_t[p.p_indices.Qarray_jvals .== j] # uppass
+		p.p_TFs.Qji_vals_sub_j_t[j] .= p.params.Qij_vals_t[p.p_TFs.Qj_eq_j[j]] # uppass
 	end
 end
 
@@ -386,7 +387,8 @@ end
 function update_Cijk_rates_sub_j_t!(p)
 	# Update the Cijk_rates_sub_j_t (where anc==i)
 	@inbounds @simd for j in 1:length(p.setup.states_list)
-		p.p_TFs.Cjik_rates_sub_j_t[j] .= p.params.Cijk_rates_t[p.p_indices.Carray_jvals .== j] # uppass
+		# p.p_TFs.Cjik_rates_sub_j_t[j] .= p.params.Cijk_rates_t[p.p_indices.Carray_jvals .== j] # uppass
+		p.p_TFs.Cjik_rates_sub_j_t[j] .= p.params.Cijk_rates_t[p.p_TFs.Cj_eq_j[j]] # uppass
 	end
 end
 
