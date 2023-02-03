@@ -440,6 +440,7 @@ end
 @testset "Checks against diversitree's BiSSE"
 include("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
 include("/GitHub/PhyBEARS.jl/test/bisse_ASR+J_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
 
 
 end
