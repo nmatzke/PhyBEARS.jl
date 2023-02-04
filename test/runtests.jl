@@ -427,21 +427,20 @@ end
 
 
 @testset "Checks against BioGeoBEARS models" begin
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
 
 end
 
 
-@testset "Checks against diversitree's BiSSE"
-include("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/bisse_ASR+J_v1.jl")
-include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
-
+@testset "Checks against diversitree's BiSSE" begin
+	include("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/bisse_ASR+J_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
 
 end
 
