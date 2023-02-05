@@ -19,7 +19,7 @@ using PhyloBits.TrUtils # for e.g. flat2
 print("...done.\n")
 
 
-export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, prtC_single_events, make_ctable_single_events, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, bmo_DIVALIKE, bmo_BAYAREALIKE, construct_BioGeoBEARS_model_object, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
+export CparamsStructure, default_Cparams, sumy, sums, sumv, sumj, sum_Cijk_rates_by_i, prtQ, prtQi, prtQp, prtC, prtCi, prtCp, prtC_single_events, make_ctable_single_events, add_111_to_Carray!, numstates_from_numareas, areas_list_to_states_list, states_list_to_txt, get_default_inputs, run_model, setup_MuSSE, setup_DEC_DEmat, bmo_DIVALIKE, bmo_BAYAREALIKE, construct_BioGeoBEARS_model_object, construct_bmo, FilesStructure, construct_files_list, array_in_array, is_event_vicariance, setup_DEC_Cmat, setup_DEC_Cmat2, totals_prtC, setup_DEC_Cmat3
 
 
 
@@ -1043,7 +1043,7 @@ function bmo_BAYAREALIKE(bmo)
 end # END
 
 
-
+"""
 #######################################################
 # bmo: A BioGeoBEARS_model_object DataFrame
 # Much like BioGeoBEARS, this will contain the 
@@ -1053,8 +1053,8 @@ end # END
 # A DataFrame.
 #######################################################
 # defaults
-"""
 bmo = construct_BioGeoBEARS_model_object()
+bmo = construct_bmo()
 """
 function construct_BioGeoBEARS_model_object()
 	type_vec = ["free", "free", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "fixed", "u", "u", "fixed", "3-j", "ysv*2/3", "ysv*1/3", "ysv*1/3", "ysv*1/3", "fixed", "fixed", "fixed", "fixed", "mx01", "mx01", "mx01", "mx01", "fixed", "fixed", "fixed", "fixed"]
@@ -1074,6 +1074,23 @@ function construct_BioGeoBEARS_model_object()
 	return bmo
 end
 
+"""
+#######################################################
+# bmo: A BioGeoBEARS_model_object DataFrame
+# Much like BioGeoBEARS, this will contain the 
+# higher-level parameters that are then used to 
+# set the individual rates.
+# 
+# A DataFrame.
+#######################################################
+# defaults
+bmo = construct_BioGeoBEARS_model_object()
+bmo = construct_bmo()
+"""
+function construct_bmo()
+	bmo = construct_BioGeoBEARS_model_object();
+	return(bmo)
+end
 
 
 mutable struct FilesStructure

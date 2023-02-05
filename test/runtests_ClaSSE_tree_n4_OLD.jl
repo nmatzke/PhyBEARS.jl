@@ -1,14 +1,25 @@
-using Interpolations	# for Linear, Gridded, interpolate
-using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
-										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
-using Sundials				# for CVODE_BDF
-using Test						# for @test, @testset
-using PhyloBits
-using PhyloBits.TrUtils	# for vvdf
-using PhyBEARS
-using PhyBEARS.Uppass
+using Test, PhyBEARS, DataFrames
+
+using Dates									# for e.g. Dates.now(), DateTime
+#using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+using Distributed						# for e.g. @spawn
+using Combinatorics					# for e.g. combinations()
 using DataFrames
-using CSV
+
+using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
+										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+using DataFrames  # for DataFrame
+using DifferentialEquations
+using OrdinaryDiffEq, Sundials, DiffEqDevTools, Plots, ODEInterfaceDiffEq, ODE, LSODA
+
+
+# List each PhyBEARS code file prefix here
+using PhyBEARS.BGExample
+using PhyBEARS.StateSpace
+using PhyBEARS.TreeTable
+using PhyBEARS.TreePass
+using PhyBEARS.TrUtils
+using PhyBEARS.SSEs
 
 # 
 """
@@ -48,30 +59,20 @@ R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -11.57223
 #######################################################
 
 
+include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
+import .TreePass
+
+# Repeat calculation in Julia
+include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
+import .ModelLikes
 tr = readTopology("((chimp:1,human:1):1,gorilla:2);")
-
-geog_df = DataFrame(AbstractVector[["chimp", "human", "gorilla"], [0, 1, 0], [1, 0, 1]], DataFrames.Index(Dict(:tipnames => 1, :A => 2, :B => 3), [:tipnames, :A, :B]))
-
 in_params = (birthRate=0.2, deathRate=0.1, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
-bmo = construct_bmo();
-bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate
-bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate
-bmo.est[bmo.rownames.=="d"] .= in_params.d_val
-bmo.est[bmo.rownames.=="e"] .= in_params.e_val
-bmo.est[bmo.rownames.=="a"] .= in_params.a_val
-bmo.est[bmo.rownames.=="j"] .= in_params.j_val
 numareas = 2
 n = 3
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
-(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
-
-lgdata_fn = "geog.data"
-geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
-
-PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true);
-(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, in_params=in_params)
+(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs
 
 prtQi(inputs)
 prtCi(inputs)

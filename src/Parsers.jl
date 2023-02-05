@@ -127,6 +127,22 @@ Function to read in Lagrange/BioGeoBEARS-type PHYLIP-formatted
 
 lgdata_fn = lagrange-style geography input file
 block_allQs = give error if a row has all-question-marks
+
+
+# Read in a DataFrame from script
+geog_df = DataFrame(AbstractVector[["sp4", "sp5", "sp6", "sp7"], [1, 1, 0, 0], [0, 0, 1, 1]], DataFrames.Index(Dict(:A => 2, :tipnames => 1, :B => 3), [:tipnames, :A, :B]))
+
+# Output to screen:
+julian_dput(geog_df)
+
+
+# Read from file
+wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
+cd(wd)
+
+lgdata_fn = "geog.data"
+geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
+
 """
 
 function getranges_from_LagrangePHYLIP(lgdata_fn; block_allQs=true)
