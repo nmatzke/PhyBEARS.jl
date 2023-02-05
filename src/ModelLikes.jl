@@ -917,7 +917,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 
 	# Update the p_Ds_v5, based on the bmo
 	p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
-	# Update the inputs, based on the bmo
+	# Update the inputs, based on the inputs.bmo-updated p_Ds_v5
 	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, files=files, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
 
 

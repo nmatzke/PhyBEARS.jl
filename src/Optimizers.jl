@@ -2319,6 +2319,14 @@ end # end update_Cijk_vals2_noUpdate()
 #######################################################
 function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); printlevel=0)
 	"""
+	# prelim defaults:
+	root_age_mult=1.5; max_range_size=NaN; include_null_range=false; bmo=bmo
+	manual_states_list=NaN; area_names=LETTERS(1:numareas)
+
+	check_if_free_params_in_mat=true;
+	printlevel=0
+
+
 	# defaults:
 	areas_list = inputs.setup.areas_list
 	states_list = inputs.setup.states_list
@@ -2538,25 +2546,11 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 
 
 
-	df1 = DataFrame(event=Carray_event_types, i=Carray_ivals, j=Carray_jvals, k=Carray_kvals, weight=Cijk_weights, prob=Cijk_vals);
-	
-	groups = groupby(df1,:i)
-	row_weightvals = collect(repeat([0.0], length(groups)))
-	for g in 1:length(groups)
-		row_weightvals[g] = sum(groups[g].weight)
-	end
-	row_weightvals
-	
-	# If i=1 is missing from row_weightvals_df, add it to row_weightvals
-	if in(1, unique(df1.i)) == false
-		prepend!(row_weightvals, 0)
-	end
-	
-	# Convert the weights to conditional event probabilities
-	for i in 1:length(states_list)
-		TF = Carray_ivals .== i
+	# Sum the weights for each ancestral i, divide by the sum of the weights
+	for i in 1:length(row_weightvals)
+		row_weightvals[i] = sum(Cijk_weights[Carray_ivals .== i])
 		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
-		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; change manually afterwards
+		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; 
 	end
 
 	p_Ds_v5.params.Cijk_weights[:] .= Cijk_weights
@@ -2707,6 +2701,15 @@ func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL")
 func(pars)
 """
 function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, printlevel=0)
+	defaults="""
+	root_age_mult=1.5; max_range_size=NaN; include_null_range=false; bmo=bmo
+	manual_states_list=NaN; area_names=LETTERS(1:numareas)
+
+	check_if_free_params_in_mat=true;
+	printlevel=0
+
+	"""
+	
 	if check_if_free_params_in_mat == true
 		free_param_names = inputs.bmo.rownames[inputs.bmo.type .== "free"]
 		# Are all of the free param names %in% the p_Ds_v5

@@ -30,6 +30,8 @@ dd = pp(pathof_result, "PhyBEARS")
 dd = "/GitHub/PhyBEARS.jl"
 
 
+@testset "All tests" begin
+
 @testset "Example" begin
 	@test hello("Julia") == "Hello, Julia"
 	@test domath(2.0) ≈ 7.0
@@ -453,3 +455,4 @@ end
 
 
 
+end # END: @testset "All tests"
