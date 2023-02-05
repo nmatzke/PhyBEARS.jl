@@ -222,7 +222,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes BAYAREALIKE ancstates vs. Julia ML ancstates" begin
+@testset "Apes BAYAREALIKE+J ancstates vs. Julia ML ancstates" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
