@@ -6,6 +6,7 @@ using Test						# for @test, @testset
 using PhyloBits
 using PhyloBits.TrUtils	# for vvdf
 using PhyBEARS
+using PhyBEARS.ModelLikes
 using PhyBEARS.Uppass
 using DataFrames
 using CSV
@@ -39,7 +40,7 @@ end
 # (1 branch, pure birth, no Q transitions, branchlength=1)
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/_compare_ClaSSE_calcs_n4_compare2julia.R")
+# source("/GitHub/PhyBEARS.jl/R_examples/_compare_ClaSSE_calcs_n4_compare2julia.R")
 # Truth:
 R_result_branch_lnL = -4.748244
 R_result_total_LnLs1 = -8.170992
@@ -52,7 +53,7 @@ tr = readTopology("((chimp:1,human:1):1,gorilla:2);")
 
 geog_df = DataFrame(AbstractVector[["chimp", "human", "gorilla"], [0, 1, 0], [1, 0, 1]], DataFrames.Index(Dict(:tipnames => 1, :A => 2, :B => 3), [:tipnames, :A, :B]))
 
-in_params = (birthRate=0.2, deathRate=0.1, d_val=1e-6, e_val=1e-6, a_val=0.0, j_val=0.0)
+in_params = (birthRate=0.2, deathRate=0.1, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
 bmo = construct_bmo();
 bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate
 bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate
@@ -64,20 +65,15 @@ numareas = 2
 n = 3
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
-(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
-
-lgdata_fn = "geog.data"
-geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
-
-PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true);
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=false, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 prtQi(inputs)
 prtCi(inputs)
 
-inputs.p_Ds_v5.params.Cijk_vals[3:8] = inputs.p_Ds_v5.params.Cijk_vals[3:8] ./ 2
-inputs.p_Ds_v5.params.Cijk_vals[3:8] = inputs.p_Ds_v5.params.Cijk_vals[3:8] .* 2
+inputs.p_Ds_v5.params.Cijk_vals[3:5] = inputs.p_Ds_v5.params.Cijk_vals[3:5] ./ 2
+inputs.p_Ds_v5.params.Cijk_vals[3:5] = inputs.p_Ds_v5.params.Cijk_vals[3:5] .* 2
 
 prtCi(inputs)
 
@@ -92,7 +88,7 @@ inputs.res.normlikes_at_each_nodeIndex_branchTop
 res.likes_at_each_nodeIndex_branchTop[2] = [1.0, 0.0, 0.0]			# state 1 for tip #2
 res.normlikes_at_each_nodeIndex_branchTop[2] = [1.0, 0.0, 0.0]	# state 1 for tip #2
 trdf = inputs.trdf
-p_Ds_v5 = inputs.p_Ds_v5
+p_Ds_v5 = inputs.p_Ds_v5;
 root_age = maximum(trdf[!, :node_age])
 
 # Solve the Es
@@ -101,8 +97,8 @@ prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v
 # This solution is a linear interpolator
 sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5)
-p_inputs2 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5)
+p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
+p_inputs2 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 
 
 # Parameters
@@ -112,7 +108,14 @@ inputs.p_Ds_v5.params.mu_vals
 p_Ds_v5.sol_Es_v5(1.0)
 
 # Do downpass
-(total_calctime_in_sec, iteration_number) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10)
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
 
 Rnames(res)
 res.likes_at_each_nodeIndex_branchTop
