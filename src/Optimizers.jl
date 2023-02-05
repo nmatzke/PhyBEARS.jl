@@ -2548,7 +2548,8 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 
 	# Sum the weights for each ancestral i, divide by the sum of the weights
 	for i in 1:length(row_weightvals)
-		TF = Carray_ivals .== i
+		#TF = Carray_ivals .== i
+		TF = p.p_TFs.Ci_eq_i[i]  # This is crucial!
 		row_weightvals[i] = sum(Cijk_weights[TF])
 		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
 		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; 

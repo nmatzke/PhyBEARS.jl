@@ -111,7 +111,7 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
-@testset "Apes DIVALIKE lnL" begin
+@testset "Apes DIVALIKE+J lnL vs. BioGeoBEARS lnL" begin
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-4
 end
 
@@ -131,7 +131,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes DIVALIKE ancstates" begin
+@testset "Apes DIVALIKE+J ancstates vs Julia ancstates (with set parameters)" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
@@ -220,7 +220,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes DIVALIKE+J ancstates vs. Julia ML ancstates" begin
+@testset "Apes DIVALIKE+J ancstates vs. Julia ancstates (with ML parameters)" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
