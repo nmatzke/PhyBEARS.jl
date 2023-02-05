@@ -2537,41 +2537,28 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 #	Carray = (Carray_event_types=Carray_event_types, Carray_ivals=Carray_ivals, Carray_jvals=Carray_jvals, Carray_kvals=Carray_kvals, Cijk_weights=Cijk_weights, Cijk_vals=Cijk_vals, row_weightvals=row_weightvals)
 
 
-	# 2023-02-06: Replace the weird "groups" strategy of ancestral i's, with 
-	# pre-allocated row_weightvals
-	# row_weightvals = p_Ds_v5.params.row_weightvals  # already done above
 
-#	df1 = DataFrame(event=Carray_event_types, i=Carray_ivals, j=Carray_jvals, k=Carray_kvals, weight=Cijk_weights, prob=Cijk_vals);
-#	
-#	groups = groupby(df1,:i)
-#	row_weightvals = collect(repeat([0.0], length(groups)))
-#	for g in 1:length(groups)
-#		row_weightvals[g] = sum(groups[g].weight)
-#	end
-#	row_weightvals
-#
-#	ivals_w_weightvals = Int64([])
-#
-#	
-#	# If i=1 is missing from row_weightvals_df, add it to row_weightvals
-#	if in(1, unique(df1.i)) == false
-#		prepend!(row_weightvals, 0)
-#	end
-#
-#	# Convert the weights to conditional event probabilities
-#	for i in 1:length(states_list)
-#		TF = Carray_ivals .== i
-#		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
-#		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; change manually afterwards
-#	end
+	df1 = DataFrame(event=Carray_event_types, i=Carray_ivals, j=Carray_jvals, k=Carray_kvals, weight=Cijk_weights, prob=Cijk_vals);
 	
-	# Sum the weights for each ancestral i, divide by the sum of the weights
-	for i in 1:length(row_weightvals)
-		row_weightvals[i] = sum(Cijk_weights[Carray_ivals .== i])
-		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
-		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; 
+	groups = groupby(df1,:i)
+	row_weightvals = collect(repeat([0.0], length(groups)))
+	for g in 1:length(groups)
+		row_weightvals[g] = sum(groups[g].weight)
+	end
+	row_weightvals
+	
+	# If i=1 is missing from row_weightvals_df, add it to row_weightvals
+	if in(1, unique(df1.i)) == false
+		prepend!(row_weightvals, 0)
 	end
 	
+	# Convert the weights to conditional event probabilities
+	for i in 1:length(states_list)
+		TF = Carray_ivals .== i
+		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
+		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; change manually afterwards
+	end
+
 	p_Ds_v5.params.Cijk_weights[:] .= Cijk_weights
 	p_Ds_v5.params.Cijk_probs[:] .= Cijk_probs
 	p_Ds_v5.params.Cijk_rates[:] .= Cijk_rates
@@ -2583,8 +2570,6 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 		p_Ds_v5.p_TFs.Cijk_rates_sub_i[i] .= Cijk_rates[p_Ds_v5.p_TFs.Ci_eq_i[i]]
 		# p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_TFs.Ci_eq_j[i]]
 		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_indices.Carray_jvals .== i] # uppass
-		# DOESN'T WORK:
-		#p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_TFs.Cj_eq_j[i]] # for uppass
 	end
 	
 
