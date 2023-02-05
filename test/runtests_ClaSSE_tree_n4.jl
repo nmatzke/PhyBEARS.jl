@@ -52,7 +52,7 @@ tr = readTopology("((chimp:1,human:1):1,gorilla:2);")
 
 geog_df = DataFrame(AbstractVector[["chimp", "human", "gorilla"], [0, 1, 0], [1, 0, 1]], DataFrames.Index(Dict(:tipnames => 1, :A => 2, :B => 3), [:tipnames, :A, :B]))
 
-in_params = (birthRate=0.2, deathRate=0.1, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
+in_params = (birthRate=0.2, deathRate=0.1, d_val=1e-6, e_val=1e-6, a_val=0.0, j_val=0.0)
 bmo = construct_bmo();
 bmo.est[bmo.rownames.=="birthRate"] .= in_params.birthRate
 bmo.est[bmo.rownames.=="deathRate"] .= in_params.deathRate
@@ -64,7 +64,7 @@ numareas = 2
 n = 3
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
+inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
 (setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 lgdata_fn = "geog.data"

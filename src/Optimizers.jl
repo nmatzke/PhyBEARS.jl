@@ -2582,8 +2582,9 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	for i in 1:length(states_list)
 		p_Ds_v5.p_TFs.Cijk_rates_sub_i[i] .= Cijk_rates[p_Ds_v5.p_TFs.Ci_eq_i[i]]
 		# p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cjik_rates[p_Ds_v5.p_TFs.Ci_eq_j[i]]
-#		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_indices.Carray_jvals .== i] # uppass
-		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_TFs.Cj_eq_j[i]] # for uppass
+		p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_indices.Carray_jvals .== i] # uppass
+		# DOESN'T WORK:
+		#p_Ds_v5.p_TFs.Cjik_rates_sub_j[i] .= Cijk_rates[p_Ds_v5.p_TFs.Cj_eq_j[i]] # for uppass
 	end
 	
 

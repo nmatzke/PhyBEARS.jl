@@ -435,6 +435,8 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
 	
+	# Check that tree tips match 
+	
 	# For time-varying analyses
 	areas_list = collect(1:numareas)
 	total_numareas = length(areas_list)
