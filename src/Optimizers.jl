@@ -2544,12 +2544,37 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 	# Finally, return updated Carray:
 #	Carray = (Carray_event_types=Carray_event_types, Carray_ivals=Carray_ivals, Carray_jvals=Carray_jvals, Carray_kvals=Carray_kvals, Cijk_weights=Cijk_weights, Cijk_vals=Cijk_vals, row_weightvals=row_weightvals)
 
+	# 2022: weird groups thing (replaced, 2023-02-06)
+
+#	df1 = DataFrame(event=Carray_event_types, i=Carray_ivals, j=Carray_jvals, k=Carray_kvals, weight=Cijk_weights, prob=Cijk_vals);
+#	
+#	groups = groupby(df1,:i)
+#	row_weightvals = collect(repeat([0.0], length(groups)))
+#	for g in 1:length(groups)
+#		row_weightvals[g] = sum(groups[g].weight)
+#	end
+#	row_weightvals
+#	
+#	# If i=1 is missing from row_weightvals_df, add it to row_weightvals
+#	if in(1, unique(df1.i)) == false
+#		prepend!(row_weightvals, 0)
+#	end
+	
+	# Convert the weights to conditional event probabilities
+#	for i in 1:length(states_list)
+#		TF = Carray_ivals .== i
+#		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
+#		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; change manually afterwards
+#	end
 
 
+
+
+	# 2023-02-06 Simpler, more robust strategy than the weird "groups" thing!
 	# Sum the weights for each ancestral i, divide by the sum of the weights
 	for i in 1:length(row_weightvals)
 		#TF = Carray_ivals .== i
-		TF = p.p_TFs.Ci_eq_i[i]  # This is crucial!
+		TF = p_Ds_v5.p_TFs.Ci_eq_i[i]  # This is crucial!
 		row_weightvals[i] = sum(Cijk_weights[TF])
 		Cijk_probs[TF] = Cijk_weights[TF] ./ row_weightvals[i]
 		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; 
