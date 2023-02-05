@@ -447,6 +447,10 @@ end
 end
 
 
+@testset "Checks against diversitree's ClaSSE" begin
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n4.jl")
+end
+
 
 
 

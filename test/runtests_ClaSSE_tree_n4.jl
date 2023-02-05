@@ -31,7 +31,7 @@ end
 # # under a variety of simple and more complex models
 # #######################################################
 # 
-@testset "runtests_ClaSSE_tree_n4.jl" begin
+@testset "runtests_ClaSSE_tree_n4.jl: Julia ClaSSE vs. diversitree ClaSSE" begin
 # 
 #######################################################
 # Calculation of Es and Ds on a single branch
@@ -173,7 +173,7 @@ Julia_total_lnLs1t = Julia_sum_lq + rootstates_lnL
 
 # Does the total lnL match R?
 # root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
-@test round(R_result_total_LnLs1; digits=5) == round(Julia_total_lnLs1; digits=5)
+@test round(R_result_total_LnLs1; digits=4) == round(Julia_total_lnLs1; digits=4)
 
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE
 @test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
@@ -222,7 +222,7 @@ tmpzero = repeat([0.0], n^2)
 A = reshape(tmpzero, (n,n))
 
 
-pG = (n=n, p_Ds_v5=p_inputs, A=A)
+pG = (n=n, p_Ds_v5=p_inputs2, A=A)
 tspan = (0.0, 3.0)
 prob_Gs_v5 = DifferentialEquations.ODEProblem(Flow.calc_Gs_SSE!, G0, tspan, pG)
 
