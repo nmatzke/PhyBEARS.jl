@@ -2572,11 +2572,11 @@ function update_Cijk_vals2!(p_Ds_v5, areas_list, states_list, bmo, maxent01, jma
 		Cijk_rates[TF] = Cijk_vals[TF] = Cijk_probs[TF] .* birthRate # by default, the birthRate is 1.0; 
 	end
 	
-	p_Ds_v5.params.Cijk_weights .= Cijk_weights
-	p_Ds_v5.params.Cijk_probs .= Cijk_probs
-	p_Ds_v5.params.Cijk_rates .= Cijk_rates
-	p_Ds_v5.params.Cijk_vals .= Cijk_vals
-	p_Ds_v5.params.row_weightvals .= row_weightvals
+	p_Ds_v5.params.Cijk_weights[:] .= Cijk_weights
+	p_Ds_v5.params.Cijk_probs[:] .= Cijk_probs
+	p_Ds_v5.params.Cijk_rates[:] .= Cijk_rates
+	p_Ds_v5.params.Cijk_vals[:] .= Cijk_vals
+	p_Ds_v5.params.row_weightvals[:] .= row_weightvals
 
 	# Update the Cijk_rates_sub_i (where anc==i)
 	for i in 1:length(states_list)
