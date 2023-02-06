@@ -16,6 +16,7 @@ using PhyBEARS.TreePass
 #using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers
+using PhyBEARS.ModelLikes # e.g. setup_DEC_SSE2
 
 """
 # Run with:
