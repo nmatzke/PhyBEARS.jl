@@ -258,25 +258,54 @@ print("\n")
 #######################################################
 # Check ancestral state estimates
 #######################################################
-infn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
-R_ancstates_nodes = numstxt_to_df(infn)
+
+@testset "Psychotria ancstates DEC v5" begin
+
+fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+R_ancstates_nodes = numstxt_to_df(fn)
 
 # Has NAs; these are auto-convert to NaN by numstxt_to_df
-infn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
-R_ancstates_corners = R_ancstates_nodes = numstxt_to_df(infn)
+fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+R_ancstates_corners = numstxt_to_df(fn)
 
+trdf = prt(tr)
+R_order = sort(trdf, :Rnodenums).nodeIndex
 
 uppass_ancstates_v5!(res, trdf, p_Ds_v5, solver_options; use_Cijk_rates_t=false, min_branchlength=1.0e-6);
 rn(res)
-Julia_ancstates_nodes_v5 = deepcopy(res.)
-Julia_ancstates_corners_v5 = deepcopy(res.)
+Julia_ancstates_nodes_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]))
+Julia_ancstates_corners_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]))
+
+@test all(get_max_df_diffs_byCol(R_ancstates_nodes, Julia_ancstates_nodes_v5) .< 0.0002)
+@test all(get_max_df_diffs_byCol(R_ancstates_corners, Julia_ancstates_corners_v5) .< 0.0002)
+
+end # END @testset "Psychotria ancstates DEC" begin
+
+
+
+@testset "Psychotria ancstates DEC v7" begin
+
+fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+R_ancstates_nodes = numstxt_to_df(fn)
+
+# Has NAs; these are auto-convert to NaN by numstxt_to_df
+fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+R_ancstates_corners = numstxt_to_df(fn)
+
+trdf = prt(tr)
+R_order = sort(trdf, :Rnodenums).nodeIndex
 
 uppass_ancstates_v7!(res, trdf, p_Ds_v5, solver_options; use_Cijk_rates_t=false, min_branchlength=1.0e-6);
 rn(res)
+Julia_ancstates_nodes_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[R_order]))
+Julia_ancstates_corners_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[R_order]))
+
+@test all(get_max_df_diffs_byCol(R_ancstates_nodes, Julia_ancstates_nodes_v5) .< 0.0002)
+@test all(get_max_df_diffs_byCol(R_ancstates_corners, Julia_ancstates_corners_v5) .< 0.0002)
+
+end # END @testset "Psychotria ancstates DEC" begin
 
 
-, uppass_ancstates_v7!
-# Julia_ancstates_nodes 
 
 end # END @testset "runtests_BiSSE_tree_n3" begin
 
