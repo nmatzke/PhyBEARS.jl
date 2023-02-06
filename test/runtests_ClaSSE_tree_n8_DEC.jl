@@ -8,7 +8,7 @@ using DataFrames						# for DataFrame()
 using DelimitedFiles				# for readdlm()
 
 # List each PhyBEARS code file prefix here
-using PhyloBits.TrUtils
+using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
 using PhyloBits.TreeTable
 using PhyBEARS.BGExample
 using PhyBEARS.StateSpace
@@ -265,6 +265,18 @@ R_ancstates_nodes = numstxt_to_df(infn)
 infn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
 R_ancstates_corners = R_ancstates_nodes = numstxt_to_df(infn)
 
+
+uppass_ancstates_v5!(res, trdf, p_Ds_v5, solver_options; use_Cijk_rates_t=false, min_branchlength=1.0e-6);
+rn(res)
+Julia_ancstates_nodes_v5 = deepcopy(res.)
+Julia_ancstates_corners_v5 = deepcopy(res.)
+
+uppass_ancstates_v7!(res, trdf, p_Ds_v5, solver_options; use_Cijk_rates_t=false, min_branchlength=1.0e-6);
+rn(res)
+
+
+, uppass_ancstates_v7!
+# Julia_ancstates_nodes 
 
 end # END @testset "runtests_BiSSE_tree_n3" begin
 
