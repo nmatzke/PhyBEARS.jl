@@ -5,6 +5,7 @@ using Dates									# for e.g. Dates.now(), DateTime
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames						# for DataFrame()
+using DelimitedFiles				# for readdlm()
 
 # List each PhyBEARS code file prefix here
 using PhyloBits.TrUtils
@@ -17,6 +18,7 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers
 using PhyBEARS.ModelLikes # e.g. setup_DEC_SSE2
+using PhyBEARS.Uppass
 
 """
 # Run with:
@@ -49,7 +51,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
 # ON HAWAIIAN PSYCHOTRIA, 16-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC_v1.R")
+# source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
 # Truth:
 DEC_R_result_branch_lnL = -67.6295
 DEC_R_result_total_LnLs1 = -72.60212
@@ -249,6 +251,20 @@ print("\n")
 print("DEC_R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
 print(R_sum_lq_nodes - Julia_sum_lq_nodes)
 print("\n")
+
+
+
+
+#######################################################
+# Check ancestral state estimates
+#######################################################
+infn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+R_ancstates_nodes = numstxt_to_df(infn)
+
+# Has NAs; these are auto-convert to NaN by numstxt_to_df
+infn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+R_ancstates_corners = R_ancstates_nodes = numstxt_to_df(infn)
+
 
 end # END @testset "runtests_BiSSE_tree_n3" begin
 

@@ -43,16 +43,16 @@ source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")  # utility functions fr
 source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")       # helper functions in plain-R
 
 
-wd = "/GitHub/PhyBEARS.jl/Rsrc/"
+wd = "~"
 setwd(wd)
 
 # Load simple example tree (newick format, must be ultrametric, i.e. 
 # all the tips come to the present)
-trfn = "Psychotria_tree.newick"
+trfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_tree.newick"
 tr = read.tree(trfn)
 
 # Load geography data
-geogfn = "Psychotria_geog.data"
+geogfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 
 
 #######################################################
