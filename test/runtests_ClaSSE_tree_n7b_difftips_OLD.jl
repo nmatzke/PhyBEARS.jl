@@ -48,18 +48,15 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl")
 @testset "runtests_ClaSSE_tree_n7a_difftips.jl" begin
 # 
 #######################################################
-# Calculation of Es and Ds on a single branch
-# Example BiSSE calculation
-# result_EsDs_biSSE_1branch_pureBirth_bl1
-# (1 branch, pure birth, no Q transitions, branchlength=1)
+# DEC+J+mu, + changing mus by state
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/_compare_ClaSSE_calcs_n7_compare2julia.R")
+# source("/GitHub/PhyBEARS.jl/R_examples/_compare_ClaSSE_calcs_n7b_compare2julia.R")
 # Truth:
-R_result_branch_lnL = -7.337676
-R_result_total_LnLs1 = -11.105443
-R_result_total_LnLs1t = -5.932152
-R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -12.25723
+R_result_branch_lnL = -5.095105
+R_result_total_LnLs1 = -8.677059
+R_result_total_LnLs1t = -5.540318 
+R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -9.689589
 #######################################################
 
 

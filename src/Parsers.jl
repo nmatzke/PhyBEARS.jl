@@ -86,7 +86,7 @@ txt_states_list = states_list_to_txt(states_list, area_names)
 
 include("/GitHub/PhyBEARS.jl/notes/Parsers.jl")
 import .Parsers
-lgdata_fn = "/GitHub/PhyBEARS.jl/Rsrc/Psychotria_geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 """
 function extract_first_integer_from_string(str)
@@ -146,7 +146,7 @@ geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
 """
 
 function getranges_from_LagrangePHYLIP(lgdata_fn; block_allQs=true)
-	#lgdata_fn = "/GitHub/PhyBEARS.jl/Rsrc/Psychotria_geog.data"
+	#lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 
 	# Obtain a file handle
 	fhandle = open(lgdata_fn)

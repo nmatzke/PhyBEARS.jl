@@ -435,7 +435,7 @@ end
 	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
 	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl")
 	include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
-
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
 end
 
 
@@ -449,6 +449,12 @@ end
 
 @testset "Checks against diversitree's ClaSSE" begin
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n4.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n5.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n6.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7b_difftips_diffMus.jl")
+	
 end
 
 
