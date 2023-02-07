@@ -20,6 +20,7 @@ using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames						# for DataFrame()
 using DelimitedFiles				# for readdlm()
+using NLopt									# seems to be the best gradient-free, box-constrained								
 
 # List each PhyBEARS code file prefix here
 using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
@@ -35,7 +36,7 @@ using PhyBEARS.Uppass
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl")
+include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
 """
 # 
 # """
@@ -56,7 +57,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl")
 # # under a variety of simple and more complex models
 # #######################################################
 # 
-@testset "runtests_ClaSSE_tree_n12_DECj.jl" begin
+@testset "runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl" begin
 # 
 #######################################################
 # DEMONSTRATES MATCHING BETWEEN DIVERSITREE, BIOGEOBEARS, AND JULIA
@@ -102,7 +103,6 @@ numareas = 4
 n = 16            # 4 areas, 16 states
 
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
-#inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, in_params=in_params)
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
 max_range_size = NaN # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
@@ -782,7 +782,7 @@ bmo.est[bmo.rownames .== "e"] .= 1e-12
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
 bmo.est
-bmo.est[:] = bmo_updater_v1(bmo)
+bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
 bmo.est
 
 #

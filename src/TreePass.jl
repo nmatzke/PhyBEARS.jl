@@ -1730,7 +1730,7 @@ function branchOp_ClaSSE_Ds_v10(current_nodeIndex, res; u0, tspan, p_Ds_v10, sol
 	
 	prob_Ds_v10 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v10_simd_sums, deepcopy(u0), tspan, p_Ds_v10)
 
-	sol_Ds = solve(prob_Ds_v10, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v10, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 		
 	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
 end
@@ -1742,7 +1742,7 @@ function branchOp_ClaSSE_Ds_v11(current_nodeIndex, res; u0, tspan, p_Ds_v10, sol
 	
 	prob_Ds_v10 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v11_simd_sums, deepcopy(u0), tspan, p_Ds_v10)
 
-	sol_Ds = solve(prob_Ds_v10, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v10, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 		
 	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
 end
@@ -1766,7 +1766,7 @@ function branchOp_ClaSSE_Ds_v12(current_nodeIndex, res; u0, tspan, p_Ds_v12, sol
 	
 	prob_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums, deepcopy(u0), tspan, p_Ds_v12)
 
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 		
 	return(tmp_threadID, sol_Ds, spawned_nodeIndex, calc_start_time)
 end
@@ -1803,7 +1803,7 @@ function branchOp_ClaSSE_Ds_v12_noNegs(current_nodeIndex, res; u0, tspan, p_Ds_v
 	#sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
 	# TRY OVERNIGHT -- 2023-01-03
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
 # with Vern9:
 # plain, completes as almost 0 1 0
@@ -1850,7 +1850,7 @@ end
 	
 	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v8_simd_sums, u0, tspan, p_Ds_v7)
 
-	sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
 	# Error catch seems to slow it down!!
 	"""
@@ -6683,7 +6683,7 @@ function branchOp_ClaSSE_Ds_v7_retDs(u0, tspan)
 	tmp_threadID = Hwloc.getinfo()[:Core]
 	
 	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums, u0, tspan, p_Ds_v7)
-	sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
+	sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
 	Ds = sol_Ds[length(sol_Ds)]
 	return(tmp_threadID, Ds, calc_start_time)

@@ -133,9 +133,16 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 		p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 		
-		# Slightly faster for solver to just calculate Ds at nodes
-		inputs.solver_options.save_everystep = false
-		inputs.solver_options.saveat = nodetimes(trdf)
+		
+# SEE runtests_ClaSSE_tree_n13_DECj_WORKS.jl
+# save_everystep_EQ_false_CAN_MATTER_EVEN_ON_THE_Ds
+#inputs.solver_options.save_everystep=false # CAN PRODUCE A -20.9 vs. -20.6 difference!
+# inputs.solver_options.save_everystep=true	# WORKS!! Can make a difference EVEN ON THE Ds!!
+
+# Slightly faster for solver to just calculate Ds at nodes
+#		inputs.solver_options.save_everystep = false
+#		inputs.solver_options.saveat = nodetimes(trdf)
+
 		(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 	else
 		Julia_sum_lq = nan_lnL
@@ -292,9 +299,15 @@ function func_to_optimize_nonparallel_v7(pars, parnames, inputs, p_Ds_v5; return
 		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 		p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 		
-		# Slightly faster for solver to just calculate Ds at nodes
-		inputs.solver_options.save_everystep = false
-		inputs.solver_options.saveat = nodetimes(trdf)
+# SEE runtests_ClaSSE_tree_n13_DECj_WORKS.jl
+# save_everystep_EQ_false_CAN_MATTER_EVEN_ON_THE_Ds
+#inputs.solver_options.save_everystep=false # CAN PRODUCE A -20.9 vs. -20.6 difference!
+# inputs.solver_options.save_everystep=true	# WORKS!! Can make a difference EVEN ON THE Ds!!
+
+# Slightly faster for solver to just calculate Ds at nodes
+#		inputs.solver_options.save_everystep = false
+#		inputs.solver_options.saveat = nodetimes(trdf)
+
 		(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 	else
 		Julia_sum_lq = nan_lnL
@@ -473,8 +486,14 @@ function func_to_optimize_parallel_v7(pars, parnames, inputs, p_Ds_v5; returnval
 		p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 		
 		# Slightly faster for solver to just calculate Ds at nodes
-		inputs.solver_options.save_everystep = false
-		inputs.solver_options.saveat = nodetimes(trdf)
+# SEE runtests_ClaSSE_tree_n13_DECj_WORKS.jl
+# save_everystep_EQ_false_CAN_MATTER_EVEN_ON_THE_Ds
+#inputs.solver_options.save_everystep=false # CAN PRODUCE A -20.9 vs. -20.6 difference!
+# inputs.solver_options.save_everystep=true	# WORKS!! Can make a difference EVEN ON THE Ds!!
+
+# Slightly faster for solver to just calculate Ds at nodes
+#		inputs.solver_options.save_everystep = false
+#		inputs.solver_options.saveat = nodetimes(trdf)
 		(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_parallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 	else
 		Julia_sum_lq = nan_lnL
@@ -644,7 +663,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 		# Solve the Es
 		prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Ds_v5.uE, inputs.Es_tspan, p_Ds_v5)
 		# This solution is an interpolator
-		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 		p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 		
 		(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
@@ -807,9 +826,14 @@ function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", 
 		sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 		Distributed.@everywhere p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 		
-		# Slightly faster for solver to just calculate Ds at nodes
-		inputs.solver_options.save_everystep = false
-		#inputs.solver_options.saveat = nodetimes(trdf)
+# SEE runtests_ClaSSE_tree_n13_DECj_WORKS.jl
+# save_everystep_EQ_false_CAN_MATTER_EVEN_ON_THE_Ds
+#inputs.solver_options.save_everystep=false # CAN PRODUCE A -20.9 vs. -20.6 difference!
+# inputs.solver_options.save_everystep=true	# WORKS!! Can make a difference EVEN ON THE Ds!!
+
+# Slightly faster for solver to just calculate Ds at nodes
+#		inputs.solver_options.save_everystep = false
+#		inputs.solver_options.saveat = nodetimes(trdf)
 		
 		(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_parallel_ClaSSE_v7c!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 	else
@@ -979,7 +1003,7 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 		# Solve the Es
 		prob_Es_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, inputs.Es_tspan, p_Es_v12)
 		# This solution is an interpolator
-		sol_Es_v12 = solve(prob_Es_v12, inputs.solver_options.solver, save_everystep=inputs.solver_options.save_everystep, abstol=inputs.solver_options.abstol, reltol=inputs.solver_options.reltol);
+		sol_Es_v12 = solve(prob_Es_v12, inputs.solver_options.solver, save_everystep=true, abstol=inputs.solver_options.abstol, reltol=inputs.solver_options.reltol);
 		p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 		# Calculate the Ds
