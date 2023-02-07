@@ -459,6 +459,8 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl")
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
+	# Add birthRate / deathRate inference
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
 
 end
 
