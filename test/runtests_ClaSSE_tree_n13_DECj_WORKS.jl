@@ -654,6 +654,7 @@ end # END function func2(pars, dummy_gradient!)
 #######################################################
 # Best optimizer so far - 2022-03-15
 #######################################################
+
 using NLopt
 pars = [0.9, 0.9, 0.9]
 func(pars)
