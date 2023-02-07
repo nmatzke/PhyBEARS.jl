@@ -1,7 +1,6 @@
 using Test, PhyBEARS, DataFrames
 
 using Dates									# for e.g. Dates.now(), DateTime
-#using PhyloBits.PNtypes					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
 using DataFrames						# for DataFrame()
@@ -11,12 +10,9 @@ using PhyloBits.TrUtils
 using PhyloBits.TreeTable
 using PhyBEARS.BGExample
 using PhyBEARS.StateSpace
-#using PhyBEARS.TreeTable
 using PhyBEARS.TreePass
-#using PhyBEARS.TrUtils
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers
-#include(paste0([dd, "/notes/Parsers.jl"]))
 
 """
 # Run with:
@@ -455,9 +451,16 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl")
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7b_difftips_diffMus.jl")
 	
+
 end
 
+@testset "Checks against BioGeoBEARS models -- Psychotria (19 species, 16 states)" begin
+	# Psychotria tree
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl")
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
 
+end
 
 
 

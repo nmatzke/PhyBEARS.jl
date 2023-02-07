@@ -43,16 +43,16 @@ source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")  # utility functions fr
 source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")       # helper functions in plain-R
 
 
-wd = "/GitHub/PhyBEARS.jl/Rsrc/"
+wd = "~"
 setwd(wd)
 
 # Load simple example tree (newick format, must be ultrametric, i.e. 
 # all the tips come to the present)
-trfn = "Psychotria_tree.newick"
+trfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_tree.newick"
 tr = read.tree(trfn)
 
 # Load geography data
-geogfn = "Psychotria_geog.data"
+geogfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 
 
 #######################################################
@@ -88,6 +88,12 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = 0.001
 res = bears_optim_run(BioGeoBEARS_run_object)
 res$total_loglikelihood
 # -20.94759 for Psychotria, under DEC
+
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC+J_ancstates_nodes.txt"
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC+J_ancstates_corners.txt"
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
 
 # Extract the ML model's transition matrices
 mats = get_Qmat_COOmat_from_res(res, numstates=ncol(res$ML_marginal_prob_each_state_at_branch_top_AT_node), include_null_range=res$inputs$include_null_range, max_range_size=res$inputs$max_range_size, timeperiod_i=1)

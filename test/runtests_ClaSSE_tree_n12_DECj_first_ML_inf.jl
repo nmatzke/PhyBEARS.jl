@@ -16,31 +16,21 @@
 using Test, PhyBEARS, DataFrames
 
 using Dates									# for e.g. Dates.now(), DateTime
-using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
-using DataFrames
-#using Optim                 # for e.g. LBFGS Maximum Likelihood optimization,optimize
-# Optim really sucks, try LBFGSB: https://github.com/JuliaNLSolvers/Optim.jl/issues/953
-# LBFGSB also sucks: https://github.com/Gnimuc/LBFGSB.jl
-using NLopt									# seems to be the best gradient-free, box-constrained								
-
-using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
-										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
-using DataFrames  # for DataFrame
-using DifferentialEquations
-using OrdinaryDiffEq, Sundials, DiffEqDevTools, Plots, ODEInterfaceDiffEq, ODE, LSODA
-
+using DataFrames						# for DataFrame()
+using DelimitedFiles				# for readdlm()
 
 # List each PhyBEARS code file prefix here
+using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
+using PhyloBits.TreeTable
 using PhyBEARS.BGExample
-using PhyBEARS.TrUtils
 using PhyBEARS.StateSpace
-using PhyBEARS.TreeTable
 using PhyBEARS.TreePass
-using PhyBEARS.Parsers
 using PhyBEARS.SSEs
-using PhyBEARS.ModelLikes
+using PhyBEARS.Parsers
+using PhyBEARS.ModelLikes # e.g. setup_DEC_SSE2
+using PhyBEARS.Uppass
 
 """
 # Run with:
@@ -91,16 +81,9 @@ DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
 #######################################################
 
 
-#include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
-#import .TreePass
-
-# Repeat calculation in Julia
-#include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
-#import .ModelLikes
-
 # Island numbers (KOMH = 1234) in Rnodenums order:
 #island_nums = [3, 3, 2, 2, 3, 3, 2, 1, 1, 3, 4, 2, 1, 1, 1, 1, 1, 1, 2]
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria_geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Psychotria tree
@@ -121,8 +104,9 @@ n = 16            # 4 areas, 16 states
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, in_params=in_params)
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
@@ -144,16 +128,44 @@ Es_interpolator(1.0)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+
+
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
+Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 @test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
 
+@test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
+@test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
+@test round(DEC_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
+@test round(DEC_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1t, digits=2)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+# If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
+Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+@test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
+
+@test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
+@test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
+@test round(DEC_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
+@test round(DEC_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1t, digits=2)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+# If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
+Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+@test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
 
 @test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
 @test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
@@ -175,8 +187,8 @@ print("DEC_R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
 print(R_sum_lq_nodes - Julia_sum_lq_nodes)
 print("\n")
 
-DEC_R_result_total_LnLs1 = -72.60212;
-DEC_R_result_total_LnLs1t = -71.48986;
+#DEC_R_result_total_LnLs1 = -72.60212;
+#DEC_R_result_total_LnLs1t = -71.48986;
 
 
 
@@ -194,8 +206,9 @@ bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.1142057
 
 # Need to re-run the setup in order to create the j rows of Cijk_vals
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 df1 = prtCp(p_Ds_v5);
 sort!(df1, :k);
@@ -204,7 +217,7 @@ sort!(df1, :i);
 df1
 
 
-bmo_updater_v1!(inputs.bmo) # works
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows) # works
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);  # WORKS 2022-03-10
 
 df2 = prtCp(p_Ds_v5);
@@ -230,7 +243,28 @@ sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_optio
 Es_interpolator = sol_Es_v5;
 p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(DECj_lnL, digits=2) == round(bgb_lnL, digits=2)
+@test round(DECj_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
+@test round(DECj_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
+@test round(DECj_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1+log(1/birthRate), digits=2)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(DECj_lnL, digits=2) == round(bgb_lnL, digits=2)
+@test round(DECj_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
+@test round(DECj_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
+@test round(DECj_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1+log(1/birthRate), digits=2)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 @test round(DECj_lnL, digits=2) == round(bgb_lnL, digits=2)
 @test round(DECj_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
@@ -299,7 +333,7 @@ bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_n
 ##############################################
 
 
-@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_lnL - bgb_lnL) < 0.001
 
 
 
@@ -421,7 +455,7 @@ print("\n")
 
 
 #in_params = (birthRate=0.3288164, deathRate=0.0, d_val=0.03505038, e_val=0.02832370, a_val=0.0, j_val=0.0)
-
+bmo = construct_bmo();
 bmo.est[bmo.rownames .== "birthRate"] .= 0.3288164
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 bmo.est[bmo.rownames .== "d"] .= 0.03505038
@@ -435,28 +469,29 @@ n = 16            # 4 areas, 16 states
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, in_params=in_params)
 #(setup, res, trdf, solver_options, p_Ds_v5, Es_tspan) = inputs
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # Update the tip likelihoods, with the geography data
-inputs.res.likes_at_each_nodeIndex_branchTop
+vfft(inputs.res.likes_at_each_nodeIndex_branchTop)
 size(inputs.res.likes_at_each_nodeIndex_branchTop)
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 
 inputs.setup.observed_statenums
-inputs.res.likes_at_each_nodeIndex_branchTop
+vfft(inputs.res.likes_at_each_nodeIndex_branchTop)
 
 inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
 inputs.setup.observed_statenums
 
-inputs.res.likes_at_each_nodeIndex_branchTop
+vfft(inputs.res.likes_at_each_nodeIndex_branchTop)
 
 
-inputs.res.likes_at_each_nodeIndex_branchTop
+vfft(inputs.res.likes_at_each_nodeIndex_branchTop)
 res = inputs.res
 
 trdf = inputs.trdf
-p_Ds_v5 = inputs.p_Ds_v5
+p_Ds_v5 = inputs.p_Ds_v5;
 root_age = maximum(trdf[!, :node_age])
 
 # Solve the Es
@@ -478,15 +513,15 @@ Es_interpolator(1.0)
 # Parameters
 
 # Do downpass
-res.likes_at_each_nodeIndex_branchTop
+vfft(res.likes_at_each_nodeIndex_branchTop)
 (total_calctime_in_sec, iteration_number) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10);
-res.likes_at_each_nodeIndex_branchTop
+vfft(res.likes_at_each_nodeIndex_branchTop)
 
 Rnames(res)
-res.likes_at_each_nodeIndex_branchTop
-res.normlikes_at_each_nodeIndex_branchTop
-res.likes_at_each_nodeIndex_branchBot
-res.normlikes_at_each_nodeIndex_branchBot
+vfft(res.likes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.likes_at_each_nodeIndex_branchBot)
+vfft(res.normlikes_at_each_nodeIndex_branchBot)
 
 sum.(res.likes_at_each_nodeIndex_branchTop)
 log.(sum.(res.likes_at_each_nodeIndex_branchTop))
@@ -595,7 +630,7 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 	end
 	#inputs.bmo.est[inputs.bmo.rownames .== "j"] .= 1.6
 	#inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo);
-	bmo_updater_v1(inputs.bmo);
+	inputs.bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows);
 	if printlevel >= 2
 		print("\nfunc_to_optimize, inputs.bmo.est after bmo_updater_v1(): ")
 		print(round.(inputs.bmo.est[[1,2,9,12,13,14]], digits=4))
@@ -751,8 +786,9 @@ bmo.est[:] = bmo_updater_v1(bmo)
 bmo.est
 
 #
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 
 inputs.bmo.type[bmo.rownames .== "j"] .= "free"
@@ -761,7 +797,7 @@ lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 
 pars = bmo.est[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo) # works
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows) # works
 inputs.bmo
 
 prtCp(p_Ds_v5)
@@ -812,7 +848,7 @@ opt.ftol_abs = 0.00001 # tolerance on log-likelihood
 # Get the inputs & res:
 pars = optx
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
-bmo_updater_v1!(inputs.bmo)
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
 
 # Solve the Es
@@ -884,11 +920,12 @@ bmo.est[bmo.rownames .== "d"] .= 0.03505038
 bmo.est[bmo.rownames .== "e"] .= 0.02832370
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.0
-bmo.est[:] = bmo_updater_v1(bmo) # works
+bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
 
 
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 
 parnames = bmo.rownames[bmo.type .== "free"]
@@ -896,7 +933,7 @@ lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 
 pars = bmo.init[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo) # works
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows) # works
 inputs.bmo
 
 prtCp(p_Ds_v5)
@@ -945,7 +982,7 @@ opt.ftol_abs = 0.0001 # tolerance on log-likelihood
 # Get the inputs & res:
 pars = optx
 inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
-bmo_updater_v1!(inputs.bmo)
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
 
 # Solve the Es
@@ -1016,11 +1053,12 @@ bmo.est[bmo.rownames .== "d"] .= 0.03505038
 bmo.est[bmo.rownames .== "e"] .= 0.02832370
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.0
-bmo.est[:] = bmo_updater_v1(bmo) # works
+bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
 
 
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 
 parnames = bmo.rownames[bmo.type .== "free"]
@@ -1028,7 +1066,7 @@ lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 
 pars = bmo.est[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo) # works
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows) # works
 inputs.bmo
 
 prtCp(p_Ds_v5)
@@ -1078,7 +1116,7 @@ opt.ftol_abs = 0.00001 # tolerance on log-likelihood
 # Get the inputs & res:
 pars = optx
 inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
-bmo_updater_v1!(inputs.bmo)
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
 
 # Solve the Es
@@ -1111,11 +1149,12 @@ bmo.est[bmo.rownames .== "d"] .= 0.03505038
 bmo.est[bmo.rownames .== "e"] .= 0.02832370
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.1
-bmo.est[:] = bmo_updater_v1(bmo) # works
+bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
 
 
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 
 parnames = bmo.rownames[bmo.type .== "free"]
@@ -1123,7 +1162,7 @@ lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 
 pars = bmo.est[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo) # works
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows) # works
 inputs.bmo
 
 prtCp(p_Ds_v5)
@@ -1172,7 +1211,7 @@ opt.ftol_abs = 0.00001 # tolerance on log-likelihood
 # Get the inputs & res:
 pars = optx
 inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
-bmo_updater_v1!(inputs.bmo)
+bmo.est[:] = bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
 p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
 
 # Solve the Es

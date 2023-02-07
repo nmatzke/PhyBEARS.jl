@@ -53,6 +53,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
 # Run with:
 # source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
 # Truth:
+DEC_lnL = -34.54313
 DEC_R_result_branch_lnL = -67.6295
 DEC_R_result_total_LnLs1 = -72.60212
 DEC_R_result_total_LnLs1t = -71.48986
@@ -128,15 +129,18 @@ Es_interpolator(1.0)
 # Parameters
 
 # Do downpass
-res.likes_at_each_nodeIndex_branchTop
+vfft(res.likes_at_each_nodeIndex_branchTop)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
-res.likes_at_each_nodeIndex_branchTop
+vfft(res.likes_at_each_nodeIndex_branchTop)
+
+@test round(DEC_lnL; digits=2) == round(bgb_lnL; digits=2)
+
 
 Rnames(res)
-res.likes_at_each_nodeIndex_branchTop
-res.normlikes_at_each_nodeIndex_branchTop
-res.likes_at_each_nodeIndex_branchBot
-res.normlikes_at_each_nodeIndex_branchBot
+vfft(res.likes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.likes_at_each_nodeIndex_branchBot)
+vfft(res.normlikes_at_each_nodeIndex_branchBot)
 
 sum.(res.likes_at_each_nodeIndex_branchTop)
 log.(sum.(res.likes_at_each_nodeIndex_branchTop))

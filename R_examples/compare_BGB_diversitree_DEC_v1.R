@@ -83,6 +83,12 @@ res = bears_optim_run(BioGeoBEARS_run_object)
 res$total_loglikelihood
 # -34.54313 for Psychotria, under DEC
 
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
 # Extract the ML model's transition matrices
 mats = get_Qmat_COOmat_from_res(res, numstates=ncol(res$ML_marginal_prob_each_state_at_branch_top_AT_node), include_null_range=res$inputs$include_null_range, max_range_size=res$inputs$max_range_size, timeperiod_i=1)
 numstates = length(mats$states_list)

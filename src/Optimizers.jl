@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1_SLOW, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1_SLOW, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -1584,7 +1584,80 @@ end # END bmo_updater_v1_SLOW
 
 """
 # FAST UPDATER WITH PRE-SPECIFIED bmo_rows (from inputs.setup.bmo_rows)
-# bmo_updater_v2! *DOES* update u, etc.
+# bmo_updater_v2 *DOES* update u, etc.
+
+# bmo_updater_v1_SLOW -- full updater, slow due to lots of == 
+# bmo_updater_v1! -- very fast, but requires inputs.setup.bmo_rows, and doesn't update "u" etc.
+# bmo_updater_v2 -- 2x slower, requires inputs.setup.bmo_rows, but *DOES* update "u" etc.
+
+# Example:
+numareas = 2
+tr = readTopology("((sp4:0.6248637277,sp5:0.6248637277):6.489662918,(sp6:0.1274213816,sp7:0.1274213816):6.987105264);")
+geog_df = DataFrame(tipnames=["sp4","sp5","sp6","sp7"],A=[1,1,0,0],B=[0,0,1,1]);
+
+# in_params = (birthRate=0.222222222, deathRate=0.111111111, d_val=0.0, e_val=0.0, a_val=0.1, j_val=0.0)
+# pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)
+bmo = construct_BioGeoBEARS_model_object();
+bmo_rows = get_bmo_rows(bmo)
+
+bmo.est[bmo.rownames.=="d"] .= 0.0;
+bmo.est[bmo.rownames.=="e"] .= 0.0;
+bmo.est[bmo.rownames.=="j"] .= 0.5;
+bmo
+bmo.est .= bmo_updater_v2(bmo, bmo_rows)
+bmo
+"""
+function bmo_updater_v1(bmo, bmo_rows)
+	# Update cladogenesis parameters
+	j_wt = bmo.est[bmo_rows.j][1]
+	ysv = bmo.est[bmo_rows.ysv][1]
+	ys = bmo.est[bmo_rows.ys][1]
+	y = bmo.est[bmo_rows.y][1]
+	s = bmo.est[bmo_rows.s][1]
+	v = bmo.est[bmo_rows.v][1]
+	
+	# Update
+	ysv_func = bmo.type[bmo_rows.ysv]  # NO [1] is needed here
+	if ysv_func == "3-j"
+		ysv = 3.0-j_wt
+		ys = ysv*2/3
+		y = ysv*1/3
+		s = ysv*1/3
+		v = ysv*1/3
+	end
+	if ysv_func == "2-j" # assumes "s" is 0.0
+		ysv = 2.0-j_wt
+		ys = ysv*1/2
+		y = ysv*1/2
+		v = ysv*1/2
+	end
+	if ysv_func == "1-j"
+		ysv = 1.0-j_wt
+		ys = ysv*1.0
+		y_val = ysv*1.0
+	end
+	
+	bmo.est[bmo_rows.ysv] = ysv
+	bmo.est[bmo_rows.ys] = ys
+	bmo.est[bmo_rows.y] = y
+	bmo.est[bmo_rows.s] = s
+	bmo.est[bmo_rows.v] = v
+
+
+	# Update deathRate based on birthRate?
+	if bmo.type[bmo_rows.deathRate] == "birthRate"
+		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
+	end
+	
+	# Update mx01's based on mx01?
+	
+	return bmo.est
+end # END bmo_updater_v1
+
+
+"""
+# FAST UPDATER WITH PRE-SPECIFIED bmo_rows (from inputs.setup.bmo_rows)
+# bmo_updater_v2 *DOES* update u, etc.
 
 # bmo_updater_v1_SLOW -- full updater, slow due to lots of == 
 # bmo_updater_v1! -- very fast, but requires inputs.setup.bmo_rows, and doesn't update "u" etc.
