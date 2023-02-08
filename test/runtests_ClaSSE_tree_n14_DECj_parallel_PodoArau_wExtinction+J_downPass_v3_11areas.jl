@@ -29,35 +29,21 @@ Distributed.nprocs()
 numthreads = Base.Threads.nthreads()
 
 
-using Test
-using DataFrames
+using Test, PhyBEARS, DataFrames
+
 using Dates									# for e.g. Dates.now(), DateTime
-using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 using Distributed						# for e.g. @spawn
 using Combinatorics					# for e.g. combinations()
-using DataFrames
-using StatsBase
-#using Optim                 # for e.g. LBFGS Maximum Likelihood optimization,optimize
-# Optim really sucks, try LBFGSB: https://github.com/JuliaNLSolvers/Optim.jl/issues/953
-# LBFGSB also sucks: https://github.com/Gnimuc/LBFGSB.jl
-using NLopt									# seems to be the best gradient-free, box-constrained								
-
-using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
-										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
-using DataFrames  # for DataFrame
-using DifferentialEquations
-using OrdinaryDiffEq, Sundials, DiffEqDevTools, ODEInterfaceDiffEq, ODE, LSODA
+using DataFrames						# for DataFrame()
 
 # List each PhyBEARS code file prefix here
+using PhyloBits.TrUtils
+using PhyloBits.TreeTable
 using PhyBEARS.BGExample
-using PhyBEARS.TrUtils
 using PhyBEARS.StateSpace
-using PhyBEARS.TreeTable		# for prt, nodetimes
 using PhyBEARS.TreePass
-using PhyBEARS.Parsers
 using PhyBEARS.SSEs
-using PhyBEARS.ModelLikes
-using PhyBEARS.Optimizers
+using PhyBEARS.Parsers
 
 # Check that you have same number of processors and threads
 Distributed.nprocs()
@@ -70,7 +56,7 @@ Distributed.workers()
 @everywhere using DataFrames
 
 @everywhere using Dates									# for e.g. Dates.now(), DateTime
-@everywhere using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+#@everywhere using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
 @everywhere using Distributed						# for e.g. @spawn
 @everywhere using Combinatorics					# for e.g. combinations()
 @everywhere using DataFrames
@@ -99,18 +85,19 @@ doesnt_work="""
 """
 
 @everywhere using DifferentialEquations
+@everywhere using PhyloBits
 @everywhere using PhyBEARS
 #@everywhere using PhyBEARS
 
-@everywhere include("/GitHub/PhyBEARS.jl/src/BGExample.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/TrUtils.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/StateSpace.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/TreeTable.jl")		# for prt, nodetimes
-@everywhere include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/Parsers.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/SSEs.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/ModelLikes.jl")
-@everywhere include("/GitHub/PhyBEARS.jl/src/Optimizers.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/BGExample.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/TrUtils.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/StateSpace.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/TreeTable.jl")		# for prt, nodetimes
+# @everywhere include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/Parsers.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/SSEs.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/ModelLikes.jl")
+# @everywhere include("/GitHub/PhyBEARS.jl/src/Optimizers.jl")
 
 """
 # Run with:
@@ -199,8 +186,9 @@ numareas = Rncol(geog_df)-1
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 #inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, in_params=in_params)
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
-inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 
 
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
