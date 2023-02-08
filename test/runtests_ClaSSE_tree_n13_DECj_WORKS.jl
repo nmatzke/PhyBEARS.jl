@@ -112,8 +112,6 @@ n = 16            # 4 areas, 16 states
 # CHANGE PARAMETERS BEFORE E INTERPOLATOR
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
 max_range_size = NaN # replaces any background max_range_size=1
-root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
-max_range_size = NaN # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 

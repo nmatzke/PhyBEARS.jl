@@ -48,7 +48,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl")
 # ON HAWAIIAN PSYCHOTRIA, 16-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC+J_v1.R")
 
 # DEC+J
 DECj_lnL = -20.94759
