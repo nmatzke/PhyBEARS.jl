@@ -8026,7 +8026,7 @@ function rootstates_lnL_condsurv_TRUE(res, tr, p_Ds_v5, rootprobs_option="ROOT.O
 	# diversitree::rootfunc.classe
 	# lambda <- colSums(matrix(pars[1:(nsum * k)], nrow = nsum))
 	sum_of_lambdas = collect(repeat([0.0], p_Ds_v5.n))
-	for i in 1:n
+	for i in 1:p_Ds_v5.n
 		sum_of_lambdas[i] = sum(p_Ds_v5.params.Cijk_vals[p_Ds_v5.p_TFs.Ci_eq_i[i]])
 	end
 	d_root = d_root_orig ./ sum(root_stateprobs .* sum_of_lambdas .* (1 .- e_root).^2)
