@@ -19,10 +19,10 @@ using PhyBEARS.ModelLikes # e.g. setup_DEC_SSE2
 using PhyBEARS.Uppass
 
 # 
-# """
-# # Run with:
-# include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
-# """
+"""
+# Run with:
+include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
+"""
 # 
 # @testset "Example" begin
 # 	@test hello("runtests_BiSSE_tree_n3.jl") == "Hello, runtests_BiSSE_tree_n3.jl"
@@ -51,7 +51,7 @@ using PhyBEARS.Uppass
 DEC_R_result_branch_lnL = -9.164509
 DEC_R_result_total_LnLs1 = -12.609029
 DEC_R_result_total_LnLs1t = -10.538667
-#DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -7.25405
+DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -19.43301
 #######################################################
 
 
@@ -107,41 +107,47 @@ p_Ds_v5.sol_Es_v5(1.0)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
-Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+# Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate) # (BiSSE)
+res1t_rootstates_lnL = rootstates_lnL_condsurv_TRUE(res, tr, p_Ds_v5, "ROOT.OBS")
+Julia_total_lnLs1t = Julia_sum_lq + res1t_rootstates_lnL		# (ClaSSE)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
+@test round(Julia_sum_lq_nodes; digits=4) == round(R_sum_lq_nodes; digits=4)
 
-#@test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
-@test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
-@test round(DEC_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
-@test round(DEC_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1t, digits=2)
+#@test round(DEC_lnL, digits=4) == round(bgb_lnL, digits=4)
+@test round(DEC_R_result_branch_lnL, digits=4) == round(Julia_sum_lq, digits=4)
+@test round(DEC_R_result_total_LnLs1, digits=4) == round(Julia_total_lnLs1, digits=4)
+@test round(DEC_R_result_total_LnLs1t, digits=4) == round(Julia_total_lnLs1t, digits=4)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
-Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+# Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate) # (BiSSE)
+res1t_rootstates_lnL = rootstates_lnL_condsurv_TRUE(res, tr, p_Ds_v5, "ROOT.OBS")
+Julia_total_lnLs1t = Julia_sum_lq + res1t_rootstates_lnL		# (ClaSSE)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
+@test round(Julia_sum_lq_nodes; digits=4) == round(R_sum_lq_nodes; digits=4)
 
-#@test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
-@test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
-@test round(DEC_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
-@test round(DEC_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1t, digits=2)
+#@test round(DEC_lnL, digits=4) == round(bgb_lnL, digits=4)
+@test round(DEC_R_result_branch_lnL, digits=4) == round(Julia_sum_lq, digits=4)
+@test round(DEC_R_result_total_LnLs1, digits=4) == round(Julia_total_lnLs1, digits=4)
+@test round(DEC_R_result_total_LnLs1t, digits=4) == round(Julia_total_lnLs1t, digits=4)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
-Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
+# Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate) # (BiSSE)
+res1t_rootstates_lnL = rootstates_lnL_condsurv_TRUE(res, tr, p_Ds_v5, "ROOT.OBS")
+Julia_total_lnLs1t = Julia_sum_lq + res1t_rootstates_lnL		# (ClaSSE)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=2) == round(R_sum_lq_nodes; digits=2)
+@test round(Julia_sum_lq_nodes; digits=4) == round(R_sum_lq_nodes; digits=4)
 
-#@test round(DEC_lnL, digits=2) == round(bgb_lnL, digits=2)
-@test round(DEC_R_result_branch_lnL, digits=2) == round(Julia_sum_lq, digits=2)
-@test round(DEC_R_result_total_LnLs1, digits=2) == round(Julia_total_lnLs1, digits=2)
-@test round(DEC_R_result_total_LnLs1t, digits=2) == round(Julia_total_lnLs1t, digits=2)
+#@test round(DEC_lnL, digits=4) == round(bgb_lnL, digits=4)
+@test round(DEC_R_result_branch_lnL, digits=4) == round(Julia_sum_lq, digits=4)
+@test round(DEC_R_result_total_LnLs1, digits=4) == round(Julia_total_lnLs1, digits=4)
+@test round(DEC_R_result_total_LnLs1t, digits=4) == round(Julia_total_lnLs1t, digits=4)
 
 
 
@@ -156,7 +162,10 @@ res.normlikes_at_each_nodeIndex_branchBot
 sum.(res.likes_at_each_nodeIndex_branchTop)
 log.(sum.(res.likes_at_each_nodeIndex_branchTop))
 sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
-Julia_sum_lq = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
+Julia_sum_lq_old = sum(res.lq_at_branchBot[1:(length(res.lq_at_branchBot)-1)])
+nonroot_nodes = get_nonrootnodes(tr)
+sum_likes_internal_branch_tops = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))[nonroot_nodes])
+Julia_sum_lq = Julia_sum_lq_old + sum_likes_internal_branch_tops
 
 # Does the total of the branch log-likelihoods (lq) match?
 @test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
@@ -198,7 +207,7 @@ Julia_total_lnLs1t = Julia_sum_lq + rootstates_lnL
 
 # Does the total lnL match R?
 # root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
-@test round(R_result_total_LnLs1; digits=5) == round(Julia_total_lnLs1; digits=5)
+@test round(R_result_total_LnLs1; digits=4) == round(Julia_total_lnLs1; digits=4)
 
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE
 @test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
@@ -213,7 +222,7 @@ log.(sum.(res.likes_at_each_nodeIndex_branchTop))
 sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop)))
 
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
-R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+R_sum_lq_nodes = DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 @test round(Julia_sum_lq_nodes; digits=4) == round(R_sum_lq_nodes; digits=4)
 
 

@@ -40,7 +40,7 @@ states = c(2,1,2,2)		# Tip states
 names(states) = tr$tip.label
 states
 
-sampling.f = c(1,1,1)		# Proportion of species in each state; for 2 states
+sampling.f = c(1,1,1)		# Proportion of species in each state; for 3 states
 											# (Let's assume we have all species)
 k = length(sampling.f)
 
@@ -213,6 +213,24 @@ lnls
 # -0.1903792 -0.1903792 -0.3632521 -0.5213903         NA -5.0488890 -5.3927962
 sum(lnls, na.rm=TRUE)
 # -11.70709
+
+
+
+EsDs = t(attr(res1t,"intermediates")$init)
+Ds = EsDs[,((ncol(EsDs)/2)+1):ncol(EsDs)]
+sum_log_Ds = sum(log(rowSums(Ds))); sum_log_Ds
+branch_lqs = attr(res1t,"intermediates")$lq; branch_lqs
+sum(attr(res1t,"intermediates")$lq)
+sum(branch_lqs)
+
+# This corresponds to:
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+# OLD, for 2 states, 4 EsDs columns:
+# sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)
+sum_log_Ds + sum(branch_lqs)
+
+# ...but is double-counting lnLs
 
 
 
@@ -619,7 +637,17 @@ A = projection.matrix.classe(pars=classe_params, k)
 
 # Calculate equilibrium frequencies by eigenvectors
 evA <- eigen(A)
-i <- which(evA$values == max(evA$values))
+ 		# https://www-sciencedirect-com.ezproxy.auckland.ac.nz/topics/mathematics/dominant-eigenvalue
+		# Predicting Population Growth: Modeling with Projection Matrices
+		# Janet Steven, James Kirkwood, in Mathematical Concepts and Methods in Modern Biology, 2013"
+		# 7.8.4 Finding the Stable Distribution
+		#
+		# Suppose that A is a projection matrix that meets the assumptions of the Perron-Frobenius 
+		# theorem and that va is any vector.
+		# 
+		# ...so the equilibrium state is the normalized eigenvector for the dominant eigenvalue.
+# OLD: i <- which(evA$values == max(evA$values))
+i <- which(abs(evA$values) == max(abs(evA$values)))
 equilibrium_root_freqs = evA$vectors[, i]/sum(evA$vectors[, i])
 equilibrium_root_freqs
 # 0.2652666 0.2285983 0.2285983 0.2775368

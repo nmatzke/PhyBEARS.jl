@@ -506,7 +506,19 @@ stationary.freq.classe.ev <- function(pars, k)
 	{
 	A <- projection.matrix.classe(pars, k)
 	evA <- eigen(A)
-	i <- which(evA$values == max(evA$values))
+ 		# https://www-sciencedirect-com.ezproxy.auckland.ac.nz/topics/mathematics/dominant-eigenvalue
+		# Predicting Population Growth: Modeling with Projection Matrices
+		# Janet Steven, James Kirkwood, in Mathematical Concepts and Methods in Modern Biology, 2013"
+		# 7.8.4 Finding the Stable Distribution
+		#
+		# Suppose that A is a projection matrix that meets the assumptions of the Perron-Frobenius 
+		# theorem and that va is any vector.
+		# 
+		# ...so the equilibrium state is the normalized eigenvector for the dominant eigenvalue.
+
+	# OLD: i <- which(evA$values == max(evA$values))
+	# NEW: 
+	i <- which(abs(evA$values) == max(abs(evA$values)))
 	evA$vectors[, i]/sum(evA$vectors[, i])
 	
 	# Translation: the stationary frequences result

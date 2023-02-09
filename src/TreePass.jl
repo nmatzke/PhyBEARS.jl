@@ -39,7 +39,7 @@ using SpecialFunctions			# for e.g. logfactorial
 print("...done.\n")
 
 
-export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, identify_identical_sisters, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v12_noNegs, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!  # branchOp_ClaSSE_Gflow_v2, 
+export SolverOpt, construct_SolverOpt, Res, construct_Res, count_nodes_finished, identify_identical_sisters, nodeOp_average_likes, nodeOp, nodeOp_Cmat, nodeOp_Cmat2, nodeOp_Cmat_v12, nodeOp_singleton!, nodeOp_ClaSSE_v5!, nodeOp_ClaSSE_v6!, nodeOp_ClaSSE_v12!, branchOp_example, branchOp_ClaSSE_wGflow, find_time_in_time_segments, branchOp_ClaSSE_Ds_v5, branchOp_ClaSSE_Ds_v6, branchOp_ClaSSE_Ds_v6_solverFree, branchOp_ClaSSE_Ds_v7, branchOp_ClaSSE_Ds_v10, branchOp_ClaSSE_Ds_v11, branchOp_ClaSSE_Ds_v12, branchOp_ClaSSE_Ds_v12_noNegs, branchOp_ClaSSE_Ds_v8, branchOp, setup_inputs_branchOp_ClaSSE_Ds_v5, countloop, iterative_downpass!, iterative_downpass_Gflow_nonparallel_v1!, iterative_downpass_Gflow_nonparallel_v2!, iterative_downpass_nonparallel_ClaSSE_v5!, iterative_downpass_nonparallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6!, iterative_downpass_parallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v6_solverFree!, iterative_downpass_nonparallel_ClaSSE_v7!, iterative_downpass_nonparallel_ClaSSE_v10!, iterative_downpass_nonparallel_ClaSSE_v11!, iterative_downpass_nonparallel_ClaSSE_v12!, iterative_downpass_parallel_ClaSSE_v7!, iterative_downpass_parallel_ClaSSE_v7d!, branchOp_ClaSSE_Ds_v7_retDs, iterative_downpass_parallel_ClaSSE_v7e!, iterative_downpass_parallel_ClaSSE_v7c!, iterative_downpass_nonparallel!, get_LinearDynamics_A, rootstates_lnL_condsurv_FALSE, rootstates_lnL_condsurv_TRUE  # branchOp_ClaSSE_Gflow_v2, 
 
 
 
@@ -7799,12 +7799,242 @@ function iterative_downpass_nonparallel!(res; max_iterations=10^10, num_iteratio
 end # END iterative_downpass_nonparallel!
 
 
+#######################################################
+# Root state calculations
+#######################################################
+# Construct interpolation function for calculating linear dynamics A, 
+# at any timepoint t
+
+#function get_LinearDynamics_A(inputs)
+
+# 	modelD.getLinearDynamics(ages[a], dynamics); // get linear dynamics at this age
+# 		// calculate largest singular value (sigma1) of the dynamics at this age
+# 		// then kappa_rate <= 2*sigma1, since sigma1(exp(t*A))/sigma2(exp(t*A)) <= exp(t*2*sigma1(A)) [So and Thompson (2000) Singular values of Matrix Exponentials. Theorem 2.1]
+#
+# NOTE: In Julia, 
+# When p=2, the operator norm is the spectral norm, equal to the largest singular value of A.
+# 
+# 
+#
+# This version excludes Xi (and Xj), just like castor's get_LinearDynamics_A
+# calculation of A
+# Renamed: parameterized_ClaSSE_As_v6
+get_LinearDynamics_A = (t, A, p; max_condition_number=1e8, print_warnings=false) -> begin
+
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+	
+	# Indices for the parameters (events in a sparse anagenetic or cladogenetic matrix)
+	Qarray_ivals = p.p_indices.Qarray_ivals
+	Qarray_jvals = p.p_indices.Qarray_jvals
+	Carray_ivals = p.p_indices.Carray_ivals
+	Carray_jvals = p.p_indices.Carray_jvals
+	Carray_kvals = p.p_indices.Carray_kvals
+	
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	two = 1.0
+	# Iterate through the ancestral states
+  @inbounds for i in 1:n
+		Qi_eq_i = p.p_TFs.Qi_eq_i[i]		# Use to get the Qij_vals for Qi_eq_i
+		Qi_sub_i = p.p_TFs.Qi_sub_i[i]	# To get the is for Qi_eq_i (somehow this works for Qijs also
+		Qj_sub_i = p.p_TFs.Qj_sub_i[i]
+		Ci_eq_i = p.p_TFs.Ci_eq_i[i]		# Use to get the lambdas/Cijk_vals for Ci_eq-I: USE:  Cijk_vals[Ci_eq_i] not  Cijk_vals[Ci_sub_i]
+		Ci_sub_i = p.p_TFs.Ci_sub_i[i]  # To get the is for Ci_eq_i
+		Cj_sub_i = p.p_TFs.Cj_sub_i[i]	# To get the js for Ci_eq_i
+		Ck_sub_i = p.p_TFs.Ck_sub_i[i]	# To get the is for Ci_eq_i
+
+		# Calculation of "A" (the from-to probabilities between every pair of states)
+		# Pull out the Q transitions - diagonal
+		# case 1: no event
+		#A[i,i] = A[i,i]  + -(sum(Cijk_vals[Ci_sub_i]) + sum(Qij_vals[Qi_sub_i]) + mu[i]) # *u[i]  
+		A[i,i] = A[i,i] - sum(Qij_vals[Qi_eq_i]) - sum(Cijk_vals[Ci_eq_i]) - mu[i] #+ 2*sum(Cijk_vals[Ci_sub_i])*uE[i]
+		
+		# case 2: anagenetic change (non-diagonal)
+		@inbounds for m in 1:length(Qi_sub_i)
+			A[Qi_sub_i[m],Qj_sub_i[m]] = A[Qi_sub_i[m],Qj_sub_i[m]] + Qij_vals[Qi_eq_i][m] #* u[Qj_sub_i[m]])
+		end
+		
+		# case 34: change + eventual extinction (non-diagonal)
+		@inbounds for m in 1:length(Ci_sub_i)
+			# each cladogenesis event puts probability in 2 places
+			# excluding the u[], i.e. the Ds, i.e. the Xs, just as is done in 
+			# 2*speciation_rates[r]*current_E[r]
+			rate_sp_then_ex1 = Cijk_vals[Ci_eq_i][m] * uE[Ck_sub_i[m]] # rate of going to j, times k going extinct
+			rate_sp_then_ex2 = Cijk_vals[Ci_eq_i][m] * uE[Cj_sub_i[m]] # rate of going to k, times j going extinct
+			A[Ci_sub_i[m],Cj_sub_i[m]] = A[Ci_sub_i[m],Cj_sub_i[m]] + rate_sp_then_ex1
+			A[Ci_sub_i[m],Ck_sub_i[m]] = A[Ci_sub_i[m],Ck_sub_i[m]] + rate_sp_then_ex2
+		end
+  end # End @inbounds for i in 1:n
+	
+	# Error check; large growth rate in the condition number
+	# (indicated by the norm of the "A" matrix giving the linear dynamics)
+	# suggests that the G matrix is approaching singularity and numerical
+	# errors will accumulate.
+	# Check the maximum condition number of A; if it is exceeded, either raise the max cond number,
+	# or divide the tree into smaller chunks
+	# (after Louca & Pennell)
+	if (print_warnings == true)
+		sigma1_of_A = opnorm(A,2)  # the 1-norm should be adequate here (fastest calc.)
+		if (2*sigma1_of_A > log(max_condition_number))
+			warning_txt = join(["WARNING in parameterized_ClaSSE_As_v6 at t=", string(t), ": 2*opnorm(A,1)>log(max_condition_number) (", string(round(2*sigma1_of_A; digits=2)), " > ", string(round(log(max_condition_number); digits=2)), ")\n"], "")
+			display(warning_txt)
+		end # END if (2*sigma1_of_A > log(max_condition_number))
+	end # END if (print_warnings == true)
+ 	return(A)
+end # END get_LinearDynamics_A
 
 
 
+"""
+ClaSSE root state lnLs if 
+
+# Assuming diversitree options:
+# root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
+# i.e., the root state probs are just the root_Ds/sum(root_Ds)
+#
+"""
+function rootstates_lnL_condsurv_FALSE(res, tr, p_Ds_v5, rootprobs_option="ROOT.OBS"; root_stateprobs=NaN)
+	d_root_orig = res.likes_at_each_nodeIndex_branchTop[tr.root]
+
+	if uppercase(rootprobs_option) == "ROOT.GIVEN"
+		if isnan(root_stateprobs)
+			txt = "STOP ERROR in rootstates_lnL_condsurv_FALSE(); rootprobs_option=='ROOT.GIVEN', but the input root_stateprobs=NaN. Change one of these inputs to fix the error."
+			print("\n\n")
+			print(txt)
+			print("\n\n")
+			error(txt)
+		end
+		root_stateprobs = root_stateprobs
+	end
+	if uppercase(rootprobs_option) == "ROOT.OBS"
+		root_stateprobs = d_root_orig/sum(d_root_orig)
+	end
+	if uppercase(rootprobs_option) == "EQUAL" || uppercase(rootprobs_option) == "ROOT.FLAT"
+		root_stateprobs = collect(repeat([1.0/p_Ds_v5.n], p_Ds_v5.n))
+	end
+	if uppercase(rootprobs_option) == "NONE"
+		# Put in 1.0s for the root state probabilities
+		root_stateprobs = collect(repeat([1.0], p_Ds_v5.n))
+	end
+	# 
+	# "ROOT.EQUI: Use the equilibrium distribution of the model, as described in Maddison et al. (2007)."
+	if uppercase(rootprobs_option) == "ROOT.EQUI"
+		# Put in 1.0s for the root state probabilities
+		# root_stateprobs = collect(repeat([1.0], p_Ds_v5.n))
+		A = zeros(p_Ds_v5.n, p_Ds_v5.n); # pre-allocate
+		t = root_age = get_root_age(tr);
+		p = p_Ds_v5;
+		# Project the ClaSSE model onto an instantaneous rate matrix, A
+		#	A = projection.matrix.classe(pars=classe_params, k) 
+		A = get_LinearDynamics_A(t, A, p; max_condition_number=1e8, print_warnings=false)
+		# Calculate equilibrium frequencies by eigenvectors
+		evA = eigen(A)
+		#maxTF = maximum(evA.values) .== evA.values
+		maxTF = maximum(abs.(evA.values)) .== abs.(evA.values)
+		
+		# https://www-sciencedirect-com.ezproxy.auckland.ac.nz/topics/mathematics/dominant-eigenvalue
+		# Predicting Population Growth: Modeling with Projection Matrices
+		# Janet Steven, James Kirkwood, in Mathematical Concepts and Methods in Modern Biology, 2013"
+		# 7.8.4 Finding the Stable Distribution
+		#
+		# Suppose that A is a projection matrix that meets the assumptions of the Perron-Frobenius 
+		# theorem and that va is any vector.
+		# 
+		# ...so the equilibrium state is the normalized eigenvector for the dominant eigenvalue.
+		equilibrium_root_freqs = evA.vectors[:, maxTF] ./ sum(evA.vectors[:, maxTF])	
+		root_stateprobs = equilibrium_root_freqs
+	end
 
 
+	
+	rootstates_lnL = log(sum(root_stateprobs .* d_root_orig))
+	return rootstates_lnL
+end
 
+
+"""
+ClaSSE root state lnLs if 
+
+# Assuming diversitree options:
+# root=ROOT.OBS, root.p=NULL, condition.TRUE (these seem to be the defaults)
+# i.e., the root state probs are just the root_Ds/sum(root_Ds)
+#
+"""
+function rootstates_lnL_condsurv_TRUE2(res, tr, p_Ds_v5, rootprobs_option="ROOT.OBS"; root_stateprobs=NaN)
+	d_root_orig = res.likes_at_each_nodeIndex_branchTop[tr.root]
+	if uppercase(rootprobs_option) == "ROOT.GIVEN"
+		if isnan(root_stateprobs)
+			txt = "STOP ERROR in rootstates_lnL_condsurv_FALSE(); rootprobs_option=='ROOT.GIVEN', but the input root_stateprobs=NaN. Change one of these inputs to fix the error."
+			print("\n\n")
+			print(txt)
+			print("\n\n")
+			error(txt)
+		end
+		root_stateprobs = root_stateprobs
+	end
+	if uppercase(rootprobs_option) == "ROOT.OBS"
+		root_stateprobs = d_root_orig/sum(d_root_orig)
+	end
+	if uppercase(rootprobs_option) == "EQUAL" || uppercase(rootprobs_option) == "ROOT.FLAT"
+		root_stateprobs = collect(repeat([1.0/p_Ds_v5.n], p_Ds_v5.n))
+	end
+	if uppercase(rootprobs_option) == "NONE"
+		# Put in 1.0s for the root state probabilities
+		root_stateprobs = collect(repeat([1.0], p_Ds_v5.n))
+	end
+	# 
+	# "ROOT.EQUI: Use the equilibrium distribution of the model, as described in Maddison et al. (2007)."
+	if uppercase(rootprobs_option) == "ROOT.EQUI"
+		# Put in 1.0s for the root state probabilities
+		# root_stateprobs = collect(repeat([1.0], p_Ds_v5.n))
+		A = zeros(p_Ds_v5.n, p_Ds_v5.n); # pre-allocate
+		t = root_age = get_root_age(tr);
+		p = p_Ds_v5;
+		# Project the ClaSSE model onto an instantaneous rate matrix, A
+		#	A = projection.matrix.classe(pars=classe_params, k) 
+		A = get_LinearDynamics_A(t, A, p; max_condition_number=1e8, print_warnings=false)
+		# Calculate equilibrium frequencies by eigenvectors
+		evA = eigen(A)
+		#maxTF = maximum(evA.values) .== evA.values
+		maxTF = maximum(abs.(evA.values)) .== abs.(evA.values)
+		
+		# https://www-sciencedirect-com.ezproxy.auckland.ac.nz/topics/mathematics/dominant-eigenvalue
+		# Predicting Population Growth: Modeling with Projection Matrices
+		# Janet Steven, James Kirkwood, in Mathematical Concepts and Methods in Modern Biology, 2013"
+		# 7.8.4 Finding the Stable Distribution
+		#
+		# Suppose that A is a projection matrix that meets the assumptions of the Perron-Frobenius 
+		# theorem and that va is any vector.
+		# 
+		# ...so the equilibrium state is the normalized eigenvector for the dominant eigenvalue.
+		equilibrium_root_freqs = evA.vectors[:, maxTF] ./ sum(evA.vectors[:, maxTF])	
+		root_stateprobs = equilibrium_root_freqs
+	end
+
+	root_age = get_root_age(tr);
+	Es_interpolator = p_Ds_v5.sol_Es_v5
+	e_root = Es_interpolator(root_age)
+
+	#d_root = d_root_orig ./ sum(root_stateprobs .* inputs.p_Ds_v5.params.Cijk_vals .* (1 .- e_root).^2)
+	# diversitree::rootfunc.classe
+	# lambda <- colSums(matrix(pars[1:(nsum * k)], nrow = nsum))
+	sum_of_lambdas = collect(repeat([0.0], p_Ds_v5.n))
+	for i in 1:n
+		sum_of_lambdas[i] = sum(p_Ds_v5.params.Cijk_vals[p_Ds_v5.p_TFs.Ci_eq_i[i]])
+	end
+	d_root = d_root_orig ./ sum(root_stateprobs .* sum_of_lambdas .* (1 .- e_root).^2)
+	rootstates_lnL = log(sum(root_stateprobs .* d_root))
+
+	# The above all works out to [0,1] for the Yule model with q01=q02=0.0
+	return rootstates_lnL
+end
 
 
 

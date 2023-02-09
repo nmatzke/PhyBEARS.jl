@@ -451,6 +451,9 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl")
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7b_difftips_diffMus.jl")
 	
+	# Positive deathrate, uses rootstates_lnL_condsurv_TRUE function
+	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
+	
 
 end
 
@@ -461,7 +464,6 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
 	# Add birthRate / deathRate inference
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
-	#include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
 end
 
 
