@@ -7967,7 +7967,7 @@ ClaSSE root state lnLs if
 # i.e., the root state probs are just the root_Ds/sum(root_Ds)
 #
 """
-function rootstates_lnL_condsurv_TRUE2(res, tr, p_Ds_v5, rootprobs_option="ROOT.OBS"; root_stateprobs=NaN)
+function rootstates_lnL_condsurv_TRUE(res, tr, p_Ds_v5, rootprobs_option="ROOT.OBS"; root_stateprobs=NaN)
 	d_root_orig = res.likes_at_each_nodeIndex_branchTop[tr.root]
 	if uppercase(rootprobs_option) == "ROOT.GIVEN"
 		if isnan(root_stateprobs)
