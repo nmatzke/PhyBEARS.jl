@@ -13,26 +13,97 @@
 # lnLs match to <0.1 with abstol and reltol set to 1e-9 (but not 1e-6
 #######################################################
 Pkg.instantiate()
-using PhyBEARS
-using PhyBEARS.BGExample			# default examples
-using PhyBEARS.TrUtils			# basic utility functions 
-using PhyBEARS.MaxentInterp	# preconstructed interpolator for weighting rangesize of smaller daughter
-using PhyBEARS.TreeTable			# for prt() tree tables (DFs), bd_liks(), etc.
-using PhyBEARS.StateSpace	# set up lists of areas and states (geographic ranges)
-using PhyBEARS.SSEs				# SSE calculations with various amounts of speed optimization
-using PhyBEARS.Parsers			# Parsers to read e.g. geography file
-using PhyBEARS.TreePass		# downpass and uppass through the phylogeny; prt() etc.
-using PhyBEARS.ModelLikes		# likelihood calculations
+
+using Distributed
+Distributed.nprocs()
+
+using Hwloc
+Hwloc.num_physical_cores()
+Hwloc.num_virtual_cores()
+
+
+t = @async Distributed.addprocs(7) # Adds workers
+Distributed.nprocs()
+# Check that you have same number of processors and threads
+Distributed.nprocs()
+numthreads = Base.Threads.nthreads()
+
+
+using Test, PhyBEARS, DataFrames
+
+using Dates									# for e.g. Dates.now(), DateTime
+using Distributed						# for e.g. @spawn
+using Combinatorics					# for e.g. combinations()
+using DataFrames						# for DataFrame()
+
+# List each PhyBEARS code file prefix here
+using PhyloBits.TrUtils
+using PhyloBits.TreeTable
+using PhyBEARS.BGExample
+using PhyBEARS.StateSpace
+using PhyBEARS.TreePass
+using PhyBEARS.SSEs
+using PhyBEARS.Parsers
+using PhyBEARS.ModelLikes
 using PhyBEARS.Flow		# downpass and uppass through the phylogeny
 using PhyBEARS.Gmaps		# Gmaps arrays etc.
+
+# Check that you have same number of processors and threads
+Distributed.nprocs()
+numthreads = Base.Threads.nthreads()
+Distributed.workers()
+
+
+
+@everywhere using Test
+@everywhere using DataFrames
+
+@everywhere using Dates									# for e.g. Dates.now(), DateTime
+#@everywhere using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+@everywhere using Distributed						# for e.g. @spawn
+@everywhere using Combinatorics					# for e.g. combinations()
+@everywhere using DataFrames
+@everywhere using StatsBase
+#using Optim                 # for e.g. LBFGS Maximum Likelihood optimization,optimize
+# Optim really sucks, try LBFGSB: https://github.com/JuliaNLSolvers/Optim.jl/issues/953
+# LBFGSB also sucks: https://github.com/Gnimuc/LBFGSB.jl
+@everywhere using NLopt									# seems to be the best gradient-free, box-constrained								
+
+@everywhere using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
+										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+@everywhere using DataFrames  # for DataFrame
+@everywhere using DifferentialEquations
+@everywhere using OrdinaryDiffEq, Sundials, DiffEqDevTools, ODEInterfaceDiffEq, ODE, LSODA
 
 using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
 using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
-using PhyBEARS.Parsers
-using PhyBEARS.Gmaps
 using Base.Threads  # <-- this is good for @spawn, Distributed.@spawn is BAD, it produces Futures that have to be scheduled etc]
+
+
+# List each PhyBEARS code file prefix here
+doesnt_work="""
+@everywhere using Pkg
+@everywhere cd("/GitHub/PhyBEARS.jl")
+@everywhere Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl")) # Gives error:
+# ERROR: TaskFailedException
+#   nested task error: TOML Parser error:
+#   none:2:5 error: expected equal sign after key
+# ...but the next line still works.
+@everywhere using PhyBEARS
+"""
+
+@everywhere using PhyloBits
+@everywhere using PhyBEARS
+
+
+
+
+
+
+
+
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/test/")
@@ -67,13 +138,19 @@ bmo.est[bmo.rownames .== "d"] .= 0.02
 bmo.est[bmo.rownames .== "e"] .= 0.02
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.11
-bmo.est[:] = bmo_updater_v1(bmo);
+bmo.est[:] = bmo_updater_v1_SLOW(bmo);
 numareas = 7
 n = 2^numareas          # 4 areas, 16 states
 
 # Set up the model
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+root_age_mult=1.5; max_range_size=NaN; include_null_range=true; max_range_size=NaN
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
+vfft(res.likes_at_each_nodeIndex_branchTop)
+
+#@everywhere trdf = trdf
+
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-8;
@@ -88,12 +165,32 @@ sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_optio
 
 p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
 
+res_nonFlow_v5 = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv5, iteration_number_nFv5, Julia_sum_lq_nFv5, rootstates_lnL_nFv5, Julia_total_lnLs1_nFv5, bgb_lnl_nFv5) = res_nonFlow_v5
+
 res_nonFlow_v6 = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_nFv6, iteration_number_nFv6, Julia_sum_lq_nFv6, rootstates_lnL_nFv6, Julia_total_lnLs1_nFv6, bgb_lnl_nFv6) = res_nonFlow_v6
+
+res_nonFlow_v7 = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv7, iteration_number_nFv7, Julia_sum_lq_nFv7, rootstates_lnL_nFv7, Julia_total_lnLs1_nFv7, bgb_lnl_nFv7) = res_nonFlow_v7
+
+res_nonFlow_v5 = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv5, iteration_number_nFv5, Julia_sum_lq_nFv5, rootstates_lnL_nFv5, Julia_total_lnLs1_nFv5, bgb_lnl_nFv5) = res_nonFlow_v5
+
+res_nonFlow_v6 = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv6, iteration_number_nFv6, Julia_sum_lq_nFv6, rootstates_lnL_nFv6, Julia_total_lnLs1_nFv6, bgb_lnl_nFv6) = res_nonFlow_v6
+
+res_nonFlow_v7 = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv7, iteration_number_nFv7, Julia_sum_lq_nFv7, rootstates_lnL_nFv7, Julia_total_lnLs1_nFv7, bgb_lnl_nFv7) = res_nonFlow_v7
+
+
 # 2022-03-29 Podocarps: (324.287, 22, -1271.480048120258, -14.85776329108454, -1286.3378114113425, -576.3087517374857)
 # 2022-03-29 Cyrtandra: (21.556, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 # 2022-03-30 Cyrtandra: (23.295, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 # 2022-03-30 Cyrtandra: (24.813, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
+
+res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
 
 res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
