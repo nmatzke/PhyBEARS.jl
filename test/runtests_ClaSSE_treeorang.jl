@@ -187,6 +187,7 @@ Julia_total_lnLs1 = Julia_sum_lq + rootstates_lnL
 d_root_orig = res.likes_at_each_nodeIndex_branchTop[length(res.likes_at_each_nodeIndex_branchTop)]
 root_stateprobs = d_root_orig/sum(d_root_orig)
 lambda = in_params.birthRate
+root_age = maximum(trdf[!, :node_age])
 e_root = Es_interpolator(root_age)
 
 
