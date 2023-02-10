@@ -168,7 +168,7 @@ sum_likes_internal_branch_tops = sum(log.(sum.(res.likes_at_each_nodeIndex_branc
 Julia_sum_lq = Julia_sum_lq_old + sum_likes_internal_branch_tops
 
 # Does the total of the branch log-likelihoods (lq) match?
-@test round(R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
+@test round(DEC_R_result_branch_lnL; digits=4) == round(Julia_sum_lq; digits=4)
 
 # Add the root probabilities
 
@@ -208,10 +208,10 @@ Julia_total_lnLs1t = Julia_sum_lq + rootstates_lnL
 
 # Does the total lnL match R?
 # root=ROOT.OBS, root.p=NULL, condition.surv=FALSE
-@test round(R_result_total_LnLs1; digits=4) == round(Julia_total_lnLs1; digits=4)
+@test round(DEC_R_result_total_LnLs1; digits=4) == round(Julia_total_lnLs1; digits=4)
 
 # root=ROOT.OBS, root.p=NULL, condition.surv=TRUE
-@test round(R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
+@test round(DEC_R_result_total_LnLs1t; digits=4) == round(Julia_total_lnLs1t; digits=4)
 
 # Does the total of branch likelihoods (lq) + node likelihoods match R?
 # 
