@@ -14,7 +14,7 @@ using PhyBEARS.SSEs
 using PhyBEARS.TimeDep	# for update_QC_mats_time_t!
 #using PhyBEARS.Flow 
 using Hwloc						# for e.g. getinfo()[:Core] # the current core, I think
-using Distributed			# for e.g. Distributed.@spawnat
+using Distributed			# for e.g. Distributed.@spawnat, Distributed.nprocs()
 using DataFrames			# for e.g. DataFrame()
 using PhyloBits		# for e.g. readTopology()
 using Dates						# for e.g. DateTime, Dates.now()
@@ -3557,6 +3557,18 @@ Non-parallel version (no istaskdone, etc.)
 # nprocs
 """
 function iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+	
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v6!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+	
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
@@ -4187,6 +4199,19 @@ Non-parallel version (no istaskdone, etc.)
 # nprocs
 """
 function iterative_downpass_parallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v6_solverFree!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+
+
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
@@ -5921,6 +5946,19 @@ Non-parallel version (no istaskdone, etc.)
 # nprocs
 """
 function iterative_downpass_parallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v7!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+
+
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
@@ -6296,6 +6334,19 @@ Non-parallel version (no istaskdone, etc.)
 # nprocs
 """
 function iterative_downpass_parallel_ClaSSE_v7d!(res; trdf, p_Ds_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v7d!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+
+
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
@@ -6695,6 +6746,19 @@ end
 # Functions pre-allocated
 #######################################################
 function iterative_downpass_parallel_ClaSSE_v7e!(res; trdf, p_Ds_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v7e!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+
+
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	
@@ -7114,6 +7178,19 @@ Non-parallel version (no istaskdone, etc.)
 # nprocs
 """
 function iterative_downpass_parallel_ClaSSE_v7c!(res; trdf, p_Ds_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=false, include_null_range=true, printlevel=0)
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
+	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in iterative_downpass_parallel_ClaSSE_v7c!(): this function runs ODEs down branches in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+		return(error(txt))
+	end # END if (numthreads > 1) == false
+
+
 	diagnostics = collect(repeat([Dates.now()], 3))
 	diagnostics[1] = Dates.now()
 	

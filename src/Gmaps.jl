@@ -235,8 +235,18 @@ end # END construct_Gmap_interpolator
 
 # Standard calculation with float64 improves matrix multiplication -- parallelized
 function construct_Gmap_interpolator_float64_parallel(pG, Gseg_times; abstol=1e-6, reltol=1e-6)
-	# Check number of threads, create tasks list:
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
 	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in construct_Gmap_interpolator_float64_parallel!(): this function calculates Gmap matrix multiplications in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+	end # END if (numthreads > 1) == false
+
+	# Check number of threads, create tasks list:
+	# numthreads = Base.Threads.nthreads()
 	tasks = Any[]
 	tasks_fetched_TF = Bool[]
 	are_we_done = false
@@ -328,8 +338,20 @@ end # END function construct_Gmap_interpolator_float64
 
 # using Double64 might improve matrix multiplication
 function construct_Gmap_interpolator_double64_parallel(pG, Gseg_times; abstol=1e-6, reltol=1e-6)
-	# Check number of threads, create tasks list:
+
+	# Check the number of threads; this function will hang unless
+	# there are multiple threads
 	numthreads = Base.Threads.nthreads()
+	num_processes = Distributed.nprocs()
+
+	if ((numthreads > 1) == false) || ((num_processes > 1) == false)
+		txt = paste0(["\n\nSTOP ERROR in construct_Gmap_interpolator_double64_parallel!(): this function calculates Gmap matrix multiplications in *parallel*. Therefore it needs multiple threads and multiple processes/workers to function. Without that, the function will hang. You have:\n\n     Base.Threads.nthreads() = ", numthreads, "\n     Distributed.nprocs()    = ", num_processes, "\n\nYou need to re-start Julia with multiple threads, using this command (run at the command line, not inside julia):\n\n'julia -t auto -p auto' (or replace 'auto' with 4 for 4 threads & processes)\n\nYou can add processes, but not threads, from inside julia with 'tmptask = @async Distributed.addprocs(7)'.\n\n"]);
+		print(txt)
+	end # END if (numthreads > 1) == false
+
+
+	# Check number of threads, create tasks list:
+	# numthreads = Base.Threads.nthreads()
 	tasks = Any[]
 	tasks_fetched_TF = Bool[]
 	are_we_done = false

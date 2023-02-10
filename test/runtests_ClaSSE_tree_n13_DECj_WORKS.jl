@@ -1188,15 +1188,17 @@ p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-#Julia_sum_lq_ORIG = -68.63952019916809
-#Julia_rootstates_lnL_ORIG = -4.971193862177472
-#Julia_total_lnLs1_ORIG = -73.61071406134556
-#Julia_bgb_lnL_ORIG = -35.43075554544988
+# Worked at home: 2023-02-11
+Julia_sum_lq_ORIG = -68.63952019916809
+Julia_rootstates_lnL_ORIG = -4.971193862177472
+Julia_total_lnLs1_ORIG = -73.61071406134556
+Julia_bgb_lnL_ORIG = -35.43075554544988
 
-Julia_sum_lq_ORIG = -69.5224885849644
-Julia_rootstates_lnL_ORIG = -4.968808024086585
-Julia_total_lnLs1_ORIG = -74.49129660905099
-Julia_bgb_lnL_ORIG = -36.33474261227199
+# Worked at work: 2023-02-10
+#Julia_sum_lq_ORIG = -69.5224885849644
+#Julia_rootstates_lnL_ORIG = -4.968808024086585
+#Julia_total_lnLs1_ORIG = -74.49129660905099
+#Julia_bgb_lnL_ORIG = -36.33474261227199
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
