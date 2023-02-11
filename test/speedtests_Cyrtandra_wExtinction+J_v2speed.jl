@@ -268,17 +268,28 @@ Gflow_to_01_GMRES(root_age)
 
 Gflow_via_Gmap = t -> Gmaps.interp_from_Gmap(t, Gmap)
 
+sum(Gflow_via_Gmap(root_age)[1,:] .== Gflow_to_01_GMRES(root_age)[1,:])
+
+vfft(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age))
+
+@test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.0001)
+@test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.001)
+
+
+
 # The Gmap strategy works with Float64 or Double64
 res_Gflow_v6a = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_via_Gmap, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv6a, iteration_number_GFv6a, Julia_sum_lq_GFv6a, rootstates_lnL_GFv6a, Julia_total_lnLs1_GFv6a, bgb_lnl_GFv6a) = res_Gflow_v6a
 archived_Gflow_v6a = deepcopy(res);
+
+res_Gflow_v6a
 
 R_order = sort(trdf, :Rnodenums).nodeIndex
 
 vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order]) .== vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])
 
 
-rnode = 117
+rnode = 1
 vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
 vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
 

@@ -85,13 +85,14 @@ using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 using Sundials				# for CVODE_BDF
 using PhyBEARS.Flow
 using PhyBEARS.Parsers
+using PhyBEARS.Gmaps
 
-include("/GitHub/PhyBEARS.jl/src/Gmaps.jl")
-using .Gmaps
+#include("/GitHub/PhyBEARS.jl/src/Gmaps.jl")
+#using .Gmaps
 
 tr = readTopology("((((((((P_hawaiiensis_WaikamoiL1:0.9665748366,P_mauiensis_Eke:0.9665748366):0.7086257935,(P_fauriei2:1.231108298,P_hathewayi_1:1.231108298):0.4440923324):0.1767115552,(P_kaduana_PuuKukuiAS:1.851022399,P_mauiensis_PepeAS:1.851022399):0.0008897862802):0.3347375986,P_kaduana_HawaiiLoa:2.186649784):0.302349378,(P_greenwelliae07:1.132253042,P_greenwelliae907:1.132253042):1.35674612):1.689170274,((((P_mariniana_MauiNui:1.99490084,P_hawaiiensis_Makaopuhi:1.99490084):0.7328279804,P_mariniana_Oahu:2.72772882):0.2574151709,P_mariniana_Kokee2:2.985143991):0.4601084855,P_wawraeDL7428:3.445252477):0.732916959):0.7345185743,(P_grandiflora_Kal2:2.480190277,P_hobdyi_Kuia:2.480190277):2.432497733):0.2873119899,((P_hexandra_K1:2.364873976,P_hexandra_M:2.364873976):0.4630447802,P_hexandra_Oahu:2.827918756):2.372081244);")
 
-lgdata_fn = "/GitHub/PhyBEARS.jl/Rsrc/Psychotria_geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # DEC model on Hawaiian Psychotria
@@ -108,7 +109,7 @@ n = 16            # 4 areas, 16 states
 
 # Set up the model
 inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 solver_options.solver = CVODE_BDF(linear_solver=:GMRES);
 solver_options.save_everystep = true;
 solver_options.abstol = 1e-6;
@@ -126,6 +127,14 @@ p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TF
 res_nonFlow_v6 = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq_nFv6, rootstates_lnL_nFv6, Julia_total_lnLs1_nFv6, bgb_lnl_nFv6) = res_nonFlow_v6
 
+
+# Version 7/2 ClaSSE Gflow calculations
+G0 = Matrix{Float64}(I, n, n) ;
+# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
+tmpzero = repeat([0.0], n^2);
+A = reshape(tmpzero, (n,n));
+pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
+
 tspan = (0.0, 1.1 * maximum(trdf.node_age))
 prob_Gs_v5 = DifferentialEquations.ODEProblem(Flow.calc_Gs_SSE!, G0, tspan, pG);
 Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol = 1e-6, reltol = 1e-6);
@@ -134,6 +143,13 @@ root_age = trdf[tr.root,:node_age]
 Gseg_times = seq(0.0, root_age, 0.1);
 pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 (Gseg_times, Gflows_array, Gflows_array_totals, Gflows_dict) = Gmap = construct_Gmap_interpolator(pG, Gseg_times; abstol=1e-6, reltol=1e-6);
+
+
+2023-02-12_THIS SHOWS THE DIFFERENCE
+2023-02-12_THIS SHOWS THE DIFFERENCE
+2023-02-12_THIS SHOWS THE DIFFERENCE
+2023-02-12_THIS SHOWS THE DIFFERENCE
+2023-02-12_THIS SHOWS THE DIFFERENCE
 
 Gflows_array_totals[:,:,1]
 interp_from_Gmap(0.1, Gmap)
@@ -160,6 +176,9 @@ Gflow = t -> interp_from_Gmap(t, Gmap)
 # The Gmap strategy works OK, with many increments...
 res_Gflow_v6a = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq_GFv6a, rootstates_lnL_GFv6a, Julia_total_lnLs1_GFv6a, bgb_lnl_GFv6a) = res_Gflow_v6a
+
+res_Gflow_v6
+res_Gflow_v6a
 
 abstol=1e-9
 reltol=1e-9
