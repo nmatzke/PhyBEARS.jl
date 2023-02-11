@@ -319,7 +319,8 @@ function construct_Gmap_interpolator_float64(pG, Gseg_times; abstol=1e-6, reltol
 		new_time = Gseg_times[inc]
 		end_tspan = new_time * 1.01
 		tspan = (old_time, end_tspan)
-		prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_sub_i, G0, tspan, pG);
+		#prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_sub_i, G0, tspan, pG);
+		prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE, G0, tspan, pG);
 		Gflows_dict[inc] = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=abstol, reltol=reltol);
 		Gres = Gflows_dict[inc](new_time)
 		Gflows_array[:,:,inc] = Gres

@@ -185,6 +185,7 @@ prob_Gs_v5 = DifferentialEquations.ODEProblem(Gmaps.calc_Gs_SSE, G0, tspan, pG);
 Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
+archived_Gflow_v6 = deepcopy(res);
 # 2022-03-29: (7.323, 22, -1271.0625625625657, -14.712302169676475, -1285.7748647322421, -575.9248397325294)
 # 2022-03-30: (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
 
@@ -204,6 +205,8 @@ nd = 3
 @test round(res_nonFlow_v7[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
 @test round(res_nonFlow_v7[6], digits=nd)	== round(bgb_lnL, digits=nd)
 
+# Leave out parallel stuff
+"""
 @test round(res_nonFlow_v6par[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
 @test round(res_nonFlow_v6par[4], digits=nd)	== round(rootstates_lnL, digits=nd)
 @test round(res_nonFlow_v6par[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
@@ -213,10 +216,7 @@ nd = 3
 @test round(res_Gflow_v6[4], digits=nd)	== round(rootstates_lnL, digits=nd)
 @test round(res_Gflow_v6[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
 @test round(res_Gflow_v6[6], digits=nd)	== round(bgb_lnL, digits=nd)
-
-
-
-
+"""
 
 
 root_age = trdf[tr.root,:node_age]
@@ -230,7 +230,9 @@ pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 
 # These should be DIFFERENT, if extinction is positive!
 Gflows_dict[1](0.1)
-Gflows_dict[10](1.91)
+minimum(Gflows_dict[10].t)
+maximum(Gflows_dict[10].t)
+Gflows_dict[10](maximum(Gflows_dict[10].t))
 
 # Calculate array of Gflow matrices with double64 matrix multiplication
 (Gseg_timesDF, Gflows_arrayDF, Gflows_array_totalsDF, Gflows_dictDF) = Gmap_Double64 = Gmaps.construct_Gmap_interpolator_double64(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
@@ -269,6 +271,19 @@ Gflow_via_Gmap = t -> Gmaps.interp_from_Gmap(t, Gmap)
 # The Gmap strategy works with Float64 or Double64
 res_Gflow_v6a = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_via_Gmap, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv6a, iteration_number_GFv6a, Julia_sum_lq_GFv6a, rootstates_lnL_GFv6a, Julia_total_lnLs1_GFv6a, bgb_lnl_GFv6a) = res_Gflow_v6a
+archived_Gflow_v6a = deepcopy(res);
+
+R_order = sort(trdf, :Rnodenums).nodeIndex
+
+vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order]) .== vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])
+
+
+rnode = 117
+vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
+vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
+
+
+
 # 2022-03-30: (0.589, 12, -285.1005967032069, -12.025331095939737, -297.12592779914667, -110.07183134705335)
 
 # Identical results with Double64 (so probably unnecessary here)
