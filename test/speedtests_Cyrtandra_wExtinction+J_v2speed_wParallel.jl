@@ -30,6 +30,34 @@ using Hwloc
 Hwloc.num_physical_cores()
 Hwloc.num_virtual_cores()
 
+tmptask = @async Distributed.addprocs(7) # Adds workers
+Distributed.nprocs()
+# Check that you have same number of processors and threads
+Distributed.nprocs()
+numthreads = Base.Threads.nthreads()
+
+tmptask = @async @everywhere using Dates									# for e.g. Dates.now(), DateTime
+#@everywhere using PhyloNetworks					# most maintained, emphasize; for HybridNetwork
+tmptask = @async @everywhere using Distributed						# for e.g. @spawn
+tmptask = @everywhere using Combinatorics					# for e.g. combinations()
+tmptask = @everywhere using DataFrames  # for DataFrame
+tmptask = @everywhere using StatsBase
+#using Optim                 # for e.g. LBFGS Maximum Likelihood optimization,optimize
+# Optim really sucks, try LBFGSB: https://github.com/JuliaNLSolvers/Optim.jl/issues/953
+# LBFGSB also sucks: https://github.com/Gnimuc/LBFGSB.jl
+#tmptask = @everywhere using NLopt									# seems to be the best gradient-free, box-constrained								
+
+tmptask = @everywhere using LinearAlgebra  # for "I" in: Matrix{Float64}(I, 2, 2)
+										 # https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+tmptask = @everywhere using DifferentialEquations
+tmptask = @everywhere using OrdinaryDiffEq, Sundials, DiffEqDevTools, ODEInterfaceDiffEq, ODE, LSODA, Sundials
+tmptask = @everywhere  using PhyloBits
+tmptask = @everywhere  using PhyBEARS
+
+# Check that you have same number of processors and threads
+Distributed.nprocs()
+numthreads = Base.Threads.nthreads()
+Distributed.workers()
 
 using Dates									# for e.g. Dates.now(), DateTime
 using DataFrames
@@ -156,15 +184,11 @@ res_nonFlow_v7 = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_
 # 2022-03-30 Cyrtandra: (23.295, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 # 2022-03-30 Cyrtandra: (24.813, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 
-#######################################################
-# Parallelized -- turn off for default tests
-#######################################################
+res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
 
-# res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
-# (total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
-
-# res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
-# (total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
+res_nonFlow_v6par = iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_nFv6par, iteration_number_nFv6par, Julia_sum_lq_nFv6par, rootstates_lnL_nFv6par, Julia_total_lnLs1_nFv6par, bgb_lnl_nFv6par) = res_nonFlow_v6par
 # 2022-03-30 Cyrtandra: (24.011, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 # 2022-03-30 Cyrtandra: (21.178, 12, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 # After changing from Distributed.@spawn to Base.Threads.@spawn:

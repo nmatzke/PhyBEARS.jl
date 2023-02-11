@@ -454,7 +454,6 @@ end
 	# Positive deathrate, uses rootstates_lnL_condsurv_TRUE function
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
 	
-
 end
 
 @testset "Checks against BioGeoBEARS models -- Psychotria (19 species, 16 states)" begin
@@ -466,10 +465,15 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
 end
 
+@testset "Check parallelized lnLs - only runs when nthreads>1, nprocs>1" begin
+	include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
+end
 
-
-
-
+if ((numthreads > 1) == true) || ((num_processes > 1) == true)
+	@testset "Check parallelized lnLs - only runs when nthreads>1, nprocs>1" begin
+		include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed_wParallel.jl")
+	end
+end
 
 
 end # END: @testset "All tests"
