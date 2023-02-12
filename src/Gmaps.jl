@@ -336,12 +336,13 @@ function construct_Gmap_interpolator_float64(pG, Gseg_times; abstol=1e-6, reltol
 		# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
 		pG.A[:,:] .= 0.0
 		new_time = Gseg_times[inc]
-		end_tspan = new_time * 1.01
+		end_tspan = new_time
 		tspan = (old_time, end_tspan)
 		#prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_sub_i, G0, tspan, pG);
 		prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE, G0, tspan, pG);
 		Gflows_dict[inc] = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=abstol, reltol=reltol);
-		Gres = Gflows_dict[inc](new_time)
+		# OLD, interpolates: Gres = Gflows_dict[inc](new_time)
+		Gres = Gflows_dict[inc].u[length(Gflows_dict[inc].u)]
 		Gflows_array[:,:,inc] = Gres
 		mul!(Gflow_total, Gflow_total_old, Gres)
 		Gflows_array_totals[:,:,inc] = Gflow_total
