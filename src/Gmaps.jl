@@ -357,6 +357,61 @@ function construct_Gmap_interpolator_float64(pG, Gseg_times; abstol=1e-6, reltol
 	return Gmap
 end # END function construct_Gmap_interpolator_float64
 
+
+using Octavian
+# https://discourse.julialang.org/t/julia-matrix-multiplication-performance/55175/5
+# 
+
+# Standard calculation with float64 improves matrix multiplication
+function construct_Gmap_interpolator_float64D(pG, Gseg_times; abstol=1e-6, reltol=1e-6)
+	# Check for 0.0 in first slot; remove
+	if (Gseg_times[1] < 1.0e-10)
+		popfirst!(Gseg_times) # remove first element from array
+	end
+	num_segments = length(Gseg_times)
+	Gflows_array = zeros(Float64,pG.n,pG.n,num_segments)
+	Gflow_total = Matrix{Float64}(I, pG.n, pG.n);
+	Gflows_array_totals = zeros(Float64,pG.n,pG.n,num_segments)
+	Gflows_dict = Dict()
+	
+	old_time = 0.0
+	for inc in 1:num_segments
+		if inc == 1
+			Gflow_total_old = Matrix{Float64}(I, pG.n, pG.n);
+		else
+			Gflow_total_old = Gflows_array_totals[:,:,(inc-1)]
+		end
+		G0 = Matrix{Float64}(I, pG.n, pG.n) ;
+		# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
+		pG.A[:,:] .= 0.0
+		new_time = Gseg_times[inc]
+		end_tspan = new_time
+		tspan = (old_time, end_tspan)
+		#prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_sub_i, G0, tspan, pG);
+		prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE, G0, tspan, pG);
+		Gflows_dict[inc] = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=abstol, reltol=reltol);
+		# OLD, interpolates: Gres = Gflows_dict[inc](new_time)
+		Gres = Gflows_dict[inc].u[length(Gflows_dict[inc].u)] .+ 0.0
+		Gflows_array[:,:,inc] = Gres .+ 0.0
+		#mul!(Gflow_total, Gflow_total_old, Gres)
+		#Octavian.matmul!(Gflow_total, Gflow_total_old, Gres)
+		Gflow_total .= Gflow_total_old * Gres .+ 0.0
+		#Gflow_total .= AccurateArithmetic.dot_oro(Gflow_total_old, Gres)
+		
+		Gflows_array_totals[:,:,inc] = Gflow_total
+		old_time = new_time
+	end
+	
+	# Return results
+	Gmap = (Gseg_times=Gseg_times, Gflows_array=Gflows_array, Gflows_array_totals=Gflows_array_totals, Gflows_dict=Gflows_dict);
+	"""
+	(Gseg_times, Gflows_array, Gflows_array_totals, Gflows_dict) = Gmap
+	"""
+	return Gmap
+end # END function construct_Gmap_interpolator_float64
+
+
+
 # using Double64 might improve matrix multiplication
 function construct_Gmap_interpolator_double64_parallel(pG, Gseg_times; abstol=1e-6, reltol=1e-6)
 

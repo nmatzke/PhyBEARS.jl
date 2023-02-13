@@ -123,14 +123,14 @@ solver_options.save_everystep = true;
 solver_options.abstol = 1e-8;
 solver_options.reltol = 1e-8;
 
-p_Ds_v5 = inputs.p_Ds_v5;
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
+p_Es_v5 = inputs.p_Es_v5;
+p_Ds_v5_updater_v1!(p_Es_v5, inputs);
 
 # Solve the Es
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
+prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Es_v5.uE, Es_tspan, p_Es_v5);
 sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
+p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, sol_Es_v5=sol_Es_v5);
 
 res_nonFlow_v5 = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_nFv5, iteration_number_nFv5, Julia_sum_lq_nFv5, rootstates_lnL_nFv5, Julia_total_lnLs1_nFv5, bgb_lnl_nFv5) = res_nonFlow_v5
@@ -171,8 +171,8 @@ res_nonFlow_v7 = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_
 # 2022-03-30 Cyrtandra: (6.027, 99251, -295.1099959548604, -11.470227634304381, -306.58022358916475, -119.7379632144717)
 
 
-solver_options.abstol = 1e-17;
-solver_options.reltol = 1e-17;
+solver_options.abstol = 1e-15;
+solver_options.reltol = 1e-15;
 
 # Version 7/2 ClaSSE Gflow calculations
 G0 = Matrix{Float64}(I, n, n) ;
@@ -220,7 +220,7 @@ nd = 3
 
 
 root_age = trdf[tr.root,:node_age]
-num_incs = 10
+num_incs = 100
 Gseg_times = seq(0.0, root_age, root_age/num_incs);
 pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 
@@ -228,19 +228,70 @@ pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 # Calculate array of Gflow matrices with float64 matrix multiplication
 (Gseg_times, Gflows_array, Gflows_array_totals, Gflows_dict) = Gmap = Gmaps.construct_Gmap_interpolator(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
 
+(Gseg_timesD, Gflows_arrayD, Gflows_array_totalsD, Gflows_dictD) = GmapD = construct_Gmap_interpolator_float64D(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+
 # These should be DIFFERENT, if extinction is positive!
 Gflows_dict[1](0.1)
 minimum(Gflows_dict[10].t)
 maximum(Gflows_dict[10].t)
 Gflows_dict[10](maximum(Gflows_dict[10].t))
 
+Gflows_dictD[1](0.1)
+minimum(Gflows_dictD[10].t)
+maximum(Gflows_dictD[10].t)
+Gflows_dictD[10](maximum(Gflows_dictD[10].t))
+
+
 # Calculate array of Gflow matrices with double64 matrix multiplication
 (Gseg_timesDF, Gflows_arrayDF, Gflows_array_totalsDF, Gflows_dictDF) = Gmap_Double64 = Gmaps.construct_Gmap_interpolator_double64(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
 
+Gflows_dictDF[1](0.1)
+minimum(Gflows_dictDF[10].t)
+maximum(Gflows_dictDF[10].t)
+Gflows_dictDF[10](maximum(Gflows_dictDF[10].t))
 
-Gflows_array_totals[:,:,1]
-Gmaps.interp_from_Gmap(0.1, Gmap)
-Gflow_to_01_GMRES(0.1)
+
+Gflows_array_totals[:,:,1][1,:]
+Gflows_array_totalsD[:,:,1][1,:]
+Gflows_array_totalsDF[:,:,1][1,:]
+
+tval = 0.1
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+tval = 0.2
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+tval = 1.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+
+Gflows_array_totals[1:5,1:5,10]
+Gflows_array_totalsD[1:5,1:5,10]
+Gflows_array_totalsDF[1:5,1:5,10]
+
+tval = 5.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+
+tval = 40.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
 
 @test mean(abs.(Gmaps.interp_from_Gmap(0.1, Gmap) .- Gflow_to_01_GMRES(0.1))) < 0.00001
 @test mean(abs.(Gmaps.interp_from_Gmap(0.1, Gmap_Double64) .- Gflow_to_01_GMRES(0.1))) < 0.00001
@@ -259,7 +310,7 @@ Gflow_to_01_GMRES(0.3)
 @test mean(abs.(Gmaps.interp_from_Gmap(0.3, Gmap) .- Gflow_to_01_GMRES(0.3))) < 0.0001
 @test mean(abs.(Gmaps.interp_from_Gmap(0.3, Gmap_Double64) .- Gflow_to_01_GMRES(0.3))) < 0.0001
 
-Gflows_array_totals[:,:,10]
+Gflows_array_totals[:,:,52]
 Gmaps.interp_from_Gmap(root_age, Gmap)
 Gflow_to_01_GMRES(root_age)
 @test mean(abs.(Gmaps.interp_from_Gmap(root_age, Gmap) .- Gflow_to_01_GMRES(root_age))) < 0.0001
@@ -267,10 +318,11 @@ Gflow_to_01_GMRES(root_age)
 
 
 Gflow_via_Gmap = t -> Gmaps.interp_from_Gmap(t, Gmap)
+Gflow_via_GmapD = t -> Gmaps.interp_from_Gmap(t, GmapD)
 
 sum(Gflow_via_Gmap(root_age)[1,:] .== Gflow_to_01_GMRES(root_age)[1,:])
 
-vfft(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age))
+DataFrame(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age), :auto)
 
 @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.0001)
 @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.001)
@@ -282,7 +334,13 @@ res_Gflow_v6a = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds
 (total_calctime_in_sec_GFv6a, iteration_number_GFv6a, Julia_sum_lq_GFv6a, rootstates_lnL_GFv6a, Julia_total_lnLs1_GFv6a, bgb_lnl_GFv6a) = res_Gflow_v6a
 archived_Gflow_v6a = deepcopy(res);
 
+res_Gflow_v6b = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_via_GmapD, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv6b, iteration_number_GFv6b, Julia_sum_lq_GFv6b, rootstates_lnL_GFv6b, Julia_total_lnLs1_GFv6b, bgb_lnl_GFv6b) = res_Gflow_v6b
+archived_Gflow_v6b = deepcopy(res);
+
+res_Gflow_v6
 res_Gflow_v6a
+res_Gflow_v6b
 
 R_order = sort(trdf, :Rnodenums).nodeIndex
 

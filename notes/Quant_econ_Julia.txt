@@ -1,0 +1,5 @@
+
+19. Numerical Linear Algebra and Factorizations
+https://julia.quantecon.org/tools_and_techniques/numerical_linear_algebra.html
+
+
