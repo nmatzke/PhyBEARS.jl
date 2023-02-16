@@ -25,3 +25,4 @@ Manifest.toml
 .DS_Store
 test/apes_SSE/.Rapp.history
 test/apes_SSE/.Rapp.history
+data/.Rapp.history
