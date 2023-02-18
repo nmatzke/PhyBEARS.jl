@@ -422,6 +422,13 @@ max_range_size=2
 include_null_range=true
 root_age_mult=1.5
 bmo = construct_BioGeoBEARS_model_object()
+manual_states_list=NaN
+area_names=LETTERS(1:numareas)
+fossils_older_than=1e-5 # tips older than this are treated as fossils
+
+great_ape_newick_string = "((((human:2.5,Lucy:2.5):3.5,chimpanzee:6):1,gorilla:7):5,orangutan:12);"
+tr = readTopology(great_ape_newick_string)
+tr
 
 # Geography data: geog_df
 # A=Africa, B=nonAfrica
@@ -433,7 +440,7 @@ geog_df = DataFrame(tipnames=tipnames, A=A, B=B)
 inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo)
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs
 """
-function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas))
+function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas), fossils_older_than=1e-5)
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
 	
@@ -497,6 +504,9 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	rootnodenum = tr.root
 	trdf = prt(tr, rootnodenum)
 	tipnodes = trdf[!,1][trdf[!,10].=="tip"]
+	
+	# Determine fossils and direct ancestors, store in setup
+	fossil_TF = 
 	
 	birthRate = bmo.est[bmo.rownames .== "birthRate"][1]
 	deathRate = bmo.est[bmo.rownames .== "deathRate"][1]
