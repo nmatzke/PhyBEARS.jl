@@ -1100,8 +1100,10 @@ end # END function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 
 
 
+
+
 # Node operation, combining probabilities from above (assumed to be fast)
-function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
+function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5, hooks_below=1e-6)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -1151,7 +1153,18 @@ function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
 # 		print(current_nodeIndex)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
-		nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+
+		# Check if it's a hook; if so, just multiply likelihoods, without
+		# cladogenesis or speciation lambda event etc.
+		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
+		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
+		
+		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+			nodeData_at_top .= tmp1 .* tmp2
+		else
+			nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+		end
+
 
 		# Multiply by the fixNodes multipliers (usually 1.0)
 		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
@@ -1225,7 +1238,7 @@ end # END function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
 
 
 # Node operation, combining probabilities from above (assumed to be fast)
-function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
+function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5, hooks_below=1e-6)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -1244,6 +1257,7 @@ function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 		# The likelihoods were taken out to produce normlikes, stored in "res.lq_at_branchBot"
 		tmp1 = res.normlikes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
 		tmp2 = res.normlikes_at_each_nodeIndex_branchBot[parent_nodeIndexes[2]]
+
 		#combined_branch_lnLs = res.lq_at_branchBot[parent_nodeIndexes[1]] + res.lq_at_branchBot[parent_nodeIndexes[2]]
 		
 		
@@ -1275,7 +1289,17 @@ function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 # 		print(current_nodeIndex)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
-		nodeData_at_top = nodeOp_Cmat2(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+
+		# Check if it's a hook; if so, just multiply likelihoods, without
+		# cladogenesis or speciation lambda event etc.
+		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
+		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
+		
+		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+			nodeData_at_top .= tmp1 .* tmp2
+		else
+			nodeData_at_top = nodeOp_Cmat2(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
+		end
 		
 		# Multiply by the fixNodes multipliers (usually 1.0)
 		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
@@ -1352,7 +1376,7 @@ end # END function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 
 # Node operation, combining probabilities from above (assumed to be fast)
 # Time-dependent!  Updates the Carray rates for this timepoint
-function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12)
+function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12, hooks_below=1e-6)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -1402,7 +1426,18 @@ function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12)
 # 		print(current_nodeIndex)
 
 		nodeData_at_top = res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] .* 0.0 # Placeholder
-		nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)
+
+		# Check if it's a hook; if so, just multiply likelihoods, without
+		# cladogenesis or speciation lambda event etc.
+		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
+		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
+		
+		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+			nodeData_at_top .= tmp1 .* tmp2
+		else
+			nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)
+		end
+
 
 		# Multiply by the fixNodes multipliers (usually 1.0)
 		nodeData_at_top .= nodeData_at_top .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
@@ -6030,6 +6065,8 @@ function iterative_downpass_parallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_optio
 			#u0 = u0 ./ (sum(u0))
 			# You can use the normalized likelihoods, see correction at bottom
 			u0 = res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+			
+			
 			
 			# Use the NORMALIZED (rescaled to sum to 1) likelihoods
 			# Doesn't work -- claims an interpolation error for going beyond range

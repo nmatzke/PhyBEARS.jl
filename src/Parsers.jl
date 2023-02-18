@@ -308,13 +308,6 @@ function tipranges_to_tiplikes(inputs, geog_df; fossils_older_than=1.0e-5)
 end # END function tipranges_to_tiplikes ()
 
 
-#######################################################
-# Modify tiplikes by:
-#######################################################
-# psi, sampling rate
-# rho (sampling_f)
-# rho (tipsamp_f)
-
 
 # Check that the tree and the geog file have matching tip labels
 

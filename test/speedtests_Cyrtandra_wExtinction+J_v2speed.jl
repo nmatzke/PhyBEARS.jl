@@ -113,7 +113,7 @@ n = 2^numareas          # 4 areas, 16 states
 root_age_mult=1.5; max_range_size=NaN; include_null_range=true; max_range_size=NaN
 max_range_size = NaN # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 vfft(res.likes_at_each_nodeIndex_branchTop)
 
 #@everywhere trdf = trdf
@@ -123,7 +123,7 @@ solver_options.save_everystep = true;
 solver_options.abstol = 1e-8;
 solver_options.reltol = 1e-8;
 
-p_Es_v5 = inputs.p_Es_v5;
+p_Es_v5 = inputs.p_Ds_v5;
 p_Ds_v5_updater_v1!(p_Es_v5, inputs);
 
 # Solve the Es

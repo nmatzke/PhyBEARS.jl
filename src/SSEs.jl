@@ -22,6 +22,7 @@ parameterized_ClaSSE_Ds_v5orig_return_du = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -51,7 +52,7 @@ parameterized_ClaSSE_Ds_v5orig_return_du = (du,u,p,t) -> begin
 		Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i]))*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum(Cijk_vals[Ci_eq_i] .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -85,6 +86,7 @@ parameterized_ClaSSE = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -99,7 +101,7 @@ parameterized_ClaSSE = (du,u,p,t) -> begin
   @inbounds for i in 1:n
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qarray_ivals .== i] .* u[Qarray_jvals[Qarray_ivals .== i]])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Carray_ivals .== i] .* u[Carray_jvals[Carray_ivals .== i]] .* u[Carray_kvals[Carray_ivals .== i]])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -107,7 +109,7 @@ parameterized_ClaSSE = (du,u,p,t) -> begin
 			# "i" does the double-summation required
 
 		# Calculation of "D" (likelihood of tip data)
-		du[n+i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[n+i] +  # case 1: no event
+		du[n+i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i] + psi[i])*u[n+i] +  # case 1: no event
 			(sum(Qij_vals[Qarray_ivals .== i] .* u[(n.+Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
 			(sum(Cijk_vals[Carray_ivals .== i] .*                                               # case 34: change + eventual extinction
 				 (u[(n.+Carray_kvals[Carray_ivals .== i])].*u[Carray_jvals[Carray_ivals .== i]] 
@@ -157,6 +159,7 @@ parameterized_ClaSSE_Es = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -171,7 +174,7 @@ parameterized_ClaSSE_Es = (du,u,p,t) -> begin
   @inbounds for i in 1:n
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qarray_ivals .== i] .* u[Qarray_jvals[Qarray_ivals .== i]])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Carray_ivals .== i] .* u[Carray_jvals[Carray_ivals .== i]] .* u[Carray_kvals[Carray_ivals .== i]])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -185,6 +188,7 @@ parameterized_ClaSSE_Ds = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -203,7 +207,7 @@ parameterized_ClaSSE_Ds = (du,u,p,t) -> begin
 	two = 1.0
   @inbounds for i in 1:n
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Carray_ivals .== i]) + sum(Qij_vals[Qarray_ivals .== i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qarray_ivals .== i] .* u[(Qarray_jvals[Qarray_ivals .== i])])) + 	# case 2	
 			(sum(Cijk_vals[Carray_ivals .== i] .*                                               # case 34: change + eventual extinction
 				 (u[(Carray_kvals[Carray_ivals .== i])].*uE[Carray_jvals[Carray_ivals .== i]] 
@@ -226,6 +230,7 @@ parameterized_ClaSSE_v5 = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -251,7 +256,7 @@ parameterized_ClaSSE_v5 = (du,u,p,t) -> begin
 
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -259,7 +264,7 @@ parameterized_ClaSSE_v5 = (du,u,p,t) -> begin
 			# "i" does the double-summation required
 
 		# Calculation of "D" (likelihood of tip data)
-		du[n+i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[n+i] +  # case 1: no event
+		du[n+i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[n+i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[(n.+Qj_sub_i)])) + 	# case 2	
 			(sum(Cijk_vals[Ci_eq_i] .*                                               # case 34: change + eventual extinction
 				 (u[(n.+Ck_sub_i)].*u[Cj_sub_i] 
@@ -279,6 +284,7 @@ parameterized_ClaSSE_Es_v5_print = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -304,7 +310,7 @@ parameterized_ClaSSE_Es_v5_print = (du,u,p,t) -> begin
 
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -325,6 +331,7 @@ parameterized_ClaSSE_Es_v5 = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -350,7 +357,7 @@ parameterized_ClaSSE_Es_v5 = (du,u,p,t) -> begin
 
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -364,6 +371,7 @@ parameterized_ClaSSE_Ds_v5 = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -393,7 +401,7 @@ parameterized_ClaSSE_Ds_v5 = (du,u,p,t) -> begin
 		Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum(Cijk_vals[Ci_eq_i] .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -410,6 +418,7 @@ parameterized_ClaSSE_Es_v5orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -435,7 +444,7 @@ parameterized_ClaSSE_Es_v5orig = (du,u,p,t) -> begin
 
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -452,6 +461,7 @@ parameterized_ClaSSE_Es_v6 = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
   #Cijk_rates = p.params.Cijk_rates
@@ -505,7 +515,7 @@ parameterized_ClaSSE_Es_v6 = (du,u,p,t) -> begin
 		#	(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			sum((Cijk_vals[Ci_eq_i]./ Cijk_pair_sub_i) .* u[Cj_sub_i] .* u[Ck_sub_i]) + # case 4: both go extinct
 			sum(((Cijk_vals[Ci_eq_i]./ Cijk_pair_sub_i) .* u[Cj_sub_i] .* u[Ck_sub_i]) .* (Cijk_pair_sub_i.-1.0)) # case 4, reversed
@@ -521,6 +531,7 @@ parameterized_ClaSSE_Ds_v6 = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -552,7 +563,7 @@ parameterized_ClaSSE_Ds_v6 = (du,u,p,t) -> begin
 		Cijk_rates_sub_i = p.p_TFs.Cijk_rates_sub_i[i] # The Cijk rates for anc==i
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum((Cijk_vals[Ci_eq_i] ./ Cijk_pair_sub_i) .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -571,6 +582,7 @@ parameterized_ClaSSE_Es_v6orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
   #Cijk_rates = p.params.Cijk_rates
@@ -624,7 +636,7 @@ parameterized_ClaSSE_Es_v6orig = (du,u,p,t) -> begin
 		#	(two * sum(Cijk_vals[Ci_eq_i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			sum((Cijk_vals[Ci_eq_i]./ Cijk_pair_sub_i) .* u[Cj_sub_i] .* u[Ck_sub_i]) + # case 4: both go extinct
 			sum(((Cijk_vals[Ci_eq_i]./ Cijk_pair_sub_i) .* u[Cj_sub_i] .* u[Ck_sub_i]) .* (Cijk_pair_sub_i.-1.0)) # case 4, reversed
@@ -643,6 +655,7 @@ parameterized_ClaSSE_Ds_v6orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -674,7 +687,7 @@ parameterized_ClaSSE_Ds_v6orig = (du,u,p,t) -> begin
 		Cijk_rates_sub_i = p.p_TFs.Cijk_rates_sub_i[i] # The Cijk rates for anc==i
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum((Cijk_vals[Ci_eq_i] ./ Cijk_pair_sub_i) .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -695,6 +708,7 @@ parameterized_ClaSSE_Es_v7orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
 #  Qij_vals = p.params.Qij_vals
 #  Cijk_vals = p.params.Cijk_vals
 	
@@ -722,7 +736,7 @@ parameterized_ClaSSE_Es_v7orig = (du,u,p,t) -> begin
 
 		# Calculation of "E" (prob. of extinction)
 		du[i] = mu[i] +                                         # case 1: lineage extinction
-			-(sum(Cijk_rates_sub_i[i]) + sum(Qij_vals_sub_i[i]) + mu[i])*u[i] +  # case 2: no event + eventual extinction
+			-(sum(Cijk_rates_sub_i[i]) + sum(Qij_vals_sub_i[i]) + mu[i] + psi[i])*u[i] +  # case 2: no event + eventual extinction
 			(sum(Qij_vals_sub_i[i] .* u[Qj_sub_i])) + 			# case 3: change + eventual extinction
 			(sum(Cijk_rates_sub_i[i] .* u[Cj_sub_i] .* u[Ck_sub_i])) 
 			# case 4 & 5: speciation from i producing j,k or k,j, eventually both daughters go extinct
@@ -738,6 +752,7 @@ parameterized_ClaSSE_Ds_v7orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
 #  Qij_vals = p.params.Qij_vals
 #  Cijk_vals = p.params.Cijk_vals
 	
@@ -769,7 +784,7 @@ parameterized_ClaSSE_Ds_v7orig = (du,u,p,t) -> begin
 		#Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_rates_sub_i[i]) + sum(Qij_vals_sub_i[i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_rates_sub_i[i]) + sum(Qij_vals_sub_i[i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals_sub_i[i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum(Cijk_rates_sub_i[i] .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -786,6 +801,7 @@ parameterized_ClaSSE_Ds_v5orig = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
   Qij_vals = p.params.Qij_vals
   Cijk_vals = p.params.Cijk_vals
 	
@@ -815,7 +831,7 @@ parameterized_ClaSSE_Ds_v5orig = (du,u,p,t) -> begin
 		Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i])*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum(Cijk_vals[Ci_eq_i] .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
@@ -833,6 +849,7 @@ parameterized_ClaSSE_Ds_v7_forloops_sucks = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
 #  Qij_vals = p.params.Qij_vals
 #  Cijk_vals = p.params.Cijk_vals
 	
@@ -888,7 +905,7 @@ parameterized_ClaSSE_Ds_v7_forloops_sucks = (du,u,p,t) -> begin
 			terms[3] += tmp_Qij_val * u[p.p_TFs.Qj_sub_i[i]][it]
 		end
 		
-		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+		du[i] = -(terms[1] + terms[2] + mu[i] + psi[i])*u[i] + terms[3] + terms[4]
   end
 end
 
@@ -1091,6 +1108,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
   mu_t = p.params.mu_vals_t # mu_t = mu at time t
+  psi_t = p.params.psi_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   @inbounds for i in 1:n
@@ -1135,7 +1153,7 @@ parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = mu_t[i] -(p.terms[1] + p.terms[2] + mu_t[i] + psi_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v10_simd_sums = (du,u,p,t) -> begin
 
@@ -1154,6 +1172,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
   mu_t = p.params.mu_vals_t # mu_t = mu at time t
+  psi_t = p.params.psi_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
   @inbounds for i in 1:n
@@ -1247,7 +1266,7 @@ parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 		
 		
 		
-		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + mu_t[i] + psi_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Ds_v10_simd_sums = (du,u,p,t) -> begin
 
@@ -1267,6 +1286,7 @@ parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
+  psi = p.params.psi_vals # base extinction rate of each range
   ##mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
@@ -1311,7 +1331,7 @@ parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
 		# Works
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = mu[i] -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = mu[i] -(p.terms[1] + p.terms[2] + mu[i] + psi[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v11_simd_sums = (du,u,p,t) -> begin
 
@@ -1329,6 +1349,7 @@ parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals # base extinction rate of each range
+  psi = p.params.psi_vals # base extinction rate of each range
   ##mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
   # Populate changing mus with time
@@ -1377,7 +1398,7 @@ parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
 		#p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals[p.p_TFs.Qi_sub_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = -(p.terms[1] + p.terms[2] + mu[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + mu[i] + psi[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Ds_v11_simd_sums = (du,u,p,t) -> begin
 
@@ -1396,6 +1417,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
+#  p.params.psi_vals_t .= p.interpolators.psi_vals_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
@@ -1413,7 +1435,7 @@ parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i] + p.params.psi_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
 end # END parameterized_ClaSSE_Es_v12_simd_sums = (du,u,p,t) -> begin
 
@@ -1428,6 +1450,7 @@ parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
   #p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
+#  p.params.psi_vals_t .= p.interpolators.psi_vals_interpolator(t)
    
   # Update 
   # p.p_TFs.Cijk_rates_sub_i_t[i] is replaced by p.params.Cijk_rates_t[p.p_TFs.Ci_eq_i[i]]
@@ -1445,7 +1468,7 @@ parameterized_ClaSSE_Es_v12_simd_sums_print = (du,u,p,t) -> begin
 		#terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 		
-		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = p.params.mu_vals_t[i] -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i] + p.params.psi_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
   
   return(du)
@@ -1459,6 +1482,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
+#  p.params.psi_vals_t .= p.interpolators.psi_vals_interpolator(t)
 
 	# Pre-calculated solution of the Es
 	uE = p.sol_Es_v12(t)
@@ -1476,7 +1500,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i_index[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 
 
-		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i] + p.params.psi_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
   end
   
 end # END parameterized_ClaSSE_Ds_v12_simd_sums = (du,u,p,t) -> begin
@@ -1491,6 +1515,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
   p.params.Qij_vals_t .= p.interpolators.Q_vals_interpolator(t)
   p.params.Cijk_rates_t .= p.interpolators.C_rates_interpolator(t)
   p.params.mu_vals_t .= p.interpolators.mu_vals_interpolator(t)
+#  p.params.psi_vals_t .= p.interpolators.psi_vals_interpolator(t)
 
 	# Pre-calculated solution of the Es
 	uE = p.sol_Es_v12(t)
@@ -1508,7 +1533,7 @@ parameterized_ClaSSE_Ds_v12_simd_sums_noNegs = (du,u,p,t) -> begin
 		p.terms[2], p.terms[3] = sum_Qij_vals_inbounds_simd(p.params.Qij_vals_t[p.p_TFs.Qi_eq_i_index[i]], u, p.p_TFs.Qj_sub_i[i]; term2=p.terms[2], term3=p.terms[3])
 
 
-		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
+		du[i] = -(p.terms[1] + p.terms[2] + p.params.mu_vals_t[i] + p.params.psi_vals_t[i])*u[i] + p.terms[3] + p.terms[4]
 
 		# Negative values may be expected due to numerical approximations; to
 		# prevent these blowing up:

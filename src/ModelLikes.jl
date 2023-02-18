@@ -512,7 +512,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# direct ancestors have to be manually identified as fossils
 	# (because you could have direct ancestors e.g. for visualization,
 	#  hypothesis-testing, or regime purposes)
-	fossil_TF = ((trdf.node_age .<= fossils_older_than) .+ (trdf.nodeType .== "tip")) .== 2
+	fossil_TF = ((trdf.node_age .>= fossils_older_than) .+ (trdf.nodeType .== "tip")) .== 2
 	direct_TF = trdf.nodeType .== "direct"
 	
 	birthRate = bmo.est[bmo.rownames .== "birthRate"][1]
