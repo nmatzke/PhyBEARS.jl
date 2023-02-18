@@ -241,7 +241,7 @@ end # END getranges_from_LagrangePHYLIP
 #######################################################
 # Put the tip ranges into the likelihoods
 #######################################################
-function tipranges_to_tiplikes(inputs, geog_df)
+function tipranges_to_tiplikes(inputs, geog_df; fossils_older_than=1.0e-5)
 	# Error check
 	taxa = inputs.trdf.taxa
 	tipnames = sort(taxa[inputs.trdf.nodeType .== "tip"])
@@ -308,6 +308,12 @@ function tipranges_to_tiplikes(inputs, geog_df)
 end # END function tipranges_to_tiplikes ()
 
 
+#######################################################
+# Modify tiplikes by:
+#######################################################
+# psi, sampling rate
+# rho (sampling_f)
+# rho (tipsamp_f)
 
 
 # Check that the tree and the geog file have matching tip labels

@@ -933,6 +933,7 @@ parameterized_ClaSSE_Es_v7_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
 #  Qij_vals = p.params.Qij_vals
 #  Cijk_vals = p.params.Cijk_vals
 	
@@ -977,7 +978,7 @@ parameterized_ClaSSE_Es_v7_simd_sums = (du,u,p,t) -> begin
 	
 		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		
-		du[i] = mu[i] -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+		du[i] = mu[i] -(terms[1] + terms[2] + mu[i] + psi[i])*u[i] + terms[3] + terms[4]
   end
 end
 
@@ -1025,6 +1026,7 @@ parameterized_ClaSSE_Ds_v7_simd_sums = (du,u,p,t) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
+  psi = p.params.psi_vals
 #  Qij_vals = p.params.Qij_vals
 #  Cijk_vals = p.params.Cijk_vals
 	
@@ -1071,7 +1073,7 @@ parameterized_ClaSSE_Ds_v7_simd_sums = (du,u,p,t) -> begin
 	
 		terms[2], terms[3] = sum_Qij_vals_inbounds_simd(p.p_TFs.Qij_vals_sub_i[i], u, p.p_TFs.Qj_sub_i[i]; term2=terms[2], term3=terms[3])
 		
-		du[i] = -(terms[1] + terms[2] + mu[i])*u[i] + terms[3] + terms[4]
+		du[i] = -(terms[1] + terms[2] + mu[i] + psi[i])*u[i] + terms[3] + terms[4]
   end
 end
 

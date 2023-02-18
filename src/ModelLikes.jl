@@ -426,9 +426,10 @@ manual_states_list=NaN
 area_names=LETTERS(1:numareas)
 fossils_older_than=1e-5 # tips older than this are treated as fossils
 
-great_ape_newick_string = "((((human:2.5,Lucy:2.5):3.5,chimpanzee:6):1,gorilla:7):5,orangutan:12);"
-tr = readTopology(great_ape_newick_string)
-tr
+great_ape_newick_string = "((((human:2.5,Lucy:0.1):3.5,chimpanzee:6):1,gorilla:7):5,orangutan:12);";
+tr = readTopology(great_ape_newick_string);
+trtable = prt(tr);
+trtable
 
 # Geography data: geog_df
 # A=Africa, B=nonAfrica
@@ -506,7 +507,13 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	tipnodes = trdf[!,1][trdf[!,10].=="tip"]
 	
 	# Determine fossils and direct ancestors, store in setup
-	fossil_TF = 
+	
+	# Initially: just tip fossils
+	# direct ancestors have to be manually identified as fossils
+	# (because you could have direct ancestors e.g. for visualization,
+	#  hypothesis-testing, or regime purposes)
+	fossil_TF = ((trdf.node_age .<= fossils_older_than) .+ (trdf.nodeType .== "tip")) .== 2
+	direct_TF = trdf.nodeType .== "direct"
 	
 	birthRate = bmo.est[bmo.rownames .== "birthRate"][1]
 	deathRate = bmo.est[bmo.rownames .== "deathRate"][1]
@@ -914,7 +921,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	min_stepsize = 1.0
 	
 	
-	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
+	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, fossil_TF=fossil_TF, direct_TF=direct_TF, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
 	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)
@@ -926,7 +933,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	inputs = (setup=setup, res=res, trdf=trdf, bmo=bmo, files=files, solver_options=solver_options, p_Ds_v5=p_Ds_v5, Es_tspan=Es_tspan)
 	# Parse the geography as well!  This updates inputs.res
-	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df);
+	inputs = Parsers.tipranges_to_tiplikes(inputs, geog_df; fossils_older_than=fossils_older_than);
 
 	# Update the p_Ds_v5, based on the bmo
 	p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
