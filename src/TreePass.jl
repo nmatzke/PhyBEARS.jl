@@ -115,6 +115,11 @@ struct Res
 	calctime_iterations::Array{Float64}
 
 	# Likelihood calculations
+	sampling_f::Vector{Float64}	# corresponds to sampling.f of diversitree::make.classe
+															# proportion of species sampled in each kth state
+	tipsamp_f::Vector{Float64}	# corresponds to sampling freq of a tip representing a clade
+															# (may get used later)
+
 	sumLikes_at_node_at_branchTop::Array{Float64}
 	lnL_at_node_at_branchTop::Array{Float64}
 	lq_at_branchBot::Array{Float64}
@@ -155,7 +160,7 @@ function construct_Res_old()
 	#   forwards and backwards in time
 	regime = [1 1 1 1 1 1 1]
 
-	n = 1 # number of states
+	n = 1 # number of states (not nodes)
 	node_state = ["ready_for_branchOp", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready", "ready_for_branchOp", "not_ready"]
 	node_method = collect(repeat(["unknown"], length(node_state)))
 	node_Lparent_state = ["NA", "NA", "not_ready", "NA", "not_ready", "NA", "not_ready"]
@@ -171,6 +176,9 @@ function construct_Res_old()
 	calc_end_time = collect(repeat([Dates.now()], numNodes))
 	calc_duration = collect(repeat([0.0], numNodes))
 	calctime_iterations = [0.0, 0.0]
+
+	sampling_f = Vector{Float64}(ones(n))
+	tipsamp_f = Vector{Float64}(ones(numNodes)) # We will only use the tips
 
 	sumLikes_at_node_at_branchTop = collect(repeat([0.0], numNodes))
 	lnL_at_node_at_branchTop = collect(repeat([0.0], numNodes))
@@ -201,7 +209,7 @@ function construct_Res_old()
 	anc_estimates_at_each_nodeIndex_branchTop = collect(repeat([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], n))
 
 
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sampling_f=sampling_f, tipsamp_f=tipsamp_f, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -232,6 +240,9 @@ function construct_Res()
 # 	likes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchTop = repeat([likes_OneNode], numNodes)
 # 	normlikes_at_each_nodeIndex_branchBot = repeat([likes_OneNode], numNodes)
+
+	sampling_f = Vector{Float64}(ones(n))
+	tipsamp_f = Vector{Float64}(ones(numNodes)) # We will only use the tips
 
 	Es_at_each_nodeIndex_branchTop = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
 	Es_at_each_nodeIndex_branchBot = [Vector{Float64}(zeros(n)) for _ = 1:numNodes]
@@ -277,7 +288,7 @@ function construct_Res()
 
 	calctime_iterations = [0.0, 0.0]
 
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sampling_f=sampling_f, tipsamp_f=tipsamp_f, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -319,6 +330,11 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 	# Set up an array of length nstates (n), to hold the likelihoods for each node
 	n = 1
 	blank_states = collect(repeat([0.0], n))
+
+	sampling_f = Vector{Float64}(ones(n))
+	tipsamp_f = Vector{Float64}(ones(numNodes)) # We will only use the tips
+
+
 # 	likes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
 # 	likes_at_each_nodeIndex_branchBot = collect(repeat([blank_states], numNodes))
 # 	normlikes_at_each_nodeIndex_branchTop = collect(repeat([blank_states], numNodes))
@@ -394,7 +410,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sampling_f=sampling_f, tipsamp_f=tipsamp_f, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end
 
@@ -430,6 +446,9 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	#   forwards and backwards in time
 	regime = collect(repeat([1], numNodes))
 
+
+	sampling_f = Vector{Float64}(ones(n))
+	tipsamp_f = Vector{Float64}(ones(numNodes)) # We will only use the tips
 	
 	# Set up an array of length nstates (n), to hold the likelihoods for each node
 	blank_states = collect(repeat([0.0], n))
@@ -499,7 +518,7 @@ function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 	number_of_whileLoop_iterations = [0]	
 
 	# Initialize res object
-	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
+	res = Res(regime, node_state, node_method, node_Lparent_state, node_Rparent_state, root_nodeIndex, numNodes, uppass_edgematrix, thread_for_each_nodeOp, thread_for_each_branchOp, calc_spawn_start, calc_start_time, calc_end_time, calc_duration, calctime_iterations, sampling_f=sampling_f, tipsamp_f=tipsamp_f, sumLikes_at_node_at_branchTop, lnL_at_node_at_branchTop, lq_at_branchBot, like_at_branchBot, Es_at_each_nodeIndex_branchTop, Es_at_each_nodeIndex_branchBot, fakeX0s_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchTop, normlikes_at_each_nodeIndex_branchTop, likes_at_each_nodeIndex_branchBot, normlikes_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchBot, fixNodesMult_at_each_nodeIndex_branchTop, uppass_probs_at_each_nodeIndex_branchBot, anc_estimates_at_each_nodeIndex_branchBot, uppass_probs_at_each_nodeIndex_branchTop,anc_estimates_at_each_nodeIndex_branchTop)
 	return res
 end # END function construct_Res(tr::PhyloBits.PNtypes.HybridNetwork, n)
 
