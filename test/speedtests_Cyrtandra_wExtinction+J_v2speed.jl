@@ -228,7 +228,7 @@ pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 # Calculate array of Gflow matrices with float64 matrix multiplication
 (Gseg_times, Gflows_array, Gflows_array_totals, Gflows_dict) = Gmap = Gmaps.construct_Gmap_interpolator(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-(Gseg_timesD, Gflows_arrayD, Gflows_array_totalsD, Gflows_dictD) = GmapD = construct_Gmap_interpolator_float64(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
+(Gseg_timesD, Gflows_arrayD, Gflows_array_totalsD, Gflows_dictD) = GmapD = construct_Gmap_interpolator_float64D(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
 
 
 # These should be DIFFERENT, if extinction is positive!
