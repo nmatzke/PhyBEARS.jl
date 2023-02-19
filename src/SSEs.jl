@@ -52,7 +52,7 @@ parameterized_ClaSSE_Ds_v5orig_return_du = (du,u,p,t) -> begin
 		Ci_eq_i  = p.p_TFs.Ci_eq_i[i]
 
 		# Calculation of "D" (likelihood of tip data)
-		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i]))*u[i] +  # case 1: no event
+		du[i] = -(sum(Cijk_vals[Ci_eq_i]) + sum(Qij_vals[Qi_eq_i]) + mu[i] + psi[i])*u[i] +  # case 1: no event
 			(sum(Qij_vals[Qi_eq_i] .* u[Qj_sub_i])) + 	# case 2	
 			(sum(Cijk_vals[Ci_eq_i] .*                                               # case 3/4: change + eventual extinction
 				 (u[Ck_sub_i].*uE[Cj_sub_i] 
