@@ -1019,7 +1019,7 @@ end # END function nodeOp(current_nodeIndex, res; nodeOp_function=nodeOp_average
 # Example nodeOp when the node is a singleton (one descendant)
 # This one just passes the lnLs down, but others could be imagined
 # (e.g. for an area appearing/disappearing)
-function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
+function nodeOp_singleton!(current_nodeIndex, res, trdf; p_Ds_v5)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 
@@ -1238,7 +1238,7 @@ end # END function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5)
 
 
 # Node operation, combining probabilities from above (assumed to be fast)
-function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5, hooks_below=1e-6)
+function nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf; p_Ds_v5, hooks_below=1e-6)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -1376,7 +1376,7 @@ end # END function nodeOp_ClaSSE_v6!(current_nodeIndex, res; p_Ds_v5)
 
 # Node operation, combining probabilities from above (assumed to be fast)
 # Time-dependent!  Updates the Carray rates for this timepoint
-function nodeOp_ClaSSE_v12!(current_nodeIndex, res; p_Ds_v12, hooks_below=1e-6)
+function nodeOp_ClaSSE_v12!(current_nodeIndex, res, trdf; p_Ds_v12, hooks_below=1e-6)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 	
@@ -2232,7 +2232,7 @@ function iterative_downpass_Gflow_nonparallel_v1!(res; trdf, p_Ds_v5, Gflow, sol
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
 			
 			#res = nodeOp_ClaSSE_v5!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -2517,7 +2517,7 @@ function iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5, Gflow, sol
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
 			
 			#res = nodeOp_ClaSSE_v5!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -2852,7 +2852,7 @@ function iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf, p_Ds_v5, solver_op
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -3179,7 +3179,7 @@ function iterative_downpass_nonparallel_ClaSSE_v6old!(res; trdf, p_Ds_v5, solver
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -3488,7 +3488,7 @@ function iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_op
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -3821,7 +3821,7 @@ function iterative_downpass_parallel_ClaSSE_v6!(res; trdf, p_Ds_v5, solver_optio
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -4130,7 +4130,7 @@ function iterative_downpass_nonparallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -4464,7 +4464,7 @@ function iterative_downpass_parallel_ClaSSE_v6_solverFree!(res; trdf, p_Ds_v5, s
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v5)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v5)
 			# (updates res)
 		end
 	
@@ -4801,7 +4801,7 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v7)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v7)
 			# (updates res)
 		end
 	
@@ -5132,7 +5132,7 @@ function iterative_downpass_nonparallel_ClaSSE_v10!(res; trdf, p_Ds_v10, solver_
 			# Update the C_rates_t
 			current_node_time = trdf.node_age[current_nodeIndex]
 			update_QC_mats_time_t!(p_Ds_v10, current_node_time)
-			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v12=p_Ds_v10)
+			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, trdf, p_Ds_v12=p_Ds_v10)
 			# (updates res)
 		end
 	
@@ -5462,7 +5462,7 @@ function iterative_downpass_nonparallel_ClaSSE_v11!(res; trdf, p_Ds_v10, solver_
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v10)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v10)
 			# (updates res)
 		end
 	
@@ -5876,7 +5876,7 @@ function iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf, p_Ds_v12, solver_
 			# Update the Carray C_rates_t
 			current_node_time = trdf.node_age[current_nodeIndex]
 			update_QC_mats_time_t!(p_Ds_v12, current_node_time)
-			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, p_Ds_v12=p_Ds_v12)
+			res = nodeOp_ClaSSE_v12!(current_nodeIndex, res, trdf, p_Ds_v12=p_Ds_v12)
 			# (updates res)
 		end
 	
@@ -6259,7 +6259,7 @@ function iterative_downpass_parallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_optio
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v7)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v7)
 			# (updates res)
 		end
 	
@@ -6677,7 +6677,7 @@ function iterative_downpass_parallel_ClaSSE_v7d!(res; trdf, p_Ds_v7, solver_opti
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v7)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v7)
 			# (updates res)
 		end
 	
@@ -7109,7 +7109,7 @@ function iterative_downpass_parallel_ClaSSE_v7e!(res; trdf, p_Ds_v7, solver_opti
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v7)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v7)
 			# (updates res)
 		end
 	
@@ -7514,7 +7514,7 @@ function iterative_downpass_parallel_ClaSSE_v7c!(res; trdf, p_Ds_v7, solver_opti
 			#push!(tasks, Base.Threads.@spawn nodeOp(current_nodeIndex, res))
 			# Combine the downpass branch likelihoods
 			#nodeOp(current_nodeIndex, res, nodeOp_function=nodeOp_average_likes)
-			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, p_Ds_v5=p_Ds_v7)
+			res = nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf, p_Ds_v5=p_Ds_v7)
 			# (updates res)
 		end
 	
