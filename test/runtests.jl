@@ -14,6 +14,10 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 using PhyBEARS.Parsers
 
+numthreads = Base.Threads.nthreads()
+num_processes = Distributed.nprocs()
+
+
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/test/")
