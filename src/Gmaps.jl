@@ -27,7 +27,7 @@ using PhyBEARS.Flow
 
 print("...done.\n")
 
-export find_Gflow_increment_size, get_timebin, interp_from_Gmap, construct_Gmap_interpolator, construct_Gmap_interpolator_float64, construct_Gmap_interpolator_float64_parallel, construct_Gmap_interpolator_double64, construct_Gmap_interpolator_double64_parallel
+export find_Gflow_increment_size, get_timebin, interp_from_Gmap, construct_Gmap_interpolator, construct_Gmap_interpolator_float64, construct_Gmap_interpolator_float64D, construct_Gmap_interpolator_float64_parallel, construct_Gmap_interpolator_double64, construct_Gmap_interpolator_double64_parallel
 
 """
 include("/GitHub/PhyBEARS.jl/src/Gmaps.jl")
