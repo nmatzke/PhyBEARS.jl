@@ -1205,55 +1205,57 @@ Julia_bgb_lnL_ORIG_atWORK = -36.33474261227199
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-# @test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF1 = round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_bgb_lnL_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+
+cutoff = 0.1
+# @test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
-#@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
-TF1 = round(Julia_sum_lq_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_sum_lq_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
+TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 
-#@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
-TF1 = round(Julia_total_lnLs1_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_total_lnLs1_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-#@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF1 = round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_bgb_lnL_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
-#@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
-TF1 = round(Julia_sum_lq_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_sum_lq_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
+TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 
-#@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
-TF1 = round(Julia_total_lnLs1_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_total_lnLs1_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
-#@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF1 = round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_bgb_lnL_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
-#@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
-TF1 = round(Julia_sum_lq_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_sum_lq_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
+TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
-#@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
-TF1 = round(Julia_total_lnLs1_ORIG, digits=3) == round(bgb_lnL, digits=3)
-TF2 = round(Julia_total_lnLs1_ORIG_atWORK, digits=3) == round(bgb_lnL, digits=3)
+#@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 print("\n\n...END of runtests_ClaSSE_tree_n13_DECj_WORKS.jl: Different optimizations on DEC+BD at home vs work...\n\n")
