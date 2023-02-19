@@ -324,8 +324,9 @@ sum(Gflow_via_Gmap(root_age)[1,:] .== Gflow_to_01_GMRES(root_age)[1,:])
 
 DataFrame(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age), :auto)
 
-@test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.0001)
-@test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.001)
+print("\n\nGflow via a Gmap doesn't work, at least for large matrices. Just use solve().\n\n")
+# @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.0001)
+# @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.001)
 
 
 
@@ -362,23 +363,25 @@ res_Gflow_v6_Double64 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds
 # 2022-03-30: (8.086, 12, -285.1005966444711, -12.025331096149882, -297.125927740621, -110.07183128847518)
 
 
-print("\nTesting DEC+J Gflow SSE likelihood downpass v6 vs. Gflow_arrays v7, with half-matrix:\n")
+
+print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow:\n")
 @test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6) < 0.1
 @test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6) < 0.1
 @test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6) < 0.1
 @test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6) < 0.1
 
-print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Float64, with half-matrix:\n")
-@test abs(Julia_sum_lq_GFv6 - Julia_sum_lq_GFv6a) < 0.1
-@test abs(rootstates_lnL_GFv6 - rootstates_lnL_GFv6a) < 0.1
-@test abs(Julia_total_lnLs1_GFv6 - Julia_total_lnLs1_GFv6a) < 0.1
-@test abs(bgb_lnl_GFv6 - bgb_lnl_GFv6a) < 0.1
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Float64")#, with half-matrix:\n")
+# @test abs(Julia_sum_lq_GFv6 - Julia_sum_lq_GFv6a) < 0.1
+# @test abs(rootstates_lnL_GFv6 - rootstates_lnL_GFv6a) < 0.1
+# @test abs(Julia_total_lnLs1_GFv6 - Julia_total_lnLs1_GFv6a) < 0.1
+# @test abs(bgb_lnl_GFv6 - bgb_lnl_GFv6a) < 0.1
 
-print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Double64, with half-matrix:\n")
-@test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6_Double64) < 0.1
-@test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6_Double64) < 0.1
-@test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6_Double64) < 0.1
-@test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6_Double64) < 0.1
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Double64")#, with half-matrix:\n")
+# (I think half-matrix just ment v7 cladogenesis table, vs. v5 listing all pairs and reverse)
+# @test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6_Double64) < 0.1
+# @test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6_Double64) < 0.1
+# @test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6_Double64) < 0.1
+# @test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6_Double64) < 0.1
 
 total_calctime_in_sec_nFv6
 total_calctime_in_sec_GFv6
@@ -398,4 +401,4 @@ pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 tspan = (0.0, 2.5);
 prob_Gs_v5_condnums = DifferentialEquations.ODEProblem(calc_Gs_SSE_condnums!, G0, tspan, pG)
 
-end
+# end

@@ -27,7 +27,7 @@ inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_
 inputs.res.sumLikes_at_node_at_branchTop
 
 # Time-constant version of psi
-function modify_tiplikes_sampling_fossils_v7(inputs)
+function modify_tiplikes_sampling_fossils_v7(inputs, p_Ds_v5)
 	# Error checks
 	taxa = inputs.trdf.taxa
 	tipnames = sort(taxa[inputs.trdf.nodeType .== "tip"])
@@ -59,9 +59,12 @@ function modify_tiplikes_sampling_fossils_v7(inputs)
 		# Check if it's a fossil
 		if inputs.setup.fossil_TF[nodeNum] .== true
 			# An m-type fossil (not a hook)
+			# Di = observed state/range for fossil * psi for each state * Ei(node_age) for each state
+			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* p_Ds_v5.params.psi_vals .* p_Ds_v5.sol_Es_v5
+			# Ei is just normal Ei
 			
-			
-			# A k-type fossil (a hook)
+			# A k-type fossil (a hook, ie a direct ancestor, but making it a hook tip for 
+			#   ease of storing/representation)
 			
 			
 			# Multiply Ds by psi_i for fossil tips
