@@ -383,6 +383,7 @@ function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5)
 				# Unlike Beaulieu & O'Meara, we assume there is trait information for the fossil
 				inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* p_Ds_v5.params.psi_vals
 				# Ei for node is just normal Ei(t)
+			end # END if inputs.trdf.hook[nodeNum] == false
 		else
 			# For living tips:
 			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* inputs.res.sampling_f[nodeNum]
