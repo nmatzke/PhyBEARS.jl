@@ -1,11 +1,11 @@
+"""
 #######################################################
-# Modify tiplikes by:
+Modify tiplikes by:
 #######################################################
-# psi, sampling rate for serially-sampled fossils
-# rho (sampling_f)
-# rho (tipsamp_f)
+psi, sampling rate for serially-sampled fossils
+rho (sampling_f)
+rho (tipsamp_f)
 
-current_nodeIndex
 
 res.sampling_f		# rho sampling probabilities for each state
 res.tipsamp_f    	# sampling probabilities for each tip (a priori) -- the problem with this
@@ -25,9 +25,9 @@ inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum] .= 0.0     # zero out
 inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_statenums[i]] = 1.0
 inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_statenums[i]] = 1.0
 inputs.res.sumLikes_at_node_at_branchTop
-
+"""
 # Time-constant version of psi
-function modify_tiplikes_sampling_fossils_v7(inputs, p_Ds_v5)
+function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5)
 	# Error checks
 	taxa = inputs.trdf.taxa
 	tipnames = sort(taxa[inputs.trdf.nodeType .== "tip"])
@@ -55,29 +55,32 @@ function modify_tiplikes_sampling_fossils_v7(inputs, p_Ds_v5)
 		spname = geog_df[i,:tipnames]
 		TF = spname .== inputs.trdf[!,:nodeName]
 		nodeNum = trdf_nodenums[TF][1]
-		
+		node_age = trdf.node_age[nodeNum]
 		# Check if it's a fossil
-		if inputs.setup.fossil_TF[nodeNum] .== true
-			# An m-type fossil (not a hook)
-			# Di = observed state/range for fossil * psi for each state * Ei(node_age) for each state
-			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* p_Ds_v5.params.psi_vals .* p_Ds_v5.sol_Es_v5
-			# Ei is just normal Ei
+		if inputs.setup.fossil_TF[nodeNum] == true
+			if inputs.trdf.hook[nodeNum] == false
+				# An m-type fossil (not a hook)
+				# Di = observed state/range for fossil * psi for each state * Ei(node_age) for each state
+				inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* p_Ds_v5.params.psi_vals .* p_Ds_v5.sol_Es_v5(node_age)
+				# Ei for node is just normal Ei(t)
+			else
+				# A k-type fossil (a hook, ie a direct ancestor, but making it a hook tip for 
+				#   ease of storing/representation)
+				# Di = observed state/range for fossil * psi for each state * Ei(node_age) for each state
+				# Unlike Beaulieu & O'Meara, we assume there is trait information for the fossil
+				inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* p_Ds_v5.params.psi_vals
+				# Ei for node is just normal Ei(t)
+		else
+			# For living tips:
+			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* inputs.res.sampling_f[nodeNum]
+			# (In the E's calculation, which should have been done already, 
+			#  the tip Es will be, instead of 0.0... : u0 .= 1 .- inputs.res.sampling_f[nodeNum]
 			
-			# A k-type fossil (a hook, ie a direct ancestor, but making it a hook tip for 
-			#   ease of storing/representation)
-			
-			
-			# Multiply Ds by psi_i for fossil tips
-			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* inputs.p_Ds_v5.params.psi_vals
-		end
-		
-		# Input likelihoods of 1 for the observed state, 0 otherwise
-		inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= 0.0         # zero out
-		inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum] .= 0.0     # zero out
-		inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_statenums[i]] = 1.0
-		inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_statenums[i]] = 1.0
-		inputs.res.sumLikes_at_node_at_branchTop[nodeNum] = 1.0
-	end
+		end # END if inputs.setup.fossil_TF[nodeNum] == true
 
+	inputs.res.sumLikes_at_node_at_branchTop[nodeNum] = sum(inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum])
+	inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] ./ inputs.res.sumLikes_at_node_at_branchTop[nodeNum]
+		
+	end
 	
 end
