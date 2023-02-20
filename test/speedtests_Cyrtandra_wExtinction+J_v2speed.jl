@@ -370,13 +370,13 @@ print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow:\n")
 @test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6) < 0.1
 @test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6) < 0.1
 
-print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Float64")#, with half-matrix:\n")
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Float64\n")#, with half-matrix:\n")
 # @test abs(Julia_sum_lq_GFv6 - Julia_sum_lq_GFv6a) < 0.1
 # @test abs(rootstates_lnL_GFv6 - rootstates_lnL_GFv6a) < 0.1
 # @test abs(Julia_total_lnLs1_GFv6 - Julia_total_lnLs1_GFv6a) < 0.1
 # @test abs(bgb_lnl_GFv6 - bgb_lnl_GFv6a) < 0.1
 
-print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Double64")#, with half-matrix:\n")
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Double64\n")#, with half-matrix:\n")
 # (I think half-matrix just ment v7 cladogenesis table, vs. v5 listing all pairs and reverse)
 # @test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6_Double64) < 0.1
 # @test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6_Double64) < 0.1

@@ -1019,7 +1019,7 @@ end # END function nodeOp(current_nodeIndex, res; nodeOp_function=nodeOp_average
 # Example nodeOp when the node is a singleton (one descendant)
 # This one just passes the lnLs down, but others could be imagined
 # (e.g. for an area appearing/disappearing)
-function nodeOp_singleton!(current_nodeIndex, res, trdf; p_Ds_v5)
+function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 	res.node_state[current_nodeIndex] = "calculating_nodeOp"
 	uppass_edgematrix = res.uppass_edgematrix
 
