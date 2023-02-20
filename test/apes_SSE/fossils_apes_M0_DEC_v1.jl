@@ -46,7 +46,8 @@ bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :
 # Psychotria tree from Ree & Smith 2008
 trfn = "apes_tree.newick"
 trstr = "(((chimp:1.0,(human:0.5):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
-tr = readTopology(trstr)
+#tr = readTopology(trstr)
+tr = readTopology(trfn)
 trdf = prt(tr)
 oldest_possible_age = 100.0
 
@@ -97,6 +98,35 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 @testset "Apes DEC lnL" begin
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 end
+
+resNF = deepcopy(res);
+Julia_sum_lqNF = deepcopy(Julia_sum_lq)
+rootstates_lnL_NF = deepcopy(rootstates_lnL)
+Julia_total_lnLs1_NF = deepcopy(Julia_total_lnLs1)
+bgb_lnL_NF = deepcopy(bgb_lnL)
+trdfNF = deepcopy(trdf)
+
+Julia_sum_lq - Julia_sum_lqNF
+Julia_total_lnLs1 - Julia_total_lnLs1_NF
+rootstates_lnL - rootstates_lnL_NF
+bgb_lnL - bgb_lnL_NF
+
+vfft(res.normlikes_at_each_nodeIndex_branchTop)
+vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
+
+vfft(res.likes_at_each_nodeIndex_branchTop)
+vfft(resNF.likes_at_each_nodeIndex_branchTop)
+
+vfft(res.likes_at_each_nodeIndex_branchBot)
+vfft(resNF.likes_at_each_nodeIndex_branchBot)
+
+
+# This is the difference?
+resNF.likes_at_each_nodeIndex_branchTop[3][2]
+log(resNF.likes_at_each_nodeIndex_branchTop[3][2])
+
+trdf
+trdfNF
 
 
 # All ancestral states:
