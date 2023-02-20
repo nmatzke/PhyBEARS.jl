@@ -1029,7 +1029,7 @@ function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 	TF = uppass_edgematrix[:,1] .== current_nodeIndex
 	
 	# Singleton nodes
-	if (sum(TF) == 1)
+	if (sum(TF) == 1) # Only one match to the current_nodeIndex
 		# Get likelihoods from above (iterates up to tips)
 		parent_nodeIndexes = uppass_edgematrix[TF,2]
 		#tmp1 = res.likes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
@@ -1062,11 +1062,18 @@ function nodeOp_singleton!(current_nodeIndex, res; p_Ds_v5)
 		# down from the bottom of the branch above (no Cmat calculation needed)
 		
 		# No fixNodes multiplier, since this is a branch-bottom, which has already been used
-		nodeData_at_top = res.likes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
-
+		#nodeData_at_top = res.likes_at_each_nodeIndex_branchBot[parent_nodeIndexes[1]]
+		nodeData_at_top = tmp1 .* res.fixNodesMult_at_each_nodeIndex_branchTop[current_nodeIndex]
+		
 		# Somehow adding .+ 0.0 individualizes the assignment!
 		#sum_likes_at_node = sum(nodeData_at_top)
 		sum_likes_at_node = sum(nodeData_at_top)
+
+		# Error trap 2022-03-10
+		if sum_likes_at_node < 0.0
+		 sum_likes_at_node = 1e-1500
+		end
+
 		#sum_likes_at_node = 1.0
 		res.likes_at_each_nodeIndex_branchTop[current_nodeIndex] = (nodeData_at_top .+ 0.0)
 		res.likes_at_each_nodeIndex_branchTop[current_nodeIndex]
