@@ -1208,19 +1208,36 @@ Julia_bgb_lnL_ORIG_atWORK = -36.33474261227199
 
 cutoff = 0.1
 # @test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
-TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
+bgb_diffs = Julia_bgb_lnL_ORIG - bgb_lnL
+bgb_diffs_atWORK = Julia_bgb_lnL_ORIG_atWORK - bgb_lnL
+
+print("\nbgb_diffs: ")
+print(bgb_diffs)
+print("\nbgb_diffs_atWORK: ")
+print(bgb_diffs_atWORK)
+
+TF1 = abs(bgb_diffs) < cutoff
+TF2 = abs(bgb_diffs_atWORK) < cutoff
 @test TF1 || TF2
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
-TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
+
+Julia_sum_lq_diffs = Julia_sum_lq_ORIG - Julia_sum_lq
+Julia_sum_lq_diffs_atWORK = Julia_sum_lq_ORIG_atWORK - Julia_sum_lq
+
+print("\nJulia_sum_lq_diffs: ")
+print(Julia_sum_lq_diffs)
+print("\nJulia_sum_lq_diffs_atWORK: ")
+print(Julia_sum_lq_diffs_atWORK)
+
+TF1 = abs(Julia_sum_lq_diffs) < cutoff
+TF2 = abs(Julia_sum_lq_diffs_atWORK) < cutoff
 @test TF1 || TF2
 
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
-TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
 @test TF1 || TF2
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
@@ -1231,14 +1248,14 @@ TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
-TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
+TF1 = abs(Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
+TF2 = abs(Julia_sum_lq_ORIG_atWORK - Julia_sum_lq) < cutoff
 @test TF1 || TF2
 
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
-TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
 @test TF1 || TF2
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
@@ -1249,13 +1266,13 @@ TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
 @test TF1 || TF2
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
-TF1 = abs(Julia_sum_lq_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_sum_lq_ORIG_atWORK - bgb_lnL) < cutoff
+TF1 = abs(Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
+TF2 = abs(Julia_sum_lq_ORIG_atWORK - Julia_sum_lq) < cutoff
 @test TF1 || TF2
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
-TF1 = abs(Julia_total_lnLs1_ORIG - bgb_lnL) < cutoff
-TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - bgb_lnL) < cutoff
+TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
+TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
 @test TF1 || TF2
 
 print("\n\n...END of runtests_ClaSSE_tree_n13_DECj_WORKS.jl: Different optimizations on DEC+BD at home vs work...\n\n")
