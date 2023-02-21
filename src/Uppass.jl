@@ -1271,7 +1271,7 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
 	
-	# Combine info through node; Store results
+	# Combine info through node; pass the probabilities up to the branch bottoms
 	# Check if its a tip node
 	if (trdf.nodeType[current_nodeIndex] == "tip")
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
@@ -1311,9 +1311,15 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# rather than going through the nodeOp_Cmat_get_condprobs(), just
 		# calculate the uppass probabilities directly
 		if (hookTF == true)
+			Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
+			Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+			
 			uppass_lprobs = repeat([0.0], n)
 			uppass_rprobs = repeat([0.0], n)
 			for statei in 1:n
+				# Calculating uppass probs for the branch-bottom of the hook, 
+				# and the branch bottom of the other branch
+				# ...so just...
 				# multiply by the downpass likelihoods from the non-target branch (brings in that info)
 				uppass_lprobs[statei] = uppass_probs_just_below_node[statei] * Rdownpass_likes[statei]
 				uppass_rprobs[statei] = uppass_probs_just_below_node[statei] * Ldownpass_likes[statei]
@@ -1376,8 +1382,14 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	
 	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
 	elseif (trdf.nodeType[current_nodeIndex] == "direct")
+
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
+		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] = res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] ./ sum(res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex])
+
 		# If it's LITERALLY A DIRECT NODE (no side branch), just pass up the likelihoods
 		# leftNodeIndex is the one that is used
+		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
 		uppass_lprobs = repeat([0.0], n)
 		for statei in 1:n
 			uppass_lprobs[statei] = uppass_probs_just_below_node[statei] # * Rdownpass_likes[statei] # No other branch feeding in

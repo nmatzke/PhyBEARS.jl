@@ -408,7 +408,7 @@ end
 	great_ape_newick_string = "(((human:6,chimpanzee:6):1,gorilla:7):5,orangutan:12);"
 	tr = readTopology(great_ape_newick_string)
 	rootnodenum = tr.root
-	trdf = prt(tr, rootnodenum)
+	trdf = prt(tr)
 	@test trdf[!, :node_age] == node_ages_in_prt
 end
 

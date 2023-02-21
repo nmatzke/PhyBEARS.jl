@@ -201,12 +201,13 @@ trdfNF
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
+index_branchBots = [1,8,3,4,5,6,7]
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
-df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][index_branchBots])
 df1 = df1top = bgb_ancstates_AT_nodes_df
-df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][1:7])
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)
@@ -214,7 +215,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-ind = [1,2,4,5,6,7,8]
+
 
 @testset "Apes DEC ancstates" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot[ind,:]; tol=1e-4) .== 1.0))
