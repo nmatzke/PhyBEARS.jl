@@ -1741,7 +1741,7 @@ function branchOp_ClaSSE_Ds_v7(current_nodeIndex, res; u0, tspan, p_Ds_v7, solve
 # 	print(p_Ds_v5.params.Qij_vals[length(p_Ds_v5.params.Qij_vals)])
 # 	print("\n")
 	
-	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums, deepcopy(u0), tspan, p_Ds_v7)
+	prob_Ds_v7 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v7_simd_sums, deepcopy(u0), deepcopy(tspan), p_Ds_v7)
 
 	#sol_Ds = solve(prob_Ds_v7, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 	
@@ -4665,7 +4665,7 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 #			if (parallel_TF == true)
 #				push!(tasks, Base.Threads.@spawn branchOp(current_nodeIndex, res, num_iterations=num_iterations))
 #			else
-			tmp_results = branchOp_ClaSSE_Ds_v7(current_nodeIndex, res, u0=u0, tspan=tspan, p_Ds_v7=p_Ds_v7, solver_options=solver_options)
+			tmp_results = branchOp_ClaSSE_Ds_v7(current_nodeIndex, res, u0=deepcopy(u0), tspan=deepcopy(tspan), p_Ds_v7=p_Ds_v7, solver_options=solver_options)
 			#tmp_results = branchOp(current_nodeIndex, res, num_iterations)
 			push!(tasks, tmp_results)			 # Add results to "tasks"
 #			end
@@ -4702,6 +4702,7 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 						nodeData_at_bottom[TF] .= nan_val
 					end # END if sum(TF) > 0
 					# Error check:
+					"""
 					TF = nodeData_at_bottom .> 1.0
 					if sum(TF) > 0
 						correction_val = 1.0
@@ -4711,7 +4712,7 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 						nodeData_at_bottom[TF] .= correction_val
 						nodeData_at_bottom .= nodeData_at_bottom ./ sum(nodeData_at_bottom)
 					end # END if sum(TF) > 0
-
+					"""
 
 
 					# Store run information
