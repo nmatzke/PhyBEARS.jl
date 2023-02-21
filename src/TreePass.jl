@@ -4702,7 +4702,7 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 						nodeData_at_bottom[TF] .= nan_val
 					end # END if sum(TF) > 0
 					# Error check:
-					"""
+					junk="""
 					TF = nodeData_at_bottom .> 1.0
 					if sum(TF) > 0
 						correction_val = 1.0

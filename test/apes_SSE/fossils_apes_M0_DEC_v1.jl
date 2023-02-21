@@ -45,7 +45,7 @@ bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :
 
 # Psychotria tree from Ree & Smith 2008
 trfn = "apes_tree.newick"
-trstr = "(((chimp:1.0,(human:0.5):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
+#trstr = "(((chimp:1.0,(human:0.5):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
 #tr = readTopology(trstr)
 tr = readTopology(trfn)
 trdf = prt(tr)
@@ -117,8 +117,8 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 vfft(res.likes_at_each_nodeIndex_branchTop)
 vfft(resNF.likes_at_each_nodeIndex_branchTop)
 
-vfft(res.likes_at_each_nodeIndex_branchBot)
-vfft(resNF.likes_at_each_nodeIndex_branchBot)
+ind = [1,2,4,5,6,7,8]
+vfft(res.likes_at_each_nodeIndex_branchBot[ind,:]) ./ vfft(resNF.likes_at_each_nodeIndex_branchBot)
 
 
 # This is the difference?
