@@ -1175,6 +1175,8 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	elseif (trdf.nodeType[current_nodeIndex] == "direct")
 		# If it's LITERALLY A DIRECT NODE (no side branch), just pass up the likelihoods
 		# leftNodeIndex is the one that is used
+		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
+
 		uppass_lprobs = repeat([0.0], n)
 		for statei in 1:n
 			uppass_lprobs[statei] = uppass_probs_just_below_node[statei] # * Rdownpass_likes[statei] # No other branch feeding in
