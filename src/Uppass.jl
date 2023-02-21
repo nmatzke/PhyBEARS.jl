@@ -1460,27 +1460,25 @@ function uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates
 	# Do it in pairs (left branch, then right branch)
 	# uppass_edgematrix: column 1 is ancestral node numbers (i.e. rows of trdf)
 	#                    column 2 is descendant node numbers (i.e. rows of trdf)
-	ivals_odd = odds(1:Rnrow(uppass_edgematrix))
-	for i in ivals_odd
+
+	list_of_tuples = uppass_edgematrix_to_tuples(res.uppass_edgematrix)
+	for item in list_of_tuples
 		#print(i)
-		j = i+1
-		# Error check: Check the uppass edge matrix; 
-		ancnode1 = uppass_edgematrix[i,1]
-		ancnode2 = uppass_edgematrix[j,1]
-		if (ancnode1 == ancnode2)
-			ancnode = ancnode1
-		else
-			stoptxt = paste0(["STOP ERROR in uppass_ancstates_v5!(): error in res.uppass_edgematrix. This matrix should have pairs of rows, indicating pairs of branches. The node numbers in column 1 should match within this pair, but in your res.uppass_edgematrix, they do not. Error detected at res.uppass_edgematrix row i=", i, ", row j=", j, ". Printing this section of the res.uppass_edgematrix, below."])
-			print("\n")
-			print(stoptxt)
-			print("\n")
-			print(res.uppass_edgematrix[i:j,:])
-			print("\n")
-			error(stoptxt)
-		end # END if (ancnode1 == ancnode2)
-	
-		Lnode = uppass_edgematrix[i,2]
-		Rnode = uppass_edgematrix[j,2]
+		if (length(item) == 3)
+			# Error check: Check the uppass edge matrix; 
+			#ancnode1 = uppass_edgematrix[i,1]
+			#ancnode2 = uppass_edgematrix[j,1]
+			ancnode = item[1]
+			Lnode = item[2]
+			Rnode = item[3]
+		end
+
+		if (length(item) == 2)
+			# Error check: Check the uppass edge matrix; 
+			ancnode = item[1]
+			Lnode = item[2]
+			Rnode = -999
+		end
 		
 		# Work up through the nodes, starting from the root
 		current_nodeIndex = ancnode
