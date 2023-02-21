@@ -43,7 +43,7 @@ bgb_ancstates_AT_nodes = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 6.42693382782259e-14,
 bgb_ancstates_AT_branchBots_df = DataFrame(reshape(bgb_ancstates_AT_branchBots, (7, 4)), :auto)
 bgb_ancstates_AT_nodes_df = DataFrame(reshape(bgb_ancstates_AT_nodes, (7, 4)), :auto)
 
-# Psychotria tree from Ree & Smith 2008
+# Ape tree, with or without fossils
 trfn = "apes_tree.newick"
 #trstr = "(((chimp:1.0,(human:0.5):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
 #tr = readTopology(trstr)
@@ -90,7 +90,9 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+prtCp(p_Ds_v7)
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
+prtCp(p_Ds_v7)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
@@ -105,6 +107,73 @@ rootstates_lnL_NF = deepcopy(rootstates_lnL)
 Julia_total_lnLs1_NF = deepcopy(Julia_total_lnLs1)
 bgb_lnL_NF = deepcopy(bgb_lnL)
 trdfNF = deepcopy(trdf)
+p_Ds_v7_NF = deepcopy(p_Ds_v7);
+
+prtCp(p_Ds_v7_NF)
+
+
+
+# Ape tree, with or without fossils
+#trfn = "apes_tree.newick"
+trstr = "(((chimp:1.0,(human:0.5):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
+tr = readTopology(trstr)
+trdf = prt(tr)
+oldest_possible_age = 100.0
+
+lgdata_fn = "geog.data"
+geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
+include_null_range = true
+numareas = Rncol(geog_df)-1
+max_range_size = numareas
+n = numstates_from_numareas(numareas, max_range_size, include_null_range)
+
+# DEC-type SSE model on Hawaiian Psychotria
+# We are setting "j" to 0.0000001, for now -- so, no jump dispersal
+bmo = construct_BioGeoBEARS_model_object();
+bmo.type[bmo.rownames .== "j"] .= "fixed";
+bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0;
+bmo.est[bmo.rownames .== "d"] .= 0.1010557;
+bmo.est[bmo.rownames .== "e"] .= 1e-12;
+bmo.est[bmo.rownames .== "a"] .= 0.0;
+bmo.est[bmo.rownames .== "j"] .= 0.0;
+bmo.est[bmo.rownames .== "u"] .= 0.0;
+bmo.est[bmo.rownames .== "x"] .= 0.0;
+
+bmo.est[:] .= bmo_updater_v1_SLOW(bmo);
+
+# Set up the model
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
+
+# Solve the Es
+prob_Es_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, Es_tspan, p_Es_v7);
+sol_Es_v7 = solve(prob_Es_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
+
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+prtCp(p_Ds_v7)
+p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
+prtCp(p_Ds_v7)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+prtQp(p_Ds_v7)
+prtQp(p_Ds_v7_NF)
+prtCp(p_Ds_v7)
+prtCp(p_Ds_v7_NF)
+
+
+
+
+
 
 Julia_sum_lq - Julia_sum_lqNF
 Julia_total_lnLs1 - Julia_total_lnLs1_NF
