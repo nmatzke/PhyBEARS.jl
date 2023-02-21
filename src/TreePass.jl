@@ -4702,17 +4702,15 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 						nodeData_at_bottom[TF] .= nan_val
 					end # END if sum(TF) > 0
 					# Error check:
-					junk="""
-					TF = nodeData_at_bottom .> 1.0
-					if sum(TF) > 0
-						correction_val = 1.0
-						#txt = paste0(["\Overflow issue in iterative_downpass_Gflow_nonparallel_v2!(): at nodeIndex ", string(spawned_nodeIndex), ", nodeData_at_bottom had values > 1.0. Probably this is due to very bad parameter values. Correcting these values so that the conditional likelihoods sum to 1.0=", string(nan_val), ". Printing nodeData_at_bottom to screen:\n"])
-						#print(txt)
-						#print(nodeData_at_bottom)
-						nodeData_at_bottom[TF] .= correction_val
-						nodeData_at_bottom .= nodeData_at_bottom ./ sum(nodeData_at_bottom)
-					end # END if sum(TF) > 0
-					"""
+# 					TF = nodeData_at_bottom .> 1.0
+# 					if sum(TF) > 0
+# 						correction_val = 1.0
+# 						#txt = paste0(["\Overflow issue in iterative_downpass_Gflow_nonparallel_v2!(): at nodeIndex ", string(spawned_nodeIndex), ", nodeData_at_bottom had values > 1.0. Probably this is due to very bad parameter values. Correcting these values so that the conditional likelihoods sum to 1.0=", string(nan_val), ". Printing nodeData_at_bottom to screen:\n"])
+# 						#print(txt)
+# 						#print(nodeData_at_bottom)
+# 						nodeData_at_bottom[TF] .= correction_val
+# 						nodeData_at_bottom .= nodeData_at_bottom ./ sum(nodeData_at_bottom)
+# 					end # END if sum(TF) > 0
 
 
 					# Store run information
