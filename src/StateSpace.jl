@@ -528,7 +528,7 @@ function get_default_inputs(n=2)
 	great_ape_newick_string = "((chimp:1,human:1):1,gorilla:2);"
 	tr = readTopology(great_ape_newick_string)
 	rootnodenum = tr.root
-	trdf = prt(tr, rootnodenum)
+	trdf = prt(tr; rootnodenum=rootnodenum)
 	#trdf
 	
 	# Set up a simple MuSSE model

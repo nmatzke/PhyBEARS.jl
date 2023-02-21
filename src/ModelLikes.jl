@@ -101,7 +101,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 
 	res = construct_Res(tr, n)
 	rootnodenum = tr.root
-	trdf = prt(tr, rootnodenum)
+	trdf = prt(tr; rootnodenum=rootnodenum)
 	tipnodes = trdf[!,1][trdf[!,10].=="tip"]
 	
 	birthRate = in_params.birthRate
@@ -503,7 +503,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	res = construct_Res(tr, n)
 	rootnodenum = tr.root
-	trdf = prt(tr, rootnodenum)
+	trdf = prt(tr; rootnodenum=rootnodenum)
 	tipnodes = trdf[!,1][trdf[!,10].=="tip"]
 	
 	# Determine fossils and direct ancestors, store in setup
@@ -993,7 +993,7 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	
 	res = construct_Res(tr, n)
 	rootnodenum = tr.root
-	trdf = prt(tr, rootnodenum)
+	trdf = prt(tr; rootnodenum=rootnodenum)
 	tipnodes = trdf[!,1][trdf[!,10].=="tip"]
 	
 	birthRate = in_params.birthRate
