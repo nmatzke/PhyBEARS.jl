@@ -216,6 +216,14 @@ compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
 
+uppass_ancstates_v7!(resNF, trdfNF, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+R_order = sort(trdfNF, :Rnodenums).nodeIndex
+df1 = df1bot = bgb_ancstates_AT_branchBots_df
+df2 = df2bot = vfft(resNF.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+df1 = df1top = bgb_ancstates_AT_nodes_df
+df2 = df2top = vfft(resNF.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+
+
 
 @testset "Apes DEC ancstates" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot[ind,:]; tol=1e-4) .== 1.0))

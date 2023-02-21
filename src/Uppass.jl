@@ -1382,6 +1382,8 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 	
 	# res.uppass_probs_at_each_nodeIndex_branchBot[R_order]
 	elseif (trdf.nodeType[current_nodeIndex] == "direct")
+		# Get uppass probs for Left and Right daughter branches
+		node_above_Left_corner = trdf.leftNodeIndex[current_nodeIndex]  # it doesn't seem to matter which, it all propagates through
 
 		res.uppass_probs_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .+ 0.0
 		res.anc_estimates_at_each_nodeIndex_branchTop[current_nodeIndex] .= uppass_probs_just_below_node .* res.normlikes_at_each_nodeIndex_branchTop[current_nodeIndex]
