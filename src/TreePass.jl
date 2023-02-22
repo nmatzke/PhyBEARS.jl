@@ -1166,7 +1166,7 @@ function nodeOp_ClaSSE_v5!(current_nodeIndex, res; p_Ds_v5, hooks_below=1e-6)
 		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
 		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
 		
-		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+		if (brlen_above_Left_corner <= hooks_below) || (brlen_above_Right_corner <= hooks_below)
 			nodeData_at_top .= tmp1 .* tmp2
 		else
 			nodeData_at_top = nodeOp_Cmat(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
@@ -1302,7 +1302,7 @@ function nodeOp_ClaSSE_v6!(current_nodeIndex, res, trdf; p_Ds_v5, hooks_below=1e
 		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
 		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
 		
-		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+		if (brlen_above_Left_corner <= hooks_below) || (brlen_above_Right_corner <= hooks_below)
 			nodeData_at_top .= tmp1 .* tmp2
 		else
 			nodeData_at_top = nodeOp_Cmat2(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v5=p_Ds_v5)
@@ -1439,7 +1439,7 @@ function nodeOp_ClaSSE_v12!(current_nodeIndex, res, trdf; p_Ds_v12, hooks_below=
 		brlen_above_Left_corner = trdf.brlen[parent_nodeIndexes[1]]
 		brlen_above_Right_corner = trdf.brlen[parent_nodeIndexes[2]]
 		
-		if (brlen_above_Left_corner < hooks_below) || (brlen_above_Right_corner < hooks_below)
+		if (brlen_above_Left_corner <= hooks_below) || (brlen_above_Right_corner <= hooks_below)
 			nodeData_at_top .= tmp1 .* tmp2
 		else
 			nodeData_at_top = nodeOp_Cmat_v12(nodeData_at_top, tmp1=tmp1, tmp2=tmp2, p_Ds_v12=p_Ds_v12)

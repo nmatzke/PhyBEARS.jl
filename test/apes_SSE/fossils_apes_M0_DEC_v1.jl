@@ -306,6 +306,7 @@ prtCp(p_Ds_v7)
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 prtCp(p_Ds_v7)
 
+solver_options=inputs.solver_options; max_iterations=10^5; return_lnLs=true
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 prtQp(p_Ds_v7)
