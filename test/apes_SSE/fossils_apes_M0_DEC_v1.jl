@@ -221,7 +221,7 @@ get_max_df_diffs_byCol(df1bot, df2bot)
 compare_dfs(df1top, df2top; tol=1e-4)
 get_max_df_diffs_byCol(df1top, df2top)
 
-@testset "Apes DEC ancstates with a direct ancestor" begin
+@testset "Apes DEC ancstates, with a direct ancestor" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
@@ -234,7 +234,7 @@ df2 = df2bot = vfft(resNF.anc_estimates_at_each_nodeIndex_branchBot[R_order])
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(resNF.anc_estimates_at_each_nodeIndex_branchTop[R_order])
 
-@testset "Apes DEC ancstates" begin
+@testset "Apes DEC ancstates, with a direct ancestor" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
@@ -246,9 +246,10 @@ end
 
 
 
-
-
+#######################################################
 # Ape tree, with hooknode
+#######################################################
+
 #trfn = "apes_tree.newick"
 trstr = "(((chimp:1.0,(human:0.5,fossil:1.0e-6):0.5):1.0,gorilla:2.0):1.0,orang:3.0);"
 tr = readTopology(trstr)
@@ -337,8 +338,8 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 
 
-@testset "Apes DEC lnL, tree with a hooknode ancestor node" begin
-	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
+@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL" begin
+	@test abs(R_bgb_lnL - (bgb_lnL+log(1/4))) < 1e-5
 
 	@test abs((Julia_sum_lq+log(1/4)) - Julia_sum_lqNF) < 1e-5
 	@test abs((Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF) < 1e-5
@@ -347,6 +348,21 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 end
 
+# Ancestral states
+uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+ind = [1,2,5,6,7,8,9] # cut the hooknode/tip from the Julia-ordered table
+R_order = sort(trdf, :Rnodenums).nodeIndex
+Rind = [1,2,4,5,6,7,8] # cut the hooknode/tip from the R-ordered table
+
+df1 = df1bot = bgb_ancstates_AT_branchBots_df
+df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][Rind])
+df1 = df1top = bgb_ancstates_AT_nodes_df
+df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][Rind])
+
+@testset "Apes DEC ancstates, after adding a fossil hooktip with all 1s" begin
+	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
+	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
+end
 
 
 
