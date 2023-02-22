@@ -4869,8 +4869,8 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 	ttl_tree_length = sum(trdf.brlen[trdf.brlen .> 0.0])
 	
 	# Get numInternal, numTips, but leaving out direct ancestors and hook tips/nodes
-	num_speciation_nodes = get_num_speciation_nodes(tr)
-	num_tips_from_speciation = get_num_tips_from_speciation(tr)
+	num_speciation_nodes = get_num_speciation_nodes(trdf)
+	num_tips_from_speciation = get_num_tips_from_speciation(trdf)
 	
 	yuleBirthRate = (num_speciation_nodes-1) / ttl_tree_length
 	yuleDeathRate = 0.0					# Yule process has 0 extinction
