@@ -25,7 +25,7 @@ wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
 cd(wd)
 
 """
-include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
+include("/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
 """
 
 #######################################################
@@ -35,7 +35,7 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl
 # Run with:
 # source("/GitHub/PhyBEARS.jl/ex/compare_BGB_diversitree_DEC+J_v1.R")
 # Truth:
-#R_bgb_lnL = -4.481012
+R_bgb_lnL = -4.481012
 
 # BioGeoBEARS ancestral states under DEC+J
 bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 9.55885872371469e-14, 0.999999999997088, 1.02736516865682e-13, 2.3942137600093e-13, NaN, 0.0212357703981079, 0.0324086154040224, 0.999999999998852, 1.85939277741373e-12, 0.999999999999754, 0.999999999999244, NaN, 0.757828224601766, 0.630413600097194, 1.05227375864171e-12, 1.05227375864171e-12, 1.43663791560109e-13, 5.17042461743951e-13, NaN, 0.220936005000126, 0.337177784498784];
