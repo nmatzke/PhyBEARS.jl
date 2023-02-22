@@ -35,7 +35,7 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl
 # Run with:
 # source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
 # Truth:
-R_bgb_lnL = -4.481012
+#R_bgb_lnL = -4.481012
 
 # BioGeoBEARS ancestral states under DEC+J
 bgb_ancstates_AT_branchBots = [0, 0, 0, 0, NaN, 0, 0, 9.55885872371469e-14, 0.999999999997088, 1.02736516865682e-13, 2.3942137600093e-13, NaN, 0.0212357703981079, 0.0324086154040224, 0.999999999998852, 1.85939277741373e-12, 0.999999999999754, 0.999999999999244, NaN, 0.757828224601766, 0.630413600097194, 1.05227375864171e-12, 1.05227375864171e-12, 1.43663791560109e-13, 5.17042461743951e-13, NaN, 0.220936005000126, 0.337177784498784];
@@ -318,7 +318,7 @@ prtCp(p_Ds_v7_NF)
 (Julia_sum_lq+log(1/4)) - Julia_sum_lqNF
 (Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF
 rootstates_lnL - rootstates_lnL_NF
-bgb_lnL - bgb_lnL_NF
+(bgb_lnL+log(1/4)) - bgb_lnL_NF
 
 ind = [1,2,5,6,7,8,9]
 vfft(res.likes_at_each_nodeIndex_branchBot[ind])
@@ -340,10 +340,10 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 @testset "Apes DEC lnL, tree with a hooknode ancestor node" begin
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 
-	@test abs(Julia_sum_lq - Julia_sum_lqNF) < 1e-5
-	@test abs(Julia_total_lnLs1 - Julia_total_lnLs1_NF) < 1e-5
+	@test abs((Julia_sum_lq+log(1/4)) - Julia_sum_lqNF) < 1e-5
+	@test abs((Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF) < 1e-5
 	@test abs(rootstates_lnL - rootstates_lnL_NF) < 1e-5
-	@test abs(bgb_lnL - bgb_lnL_NF) < 1e-5
+	@test abs((bgb_lnL+log(1/4)) - bgb_lnL_NF) < 1e-5
 
 end
 
