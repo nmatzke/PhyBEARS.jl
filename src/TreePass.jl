@@ -4866,8 +4866,13 @@ function iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7, solver_op
 	
 	# Consider the pure-birth log-likelihoods
 	# The Yule-process ML birthrate is just (# internal nodes - 1)/total_tree_length
-	ttl_tree_length = sum(trdf.brlen[trdf.brlen.>0.0])
-	yuleBirthRate = (numInternal-1) / ttl_tree_length
+	ttl_tree_length = sum(trdf.brlen[trdf.brlen .> 0.0])
+	
+	# Get numInternal, numTips, but leaving out direct ancestors and hook tips/nodes
+	num_speciation_nodes = get_num_speciation_nodes(tr)
+	num_tips_from_speciation = get_num_tips_from_speciation(tr)
+	
+	yuleBirthRate = (num_speciation_nodes-1) / ttl_tree_length
 	yuleDeathRate = 0.0					# Yule process has 0 extinction
 	bd = bd_liks_trdf(trdf, yuleBirthRate, yuleDeathRate)
 	bd_lnL_noTopo = bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_numtips_wOneMinusDeathRate + bd.lnl_branching_times

@@ -314,24 +314,25 @@ prtQp(p_Ds_v7_NF)
 prtCp(p_Ds_v7)
 prtCp(p_Ds_v7_NF)
 
-Julia_sum_lq - Julia_sum_lqNF
-Julia_total_lnLs1 - Julia_total_lnLs1_NF
+# You added a hook tip with equal chance of any state, this adds a 1/4 multiplier to marginal likelihoods
+(Julia_sum_lq+log(1/4)) - Julia_sum_lqNF
+(Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF
 rootstates_lnL - rootstates_lnL_NF
 bgb_lnL - bgb_lnL_NF
 
-
-vfft(res.likes_at_each_nodeIndex_branchBot)
+ind = [1,2,5,6,7,8,9]
+vfft(res.likes_at_each_nodeIndex_branchBot[ind])
 vfft(resNF.likes_at_each_nodeIndex_branchBot)
 
-vfft(res.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop[ind])
 vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 
 
-vfft(res.likes_at_each_nodeIndex_branchTop)
+vfft(res.likes_at_each_nodeIndex_branchTop[ind])
 vfft(resNF.likes_at_each_nodeIndex_branchTop)
 
-vfft(res.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop[ind])
 vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 
