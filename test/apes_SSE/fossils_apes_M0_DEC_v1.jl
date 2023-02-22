@@ -33,7 +33,7 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl
 # ON SIMPLE great ape phylogeny, 4-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source("/GitHub/PhyBEARS.jl/ex/compare_BGB_diversitree_DEC+J_v1.R")
 # Truth:
 #R_bgb_lnL = -4.481012
 
