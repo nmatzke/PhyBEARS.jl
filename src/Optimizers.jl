@@ -172,6 +172,7 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v5.params.mu_vals[:] .= p_Ds_v5.params.mu_vals
+		inputs.p_Ds_v5.params.psi_vals[:] .= p_Ds_v5.params.psi_vals
 		inputs.p_Ds_v5.params.Qij_vals[:] .= p_Ds_v5.params.Qij_vals
 		inputs.p_Ds_v5.params.Cijk_weights[:] .= p_Ds_v5.params.Cijk_weights
 		inputs.p_Ds_v5.params.Cijk_vals[:] .= p_Ds_v5.params.Cijk_vals
@@ -337,6 +338,7 @@ function func_to_optimize_nonparallel_v7(pars, parnames, inputs, p_Ds_v5; return
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v5.params.mu_vals[:] .= p_Ds_v5.params.mu_vals
+		inputs.p_Ds_v5.params.psi_vals[:] .= p_Ds_v5.params.psi_vals
 		inputs.p_Ds_v5.params.Qij_vals[:] .= p_Ds_v5.params.Qij_vals
 		inputs.p_Ds_v5.params.Cijk_weights[:] .= p_Ds_v5.params.Cijk_weights
 		inputs.p_Ds_v5.params.Cijk_vals[:] .= p_Ds_v5.params.Cijk_vals
@@ -523,6 +525,7 @@ function func_to_optimize_parallel_v7(pars, parnames, inputs, p_Ds_v5; returnval
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v5.params.mu_vals[:] .= p_Ds_v5.params.mu_vals
+		inputs.p_Ds_v5.params.psi_vals[:] .= p_Ds_v5.params.psi_vals
 		inputs.p_Ds_v5.params.Qij_vals[:] .= p_Ds_v5.params.Qij_vals
 		inputs.p_Ds_v5.params.Cijk_weights[:] .= p_Ds_v5.params.Cijk_weights
 		inputs.p_Ds_v5.params.Cijk_vals[:] .= p_Ds_v5.params.Cijk_vals
@@ -695,6 +698,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v5.params.mu_vals[:] .= p_Ds_v5.params.mu_vals
+		inputs.p_Ds_v5.params.psi_vals[:] .= p_Ds_v5.params.psi_vals
 		inputs.p_Ds_v5.params.Qij_vals[:] .= p_Ds_v5.params.Qij_vals
 		inputs.p_Ds_v5.params.Cijk_weights[:] .= p_Ds_v5.params.Cijk_weights
 		inputs.p_Ds_v5.params.Cijk_vals[:] .= p_Ds_v5.params.Cijk_vals
@@ -864,6 +868,7 @@ function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", 
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v5.params.mu_vals[:] .= p_Ds_v5.params.mu_vals
+		inputs.p_Ds_v5.params.psi_vals[:] .= p_Ds_v5.params.psi_vals
 		inputs.p_Ds_v5.params.Qij_vals[:] .= p_Ds_v5.params.Qij_vals
 		inputs.p_Ds_v5.params.Cijk_weights[:] .= p_Ds_v5.params.Cijk_weights
 		inputs.p_Ds_v5.params.Cijk_vals[:] .= p_Ds_v5.params.Cijk_vals
@@ -1036,6 +1041,7 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 	if returnval == "inputs"
 		# Rates vectors
 		inputs.p_Ds_v12.params.mu_vals[:] .= p_Ds_v12.params.mu_vals
+		inputs.p_Ds_v12.params.psi_vals[:] .= p_Ds_v12.params.psi_vals
 		inputs.p_Ds_v12.params.Qij_vals[:] .= p_Ds_v12.params.Qij_vals
 		inputs.p_Ds_v12.params.Cijk_weights[:] .= p_Ds_v12.params.Cijk_weights
 		inputs.p_Ds_v12.params.Cijk_vals[:] .= p_Ds_v12.params.Cijk_vals
@@ -1863,7 +1869,9 @@ function p_Ds_v5_updater_v1(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
 	inputs.setup.jmat .= inputs.setup.dispersal_multipliers_mat.^w .* inputs.setup.distmat.^x .* inputs.setup.envdistmat.^n .* inputs.setup.distmat2.^x2 .* inputs.setup.distmat3.^x3
 	
 	# Update the mus
-	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.bmo.rownames .== "deathRate"][1]
+	#p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.bmo.rownames .== "deathRate"][1]
+	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate]
+	p_Ds_v5.params.psi_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.psiRate]
 	
 	# Now update the p_Ds_v5 (the rates) for Q matrix
 	p_Ds_v5 = update_Qij_vals2!(p_Ds_v5, inputs.setup.areas_list, inputs.setup.states_list, inputs.setup.dmat, inputs.setup.elist, inputs.setup.amat; return_df=false);
@@ -2878,8 +2886,9 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	# Now update the p_Ds_v5 (the rates) for Q matrix
 	p_Ds_v5 = update_Qij_vals2!(p_Ds_v5, inputs.setup.areas_list, inputs.setup.states_list, inputs.setup.dmat, inputs.setup.elist, inputs.setup.amat; return_df=false);
 
-	# Update the mus
-	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.bmo.rownames .== "deathRate"][1]
+	# Update the mus & psi
+	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate]
+	p_Ds_v5.params.psi_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.psiRate]
 	
 	# (The mu_vals_t might change with time; if so, see update_mus_time_t
 	# p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_mu]
