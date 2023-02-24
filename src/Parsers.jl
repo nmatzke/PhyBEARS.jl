@@ -368,7 +368,7 @@ function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
 		spname = geog_df[i,:tipnames]
 		TF = spname .== inputs.trdf[!,:nodeName]
 		nodeNum = trdf_nodenums[TF][1]
-		node_age = trdf.node_age[nodeNum]
+		node_age = inputs.trdf.node_age[nodeNum]
 		# Check if it's a fossil
 		if inputs.setup.fossil_TF[nodeNum] == true
 			if inputs.trdf.hook[nodeNum] == false
