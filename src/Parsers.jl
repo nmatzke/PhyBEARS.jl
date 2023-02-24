@@ -340,7 +340,7 @@ inputs.res.normlikes_at_each_nodeIndex_branchTop[nodeNum][inputs.setup.observed_
 inputs.res.sumLikes_at_node_at_branchTop
 """
 # Time-constant version of psi
-function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5)
+function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
 	# Error checks
 	taxa = inputs.trdf.taxa
 	tipnames = sort(taxa[inputs.trdf.nodeType .== "tip"])

@@ -435,7 +435,15 @@ res.normlikes_at_each_nodeIndex_branchTop[hooknode_num] .= 1.0
 
 
 # Modify the tip likelihoods
+p_Ds_v5.params.psi_vals
+inputs.bmo.est[inputs.setup.bmo_rows.psiRate] = 1.0;
+inputs.bmo.est .= bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
+p_Ds_v5_updater_v1!(inputs.p_Ds_v5, inputs)
+p_Ds_v5.params.psi_vals
 
+orig_likes = deepcopy(inputs.res.likes_at_each_nodeIndex_branchTop)
+modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
+inputs.res.likes_at_each_nodeIndex_branchTop
 
 p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
 
