@@ -439,7 +439,7 @@ end
 end
 
 @testset "Checks against BioGeoBEARS models, adding direct ancs, fossil hooknodes/tips to the tree" begin
-	include("/Users/nmat471/HD/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
+	include("/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
 end 
 
 @testset "Checks against diversitree's BiSSE" begin

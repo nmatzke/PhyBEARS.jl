@@ -350,7 +350,8 @@ function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
 	area_column_nums = 2:length(dfnames)
 	areas_txt_list = dfnames[area_column_nums]
 	numareas = length(inputs.setup.areas_list)
-
+	numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
+	
 	# Check if the number of areas in the geography file matches the number in the geog_df
 	if (inputs.setup.numareas != numareas)
 		txt = paste0(["STOP ERROR in tipranges_to_tiplikes(): inputs.setup.numareas=", numareas, ", but the number of areas in geog_df is ", numareas, ". Please fix and re-run."])
@@ -385,11 +386,13 @@ function modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
 				# Ei for node is just normal Ei(t)
 			end # END if inputs.trdf.hook[nodeNum] == false
 		else
+			# Sampling rates by state; initially fixed to e.g. sampling-prob-at-tip-age-by-state
 			# For living tips:
-			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* inputs.res.sampling_f[nodeNum]
+			inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .= inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum] .* inputs.res.sampling_f
+			# e.g. inputs.res.sampling_f has rates for 4 states
+			
 			# (In the E's calculation, which should have been done already, 
 			#  the tip Es will be, instead of 0.0... : u0 .= 1 .- inputs.res.sampling_f[nodeNum]
-			
 		end # END if inputs.setup.fossil_TF[nodeNum] == true
 
 	inputs.res.sumLikes_at_node_at_branchTop[nodeNum] = sum(inputs.res.likes_at_each_nodeIndex_branchTop[nodeNum])
