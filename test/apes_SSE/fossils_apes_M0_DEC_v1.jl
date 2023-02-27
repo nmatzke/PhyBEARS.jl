@@ -307,6 +307,10 @@ prtCp(p_Ds_v7)
 p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 prtCp(p_Ds_v7)
 
+# 2023-02-27
+#p_Ds_v7.params.psi_vals .= 0.00000001
+#modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v7, geog_df)
+
 solver_options=inputs.solver_options; max_iterations=10^5; return_lnLs=true
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
@@ -476,11 +480,52 @@ prtQp(p_Ds_v7_NF)
 prtCp(p_Ds_v7)
 prtCp(p_Ds_v7_NF)
 
+p_Ds_v7_NF.params.psi_vals
+p_Ds_v7.params.psi_vals
+
+nonroot_nodes = 1:nrow(trdf)
+keepTF = nonroot_nodes .!= tr.root
+nonroot_nodes = nonroot_nodes[keepTF]
+sum_edge_lengths = sum(trdf.brlen[nonroot_nodes])
+
 # You added a hook tip with equal chance of any state, this adds a 1/4 multiplier to marginal likelihoods
-(Julia_sum_lq+log(1/4)) - Julia_sum_lqNF
-(Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF
+(Julia_sum_lq+log(1)) - Julia_sum_lqNF
+(Julia_total_lnLs1+log(1)) - Julia_total_lnLs1_NF
 rootstates_lnL - rootstates_lnL_NF
-(bgb_lnL+log(1/4)) - bgb_lnL_NF
+(bgb_lnL+log(1)) - bgb_lnL_NF
+R_bgb_lnL - bgb_lnL
+
+
+
+#######################################################
+# The change in lnL is due to:
+#
+# 1. One fossil-sampling event, contributing log(psi) 
+#    to the log-likelihood
+# 
+# 2. 9 branch-length units of non-sampling, contributing
+#    -psi*9 to the lnL
+# 
+#######################################################
+
+# psi=1.0
+# difference: -3.202615406138527
+psi = 1.0
+log(psi) + -psi * sum_edge_lengths
+# -9.000001000000001
+
+
+# psi=0.1
+# difference: -3.202615406138527
+psi = 0.1
+log(psi) + -psi * sum_edge_lengths
+# -3.2025850929940455
+
+# psi=0.2
+# difference: -3.409511488102442
+psi = 0.2
+log(psi) + -psi * sum_edge_lengths
+
 
 ind = [1,2,5,6,7,8,9]
 vfft(res.likes_at_each_nodeIndex_branchBot[ind])
@@ -499,8 +544,65 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+psi = 1.0
+
+# Set up the model
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+# the Fossil hooknode is node #3;
+# replacing with all 1s, as this is about comparison to previous trees
+hooknode_num = 3
+res.likes_at_each_nodeIndex_branchTop[hooknode_num] .= 1.0
+
+p_Ds_v5.params.psi_vals
+inputs.bmo.est[inputs.setup.bmo_rows.psiRate] = psi;
+inputs.bmo.est .= bmo_updater_v1(inputs.bmo, inputs.setup.bmo_rows)
+p_Ds_v5_updater_v1!(inputs.p_Ds_v5, inputs)
+p_Ds_v5.params.psi_vals
+
+orig_likes = deepcopy(inputs.res.likes_at_each_nodeIndex_branchTop)
+modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
+inputs.res.likes_at_each_nodeIndex_branchTop
+
+p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
+
+# Solve the Es
+prob_Es_v7 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v7.uE, Es_tspan, p_Es_v7);
+sol_Es_v7 = solve(prob_Es_v7, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, p_TFs=p_Es_v7.p_TFs, uE=p_Es_v7.uE, terms=p_Es_v7.terms, setup=p_Es_v7.setup, states_as_areas_lists=p_Es_v7.states_as_areas_lists, use_distances=p_Es_v7.use_distances, bmo=p_Es_v7.bmo, sol_Es_v5=sol_Es_v7);
+
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+
+psi_modifier_to_lnL = log(psi) + -psi * sum_edge_lengths
+
+
+@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and subtracting a lnL" begin
+	@test abs((bgb_lnL - psi_modifier_to_lnL) - R_bgb_lnL) < 1e-4
+	@test abs((Julia_sum_lq - psi_modifier_to_lnL) - Julia_sum_lqNF) < 1e-4
+	@test abs((Julia_total_lnLs1 - psi_modifier_to_lnL) - Julia_total_lnLs1_NF) < 1e-4
+	@test abs(rootstates_lnL - rootstates_lnL_NF) < 1e-4
+	@test abs((bgb_lnL - psi_modifier_to_lnL) - bgb_lnL_NF) < 1e-4
+end
+
+
+
+
 @testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL" begin
-	@test abs(R_bgb_lnL - (bgb_lnL+log(1/4))) < 1e-5
+	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 
 	@test abs((Julia_sum_lq+log(1/4)) - Julia_sum_lqNF) < 1e-5
 	@test abs((Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF) < 1e-5
