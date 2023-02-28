@@ -319,7 +319,17 @@ prtQp(p_Ds_v7_NF)
 prtCp(p_Ds_v7)
 prtCp(p_Ds_v7_NF)
 
-# You added a hook tip with equal chance of any state, this adds a 1/4 multiplier to marginal likelihoods
+# You added a hook tip with 1s at any state state, this multiplies
+# the total marginal likelihood by 4
+Julia_sum_lq
+# -7.309498852764715
+
+Julia_sum_lqNF
+# -8.695784978077587
+
+log(exp(Julia_sum_lqNF) * 4)
+# -7.309490616957696
+
 (Julia_sum_lq+log(1/4)) - Julia_sum_lqNF
 (Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF
 rootstates_lnL - rootstates_lnL_NF
@@ -340,7 +350,7 @@ vfft(resNF.likes_at_each_nodeIndex_branchTop)
 vfft(res.normlikes_at_each_nodeIndex_branchTop[ind])
 vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
-
+res_wHookTip = deepcopy(res);
 
 @testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL" begin
 	@test abs(R_bgb_lnL - (bgb_lnL+log(1/4))) < 1e-5
@@ -488,7 +498,18 @@ keepTF = nonroot_nodes .!= tr.root
 nonroot_nodes = nonroot_nodes[keepTF]
 sum_edge_lengths = sum(trdf.brlen[nonroot_nodes])
 
-# You added a hook tip with equal chance of any state, this adds a 1/4 multiplier to marginal likelihoods
+# You added a hook tip with 1s at any state state, this originally multiplied
+# the total marginal likelihood by 4, but now with psi it's different
+# (When psi = 1.0, we add log(1.0) + -psi*9.0 to the lnL)
+Julia_sum_lq
+# -17.695774724445098
+
+Julia_sum_lqNF
+# -8.695784978077587
+
+Julia_sum_lqNF - 9
+# -17.695784978077587
+
 (Julia_sum_lq+log(1)) - Julia_sum_lqNF
 (Julia_total_lnLs1+log(1)) - Julia_total_lnLs1_NF
 rootstates_lnL - rootstates_lnL_NF
@@ -496,6 +517,42 @@ rootstates_lnL - rootstates_lnL_NF
 R_bgb_lnL - bgb_lnL
 
 
+# Where did the x4 multiplier go?!?
+res_wHookTip.lnL_at_node_at_branchTop
+res.lnL_at_node_at_branchTop
+
+res_wHookTip.like_at_branchBot
+res.like_at_branchBot
+
+res_wHookTip.likes_at_each_nodeIndex_branchTop
+res.likes_at_each_nodeIndex_branchTop
+
+# All branch bottoms different!
+# Node 3 has 1.0 vs. 0.25 here
+vfft(res_wHookTip.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop)
+
+log.(vfft(res_wHookTip.likes_at_each_nodeIndex_branchBot)) .- log.(vfft(res.likes_at_each_nodeIndex_branchBot))
+
+
+res_likes_at_each_nodeIndex_branchBot_mod = vfft(deepcopy(res.likes_at_each_nodeIndex_branchBot))
+res_likes_at_each_nodeIndex_branchBot_mod[[1,5,7],:] = res_likes_at_each_nodeIndex_branchBot_mod[[1,5,7],:] .* exp(1.0);
+res_likes_at_each_nodeIndex_branchBot_mod[[2,4],:] = res_likes_at_each_nodeIndex_branchBot_mod[[2,4],:] .* exp(1/2);
+res_likes_at_each_nodeIndex_branchBot_mod[[6],:] = res_likes_at_each_nodeIndex_branchBot_mod[[6],:] .* exp(2.0);
+res_likes_at_each_nodeIndex_branchBot_mod[[8],:] = res_likes_at_each_nodeIndex_branchBot_mod[[8],:] .* exp(3.0);
+1.38629 
+
+vfft(res_wHookTip.likes_at_each_nodeIndex_branchBot)
+vfft(res.likes_at_each_nodeIndex_branchBot)
+res_likes_at_each_nodeIndex_branchBot_mod
+
+# Node 3 has 1.0 vs. 0.25 here:
+vfft(res_wHookTip.normlikes_at_each_nodeIndex_branchTop)
+vfft(res.normlikes_at_each_nodeIndex_branchTop)
+
+# Node 3 has 1.0 vs. 4.0 here:
+res_wHookTip.sumLikes_at_node_at_branchTop
+res.sumLikes_at_node_at_branchTop
 
 #######################################################
 # The change in lnL is due to:
