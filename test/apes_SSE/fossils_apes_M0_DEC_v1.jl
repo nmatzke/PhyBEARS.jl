@@ -327,6 +327,7 @@ Julia_sum_lq
 Julia_sum_lqNF
 # -8.695784978077587
 
+# Multiply the raw likelihood by 4
 log(exp(Julia_sum_lqNF) * 4)
 # -7.309490616957696
 
@@ -352,7 +353,9 @@ vfft(resNF.normlikes_at_each_nodeIndex_branchTop)
 
 res_wHookTip = deepcopy(res);
 
-@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL" begin
+p_Ds_v7.params.psi_vals # All psi values are 0.0
+
+@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL (with psi=0.0)" begin
 	@test abs(R_bgb_lnL - (bgb_lnL+log(1/4))) < 1e-5
 
 	@test abs((Julia_sum_lq+log(1/4)) - Julia_sum_lqNF) < 1e-5
@@ -647,7 +650,7 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 psi_modifier_to_lnL = log(psi) + -psi * sum_edge_lengths
 
 
-@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and subtracting a lnL" begin
+@testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and subtracting a psi*9 lnL" begin
 	@test abs((bgb_lnL - psi_modifier_to_lnL) - R_bgb_lnL) < 1e-4
 	@test abs((Julia_sum_lq - psi_modifier_to_lnL) - Julia_sum_lqNF) < 1e-4
 	@test abs((Julia_total_lnLs1 - psi_modifier_to_lnL) - Julia_total_lnLs1_NF) < 1e-4
@@ -656,10 +659,13 @@ psi_modifier_to_lnL = log(psi) + -psi * sum_edge_lengths
 end
 
 
+res_wHookTip.
+
+
 
 
 @testset "Apes DEC lnL, after adding a fossil hooktip with all 1s, and adding a log(1/4) correction to the lnL" begin
-	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
+	@test abs(R_bgb_lnL - (bgb_lnL-psi_modifier_to_lnL)) < 1e-5
 
 	@test abs((Julia_sum_lq+log(1/4)) - Julia_sum_lqNF) < 1e-5
 	@test abs((Julia_total_lnLs1+log(1/4)) - Julia_total_lnLs1_NF) < 1e-5
