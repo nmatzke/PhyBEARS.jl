@@ -670,9 +670,6 @@ psi_modifier_to_lnL = log(psi) + -(psi * sum_edge_lengths)
 end
 
 
-res_wHookTip.
-
-
 
 # Ancestral states
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
