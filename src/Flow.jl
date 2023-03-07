@@ -704,6 +704,12 @@ parameterized_ClaSSE_As_v6 = (t, A, p; max_condition_number=1e8, print_warnings=
 	uE = p.uE
 	uE = sol_Es(t)
 	
+	# Terms for calculating floats
+	# p.terms
+	# Normally, the claSSE equation boils down to this:
+	# du[i] = -(terms[1] + terms[2] + mu[i] + psi[i])*u[i] + terms[3] + terms[4]
+	# ...but for A, we just need terms[1] and terms[2]
+	
 	two = 1.0
 	# Iterate through the ancestral states
   @inbounds for i in 1:n
