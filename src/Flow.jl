@@ -31,7 +31,7 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 print("...done.\n")
 
-export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_v7simd, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs, parameterized_ClaSSE_As_v7, parameterized_ClaSSE_As_v7_simd, sum_Qij_vals_inbounds_simd_A!, sum_Cijk_vals_inbounds_simd_A!
+export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_v7simd, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs, parameterized_ClaSSE_As_v7!, parameterized_ClaSSE_As_v7_simd!, sum_Qij_vals_inbounds_simd_A!, sum_Cijk_vals_inbounds_simd_A!
 
 
 
@@ -1809,7 +1809,7 @@ calc_Gs_SSE_v7simd = (dG, G, pG, t) -> begin
 	A = pG.A
 
 	p_Ds_v5 = pG.p_Ds_v5
-	A = parameterized_ClaSSE_As_v7_simd(t, A, p_Ds_v5)
+	A = parameterized_ClaSSE_As_v7_simd!(A, t, p_Ds_v5)
 	#display(A)
 	#dG = A * G
 	#display(G)
@@ -2396,7 +2396,7 @@ include("/Users/nmat471/HD/GitHub/PhyBEARS.jl/notes/parameterized_ClaSSE_As_v7.j
 
 
 
-parameterized_ClaSSE_As_v7 = (t, A, p) -> begin
+parameterized_ClaSSE_As_v7! = (A, t, p) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
@@ -2448,11 +2448,11 @@ parameterized_ClaSSE_As_v7 = (t, A, p) -> begin
 		A[i,i] -= p.params.mu_vals[i]
 		A[i,i] -= p.params.psi_vals[i]
 	end
+	return(A)
+end # END parameterized_ClaSSE_As_v7! = (A, t, p)
 
-end # END parameterized_ClaSSE_As_v7 = (t, A, p)
 
-
-parameterized_ClaSSE_As_v7_simd = (t, A, p) -> begin
+parameterized_ClaSSE_As_v7_simd! = (A, t, p) -> begin
   # Possibly varying parameters
   n = p.n
   mu = p.params.mu_vals
@@ -2492,8 +2492,8 @@ parameterized_ClaSSE_As_v7_simd = (t, A, p) -> begin
 		A[i,i] -= p.params.mu_vals[i]
 		A[i,i] -= p.params.psi_vals[i]
 	end
-
-end # END parameterized_ClaSSE_As_v7 = (t, A, p)
+	return(A)
+end # END parameterized_ClaSSE_As_v7_simd! = (A, t, p)
 
 
 

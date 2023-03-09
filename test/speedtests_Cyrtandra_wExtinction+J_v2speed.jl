@@ -219,6 +219,28 @@ nd = 3
 """
 
 
+
+# Repeat for Gflow v7
+# Gflow_v7 ClaSSE Gflow calculations
+G0 = Matrix{Float64}(I, n, n) ;
+# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
+tmpzero = repeat([0.0], n^2);
+A = reshape(tmpzero, (n,n));
+pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
+tspan = (0.0, 1.01 * maximum(trdf.node_age))
+prob_Gs_v5 = DifferentialEquations.ODEProblem(Gmaps.calc_Gs_SSE_v7simd, G0, tspan, pG);
+Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7
+archived_Gflow_v7 = deepcopy(res);
+
+
+
+
+
+
+
+
 root_age = trdf[tr.root,:node_age]
 num_incs = 100
 Gseg_times = seq(0.0, root_age, root_age/num_incs);
