@@ -2483,10 +2483,10 @@ parameterized_ClaSSE_As_v7_simd = (t, A, p) -> begin
 		# For a particular i/state, loop through all of the transitions from that state,
 		# for the Q matrix and the C matrix
 		# Q matrix
-		sum_Qij_vals_inbounds_simd_A!(A, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
+		sum_Qij_vals_inbounds_simd_A!(A, i, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
 		
 		# C matrix
-		sum_Cijk_vals_inbounds_simd_A!(A, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)		
+		sum_Cijk_vals_inbounds_simd_A!(A, i, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)		
 		
 		# Additional parts of term1
 		A[i,i] -= p.params.mu_vals[i]
@@ -2499,7 +2499,7 @@ end # END parameterized_ClaSSE_As_v7 = (t, A, p)
 
 
 
-function sum_Qij_vals_inbounds_simd_A!(A, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
+function sum_Qij_vals_inbounds_simd_A!(A, i, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
 	@inbounds @simd for mi in 1:length(Qi_eq_i_index)
 		# looping through mi, with +=, does a sum
 		A[i,i] -= Qij_vals[Qi_eq_i_index[mi]] # term2 / part of case1
@@ -2511,7 +2511,7 @@ end;
 
 
 
-function sum_Cijk_vals_inbounds_simd_A!(A, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)
+function sum_Cijk_vals_inbounds_simd_A!(A, i, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)
 	# C matrix
 	@inbounds @simd for mi in 1:length(Ci_eq_i_index)
 		# term1, part of case1
