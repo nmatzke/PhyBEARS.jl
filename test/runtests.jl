@@ -472,7 +472,7 @@ end
 	include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
 end
 
-@testset "Check parallelized lnLs - only runs when nthreads>1, nprocs>1" begin
+@testset "Check lnLs with Gflow calculations etc." begin
 	include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
 end
 

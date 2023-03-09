@@ -31,7 +31,7 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 print("...done.\n")
 
-export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs
+export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_v7simd, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs, parameterized_ClaSSE_As_v7, parameterized_ClaSSE_As_v7_simd, sum_Qij_vals_inbounds_simd_A!, sum_Cijk_vals_inbounds_simd_A!
 
 
 
@@ -1802,6 +1802,30 @@ end # End calc_Gs_SSE
 
 # Calculate G flow matrix down time series
 # (no printed outputs)
+calc_Gs_SSE_v7simd = (dG, G, pG, t) -> begin
+	n = pG.n
+	#tmpzero = repeat([0.0], n^2)
+	#A = reshape(tmpzero, (n,n))
+	A = pG.A
+
+	p_Ds_v5 = pG.p_Ds_v5
+	A = parameterized_ClaSSE_As_v7_simd(t, A, p_Ds_v5)
+	#display(A)
+	#dG = A * G
+	#display(G)
+
+	# The new dG is A %*% G
+	mul!(dG, A, G)
+
+	# No return needed, what is returned is G (as .u)
+	return(dG)
+end # End calc_Gs_SSE
+
+
+
+
+# Calculate G flow matrix down time series
+# (no printed outputs)
 calc_Gs_SSE_parallel = (dG, G, pG, t; max_condition_number=1e8) -> begin
 	n = pG.n
 	tmpzero = repeat([0.0], n^2)
@@ -2361,6 +2385,144 @@ function find_time_in_time_segments(t, Gseg_times)
 	return index
 end
 
+
+
+
+
+
+"""
+include("/Users/nmat471/HD/GitHub/PhyBEARS.jl/notes/parameterized_ClaSSE_As_v7.jl")
+"""
+
+
+
+parameterized_ClaSSE_As_v7 = (t, A, p) -> begin
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  psi = p.params.psi_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	# Zero-out A
+	A .= 0.0;
+	
+	# loop through i=states
+	@inbounds for i in 1:n
+		Qi_eq_i = p.p_TFs.Qi_eq_i[i]		# Use to get the Qij_vals for Qi_eq_i
+		Qi_sub_i = p.p_TFs.Qi_sub_i[i]	# To get the is for Qi_eq_i (somehow this works for Qijs also
+		Qj_sub_i = p.p_TFs.Qj_sub_i[i]
+		Ci_eq_i = p.p_TFs.Ci_eq_i[i]		# Use to get the lambdas/Cijk_vals for Ci_eq-I: USE:  Cijk_vals[Ci_eq_i] not  Cijk_vals[Ci_sub_i]
+		Ci_sub_i = p.p_TFs.Ci_sub_i[i]  # To get the is for Ci_eq_i
+		Cj_sub_i = p.p_TFs.Cj_sub_i[i]	# To get the js for Ci_eq_i
+		Ck_sub_i = p.p_TFs.Ck_sub_i[i]	# To get the is for Ci_eq_i
+		
+		Qi_eq_i_index = p.p_TFs.Qi_eq_i_index[i]
+		Ci_eq_i_index = p.p_TFs.Ci_eq_i_index[i]
+		# For a particular i/state, loop through all of the transitions from that state,
+		# for the Q matrix and the C matrix
+		# Q matrix
+		@inbounds @simd for mi in 1:length(Qi_eq_i_index)
+			# looping through mi, with +=, does a sum
+			A[i,i] -= Qij_vals[Qi_eq_i_index[mi]] # term2 / part of case1
+			# 
+			A[Qi_sub_i[mi],Qj_sub_i[mi]] += Qij_vals[Qi_eq_i_index[mi]] # term3 / case2
+		end
+		
+		# C matrix
+		@inbounds @simd for mi in 1:length(Ci_eq_i_index)
+			# term1, part of case1
+			A[i,i] -= Cijk_vals[Ci_eq_i_index[mi]]
+			
+			# term4, Case 3/4
+			A[Ci_sub_i[mi],Cj_sub_i[mi]] += Cijk_vals[Ci_eq_i_index[mi]] * uE[Ck_sub_i[mi]]
+			A[Ci_sub_i[mi],Ck_sub_i[mi]] += Cijk_vals[Ci_eq_i_index[mi]] * uE[Cj_sub_i[mi]]
+		end		
+		
+		# Additional parts of term1
+		A[i,i] -= p.params.mu_vals[i]
+		A[i,i] -= p.params.psi_vals[i]
+	end
+
+end # END parameterized_ClaSSE_As_v7 = (t, A, p)
+
+
+parameterized_ClaSSE_As_v7_simd = (t, A, p) -> begin
+  # Possibly varying parameters
+  n = p.n
+  mu = p.params.mu_vals
+  psi = p.params.psi_vals
+  Qij_vals = p.params.Qij_vals
+  Cijk_vals = p.params.Cijk_vals
+
+	# Pre-calculated solution of the Es
+	sol_Es = p.sol_Es_v5
+	uE = p.uE
+	uE = sol_Es(t)
+	
+	# Zero-out A
+	A .= 0.0;
+	
+	# loop through i=states
+	@inbounds for i in 1:n
+		Qi_eq_i = p.p_TFs.Qi_eq_i[i]		# Use to get the Qij_vals for Qi_eq_i
+		Qi_sub_i = p.p_TFs.Qi_sub_i[i]	# To get the is for Qi_eq_i (somehow this works for Qijs also
+		Qj_sub_i = p.p_TFs.Qj_sub_i[i]
+		Ci_eq_i = p.p_TFs.Ci_eq_i[i]		# Use to get the lambdas/Cijk_vals for Ci_eq-I: USE:  Cijk_vals[Ci_eq_i] not  Cijk_vals[Ci_sub_i]
+		Ci_sub_i = p.p_TFs.Ci_sub_i[i]  # To get the is for Ci_eq_i
+		Cj_sub_i = p.p_TFs.Cj_sub_i[i]	# To get the js for Ci_eq_i
+		Ck_sub_i = p.p_TFs.Ck_sub_i[i]	# To get the is for Ci_eq_i
+		
+		Qi_eq_i_index = p.p_TFs.Qi_eq_i_index[i]
+		Ci_eq_i_index = p.p_TFs.Ci_eq_i_index[i]
+		# For a particular i/state, loop through all of the transitions from that state,
+		# for the Q matrix and the C matrix
+		# Q matrix
+		sum_Qij_vals_inbounds_simd_A!(A, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
+		
+		# C matrix
+		sum_Cijk_vals_inbounds_simd_A!(A, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)		
+		
+		# Additional parts of term1
+		A[i,i] -= p.params.mu_vals[i]
+		A[i,i] -= p.params.psi_vals[i]
+	end
+
+end # END parameterized_ClaSSE_As_v7 = (t, A, p)
+
+
+
+
+
+function sum_Qij_vals_inbounds_simd_A!(A, Qij_vals, Qi_sub_i, Qj_sub_i, Qi_eq_i_index)
+	@inbounds @simd for mi in 1:length(Qi_eq_i_index)
+		# looping through mi, with +=, does a sum
+		A[i,i] -= Qij_vals[Qi_eq_i_index[mi]] # term2 / part of case1
+		# 
+		A[Qi_sub_i[mi],Qj_sub_i[mi]] += Qij_vals[Qi_eq_i_index[mi]] # term3 / case2
+	end
+	return A
+end;
+
+
+
+function sum_Cijk_vals_inbounds_simd_A!(A, Cijk_vals, Ci_eq_i_index, Ci_sub_i, Cj_sub_i, Ck_sub_i, uE)
+	# C matrix
+	@inbounds @simd for mi in 1:length(Ci_eq_i_index)
+		# term1, part of case1
+		A[i,i] -= Cijk_vals[Ci_eq_i_index[mi]]
+		
+		# term4, Case 3/4
+		A[Ci_sub_i[mi],Cj_sub_i[mi]] += Cijk_vals[Ci_eq_i_index[mi]] * uE[Ck_sub_i[mi]]
+		A[Ci_sub_i[mi],Ck_sub_i[mi]] += Cijk_vals[Ci_eq_i_index[mi]] * uE[Cj_sub_i[mi]]
+	end		
+	return A
+end;
 
 
 
