@@ -228,7 +228,26 @@ tmpzero = repeat([0.0], n^2);
 A = reshape(tmpzero, (n,n));
 pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 tspan = (0.0, 1.01 * maximum(trdf.node_age))
-prob_Gs_v5 = DifferentialEquations.ODEProblem(Gmaps.calc_Gs_SSE_v7simd, G0, tspan, pG);
+
+dG = deepcopy(G0);
+G = similar(A);
+t = 1.0;
+dG = calc_Gs_SSE_v7asimd(dG, G, pG, t);
+minimum(dG)
+maximum(dG)
+
+dG = deepcopy(G0);
+G = similar(A);
+dG = calc_Gs_SSE(dG, G, pG, t);
+minimum(dG)
+maximum(dG)
+
+
+A1 = parameterized_ClaSSE_As_v7!(A, t, pG.p_Ds_v5);
+A2 = parameterized_ClaSSE_As_v7_simd!(A, t, pG.p_Ds_v5);
+A1 .== A2
+
+prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7simd, G0, tspan, pG);
 Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7

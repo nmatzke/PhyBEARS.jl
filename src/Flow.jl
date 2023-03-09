@@ -1783,11 +1783,11 @@ end # End calc_Gs_SSE
 # (no printed outputs)
 calc_Gs_SSE = (dG, G, pG, t; max_condition_number=1e8) -> begin
 	n = pG.n
-	tmpzero = repeat([0.0], n^2)
-	A = reshape(tmpzero, (n,n))
+	#tmpzero = repeat([0.0], n^2)
+	#A = reshape(tmpzero, (n,n))
 
 	p_Ds_v5 = pG.p_Ds_v5
-	A = parameterized_ClaSSE_As_v6(t, A, p_Ds_v5)
+	A = parameterized_ClaSSE_As_v6(t, pG.A .+ 0.0, p_Ds_v5)
 	#display(A)
 	#dG = A * G
 	#display(G)
