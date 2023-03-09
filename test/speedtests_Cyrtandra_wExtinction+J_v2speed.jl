@@ -183,11 +183,34 @@ pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
 tspan = (0.0, 1.01 * maximum(trdf.node_age))
 prob_Gs_v5 = DifferentialEquations.ODEProblem(Gmaps.calc_Gs_SSE, G0, tspan, pG);
 Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+@benchmark Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+# BenchmarkTools.Trial: 1 sample with 1 evaluation.
+#  Single result which took 9.507 s (3.09% GC) to evaluate,
+#  with a memory estimate of 2.62 GiB, over 13001642 allocations.
+
 res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
 archived_Gflow_v6 = deepcopy(res);
 # 2022-03-29: (7.323, 22, -1271.0625625625657, -14.712302169676475, -1285.7748647322421, -575.9248397325294)
 # 2022-03-30: (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
+
+@benchmark res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+
+# BenchmarkTools.Trial: 42 samples with 1 evaluation.
+#  Range (min … max):  104.521 ms … 209.983 ms  ┊ GC (min … max): 0.00% … 44.14%
+#  Time  (median):     112.160 ms               ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   120.821 ms ±  24.679 ms  ┊ GC (mean ± σ):  5.26% ± 11.54%
+# 
+#     ▃▃█                                                          
+#   ▃▃███▅▅▁▆▅▁▁▁▃▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▃▁▁▁▁▁▃ ▁
+#   105 ms           Histogram: frequency by time          210 ms <
+# 
+#  Memory estimate: 63.48 MiB, allocs estimate: 168882.
+
+
+
 
 nd = 3
 @test round(res_nonFlow_v5[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
@@ -245,15 +268,120 @@ maximum(dG)
 
 A1 = parameterized_ClaSSE_As_v7!(A, t, pG.p_Ds_v5);
 A2 = parameterized_ClaSSE_As_v7_simd!(A, t, pG.p_Ds_v5);
-A1 .== A2
+@test all(A1 .== A2)
 
-prob_Gs_v5 = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7simd, G0, tspan, pG);
-Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+
+prob_Gs_v7 = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7, G0, tspan, pG);
+Gflow_to_01_GMRES_v7  = solve(prob_Gs_v7, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+@benchmark Gflow_to_01_GMRES_v7  = solve(prob_Gs_v7, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+# BenchmarkTools.Trial: 3 samples with 1 evaluation.
+#  Range (min … max):  1.731 s …   1.760 s  ┊ GC (min … max): 0.00% … 3.46%
+#  Time  (median):     1.749 s              ┊ GC (median):    1.54%
+#  Time  (mean ± σ):   1.747 s ± 14.661 ms  ┊ GC (mean ± σ):  1.68% ± 1.73%
+# 
+#   █                                 █                     █  
+#   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
+#   1.73 s         Histogram: frequency by time        1.76 s <
+# 
+#  Memory estimate: 576.62 MiB, allocs estimate: 68893.
+
+res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7
 archived_Gflow_v7 = deepcopy(res);
 
+@benchmark res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
 
+# BenchmarkTools.Trial: 48 samples with 1 evaluation.
+#  Range (min … max):   95.578 ms … 187.513 ms  ┊ GC (min … max): 0.00% … 43.14%
+#  Time  (median):     101.731 ms               ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   105.946 ms ±  19.204 ms  ┊ GC (mean ± σ):  4.58% ± 10.64%
+# 
+#    ▁ ▃█▆                                                         
+#   ▇█▇███▃▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▃▁▁▃▁▁▁▁▁▁▃ ▁
+#   95.6 ms          Histogram: frequency by time          188 ms <
+# 
+#  Memory estimate: 63.48 MiB, allocs estimate: 168882.
+
+nd = 3
+@test round(res_Gflow_v7[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7[6], digits=nd)	== round(bgb_lnL, digits=nd)
+
+@test round(res_Gflow_v7[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7[6], digits=nd)	== round(bgb_lnL, digits=nd)
+
+@test round(res_Gflow_v7[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7[6], digits=nd)	== round(bgb_lnL, digits=nd)
+
+
+
+
+
+G0 = Matrix{Float64}(I, n, n) ;
+# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
+tmpzero = repeat([0.0], n^2);
+A = reshape(tmpzero, (n,n));
+pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
+tspan = (0.0, 1.01 * maximum(trdf.node_age))
+
+prob_Gs_v7simd = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7simd, G0, tspan, pG);
+Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v7simd, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+@benchmark Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v7simd, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+
+# BenchmarkTools.Trial: 3 samples with 1 evaluation.
+#  Range (min … max):  1.689 s …   1.797 s  ┊ GC (min … max): 0.00% … 3.25%
+#  Time  (median):     1.721 s              ┊ GC (median):    1.61%
+#  Time  (mean ± σ):   1.735 s ± 55.165 ms  ┊ GC (mean ± σ):  1.65% ± 1.63%
+# 
+#   █               █                                       █  
+#   █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
+#   1.69 s         Histogram: frequency by time         1.8 s <
+# 
+#  Memory estimate: 576.62 MiB, allocs estimate: 68893.
+
+
+res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7
+archived_Gflow_v7 = deepcopy(res);
+
+@benchmark res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+
+# BenchmarkTools.Trial: 47 samples with 1 evaluation.
+#  Range (min … max):   92.745 ms … 177.313 ms  ┊ GC (min … max): 0.00% …  0.00%
+#  Time  (median):     101.278 ms               ┊ GC (median):    0.00%
+#  Time  (mean ± σ):   106.959 ms ±  20.788 ms  ┊ GC (mean ± σ):  4.37% ± 10.58%
+# 
+#    ▆  ▁▄▃█                                                       
+#   ▆█▆▄████▇▄▁▄▁▄▄▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄▁▁▁▁▁▆▁▄ ▁
+#   92.7 ms          Histogram: frequency by time          177 ms <
+# 
+#  Memory estimate: 63.48 MiB, allocs estimate: 168882.
+# 
+nd = 3
+@test round(res_Gflow_v7simd[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7simd[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7simd[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7simd[6], digits=nd)	== round(bgb_lnL, digits=nd)
+
+@test round(res_Gflow_v7simd[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7simd[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7simd[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7simd[6], digits=nd)	== round(bgb_lnL, digits=nd)
+
+@test round(res_Gflow_v7simd[3], digits=nd)	== round(Julia_sum_lq, digits=nd)
+@test round(res_Gflow_v7simd[4], digits=nd)	== round(rootstates_lnL, digits=nd)
+@test round(res_Gflow_v7simd[5], digits=nd)	== round(Julia_total_lnLs1, digits=nd)
+@test round(res_Gflow_v7simd[6], digits=nd)	== round(bgb_lnL, digits=nd)
 
 
 

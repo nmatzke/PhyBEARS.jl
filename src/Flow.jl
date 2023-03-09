@@ -31,7 +31,7 @@ using PhyBEARS.TreePass
 using PhyBEARS.SSEs
 print("...done.\n")
 
-export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_v7simd, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs, parameterized_ClaSSE_As_v7!, parameterized_ClaSSE_As_v7_simd!, sum_Qij_vals_inbounds_simd_A!, sum_Cijk_vals_inbounds_simd_A!
+export iterative_downpass_nonparallel_ClaSSE_v6_fromFlow!, iterative_downpass_parallel_ClaSSE_v6_fromFlow!, parameterized_ClaSSE_As_v6, parameterized_ClaSSE_As_v6_parallel, parameterized_ClaSSE_As_v6_sub_i, parameterized_ClaSSE_As_v5, check_linearDynamics_of_As, calc_Gs_SSE_condnums!, calc_Gs_SSE, calc_Gs_SSE_v7simd, calc_Gs_SSE_v7simd_B!, calc_Gs_SSE_parallel, calc_Gs_SSE_sub_i, calc_Gs_SSE!, branchOp_ClaSSE_Gs_v5, iterative_downpass_nonparallel_FlowClaSSE_v5!, iterative_downpass_wGflowArray_nonparallel!, run_Gs, parameterized_ClaSSE_As_v7!, parameterized_ClaSSE_As_v7_simd!, sum_Qij_vals_inbounds_simd_A!, sum_Cijk_vals_inbounds_simd_A!
 
 
 
@@ -1800,6 +1800,30 @@ calc_Gs_SSE = (dG, G, pG, t; max_condition_number=1e8) -> begin
 end # End calc_Gs_SSE
 
 
+
+# Calculate G flow matrix down time series
+# (no printed outputs)
+calc_Gs_SSE_v7 = (dG, G, pG, t) -> begin
+	n = pG.n
+	#tmpzero = repeat([0.0], n^2)
+	#A = reshape(tmpzero, (n,n))
+	A = pG.A
+
+	p_Ds_v5 = pG.p_Ds_v5
+	A = parameterized_ClaSSE_As_v7!(A, t, p_Ds_v5)
+	#display(A)
+	#dG = A * G
+	#display(G)
+
+	# The new dG is A %*% G
+	mul!(dG, A, G)
+
+	# No return needed, what is returned is G (as .u)
+	return(dG)
+end # End calc_Gs_SSE
+
+
+
 # Calculate G flow matrix down time series
 # (no printed outputs)
 calc_Gs_SSE_v7simd = (dG, G, pG, t) -> begin
@@ -1819,6 +1843,26 @@ calc_Gs_SSE_v7simd = (dG, G, pG, t) -> begin
 
 	# No return needed, what is returned is G (as .u)
 	return(dG)
+end # End calc_Gs_SSE
+
+
+calc_Gs_SSE_v7simd_B! = (dG, G, pG, t) -> begin
+	#n = pG.n
+	#tmpzero = repeat([0.0], n^2)
+	#A = reshape(tmpzero, (n,n))
+	#A = pG.A
+
+	#p_Ds_v5 = pG.p_Ds_v5
+	#A = parameterized_ClaSSE_As_v7_simd!(A, t, pG.p_Ds_v5)
+	#display(A)
+	#dG = A * G
+	#display(G)
+
+	# The new dG is A %*% G
+	mul!(dG, parameterized_ClaSSE_As_v7_simd!(pG.A[:,:], t, pG.p_Ds_v5), G)
+
+	# No return needed, what is returned is G (as .u)
+	#return(dG)
 end # End calc_Gs_SSE
 
 
