@@ -152,7 +152,7 @@ res_nonFlow_v7 = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_
 (total_calctime_in_sec_nFv7, iteration_number_nFv7, Julia_sum_lq_nFv7, rootstates_lnL_nFv7, Julia_total_lnLs1_nFv7, bgb_lnl_nFv7) = res_nonFlow_v7
 
 
-#@benchmark iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true)
+@benchmark iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf, p_Ds_v7=p_Ds_v5, solver_options=solver_options, max_iterations=10^10, return_lnLs=true)
 
 # BenchmarkTools.Trial: 34 samples with 1 evaluation.
 #  Range (min … max):  136.110 ms … 178.505 ms  ┊ GC (min … max): 0.00% … 14.49%
@@ -201,7 +201,7 @@ tspan = (0.0, 1.01 * maximum(trdf.node_age))
 prob_Gs_v5 = DifferentialEquations.ODEProblem(Gmaps.calc_Gs_SSE, G0, tspan, pG);
 Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-#@benchmark Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+@benchmark Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 # BenchmarkTools.Trial: 1 sample with 1 evaluation.
 #  Single result which took 9.507 s (3.09% GC) to evaluate,
@@ -210,18 +210,10 @@ Gflow_to_01_GMRES  = solve(prob_Gs_v5, CVODE_BDF(linear_solver=:GMRES), save_eve
 res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
 (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
 archived_Gflow_v6 = deepcopy(res);
-
-print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow:\n")
-@test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6) < 0.1
-@test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6) < 0.1
-@test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6) < 0.1
-@test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6) < 0.1
-
-
 # 2022-03-29: (7.323, 22, -1271.0625625625657, -14.712302169676475, -1285.7748647322421, -575.9248397325294)
 # 2022-03-30: (total_calctime_in_sec_GFv6, iteration_number_GFv6, Julia_sum_lq_GFv6, rootstates_lnL_GFv6, Julia_total_lnLs1_GFv6, bgb_lnl_GFv6) = res_Gflow_v6
 
-#@benchmark res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+@benchmark res_Gflow_v6 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
 
 # BenchmarkTools.Trial: 42 samples with 1 evaluation.
 #  Range (min … max):  104.521 ms … 209.983 ms  ┊ GC (min … max): 0.00% … 44.14%
@@ -299,7 +291,7 @@ A2 = parameterized_ClaSSE_As_v7_simd!(A, t, pG.p_Ds_v5);
 prob_Gs_v7 = DifferentialEquations.ODEProblem(Flow.calc_Gs_SSE_v7, G0, tspan, pG);
 Gflow_to_01_GMRES_v7  = solve(prob_Gs_v7, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-#@benchmark Gflow_to_01_GMRES_v7  = solve(prob_Gs_v7, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+@benchmark Gflow_to_01_GMRES_v7  = solve(prob_Gs_v7, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 # BenchmarkTools.Trial: 3 samples with 1 evaluation.
 #  Range (min … max):  1.731 s …   1.760 s  ┊ GC (min … max): 0.00% … 3.46%
@@ -317,7 +309,7 @@ res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_
 (total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7
 archived_Gflow_v7 = deepcopy(res);
 
-#@benchmark res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+@benchmark res_Gflow_v7 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
 
 # BenchmarkTools.Trial: 48 samples with 1 evaluation.
 #  Range (min … max):   95.578 ms … 187.513 ms  ┊ GC (min … max): 0.00% … 43.14%
@@ -360,7 +352,7 @@ tspan = (0.0, 1.01 * maximum(trdf.node_age))
 prob_Gs_v7simd = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7simd, G0, tspan, pG);
 Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v7simd, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-#@benchmark Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v7simd, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+@benchmark Gflow_to_01_GMRES_v7simd  = solve(prob_Gs_v7simd, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 # BenchmarkTools.Trial: 3 samples with 1 evaluation.
 #  Range (min … max):  1.689 s …   1.797 s  ┊ GC (min … max): 0.00% … 3.25%
@@ -379,7 +371,7 @@ res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p
 (total_calctime_in_sec_GFv7, iteration_number_GFv7, Julia_sum_lq_GFv7, rootstates_lnL_GFv7, Julia_total_lnLs1_GFv7, bgb_lnl_GFv7) = res_Gflow_v7simd
 archived_Gflow_v7 = deepcopy(res);
 
-#@benchmark res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+@benchmark res_Gflow_v7simd = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
 
 # BenchmarkTools.Trial: 47 samples with 1 evaluation.
 #  Range (min … max):   92.745 ms … 177.313 ms  ┊ GC (min … max): 0.00% …  0.00%
@@ -426,7 +418,7 @@ tspan = (0.0, 1.01 * maximum(trdf.node_age))
 prob_Gs_v7simd_B = DifferentialEquations.ODEProblem(calc_Gs_SSE_v7simd_B!, G0, tspan, pG);
 Gflow_to_01_GMRES_v7simd_B  = solve(prob_Gs_v7simd_B, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-#@benchmark Gflow_to_01_GMRES_v7simd_B  = solve(prob_Gs_v7simd_B, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
+@benchmark Gflow_to_01_GMRES_v7simd_B  = solve(prob_Gs_v7simd_B, CVODE_BDF(linear_solver=:GMRES), save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 # BenchmarkTools.Trial: 3 samples with 1 evaluation.
 #  Range (min … max):  1.780 s …   1.829 s  ┊ GC (min … max): 1.94% … 0.00%
@@ -445,7 +437,7 @@ res_Gflow_v7simd_B = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5
 (total_calctime_in_sec_GFv7_B, iteration_number_GFv7_B, Julia_sum_lq_GFv7_B, rootstates_lnL_GFv7_B, Julia_total_lnLs1_GFv7_B, bgb_lnl_GFv7_B) = res_Gflow_v7simd_B
 archived_Gflow_v7_B = deepcopy(res_Gflow_v7simd_B);
 
-#@benchmark res_Gflow_v7simd_B = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd_B, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
+@benchmark res_Gflow_v7simd_B = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_to_01_GMRES_v7simd_B, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true)
 
 # BenchmarkTools.Trial: 47 samples with 1 evaluation.
 #  Range (min … max):   96.718 ms … 215.058 ms  ┊ GC (min … max): 0.00% … 49.98%
@@ -485,12 +477,188 @@ nd = 3
 
 
 
-#######################################################
-# The Gflow-matrices approach doesn't work (wrong answers if there is multiplication)
-# so is being cut
-# (and it's slow)
-# 2023-03-09
-#######################################################
 
+
+root_age = trdf[tr.root,:node_age]
+num_incs = 100
+Gseg_times = seq(0.0, root_age, root_age/num_incs);
+pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
+
+
+# Calculate array of Gflow matrices with float64 matrix multiplication
+(Gseg_times, Gflows_array, Gflows_array_totals, Gflows_dict) = Gmap = Gmaps.construct_Gmap_interpolator(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+(Gseg_timesD, Gflows_arrayD, Gflows_array_totalsD, Gflows_dictD) = GmapD = construct_Gmap_interpolator_float64D(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+
+# These should be DIFFERENT, if extinction is positive!
+Gflows_dict[1](0.1)
+minimum(Gflows_dict[10].t)
+maximum(Gflows_dict[10].t)
+Gflows_dict[10](maximum(Gflows_dict[10].t))
+
+Gflows_dictD[1](0.1)
+minimum(Gflows_dictD[10].t)
+maximum(Gflows_dictD[10].t)
+Gflows_dictD[10](maximum(Gflows_dictD[10].t))
+
+
+# Calculate array of Gflow matrices with double64 matrix multiplication
+(Gseg_timesDF, Gflows_arrayDF, Gflows_array_totalsDF, Gflows_dictDF) = Gmap_Double64 = Gmaps.construct_Gmap_interpolator_double64(pG, Gseg_times; abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+Gflows_dictDF[1](0.1)
+minimum(Gflows_dictDF[10].t)
+maximum(Gflows_dictDF[10].t)
+Gflows_dictDF[10](maximum(Gflows_dictDF[10].t))
+
+
+Gflows_array_totals[:,:,1][1,:]
+Gflows_array_totalsD[:,:,1][1,:]
+Gflows_array_totalsDF[:,:,1][1,:]
+
+tval = 0.1
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+tval = 0.2
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+tval = 1.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+
+Gflows_array_totals[1:5,1:5,10]
+Gflows_array_totalsD[1:5,1:5,10]
+Gflows_array_totalsDF[1:5,1:5,10]
+
+tval = 5.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+
+tval = 40.0
+Gmaps.interp_from_Gmap(tval, Gmap)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, GmapD)[1:5,1:5]
+Gmaps.interp_from_Gmap(tval, Gmap_Double64)[1:5,1:5]
+Gflow_to_01_GMRES(tval)[1:5,1:5]
+
+
+@test mean(abs.(Gmaps.interp_from_Gmap(0.1, Gmap) .- Gflow_to_01_GMRES(0.1))) < 0.00001
+@test mean(abs.(Gmaps.interp_from_Gmap(0.1, Gmap_Double64) .- Gflow_to_01_GMRES(0.1))) < 0.00001
+
+
+Gflows_array_totals[:,:,2]
+Gmaps.interp_from_Gmap(0.2, Gmap)
+Gflow_to_01_GMRES(0.2)
+@test mean(abs.(Gmaps.interp_from_Gmap(0.2, Gmap) .- Gflow_to_01_GMRES(0.2))) < 0.0001
+@test mean(abs.(Gmaps.interp_from_Gmap(0.2, Gmap_Double64) .- Gflow_to_01_GMRES(0.2))) < 0.0001
+
+
+Gflows_array_totals[:,:,3]
+Gmaps.interp_from_Gmap(0.3, Gmap)
+Gflow_to_01_GMRES(0.3)
+@test mean(abs.(Gmaps.interp_from_Gmap(0.3, Gmap) .- Gflow_to_01_GMRES(0.3))) < 0.0001
+@test mean(abs.(Gmaps.interp_from_Gmap(0.3, Gmap_Double64) .- Gflow_to_01_GMRES(0.3))) < 0.0001
+
+Gflows_array_totals[:,:,52]
+Gmaps.interp_from_Gmap(root_age, Gmap)
+Gflow_to_01_GMRES(root_age)
+@test mean(abs.(Gmaps.interp_from_Gmap(root_age, Gmap) .- Gflow_to_01_GMRES(root_age))) < 0.0001
+@test mean(abs.(Gmaps.interp_from_Gmap(root_age, Gmap_Double64) .- Gflow_to_01_GMRES(root_age))) < 0.0001
+
+
+Gflow_via_Gmap = t -> Gmaps.interp_from_Gmap(t, Gmap)
+Gflow_via_GmapD = t -> Gmaps.interp_from_Gmap(t, GmapD)
+
+sum(Gflow_via_Gmap(root_age)[1,:] .== Gflow_to_01_GMRES(root_age)[1,:])
+
+DataFrame(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age), :auto)
+
+print("\n\nGflow via a Gmap doesn't work, at least for large matrices. Just use solve().\n\n")
+# @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.0001)
+# @test all(abs.(Gflow_via_Gmap(root_age) .- Gflow_to_01_GMRES(root_age)) .< 0.001)
+
+
+
+# The Gmap strategy works with Float64 or Double64
+res_Gflow_v6a = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_via_Gmap, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv6a, iteration_number_GFv6a, Julia_sum_lq_GFv6a, rootstates_lnL_GFv6a, Julia_total_lnLs1_GFv6a, bgb_lnl_GFv6a) = res_Gflow_v6a
+archived_Gflow_v6a = deepcopy(res);
+
+res_Gflow_v6b = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_via_GmapD, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv6b, iteration_number_GFv6b, Julia_sum_lq_GFv6b, rootstates_lnL_GFv6b, Julia_total_lnLs1_GFv6b, bgb_lnl_GFv6b) = res_Gflow_v6b
+archived_Gflow_v6b = deepcopy(res);
+
+res_Gflow_v6
+res_Gflow_v6a
+res_Gflow_v6b
+
+R_order = sort(trdf, :Rnodenums).nodeIndex
+
+vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order]) .== vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])
+
+
+rnode = 1
+vfft(archived_Gflow_v6.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
+vfft(archived_Gflow_v6a.normlikes_at_each_nodeIndex_branchBot[R_order])[rnode,:]
+
+
+
+# 2022-03-30: (0.589, 12, -285.1005967032069, -12.025331095939737, -297.12592779914667, -110.07183134705335)
+
+# Identical results with Double64 (so probably unnecessary here)
+Gflow_Double64 = t -> Gmaps.interp_from_Gmap(t, Gmap_Double64)
+res_Gflow_v6_Double64 = iterative_downpass_Gflow_nonparallel_v2!(res; trdf, p_Ds_v5=p_Ds_v5, Gflow=Gflow_Double64, solver_options=construct_SolverOpt(), max_iterations=10^10, return_lnLs=true);
+(total_calctime_in_sec_GFv6_Double64, iteration_number_GFv6_Double64, Julia_sum_lq_GFv6_Double64, rootstates_lnL_GFv6_Double64, Julia_total_lnLs1_GFv6_Double64, bgb_lnl_GFv6_Double64) = res_Gflow_v6_Double64
+# 2022-03-30: (8.086, 12, -285.1005966444711, -12.025331096149882, -297.125927740621, -110.07183128847518)
+
+
+
+print("\nTesting DEC+J traditional SSE likelihood downpass v6 vs. Gflow:\n")
+@test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6) < 0.1
+@test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6) < 0.1
+@test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6) < 0.1
+@test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6) < 0.1
+
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Float64\n")#, with half-matrix:\n")
+# @test abs(Julia_sum_lq_GFv6 - Julia_sum_lq_GFv6a) < 0.1
+# @test abs(rootstates_lnL_GFv6 - rootstates_lnL_GFv6a) < 0.1
+# @test abs(Julia_total_lnLs1_GFv6 - Julia_total_lnLs1_GFv6a) < 0.1
+# @test abs(bgb_lnl_GFv6 - bgb_lnl_GFv6a) < 0.1
+
+print("\nGmap via multiplication doesn't work, just use solve(): Testing DEC+J traditional SSE likelihood downpass v6 vs. Gflow_arrays v7 using Double64\n")#, with half-matrix:\n")
+# (I think half-matrix just ment v7 cladogenesis table, vs. v5 listing all pairs and reverse)
+# @test abs(Julia_sum_lq_nFv6 - Julia_sum_lq_GFv6_Double64) < 0.1
+# @test abs(rootstates_lnL_nFv6 - rootstates_lnL_GFv6_Double64) < 0.1
+# @test abs(Julia_total_lnLs1_nFv6 - Julia_total_lnLs1_GFv6_Double64) < 0.1
+# @test abs(bgb_lnl_nFv6 - bgb_lnl_GFv6_Double64) < 0.1
+
+total_calctime_in_sec_nFv6
+total_calctime_in_sec_GFv6
+total_calctime_in_sec_GFv6a
+total_calctime_in_sec_GFv6_Double64
+
+
+
+# Check the condition numbers of linear dynamics A and Gflow G (I think Julia does this automatically)
+tvals = seq(0.0, 5.2, 0.1);
+kappa_Arates_df = check_linearDynamics_of_As(tvals, p_Ds_v5; max_condition_number=1e8)
+G0 = Matrix{Float64}(I, n, n) ;
+# build an A (the linear dynamics, i.e. Q and C matrices combined into a square matrix)
+tmpzero = repeat([0.0], n^2);
+A = reshape(tmpzero, (n,n));
+pG = (n=n, p_Ds_v5=p_Ds_v5, A=A);
+tspan = (0.0, 2.5);
+prob_Gs_v5_condnums = DifferentialEquations.ODEProblem(calc_Gs_SSE_condnums!, G0, tspan, pG)
 
 # end
