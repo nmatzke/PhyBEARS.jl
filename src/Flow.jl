@@ -1846,6 +1846,7 @@ calc_Gs_SSE_v7simd = (dG, G, pG, t) -> begin
 end # End calc_Gs_SSE
 
 
+# Not any faster really
 calc_Gs_SSE_v7simd_B! = (dG, G, pG, t) -> begin
 	#n = pG.n
 	#tmpzero = repeat([0.0], n^2)
@@ -1859,7 +1860,8 @@ calc_Gs_SSE_v7simd_B! = (dG, G, pG, t) -> begin
 	#display(G)
 
 	# The new dG is A %*% G
-	mul!(dG, parameterized_ClaSSE_As_v7_simd!(pG.A[:,:], t, pG.p_Ds_v5), G)
+	#A = parameterized_ClaSSE_As_v7_simd!(pG.A, t, pG.p_Ds_v5)
+	mul!(dG, parameterized_ClaSSE_As_v7_simd!(pG.A, t, pG.p_Ds_v5), G)
 
 	# No return needed, what is returned is G (as .u)
 	#return(dG)
