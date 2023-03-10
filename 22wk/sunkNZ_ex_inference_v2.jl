@@ -85,12 +85,106 @@ interpolators.area_of_areas_interpolator(24.0)
 interpolators.area_of_areas_interpolator(25.0)
 interpolators.area_of_areas_interpolator(26.0)
 
-
-
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 # Add Q, C interpolators
 p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+
+# Check that parameter changes work like you think
+u_val = 0.0
+p_Es_v12.bmo.est[p_Es_v12.setup.bmo_rows.u] = u_val
+p_Es_v12.bmo.est[:] = bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+
+t = 1.0
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp1 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+t = 22.95
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp2 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+@test all(tmp1 .== tmp2)
+
+
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
+
+sol_Es_v12(0.0)
+sol_Es_v12(1.0)
+sol_Es_v12(22.0)
+sol_Es_v12(22.95)
+sol_Es_v12(23.0)
+
+# I guess that AB has a higher chance of going extinct than B, because
+# AB -> A -> extinct is allowed, and easier than
+# B -> extinct
+
+# Still seems deeply weird
+
+
+
+
+# Check that parameter changes work like you think
+u_val = -0.1
+p_Es_v12.bmo.est[p_Es_v12.setup.bmo_rows.u] = u_val;
+p_Es_v12.bmo.est[:] = bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12 = TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+
+t = 1.0
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp3 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+t = 22.95
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp4 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+@test tmp3[1] > tmp3[2]
+@test tmp3[2] > tmp3[3]
+@test prtQp(p_Es_v12).vals_t[3] < prtQp(p_Es_v12).vals_t[4]
+
+@test tmp4[1] > tmp4[2]
+@test tmp4[2] > tmp4[3]
+@test prtQp(p_Es_v12).vals_t[3] < prtQp(p_Es_v12).vals_t[4]
+
+
+
+# Check that parameter changes work like you think
+u_val = -1.0
+p_Es_v12.bmo.est[p_Es_v12.setup.bmo_rows.u] = u_val;
+p_Es_v12.bmo.est[:] = bmo_updater_v2(p_Es_v12.bmo, p_Es_v12.setup.bmo_rows);
+p_Es_v12 = TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
+
+t = 1.0
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp3_u_m1 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+t = 22.95
+update_QC_mats_time_t!(p_Es_v12, t)
+p_Es_v12.params.mu_vals
+tmp4_u_m1 = deepcopy(p_Es_v12.params.mu_vals_t)
+prtQp(p_Es_v12)
+
+@test tmp3_u_m1[1] > tmp3_u_m1[2]
+@test tmp3_u_m1[2] > tmp3_u_m1[3]
+@test prtQp(p_Es_v12).vals_t[3] < prtQp(p_Es_v12).vals_t[4]
+
+@test tmp4_u_m1[1] > tmp4_u_m1[2]
+@test tmp4_u_m1[2] > tmp4_u_m1[3]
+@test prtQp(p_Es_v12).vals_t[3] < prtQp(p_Es_v12).vals_t[4]
+
+tmp4_u_m1[1] > tmp4[1]
+tmp3_u_m1[1] > tmp3[1]
+
 
 # Solve the Es
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
