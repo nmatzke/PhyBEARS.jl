@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1, bmo_updater_v1_SLOW, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1_OLD, bmo_updater_v1_SLOW, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -92,7 +92,7 @@ function func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="lnL", prin
 		print(round.(pdf_before.val[1:5], digits=4))
 
 	end
-#	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 #	p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 #	p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 #	p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -259,7 +259,7 @@ function func_to_optimize_nonparallel_v7(pars, parnames, inputs, p_Ds_v5; return
 		print(round.(pdf_before.val[1:5], digits=4))
 
 	end
-	#	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+	#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 	#	p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 	#	p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 	#	p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -446,7 +446,7 @@ function func_to_optimize_parallel_v7(pars, parnames, inputs, p_Ds_v5; returnval
 		print(round.(pdf_before.val[1:5], digits=4))
 
 	end
-	#	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+	#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 	#	p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 	#	p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 	#	p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -632,7 +632,7 @@ function func_to_optimize_v7(pars, parnames, inputs, p_Ds_v5; returnval="lnL", p
 		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v2:")
 		print(round.(pdf_before.wt[1:5], digits=4))
 	end
-#	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 #	p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 #	p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 #	p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -741,7 +741,8 @@ end # END function func_to_optimize_v7(pars, parnames)
 
 
 
-
+# Distributed calculation; requires multiple cores and processes,
+# "@everywhere using" instead of "using..."
 function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)
 
 	# Get the results object (with old p_Ds_v5)
@@ -789,7 +790,7 @@ function func_to_optimize_v7c(pars, parnames, inputs, p_Ds_v5; returnval="lnL", 
 		print(round.(pdf_before.val[1:5], digits=4))
 
 	end
-	#	output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+	#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 	#	p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 	#	p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 	#	p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -972,7 +973,7 @@ function func_to_optimize_v12(pars, parnames, inputs, p_Ds_v12; returnval="lnL",
 		print("\nfunc_to_optimize: clado weights before p_Ds_v5_updater_v2:")
 		print(round.(pdf_before.wt[1:5], digits=4))
 	end
-#	output = p_Ds_v5_updater_v1(p_Ds_v12, inputs);  # WORKS 2022-03-10
+#	output = p_Ds_v5_updater_v1_OLD(p_Ds_v12, inputs);  # WORKS 2022-03-10
 #	p_Ds_v12.params.Cijk_weights[:] .= output.Cijk_weights
 #	p_Ds_v12.params.Cijk_vals[:] .= output.Cijk_vals
 #	p_Ds_v12.params.row_weightvals[:] .= output.row_weightvals
@@ -1746,9 +1747,27 @@ function bmo_updater_v2(bmo, bmo_rows)
 	bmo.est[bmo_rows.s] = s
 	bmo.est[bmo_rows.v] = v
 
-
-
 	# Does this make it slower?? YES, 2x slowdown!
+	
+	# Make the single-area extinction rate equal to 
+	# mu + e
+	#
+	# (if mu = 0.0, then extinction only happens when e>0.0)
+	# mu: intrinsic extinction rate for a range
+	# e: range-loss rate
+	#
+	# 2023-03-12_doesn't work, because this calculation has to be 
+	# done elsewhere: TimeDep.update_mus_time_t!
+	#
+	# 
+	#if ((bmo.type[bmo_rows.deathRate] == "mu+e") || (bmo.type[bmo_rows.deathRate] == "e+mu"))
+	#	#u = bmo.est[bmo_rows.u]
+	#	#bmo.est[bmo_rows.u_e] = u
+	#	bmo.est[bmo_rows.u_e] = bmo.est[bmo_rows.u]
+	#end
+	
+		
+
 	# Update u_e and u_mu based on u?
 	if bmo.type[bmo_rows.u_e] == "u"
 		#u = bmo.est[bmo_rows.u]
@@ -1797,7 +1816,7 @@ inputs.bmo.rownames[inputs.bmo.type.=="free"]
 
 pars = [0.03505038, 0.02832370]
 inputs.bmo.est[inputs.bmo.type.=="free"] .= pars
-output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -1806,7 +1825,7 @@ prtCp(p_Ds_v5)
 
 pars = [0.01, 0.001]
 inputs.bmo.est[inputs.bmo.type.=="free"] .= pars
-output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -1815,7 +1834,7 @@ prtCp(p_Ds_v5)
 
 pars = [0.1, 0.2]
 inputs.bmo.est[inputs.bmo.type.=="free"] .= pars
-output = p_Ds_v5_updater_v1(p_Ds_v5, inputs);  # WORKS 2022-03-10
+output = p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs);  # WORKS 2022-03-10
 p_Ds_v5.params.Cijk_weights[:] .= output.Cijk_weights
 p_Ds_v5.params.Cijk_vals[:] .= output.Cijk_vals
 p_Ds_v5.params.row_weightvals[:] .= output.row_weightvals
@@ -1827,7 +1846,7 @@ lnL = func_to_optimize(pars, parnames, inputs, p_Ds_v5; returnval="bgb_lnL")
 func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL")
 func(pars)
 """
-function p_Ds_v5_updater_v1(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
+function p_Ds_v5_updater_v1_OLD(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
 	
 	if check_if_free_params_in_mat == true
 		free_param_names = inputs.bmo.rownames[inputs.bmo.type .== "free"]
@@ -1836,7 +1855,7 @@ function p_Ds_v5_updater_v1(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
 		TF1 = in(free_param_names).(["j"])[1]
 		TF2 = in(unique(p_Ds_v5.p_indices.Carray_event_types)).(["j"])[1]
 		if TF1 != TF2
-			txt = paste(["ERROR in p_Ds_v5_updater_v1(): j's must be in both places. j_in_bmo:", TF1, "; j_in_params:", TF2])
+			txt = paste(["ERROR in p_Ds_v5_updater_v1_OLD(): j's must be in both places. j_in_bmo:", TF1, "; j_in_params:", TF2])
 			print("\n")
 			print(txt)
 			print("\n")
@@ -1892,7 +1911,7 @@ function p_Ds_v5_updater_v1(p_Ds_v5, inputs; check_if_free_params_in_mat=true)
 	print(round.(pdf_before.wt[1:5], digits=4))
 		
 	return output
-end # END function p_Ds_v5_updater_v1()
+end # END function p_Ds_v5_updater_v1_OLD()
 
 
 
@@ -2887,8 +2906,41 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	p_Ds_v5 = update_Qij_vals2!(p_Ds_v5, inputs.setup.areas_list, inputs.setup.states_list, inputs.setup.dmat, inputs.setup.elist, inputs.setup.amat; return_df=false);
 
 	# Update the mus & psi
-	p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate]
+	#p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate]
+	
+	# multi_area_ranges_have_zero_mu: set all multi-area ranges to 0.0 mu
+  # 
+	# mu_func: the extinction rate for a range could be:
+	# mu:   bmo.deathRate, perhaps multiplied by area^u_mu
+	# mu+e: bmo.deathRate, plus the rate of e^u_e for single-area ranges
+	# If you set mu+e, and set mu=0.0, then the single-area deathRate is e
+	area_of_ranges = repeat([0.0], inputs.setup.numstates)
+	single_area_range_TF = repeat([false], inputs.setup.numstates)
+	for i in 1:inputs.setup.numstates
+		area_of_ranges[i] = sum(inputs.setup.area_of_areas[inputs.setup.states_list[i]])
+		single_area_range_TF[i] = length(inputs.setup.states_list[i]) == 1
+	end
+	area_of_ranges
+	single_area_range_TF
+	
+	if (inputs.setup.mu_func == "mu")
+		p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate] .* (area_of_ranges .^ u_mu)
+	else if ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+		p_Ds_v5.params.mu_vals[:] .= single_area_range_TF .* (p_Ds_v5.params.mu_vals .* (area_of_ranges .^ u_mu)) .+ (inputs.bmo.est[inputs.setup.bmo_rows.e] .* (area_of_ranges .^ u_e))	
+	end # END if (inputs.setup.mu_func == "mu")
+	
+	# Psi: constant for now
 	p_Ds_v5.params.psi_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.psiRate]
+
+  # Correct "Inf" max_extinction_rates
+ 	p_Ds_v5.params.mu_vals[p_Ds_v5.params.mu_vals .> inputs.setup.max_extinction_rate] .= inputs.setup.max_extinction_rate
+ 	
+ 	# Alternative way to set extinction to 0.0 for multi-area ranges
+ 	if (inputs.setup.multi_area_ranges_have_zero_mu == true)
+	 	p_Ds_v5.params.mu_vals[length.(inputs.setup.states_list) .> 1] .= 0.0
+	end
+
+
 	
 	# (The mu_vals_t might change with time; if so, see update_mus_time_t
 	# p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.setup.area_of_areas)^p.bmo.est[p.setup.bmo_rows.u_mu]

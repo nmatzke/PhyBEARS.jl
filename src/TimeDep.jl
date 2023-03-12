@@ -479,13 +479,34 @@ function update_mus_time_t!(p, t)
   #mu = p.params.mu_vals # base extinction rate of each range
   #mu_t = p.params.mu_vals_t # mu_t = mu at time t
   
-  # Populate changing mus with time
-  @inbounds @simd for i in 1:p.n
-  	# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
-  	p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
-  end
+  
+	# mu_func: the extinction rate for a range could be:
+	# mu:   bmo.deathRate, perhaps multiplied by area^u_mu
+	# mu+e: bmo.deathRate, plus the rate of e^u_e for single-area ranges
+	# If you set mu+e, and set mu=0.0, then the single-area deathRate is e
+	
+	if (p.setup.mu_func == "mu")
+		# Populate changing mus with time
+		@inbounds @simd for i in 1:p.n
+			# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+			p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
+		end
+	else if ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+		# Populate changing mus with time
+		# (with the rate of "e" added, for single-area ranges
+		@inbounds @simd for i in 1:p.n
+			# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
+			area_of_range = get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))
+			single_area_range_TF = length(p.setup.states_list[i]) == 1
+			
+			p.params.mu_vals_t[i] = (p.params.mu_vals[i] * area_of_range^p.bmo.est[p.setup.bmo_rows.u_mu]) + (single_area_range_TF * (p.bmo.est[p.setup.bmo_rows.e] * area_of_range^p.bmo.est[p.setup.bmo_rows.u_e]))
+		end
+	end # END if (p.setup.mu_func == "mu")
+
   # Correct "Inf" max_extinction_rates
  	p.params.mu_vals_t[p.params.mu_vals_t .> p.setup.max_extinction_rate] .= p.setup.max_extinction_rate
+ 	
+ 	# Alternative way to set extinction to 0.0 for multi-area ranges
  	if (p.setup.multi_area_ranges_have_zero_mu == true)
 	 	p.params.mu_vals_t[length.(p.states_as_areas_lists) .> 1] .= 0.0
 	end
@@ -501,8 +522,9 @@ Update the Qarray and Carray vectors at time t
 function update_QC_mats_time_t!(p, t)
  	# The row of bmo that refers to "u", the effect of area on extinction rate
  	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
+ 	mu_func = p.setup.mu_func
  	max_extinction_rate = p.setup.max_extinction_rate
-
+	
  	# Get the area of areas at time t
 	p.setup.area_of_areas .= p.interpolators.area_of_areas_interpolator(t)
  	

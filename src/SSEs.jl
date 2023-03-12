@@ -1061,7 +1061,8 @@ parameterized_ClaSSE_Ds_v7_simd_sums = (du,u,p,t) -> begin
 #	sol_Es = p.sol_Es_v5
 #	uE = p.uE
 	uE = p.sol_Es_v5(t)
-	terms = Vector{Float64}(undef, 4)
+	#terms = Vector{Float64}(undef, 4)
+	terms = p.terms
   @inbounds @simd for i in 1:n
 		#Qi_sub_i = p.p_TFs.Qi_sub_i[i]
 #		Qj_sub_i = p.p_TFs.Qj_sub_i[i]

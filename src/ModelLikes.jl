@@ -452,16 +452,27 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	total_numareas = length(areas_list)
 	tree_height = get_tree_height(tr)
 
+	#################################################
 	# Extinction rate controls
+	#################################################
+	mu_func = "mu"
+	# the extinction rate for a range could be:
+	# mu:   bmo.deathRate, perhaps multiplied by area^u_mu
+	# mu+e: bmo.deathRate, plus the rate of e^u_e for single-area ranges
+	# If you set mu+e, and set mu=0.0, then the single-area deathRate is e
+	
  	max_extinction_rate = 100.0
+	
+	# Alternative way to set extinction to 0.0 for multi-area ranges
 	multi_area_ranges_have_zero_mu = false
+	#################################################
 	
 	# Create a default BioGeoBEARS_model_object
 	type_string = string(typeof(bmo))
 	if startswith(type_string, "DataFrame") == false
 		bmo = construct_BioGeoBEARS_model_object()
 	end
-
+	
 	# Fixed constants
 	# The row of bmo that refers to "u", the effect of area on extinction rate
  	# u_row = (1:Rnrow(bmo))[bmo.rownames .== "u"][]
@@ -921,7 +932,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	min_stepsize = 1.0
 	
 	
-	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, fossil_TF=fossil_TF, direct_TF=direct_TF, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
+	setup = (tree_height=tree_height, area_names=area_names, areas_list=areas_list, states_list=states_list, txt_states_list=txt_states_list, max_range_size=max_range_size, include_null_range=include_null_range, root_age_mult=root_age_mult, statenums=statenums, observed_statenums=observed_statenums, numtips=numtips, fossil_TF=fossil_TF, direct_TF=direct_TF, numstates=numstates, numareas=total_numareas, area_of_areas=area_of_areas, dmat_base=dmat_base, dmat=dmat, dmat_t=dmat_t, jmat_base=jmat_base, jmat=jmat, jmat_t=jmat_t, amat_base=amat_base, amat=amat, amat_t=amat_t, elist=elist, elist_base=elist_base, elist_t=elist_t,  dispersal_multipliers_mat=dispersal_multipliers_mat, distmat=distmat, envdistmat=envdistmat, distmat2=distmat2, distmat3=distmat3, maxent01=maxent01, bmo_rows=bmo_rows, d_rows=d_rows, d_froms=d_froms, d_tos=d_tos, d_drows=d_drows, a_rows=a_rows, a_froms=a_froms, a_tos=a_tos, a_arows=a_arows, e_rows=e_rows, gains=gains, losses=losses, j_rows=j_rows, j_froms=j_froms, j_tos=j_tos, j_jrows=j_jrows, j_numdispersals=j_numdispersals, v_rows=v_rows, vicdist_base=vicdist_base, vicdist=vicdist, vicdist_t=vicdist_t, s_rows=s_rows, mu_func=mu_func, max_extinction_rate=max_extinction_rate, multi_area_ranges_have_zero_mu=multi_area_ranges_have_zero_mu, min_stepsize=min_stepsize)
 	
 	# Scratch spaces for the 4 sums of the SSE calculations
 	terms = repeat([0.0], 4)
