@@ -2925,7 +2925,7 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	
 	if (inputs.setup.mu_func == "mu")
 		p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate] .* (area_of_ranges .^ u_mu)
-	else if ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+	elseif ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
 		p_Ds_v5.params.mu_vals[:] .= single_area_range_TF .* (p_Ds_v5.params.mu_vals .* (area_of_ranges .^ u_mu)) .+ (inputs.bmo.est[inputs.setup.bmo_rows.e] .* (area_of_ranges .^ u_e))	
 	end # END if (inputs.setup.mu_func == "mu")
 	

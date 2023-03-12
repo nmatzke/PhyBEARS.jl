@@ -491,7 +491,7 @@ function update_mus_time_t!(p, t)
 			# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
 			p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
 		end
-	else if ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+	elseif ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
 		# Populate changing mus with time
 		# (with the rate of "e" added, for single-area ranges
 		@inbounds @simd for i in 1:p.n
