@@ -36,7 +36,6 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
-#bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.9*ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "d"] .= 0.034;
@@ -60,7 +59,6 @@ inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult
 
 # Turn off multi-area extinction
 inputs.setup.multi_area_ranges_have_zero_mu[1] = true;
-
 
 bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
@@ -216,7 +214,7 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 uppass_edgematrix = res.uppass_edgematrix
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
@@ -345,13 +343,13 @@ nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
 
 uppass_edgematrix = res.uppass_edgematrix
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
 solver_options.abstol = 1.0e-9
 solver_options.reltol = 1.0e-9
-uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
 res.uppass_probs_at_each_nodeIndex_branchBot
 res.anc_estimates_at_each_nodeIndex_branchBot

@@ -36,7 +36,6 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # DEC-type SSE model on Hawaiian Psychotria
 # We are setting "j" to 0.0, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
-#bmo.type[bmo.rownames .== "j"] .= "free";
 bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.9*ML_yule_birthRate(tr);
 bmo.est[bmo.rownames .== "d"] .= 0.034;
@@ -182,29 +181,75 @@ prtQp(p_Es_v12)
 @test tmp4_u_m1[2] > tmp4_u_m1[3]
 @test prtQp(p_Es_v12).vals_t[3] < prtQp(p_Es_v12).vals_t[4]
 
-tmp4_u_m1[1] > tmp4[1]
-tmp3_u_m1[1] > tmp3[1]
+@test tmp4_u_m1[1] > tmp4[1]
+@test tmp3_u_m1[1] > tmp3[1]
+
+
+
+
+
+
+
+
+
+#######################################################
+# Tree likelihood check
+#######################################################
+
+
+# DEC-type SSE model on Hawaiian Psychotria
+# We are setting "j" to 0.0, for now -- so, no jump dispersal
+bmo = construct_BioGeoBEARS_model_object();
+bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr);
+bmo.est[bmo.rownames .== "deathRate"] .= 0.0;#0.9*ML_yule_birthRate(tr);
+bmo.est[bmo.rownames .== "d"] .= 0.034;
+bmo.est[bmo.rownames .== "e"] .= 0.028;
+bmo.est[bmo.rownames .== "a"] .= 0.0;
+bmo.est[bmo.rownames .== "j"] .= 0.1;
+bmo.est[bmo.rownames .== "u"] .= 0.0;
+bmo.min[bmo.rownames .== "u"] .= -2.5;
+bmo.max[bmo.rownames .== "u"] .= 0.0;
+
+bmo.type[bmo.rownames .== "j"] .= "free";
+bmo.type[bmo.rownames .== "u"] .= "free";
+bmo.type[bmo.rownames .== "birthRate"] .= "free";
+bmo.type[bmo.rownames .== "deathRate"] .= "birthRate";
+
+
+
+# Set up the model
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
+
+#######################################################
+# Read in and parse distances and area-of-areas
+#######################################################
+files.times_fn = "sunkNZ_times.txt"
+files.distances_fn = "sunkNZ_distances.txt"
+files.area_of_areas_fn = "sunkNZ_area_of_areas.txt"
+
+# Construct interpolators, times-at-which-to-interpolate QC
+p = p_Ds_v5;
+interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=oldest_possible_age);
+
+p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
+
+# Add Q, C interpolators
+p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
 
 
 # Solve the Es
 prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
 sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-sol_Es_v12(0.0)
-
-sol_Es_v12(1.0)
-sol_Es_v12(2.0)
-
-sol_Es_v12(22.0)
-sol_Es_v12(23.0)
-sol_Es_v12(24.0)
-sol_Es_v12(25.0)
-sol_Es_v12(26.0)
-
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 # Solve the Ds
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+solver_options=inputs.solver_options; max_iterations=10^5; return_lnLs=true
+include_null_range=false; printlevel=0
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true, include_null_range=inputs.setup.include_null_range, printlevel=0)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
@@ -212,7 +257,7 @@ p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indic
 
 uppass_edgematrix = res.uppass_edgematrix
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
@@ -341,13 +386,13 @@ nodelikes = res.normlikes_at_each_nodeIndex_branchTop[nodenum]
 
 uppass_edgematrix = res.uppass_edgematrix
 
-include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
 current_nodeIndex = 6
 x = nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_options)
 
 solver_options.abstol = 1.0e-9
 solver_options.reltol = 1.0e-9
-uppass_ancstates_v12(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 
 res.uppass_probs_at_each_nodeIndex_branchBot
 res.anc_estimates_at_each_nodeIndex_branchBot
@@ -356,12 +401,6 @@ res.anc_estimates_at_each_nodeIndex_branchTop
 res.fixNodesMult_at_each_nodeIndex_branchTop
 res.fixNodesMult_at_each_nodeIndex_branchBot
 
-
-tspan
-
-uppass_Ds_v12 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Ds_v12_simd_sums, deepcopy(u0), tspan, p_Ds_v12)
-
-	sol_Ds = solve(prob_Ds_v12, solver_options.solver, dense=false, save_start=false, save_end=true, save_everystep=false, abstol=solver_options.abstol, reltol=solver_options.reltol)
 
 
 # Install modified "castor" package in R

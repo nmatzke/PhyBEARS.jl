@@ -1,0 +1,15 @@
+
+2023-03-13 tasks:
+
+- Gflow for v12
+- check tree function for 0 length branches
+- @test for sunkNZ experiment
+- @test different sunkNZ experiments
+
+- tutorial
+- speed tests
+- simulations of standard models
+- simulations of alt models
+
+- run on old empirical datasets
+- publish
