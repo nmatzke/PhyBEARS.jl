@@ -2925,9 +2925,9 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 	
 	u_mu = inputs.bmo.est[inputs.setup.bmo_rows.u_mu]
 	u_e = inputs.bmo.est[inputs.setup.bmo_rows.u_e]
-	if (inputs.setup.mu_func == "mu")
+	if (inputs.setup.mu_func[1] == "mu")
 		p_Ds_v5.params.mu_vals[:] .= inputs.bmo.est[inputs.setup.bmo_rows.deathRate] .* (area_of_ranges .^ u_mu)
-	elseif ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+	elseif ((p.setup.mu_func[1] == "mu+e") || (p.setup.mu_func[1] == "e+mu"))
 		p_Ds_v5.params.mu_vals[:] .= single_area_range_TF .* (p_Ds_v5.params.mu_vals .* (area_of_ranges .^ u_mu)) .+ (inputs.bmo.est[inputs.setup.bmo_rows.e] .* (area_of_ranges .^ u_e))	
 	end # END if (inputs.setup.mu_func == "mu")
 	
@@ -2938,7 +2938,7 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
  	p_Ds_v5.params.mu_vals[p_Ds_v5.params.mu_vals .> inputs.setup.max_extinction_rate] .= inputs.setup.max_extinction_rate
  	
  	# Alternative way to set extinction to 0.0 for multi-area ranges
- 	if (inputs.setup.multi_area_ranges_have_zero_mu == true)
+ 	if (inputs.setup.multi_area_ranges_have_zero_mu[1] == true)
 	 	p_Ds_v5.params.mu_vals[length.(inputs.setup.states_list) .> 1] .= 0.0
 	end
 

@@ -485,13 +485,13 @@ function update_mus_time_t!(p, t)
 	# mu+e: bmo.deathRate, plus the rate of e^u_e for single-area ranges
 	# If you set mu+e, and set mu=0.0, then the single-area deathRate is e
 	
-	if (p.setup.mu_func == "mu")
+	if (p.setup.mu_func[1] == "mu")
 		# Populate changing mus with time
 		@inbounds @simd for i in 1:p.n
 			# total_area = get_area_of_range(tval, state_as_areas_list, area_of_areas_interpolator)
 			p.params.mu_vals_t[i] = p.params.mu_vals[i] * get_area_of_range(t, p.states_as_areas_lists[i], p.interpolators.area_of_areas_interpolator(t))^p.bmo.est[p.setup.bmo_rows.u_mu]
 		end
-	elseif ((p.setup.mu_func == "mu+e") || (p.setup.mu_func == "e+mu"))
+	elseif ((p.setup.mu_func[1] == "mu+e") || (p.setup.mu_func[1] == "e+mu"))
 		# Populate changing mus with time
 		# (with the rate of "e" added, for single-area ranges
 		@inbounds @simd for i in 1:p.n
@@ -507,7 +507,7 @@ function update_mus_time_t!(p, t)
  	p.params.mu_vals_t[p.params.mu_vals_t .> p.setup.max_extinction_rate] .= p.setup.max_extinction_rate
  	
  	# Alternative way to set extinction to 0.0 for multi-area ranges
- 	if (p.setup.multi_area_ranges_have_zero_mu == true)
+ 	if (p.setup.multi_area_ranges_have_zero_mu[1] == true)
 	 	p.params.mu_vals_t[length.(p.states_as_areas_lists) .> 1] .= 0.0
 	end
 

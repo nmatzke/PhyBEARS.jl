@@ -455,16 +455,16 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	#################################################
 	# Extinction rate controls
 	#################################################
-	mu_func = "mu"
+	mu_func = ["mu"]
 	# the extinction rate for a range could be:
 	# mu:   bmo.deathRate, perhaps multiplied by area^u_mu
 	# mu+e: bmo.deathRate, plus the rate of e^u_e for single-area ranges
 	# If you set mu+e, and set mu=0.0, then the single-area deathRate is e
 	
- 	max_extinction_rate = 100.0
+ 	max_extinction_rate = [100.0]
 	
 	# Alternative way to set extinction to 0.0 for multi-area ranges
-	multi_area_ranges_have_zero_mu = false
+	multi_area_ranges_have_zero_mu = [false]
 	#################################################
 	
 	# Create a default BioGeoBEARS_model_object

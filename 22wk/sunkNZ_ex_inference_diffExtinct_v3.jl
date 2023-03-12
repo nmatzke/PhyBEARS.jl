@@ -58,6 +58,10 @@ bmo.type[bmo.rownames .== "deathRate"] .= "birthRate";
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
+# Turn off multi-area extinction
+inputs.setup.multi_area_ranges_have_zero_mu[1] = true;
+
+
 bmo.est[:] = bmo_updater_v2(bmo, inputs.setup.bmo_rows);
 
 inputs.setup.txt_states_list
