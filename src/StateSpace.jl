@@ -267,6 +267,52 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	return p_Es_v5
 end # END function add_111_to_Carray!(p_Es_v5)
 
+"""
+# Problem: a simulation allowed null-range speciation (null->null, null or 000->000,000)
+# Solution for now: Add the null -> null, null cladogenesis event to the p_Es_v5
+"""
+function add_111_to_Carray2!(inputs)
+	# Hack
+	# Add the null -> null, null cladogenesis event to the inputs.p_Ds_v5
+	# I.e. state 1: 1->1,1
+	#inputs.p_Ds_v5 = inputs.p_Ds_v5
+	birthRate = inputs.bmo.est[inputs.setup.bmo_rows.birthRate]
+	
+	prepend!(inputs.p_Ds_v5.p_indices.Carray_event_types, ["y"])
+	prepend!(inputs.p_Ds_v5.p_indices.Carray_ivals, [1])
+	prepend!(inputs.p_Ds_v5.p_indices.Carray_jvals, [1])
+	prepend!(inputs.p_Ds_v5.p_indices.Carray_kvals, [1])
+	prepend!(inputs.p_Ds_v5.p_indices.Carray_pair, [1])
+	prepend!(inputs.p_Ds_v5.params.Cijk_weights, [1.0])
+	prepend!(inputs.p_Ds_v5.params.Cijk_probs, [1.0])
+	prepend!(inputs.p_Ds_v5.params.Cijk_rates, inputs.p_Ds_v5.params.Cijk_probs[1] * birthRate)
+	prepend!(inputs.p_Ds_v5.params.Cijk_vals, inputs.p_Ds_v5.params.Cijk_probs[1] * birthRate)
+	prepend!(inputs.p_Ds_v5.params.Cijk_rates_t, 0.0 * birthRate)
+	inputs.p_Ds_v5.params.row_weightvals[1] = 1.0
+
+	# You also have to add 1 to j_rows and j_jrows (because everything moved up 1 position)
+	inputs.setup.j_rows .= inputs.setup.j_rows .+ 1
+	inputs.setup.j_jrows .= inputs.setup.j_jrows .+ 1
+
+	for i in 1:length(inputs.p_Ds_v5.p_TFs.Ci_eq_i)
+		if i == 1
+			prepend!(inputs.p_Ds_v5.p_TFs.Ci_eq_i[i], Bool[1]) # state 1 is "true" (1) for row 1 of the Carray
+		else
+			prepend!(inputs.p_Ds_v5.p_TFs.Ci_eq_i[i], Bool[0]) # all others are false
+		end
+	end
+	inputs.p_Ds_v5.p_TFs.Ci_sub_i[1] = [1]
+	inputs.p_Ds_v5.p_TFs.Cj_sub_i[1] = [1]
+	inputs.p_Ds_v5.p_TFs.Ck_sub_i[1] = [1]
+	inputs.p_Ds_v5.p_TFs.Cijk_pair_sub_i[1] = [1]
+	inputs.p_Ds_v5.p_TFs.Cijk_rates_sub_i[1] = inputs.p_Ds_v5.params.Cijk_probs[1] * birthRate
+	inputs.p_Ds_v5.p_TFs.Cijk_rates_sub_i_t[1] = 0.0 * birthRate
+	inputs.p_Ds_v5.p_TFs.Cijk_not_y_sub_i[1] = Bool[0]
+	# inputs.p_Ds_v5.p_TFs.Cij_singleNum_sub_i[1] =  # some kind of grid reference
+	# inputs.p_Ds_v5.p_TFs.Cik_singleNum_sub_i[1] =  # some kind of grid reference
+	prtCp(inputs.p_Ds_v5)
+	return inputs
+end # END function add_111_to_Carray!(inputs)
 
 
 
@@ -1979,7 +2025,7 @@ Carray3 = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams)
 prtC(Carray3)
 
 """
-function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); birthRate=1.0, predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1.0e-9)
+function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_Cparams(), dmat=reshape(repeat([1.0], (length(areas_list)^2)), (length(areas_list),length(areas_list))); birthRate=1.0, predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000)), min_precision=1.0e-9, allow_null_cladogenesis=false)
 	numareas = length(areas_list)
 	total_numareas = numareas
 	numstates = length(states_list)
@@ -2091,10 +2137,18 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 			possible_min_rangesizes_indices = collect(1:Rncol(maxent01symp))
 			TF = maxent01symp[ancsize,:] .> min_precision
 			max_min_rangesize = maximum(possible_min_rangesizes_indices[TF])
-			if (ancsize > max_min_rangesize) || (ancsize == 0)
+			if (ancsize > max_min_rangesize)
 				continue # go to next ancestral state i
 			end
-
+			
+			# Allow null->null,null (i.e., effects of add111, easier here)
+			if (allow_null_cladogenesis == true)
+				if (ancsize == 0)
+					continue # go to next ancestral state i
+				end # END if (ancsize == 0)
+			end # END if (allow_null_cladogenesis == true)
+			
+			
 			# Store the sympatry event, if it has positive weightį
 			tmp_weightval = y_wt * maxent01symp[ancsize, ancsize] * 1.0 * 1.0
 			if tmp_weightval > min_precision

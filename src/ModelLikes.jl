@@ -425,6 +425,7 @@ bmo = construct_BioGeoBEARS_model_object()
 manual_states_list=NaN
 area_names=LETTERS(1:numareas)
 fossils_older_than=1e-5 # tips older than this are treated as fossils
+allow_null_cladogenesis = true
 
 great_ape_newick_string = "((((human:2.5,Lucy:0.1):3.5,chimpanzee:6):1,gorilla:7):5,orangutan:12);";
 tr = readTopology(great_ape_newick_string);
@@ -441,7 +442,7 @@ geog_df = DataFrame(tipnames=tipnames, A=A, B=B)
 inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo)
 (setup, res, trdf, bmo, solver_options, p_Ds_v5, Es_tspan) = inputs
 """
-function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas), fossils_older_than=1e-5)
+function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla:2);"), geog_df=DataFrame(tipnames=["chimp","human","gorilla"],A=[1,1,1],B=[1,0,1]); root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=NaN, manual_states_list=NaN, area_names=LETTERS(1:numareas), fossils_older_than=1e-5, allow_null_cladogenesis=false)
 	#numareas=2
 	#tr=readTopology("((chimp:1,human:1):1,gorilla:2);")
 	
@@ -663,7 +664,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Each event individually listed: 2020-2021
 	#Carray = setup_DEC_Cmat(areas_list, states_list, maxent01, Cparams)
 	# Paired events lumped (e.g. i,j,k = i,k,j : 2022-03-15
-	Carray = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams; birthRate=birthRate)
+	Carray = setup_DEC_Cmat3(areas_list, states_list, maxent01, Cparams; birthRate=birthRate, allow_null_cladogenesis=allow_null_cladogenesis)
 
 	j_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "j"]
 	s_rows = (1:length(Carray.Carray_event_types))[Carray.Carray_event_types .== "s"]
