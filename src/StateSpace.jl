@@ -244,8 +244,9 @@ function add_111_to_Carray!(p_Es_v5, birthRate)
 	p_Es_v5.params.row_weightvals[1] = 1.0
 
 	# You also have to add 1 to j_rows and j_jrows (because everything moved up 1 position)
-	p_Es_v5.setup.j_rows .= p_Es_v5.setup.j_rows .+ 1
-	p_Es_v5.setup.j_jrows .= p_Es_v5.setup.j_jrows .+ 1
+	# INCOMPLETE
+	#p_Es_v5.setup.j_rows .= p_Es_v5.setup.j_rows .+ 1
+	#p_Es_v5.setup.j_jrows .= p_Es_v5.setup.j_jrows .+ 1
 
 	for i in 1:length(p_Es_v5.p_TFs.Ci_eq_i)
 		if i == 1
@@ -291,6 +292,7 @@ function add_111_to_Carray2!(inputs)
 	inputs.p_Ds_v5.params.row_weightvals[1] = 1.0
 
 	# You also have to add 1 to j_rows and j_jrows (because everything moved up 1 position)
+	# INCOMPLETE
 	inputs.setup.j_rows .= inputs.setup.j_rows .+ 1
 	inputs.setup.j_jrows .= inputs.setup.j_jrows .+ 1
 
@@ -2129,6 +2131,7 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	if (y_wt > min_precision)
 		# Default range indices for sympatry
 		range_indices = deepcopy(range_size_category_indexes_dict[1])
+		
 		# Add the null range for sympatry, if allow_null_cladogenesis == true
 		if (allow_null_cladogenesis == true)
 			range_indices = prepend!(range_indices, range_size_category_indexes_dict[0])
@@ -2137,6 +2140,26 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 		for i in minimum(range_indices):numstates
 			ancstate = states_list[i]
 			ancsize = length(ancstate)
+			
+			# Specifically for null-range ancestor
+			if ((allow_null_cladogenesis == true) && (ancsize == 0))
+				tmp_weightval = y_wt * 1.0 * 1.0
+				if tmp_weightval > min_precision
+					# Record the range-copying event
+					# (no reverse event to record)
+					numC += 1
+					Carray_event_types[numC] = "y"
+					Carray_ivals[numC] = i
+					Carray_jvals[numC] = i
+					Carray_kvals[numC] = i
+					Carray_pair[numC] = 1
+					Cijk_weights[numC] = tmp_weightval
+					row_weightvals[i] += tmp_weightval
+				end
+
+				continue # go to next ancestral state i
+			end
+			
 			# Exclude the null range as an ancestor for cladogenetic range-changing events
 			# (ancestor of range NULL give 0 likelihood to the observed data)
 			# Also exclude if daughter rangesize not allowed by maxent01symp
@@ -2156,9 +2179,8 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 			else
 				using_null_range_in_Carray = true
 			end # END if (allow_null_cladogenesis == true)
-			
-			
-			# Store the sympatry event, if it has positive weightį
+					
+			# Store the sympatry event, if it has positive weightval
 			tmp_weightval = y_wt * maxent01symp[ancsize, ancsize] * 1.0 * 1.0
 			if tmp_weightval > min_precision
 				# Record the range-copying event
