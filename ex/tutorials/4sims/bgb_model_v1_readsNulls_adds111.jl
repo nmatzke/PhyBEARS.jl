@@ -56,6 +56,7 @@ bmo.type[bmo.rownames .== "deathRate"] .= "fixed";
 
 
 # Set up the model
+testing_can_ignore="""
 using PhyBEARS.ModelLikes
 root_age_mult=1.5
 max_range_size=NaN
@@ -66,9 +67,10 @@ manual_states_list=NaN
 area_names=LETTERS(1:numareas)
 fossils_older_than=1e-5
 
-predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000))
+#predeclare_array_length=Integer(min(length(states_list)*length(states_list)*round((length(states_list)/2)), 10000000))
 min_precision=1.0e-9
-
+"""
+# ADDING OPTION: allow_null_cladogenesis=true
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo, allow_null_cladogenesis=true);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
