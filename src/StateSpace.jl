@@ -2104,11 +2104,22 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	end
 	
 	# Set up a dictionary for each rangesize category
-	if rangesizes[1] == 0
-		range_size_category_indexes_dict = Dict(0 => [1])
+	if (allow_null_cladogenesis == false)
+		if rangesizes[1] == 0
+			range_size_category_indexes_dict = Dict(0 => [1])
+		end
+		if rangesizes[1] == 1
+			range_size_category_indexes_dict = Dict(1 => [1])
+		end
 	end
-	if rangesizes[1] == 1
-		range_size_category_indexes_dict = Dict(1 => [1])
+
+	if (allow_null_cladogenesis == true)
+		if rangesizes[1] == 0
+			range_size_category_indexes_dict = Dict(1 => [1])
+		end
+		if rangesizes[1] == 1
+			range_size_category_indexes_dict = Dict(1 => [1])
+		end
 	end
 	
 	# Fill in the rangesize category dictionary
@@ -2142,10 +2153,12 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 			end
 			
 			# Allow null->null,null (i.e., effects of add111, easier here)
-			if (allow_null_cladogenesis == true)
+			if (allow_null_cladogenesis == false)
 				if (ancsize == 0)
 					continue # go to next ancestral state i
 				end # END if (ancsize == 0)
+			else
+				using_null_range_in_Carray = true
 			end # END if (allow_null_cladogenesis == true)
 			
 			
