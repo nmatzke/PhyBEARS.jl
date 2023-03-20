@@ -2104,24 +2104,13 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	end
 	
 	# Set up a dictionary for each rangesize category
-	if (allow_null_cladogenesis == false)
-		if rangesizes[1] == 0
-			range_size_category_indexes_dict = Dict(0 => [1])
-		end
-		if rangesizes[1] == 1
-			range_size_category_indexes_dict = Dict(1 => [1])
-		end
+	if rangesizes[1] == 0
+		range_size_category_indexes_dict = Dict(0 => [1])
+	end
+	if rangesizes[1] == 1
+		range_size_category_indexes_dict = Dict(1 => [1])
 	end
 
-	if (allow_null_cladogenesis == true)
-		if rangesizes[1] == 0
-			range_size_category_indexes_dict = Dict(1 => [1])
-		end
-		if rangesizes[1] == 1
-			range_size_category_indexes_dict = Dict(1 => [1])
-		end
-	end
-	
 	# Fill in the rangesize category dictionary
 	oldsize = 0
 	newsize = 0
@@ -2138,7 +2127,14 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	# Sympatry (range-copying)
 	############################################
 	if (y_wt > min_precision)
-		for i in minimum(range_size_category_indexes_dict[1]):numstates
+		# Default range indices for sympatry
+		range_indices = deepcopy(range_size_category_indexes_dict[1])
+		# Add the null range for sympatry, if allow_null_cladogenesis == true
+		if (allow_null_cladogenesis == true)
+			range_indices = prepend!(range_indices, range_size_category_indexes_dict[0])
+		end
+	
+		for i in minimum(range_indices):numstates
 			ancstate = states_list[i]
 			ancsize = length(ancstate)
 			# Exclude the null range as an ancestor for cladogenetic range-changing events
