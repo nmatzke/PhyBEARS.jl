@@ -464,99 +464,99 @@ simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_tim
 		
 		} # END while(sim_done == FALSE)
 		
-		# Otherwise, proceed
-		# 1. output a successful simulation
-		# 2. save to a living tree and complete tree
-		tr = simulation2$tree
-		tr$node.label = paste0("in", ((length(tr$tip.label)+1):(length(tr$tip.label)+tr$Nnode)))
-		tr$tip.label = paste0("sp", tr$tip.label)
-		tips_to_drop = tr$tip.label[fossils_TF]
-		living_tree = drop.tip(phy=tr, tip=tips_to_drop)
-		
-		full_tree_tipnode_labels = c(tr$node.label, tr$tip.label)
-		living_tree_tipnode_labels = c(living_tree$node.label, living_tree$tip.label)
-		
-		index_in_fulltree_matching_living_tree_node = match(living_tree$node.label, table=tr$node.label)
-		length(index_in_fulltree_matching_living_tree_node)
-		length(living_tree$node.label)
-		length(tr$node.label)
+	# Otherwise, proceed
+	# 1. output a successful simulation
+	# 2. save to a living tree and complete tree
+	tr = simulation2$tree
+	tr$node.label = paste0("in", ((length(tr$tip.label)+1):(length(tr$tip.label)+tr$Nnode)))
+	tr$tip.label = paste0("sp", tr$tip.label)
+	tips_to_drop = tr$tip.label[fossils_TF]
+	living_tree = drop.tip(phy=tr, tip=tips_to_drop)
+	
+	full_tree_tipnode_labels = c(tr$node.label, tr$tip.label)
+	living_tree_tipnode_labels = c(living_tree$node.label, living_tree$tip.label)
+	
+	index_in_fulltree_matching_living_tree_node = match(living_tree$node.label, table=tr$node.label)
+	length(index_in_fulltree_matching_living_tree_node)
+	length(living_tree$node.label)
+	length(tr$node.label)
 
-		index_in_fulltree_matching_living_tree_tipnode = match(living_tree_tipnode_labels, table=full_tree_tipnode_labels)
-		length(index_in_fulltree_matching_living_tree_tipnode)
-		length(living_tree_tipnode_labels)
-		length(full_tree_tipnode_labels)
+	index_in_fulltree_matching_living_tree_tipnode = match(living_tree_tipnode_labels, table=full_tree_tipnode_labels)
+	length(index_in_fulltree_matching_living_tree_tipnode)
+	length(living_tree_tipnode_labels)
+	length(full_tree_tipnode_labels)
 
 
-		#trtable_all = prt(t=tr, printflag=FALSE, get_tipnames=TRUE)
-		#trtable_living = prt(t=living_tree, printflag=FALSE, get_tipnames=TRUE)
-		
-		
-		outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
-		write.tree(living_tree, file=outfn)
-		living_tree_noNodeLabels = living_tree
-		living_tree_noNodeLabels$node.label = NULL
-		outfn = slashslash(paste0(wd, "/", "living_tree_noNodeLabels.newick"))
-		write.tree(living_tree_noNodeLabels, file=outfn)
-		
-		outfn = slashslash(paste0(wd, "/", "full_tree.newick"))
-		write.tree(tr, file=outfn)
-		outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick"))
-		write.tree(tr, file=outfn)
-		tree_wFossils_noNodeLabels = tr
-		tree_wFossils_noNodeLabels$node.label = NULL
-		outfn = slashslash(paste0(wd, "/", "tree_wFossils_noNodeLabels.newick"))
-		write.tree(tree_wFossils_noNodeLabels, file=outfn)
-		
-		
-		#	3. geog files for both
-		
-		# Write out the geography files
-		all_tip_states = simulation2$tip_states
-		
-		tipnames = tr$tip.label
-		tmpdf = NULL
-		for (i in 1:length(all_tip_states))
-			{
-			tmprow = rep(0, times=length(area_names))
-			tmpstate = states_list[all_tip_states[i]][[1]]
-			tmprow[tmpstate] = 1
-			tmpdf = rbind(tmpdf, tmprow)
-			}
-		
-		tmpdf = as.data.frame(tmpdf)
-		names(tmpdf) = area_names
-		row.names(tmpdf) = paste0("sp", names(all_tip_states))
-		tipranges = define_tipranges_object(tmpdf=tmpdf)
-		
-		lgdata_fn = slashslash(paste0(wd, "/", "geog_wFossils.data"))
-		save_tipranges_to_LagrangePHYLIP(tipranges, lgdata_fn=lgdata_fn, areanames=area_names)
-		
-		# Subset to living-only
-		rows_to_drop_TF = row.names(tmpdf) %in% tips_to_drop
-		rows_to_keep_TF = rows_to_drop_TF == FALSE
-		tmpdf2 = tmpdf[rows_to_keep_TF,]
-		tipranges2 = define_tipranges_object(tmpdf=tmpdf2)
-		lgdata_fn = slashslash(paste0(wd, "/", "geog_living.data"))
-		save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
-		
-		#	4. save the Rdata file
-		outfn = slashslash(paste0(wd, "/", "simulation2.Rdata"))
-		save(simulation2, file=outfn)
-		
-		#	5. save the states at tips & nodes
-		outfn = slashslash(paste0(wd, "/", "simstates_all.txt"))
-		write.table(unname(simulation2$simstates), file=outfn)
+	#trtable_all = prt(t=tr, printflag=FALSE, get_tipnames=TRUE)
+	#trtable_living = prt(t=living_tree, printflag=FALSE, get_tipnames=TRUE)
+	
+	
+	outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
+	write.tree(living_tree, file=outfn)
+	living_tree_noNodeLabels = living_tree
+	living_tree_noNodeLabels$node.label = NULL
+	outfn = slashslash(paste0(wd, "/", "living_tree_noNodeLabels.newick"))
+	write.tree(living_tree_noNodeLabels, file=outfn)
+	
+	outfn = slashslash(paste0(wd, "/", "full_tree.newick"))
+	write.tree(tr, file=outfn)
+	outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick"))
+	write.tree(tr, file=outfn)
+	tree_wFossils_noNodeLabels = tr
+	tree_wFossils_noNodeLabels$node.label = NULL
+	outfn = slashslash(paste0(wd, "/", "tree_wFossils_noNodeLabels.newick"))
+	write.tree(tree_wFossils_noNodeLabels, file=outfn)
+	
+	
+	#	3. geog files for both
+	
+	# Write out the geography files
+	all_tip_states = simulation2$tip_states
+	
+	tipnames = tr$tip.label
+	tmpdf = NULL
+	for (i in 1:length(all_tip_states))
+		{
+		tmprow = rep(0, times=length(area_names))
+		tmpstate = states_list[all_tip_states[i]][[1]]
+		tmprow[tmpstate] = 1
+		tmpdf = rbind(tmpdf, tmprow)
+		}
+	
+	tmpdf = as.data.frame(tmpdf)
+	names(tmpdf) = area_names
+	row.names(tmpdf) = paste0("sp", names(all_tip_states))
+	tipranges = define_tipranges_object(tmpdf=tmpdf)
+	
+	lgdata_fn = slashslash(paste0(wd, "/", "geog_wFossils.data"))
+	save_tipranges_to_LagrangePHYLIP(tipranges, lgdata_fn=lgdata_fn, areanames=area_names)
+	
+	# Subset to living-only
+	rows_to_drop_TF = row.names(tmpdf) %in% tips_to_drop
+	rows_to_keep_TF = rows_to_drop_TF == FALSE
+	tmpdf2 = tmpdf[rows_to_keep_TF,]
+	tipranges2 = define_tipranges_object(tmpdf=tmpdf2)
+	lgdata_fn = slashslash(paste0(wd, "/", "geog_living.data"))
+	save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
+	
+	#	4. save the Rdata file
+	outfn = slashslash(paste0(wd, "/", "simulation2.Rdata"))
+	save(simulation2, file=outfn)
+	
+	#	5. save the states at tips & nodes
+	outfn = slashslash(paste0(wd, "/", "simstates_all.txt"))
+	write.table(unname(simulation2$simstates), file=outfn)
 
-		outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
-		write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
-		
-		simulation2$tree = tr
-		simulation2$tree_living = living_tree
-		simulation2$simstates_all = simulation2$simstates
-		names(simulation2$simstates_all) = c(names(simulation2$tip_states), tr$node.label)
-		simulation2$simstates_living = simulation2$simstates_all[index_in_fulltree_matching_living_tree_tipnode]
-		
-		
+	outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
+	write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
+	
+	simulation2$tree = tr
+	simulation2$tree_living = living_tree
+	simulation2$simstates_all = simulation2$simstates
+	names(simulation2$simstates_all) = c(names(simulation2$tip_states), tr$node.label)
+	simulation2$simstates_living = simulation2$simstates_all[index_in_fulltree_matching_living_tree_tipnode]
+	
+	
 
 	if (trynum <= numtries)
 		{
@@ -586,6 +586,182 @@ get_root_age <- function(tr)
 
 
 
+
+
+#######################################################
+# Remove last tip from a simulation object
+#######################################################
+# Remove a final tip from a simulation objection, reordering everything accordingly
+
+
+remove_last_tip_from_simulation <- function(simulation)
+	{
+	# Node times
+	last_tips_TF = simulation$birth_times == simulation$final_time
+
+	# Edit cladogenetic event counts
+	last_node_state = simulation$node_states[length(simulation$node_states)]
+	last2 = length(simulation$tip_states)-2
+	last1 = length(simulation$tip_states)-1
+	descendent_tip_states = simulation$tip_states[last2:last1]
+
+	# Remove a pair of cladogenetic transitions from counts
+	simulation$Ntransitions_C[last_node_state,descendent_tip_states[1]] = simulation$Ntransitions_C[last_node_state,descendent_tip_states[1]] - 1
+
+	simulation$Ntransitions_C[last_node_state,descendent_tip_states[2]] = simulation$Ntransitions_C[last_node_state,descendent_tip_states[2]] - 1
+
+	# Remove a birth event from counts
+	simulation$Nbirths[last_node_state] = simulation$Nbirths[last_node_state] - 1
+
+	# Drop stuff
+
+	# Drop last tip
+	tip_to_drop = names(simulation$tip_states)[length(names(simulation$tip_states))]
+	simulation$tree = drop.tip(simulation$tree, tip=tip_to_drop)
+
+	# Drop last birth time and tip state
+	simulation$birth_times = simulation$birth_times[last_tips_TF==FALSE]
+	simulation$tip_states = simulation$tip_states[-length(simulation$tip_states)]
+
+	# Drop last node
+	simulation$node_states = simulation$node_states[-length(simulation$node_states)]
+	
+	return(simulation)
+	}
+
+
+
+
+
+
+write_out_original_castor_simfiles <- function(simulation, wd, fn="rawsim")
+	{
+	
+	# Write the raw tree
+	original_simtree = simulation$tree
+	trfn = slashslash(paste0(wd, "/", fn, "_orig_castor_tree.newick"))
+	write.tree(original_simtree, file=trfn)
+	
+	original_simtree = simulation$tree
+	original_simtree_wSp = original_simtree
+	original_simtree_wSp$tip.label = paste0("sp", original_simtree_wSp$tip.label)
+	trfn = slashslash(paste0(wd, "/", fn, "_orig_castor_tree_wSp.newick"))
+	write.tree(original_simtree_wSp, file=trfn)
+	
+	# Save the original Rdata output
+	outfn = slashslash(paste0(wd, "/", fn, "_orig_castor_sim.Rdata"))
+	save(simulation2, file=outfn)
+	
+	# Original castor simstates
+	simstates_in_orig_castor_order = c(unname(simulation$tip_states), simulation$node_states)
+	simstates_in_orig_castor_order = cbind(1:length(simstates_in_orig_castor_order), simstates_in_orig_castor_order)
+	simstates_in_orig_castor_order = as.data.frame(simstates_in_orig_castor_order, stringsAsFactors=FALSE)
+	names(simstates_in_orig_castor_order) = c("nodenum", "simstate")
+	
+	outfn = slashslash(paste0(wd, "/", fn, "_simstates_in_orig_castor_order.txt"))
+	write.table(simstates_in_orig_castor_order, file=outfn, quote=FALSE, sep="\t", col.names=TRUE, row.names=FALSE)
+	
+	}
+
+
+
+write_out_reordered_castor_simfiles <- function(simulation, wd, area_names, states_list)
+	{
+	simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
+
+	tip_ages_above_root = get_node_ages_of_tips(simulation2$tree)
+	root_age = max(tip_ages_above_root)
+
+	tip_age_tolerance = 1e-6
+	fossils_TF = (root_age - tip_ages_above_root) > tip_age_tolerance
+
+	# 1. output a successful simulation
+	# 2. save to a living tree and complete tree
+	tr = simulation2$tree
+	tr$node.label = paste0("in", ((length(tr$tip.label)+1):(length(tr$tip.label)+tr$Nnode)))
+	tr$tip.label = paste0("sp", tr$tip.label)
+	tips_to_drop = tr$tip.label[fossils_TF]
+	living_tree = drop.tip(phy=tr, tip=tips_to_drop)
+	
+	full_tree_tipnode_labels = c(tr$node.label, tr$tip.label)
+	living_tree_tipnode_labels = c(living_tree$node.label, living_tree$tip.label)
+	
+	index_in_fulltree_matching_living_tree_node = match(living_tree$node.label, table=tr$node.label)
+	length(index_in_fulltree_matching_living_tree_node)
+	length(living_tree$node.label)
+	length(tr$node.label)
+
+	index_in_fulltree_matching_living_tree_tipnode = match(living_tree_tipnode_labels, table=full_tree_tipnode_labels)
+	length(index_in_fulltree_matching_living_tree_tipnode)
+	length(living_tree_tipnode_labels)
+	length(full_tree_tipnode_labels)
+
+
+	#trtable_all = prt(t=tr, printflag=FALSE, get_tipnames=TRUE)
+	#trtable_living = prt(t=living_tree, printflag=FALSE, get_tipnames=TRUE)
+	
+	
+	outfn = slashslash(paste0(wd, "/", "living_tree.newick"))
+	write.tree(living_tree, file=outfn)
+	living_tree_noNodeLabels = living_tree
+	living_tree_noNodeLabels$node.label = NULL
+	outfn = slashslash(paste0(wd, "/", "living_tree_noNodeLabels.newick"))
+	write.tree(living_tree_noNodeLabels, file=outfn)
+	
+	outfn = slashslash(paste0(wd, "/", "full_tree.newick"))
+	write.tree(tr, file=outfn)
+	outfn = slashslash(paste0(wd, "/", "tree_wFossils.newick"))
+	write.tree(tr, file=outfn)
+	tree_wFossils_noNodeLabels = tr
+	tree_wFossils_noNodeLabels$node.label = NULL
+	outfn = slashslash(paste0(wd, "/", "tree_wFossils_noNodeLabels.newick"))
+	write.tree(tree_wFossils_noNodeLabels, file=outfn)
+	
+	
+	#	3. geog files for both
+	
+	# Write out the geography files
+	all_tip_states = simulation2$tip_states
+	
+	tipnames = tr$tip.label
+	tmpdf = NULL
+	for (i in 1:length(all_tip_states))
+		{
+		tmprow = rep(0, times=length(area_names))
+		tmpstate = states_list[all_tip_states[i]][[1]]
+		tmprow[tmpstate] = 1
+		tmpdf = rbind(tmpdf, tmprow)
+		}
+	
+	tmpdf = as.data.frame(tmpdf)
+	names(tmpdf) = area_names
+	row.names(tmpdf) = paste0("sp", names(all_tip_states))
+	tipranges = define_tipranges_object(tmpdf=tmpdf)
+	
+	lgdata_fn = slashslash(paste0(wd, "/", "geog_wFossils.data"))
+	save_tipranges_to_LagrangePHYLIP(tipranges, lgdata_fn=lgdata_fn, areanames=area_names)
+	
+	# Subset to living-only
+	rows_to_drop_TF = row.names(tmpdf) %in% tips_to_drop
+	rows_to_keep_TF = rows_to_drop_TF == FALSE
+	tmpdf2 = tmpdf[rows_to_keep_TF,]
+	tipranges2 = define_tipranges_object(tmpdf=tmpdf2)
+	lgdata_fn = slashslash(paste0(wd, "/", "geog_living.data"))
+	save_tipranges_to_LagrangePHYLIP(tipranges2, lgdata_fn=lgdata_fn, areanames=area_names)
+	
+	#	4. save the Rdata file
+	outfn = slashslash(paste0(wd, "/", "simulation2.Rdata"))
+	save(simulation2, file=outfn)
+	
+	#	5. save the states at tips & nodes
+	outfn = slashslash(paste0(wd, "/", "simstates_all.txt"))
+	write.table(unname(simulation2$simstates), file=outfn)
+
+	outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
+	write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
+	
+
+	}
 
 
 

@@ -114,3 +114,6 @@ plot_castor_simulation <- function(simulation, areas=2, max_range_size=2, includ
 
 	return(cols_byNode)
 	} # END plot_castor_simulation
+
+
+

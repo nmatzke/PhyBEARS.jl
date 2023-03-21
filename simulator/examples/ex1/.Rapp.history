@@ -1,0 +1,3618 @@
+set.seed(6534) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])
+phy$tip.state
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=names(phy$tip.state), col="black", bg=cols[phy2$tip.state+1])
+*phy$tip.state
+phy$tip.state
+plot(phy, label.offset=0.2)#
+axisPhylo()#
+tiplabels(text=phy$tip.state, col="black", bg=cols[phy2$tip.state+1])
+phy
+prt(phy)
+set.seed(6534) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.2)#
+axisPhylo()#
+tiplabels(text=phy$tip.state, tip=names(phy$tip.state), col="black", bg=cols[phy$tip.state+1])
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy$tip.state+1])
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+t(st)
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+t(st)#
+#
+states_df = cft(adf2(t(st)))#
+states_df#
+#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+write.tree(phy, file="")
+pht$tip.data
+phy$tip.data
+phy$tip.state
+pars
+/GitHub/PhyBEARS.jl/test/simtree_5taxa_SSE
+t(st)
+lik
+lik(pars)
+make.bisse
+make.classe
+lik(pars)
+lik(pars, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)
+attr(reslnls,"intermediates")$lq
+reslnls = lik(pars, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+# -15.63256#
+attr(reslnls,"intermediates")$lq
+sum(attr(reslnls,"intermediates")$lq)
+pars
+sum(attr(reslnls,"intermediates")$lq)
+reslnls = lik(pars, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+# -15.63256#
+sum(attr(reslnls,"intermediates")$lq)
+reslnls = lik(pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+# -15.63256#
+sum(attr(reslnls,"intermediates")$lq)#
+# -12.87511#
+reslnls = lik(pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+# -12.87511#
+sum(attr(reslnls,"intermediates")$lq)
+library(BioGeoBEARS)#
+library(diversitree)#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+bisse_params = pars#
+birthRate = pars[1]#
+deathRate = pars[3]#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+write.tree(phy, file="")#
+#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+phy$tip.state#
+#
+bisse_2areas = lik#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit)#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+res1 = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+res2 = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0, 1)#
+res3 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.25, 0.75)#
+res4 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.5,0.5)#
+res5 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+res6 = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+#
+# Res1t is BiSSE default#
+res1t = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+res2t = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0, 1)#
+res3t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.25, 0.75)#
+res4t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.5,0.5)#
+res5t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+res6t = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+# get_classe_LnLs returns the total log-likelihood, and #
+# the total of the branch likelihoods#
+LnLs1 = get_classe_LnLs(res1)#
+LnLs2 = get_classe_LnLs(res2)#
+LnLs3 = get_classe_LnLs(res3)#
+LnLs4 = get_classe_LnLs(res4)#
+LnLs5 = get_classe_LnLs(res5)#
+LnLs6 = get_classe_LnLs(res6)#
+LnLs1t = get_classe_LnLs(res1t)#
+LnLs2t = get_classe_LnLs(res2t)#
+LnLs3t = get_classe_LnLs(res3t)#
+LnLs4t = get_classe_LnLs(res4t)#
+LnLs5t = get_classe_LnLs(res5t)#
+LnLs6t = get_classe_LnLs(res6t)#
+#
+LnLst = as.data.frame(rbind(LnLs1, LnLs2, LnLs3, LnLs4, LnLs5, LnLs6, LnLs1t, LnLs2t, LnLs3t, LnLs4t, LnLs5t, LnLs6t), stringsAsFactors=FALSE)#
+names(LnLst) = c("ttl_LnL", "branch_LnL")#
+ObsDiff = (LnLst$ttl_LnL - LnLst$branch_LnL)#
+exp_ObsDiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL))#
+LnLdiff = round((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)), digits=4)#
+exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))#
+LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)#
+cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)
+res1t
+res5t
+LnLst5
+LnLst2
+LnLst2["LnLs5t",]
+LnLst2["LnLs5t","branch_LnL"]
+LnLst2["LnLs5t","ttl_LnL"]
+LnLst2["LnLs1t","branch_LnL"]
+LnLst2["LnLs1t","ttl_LnL"]
+LnLst2["LnLs1","ttl_LnL"]
+LnLst2["LnLs1","branch_LnL"]
+LnLst2["LnLs1","branch_LnL"]#
+LnLst2["LnLs1","ttl_LnL"]
+-6.670978+-0.7933087125199055
+LnLst2["LnLs1","branch_LnL"]#
+LnLst2["LnLs1t","ttl_LnL"]
+LnLs1t
+LnLs1
+reLnLs1
+LnLs1
+LnLs1t
+-9.574440+-2.9034623
+EsDs = t(attr(res1t,"intermediates")$init)#
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq
+sum(attr(res1t,"intermediates")$lq)
+res1t
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq
+EsDs = t(attr(res1t,"intermediates")$init)#
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq#
+sum(attr(res1t,"intermediates")$lq)#
+sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)
+########################################################
+# Look at find.mle#
+########################################################
+methods("find.mle")#
+diversitree:::find.mle.default#
+diversitree:::find.mle.dtlik#
+diversitree:::find.mle.mixed#
+diversitree:::do.mle.search#
+# change to create some ambiguity#
+#
+phy2 = phy#
+phy2$edge.length[c(1,4)] = c(1-phy2$edge.length[2], 1-phy2$edge.length[6])#
+phy2$tip.state[1:4] = c(0, 1, 0, 1)#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)
+pars
+st
+t(st)
+st2
+LIK2
+lik2
+names(lik2)
+str(lik2)
+attributes(lik2)
+attr(lik2)
+attr(lik2, "dtlik")
+st2 <- asr.marginal(lik2, pars)
+st2
+coef(fit2)
+pars
+st2 <- asr.marginal(lik2, coef(fit2))#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)
+st2
+pars
+st2
+pars$mu0 = 0#
+pars$mu1 = 0#
+st2 <- asr.marginal(lik2, pars)
+names(pars) = names(coef(fit2))#
+pars["mu0"] = 0#
+pars["mu1"] = 0#
+st2 <- asr.marginal(lik2, pars)
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+bisse_params = pars#
+birthRate = pars[1]#
+deathRate = pars[3]#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+write.tree(phy, file="")#
+#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+phy$tip.state#
+#
+bisse_2areas = lik#
+#fit <- find.mle(lik, pars, method="subplex")#
+# MLE doesn't make much sense with tiny data#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit)#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+t(st)#
+res1 = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+res2 = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0, 1)#
+res3 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.25, 0.75)#
+res4 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.5,0.5)#
+res5 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+res6 = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+#
+# Res1t is BiSSE default#
+res1t = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+res2t = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0, 1)#
+res3t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.25, 0.75)#
+res4t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.5,0.5)#
+res5t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+res6t = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+# get_classe_LnLs returns the total log-likelihood, and #
+# the total of the branch likelihoods#
+LnLs1 = get_classe_LnLs(res1)#
+LnLs2 = get_classe_LnLs(res2)#
+LnLs3 = get_classe_LnLs(res3)#
+LnLs4 = get_classe_LnLs(res4)#
+LnLs5 = get_classe_LnLs(res5)#
+LnLs6 = get_classe_LnLs(res6)#
+LnLs1t = get_classe_LnLs(res1t)#
+LnLs2t = get_classe_LnLs(res2t)#
+LnLs3t = get_classe_LnLs(res3t)#
+LnLs4t = get_classe_LnLs(res4t)#
+LnLs5t = get_classe_LnLs(res5t)#
+LnLs6t = get_classe_LnLs(res6t)#
+#
+LnLst = as.data.frame(rbind(LnLs1, LnLs2, LnLs3, LnLs4, LnLs5, LnLs6, LnLs1t, LnLs2t, LnLs3t, LnLs4t, LnLs5t, LnLs6t), stringsAsFactors=FALSE)#
+names(LnLst) = c("ttl_LnL", "branch_LnL")#
+ObsDiff = (LnLst$ttl_LnL - LnLst$branch_LnL)#
+exp_ObsDiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL))#
+LnLdiff = round((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)), digits=4)#
+exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))#
+LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)#
+cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)#
+#
+# Compare to Julia:#
+# > LnLs1#
+# [1] -9.574440 -6.670978#
+# > LnLs1t#
+# [1] -7.464283 -6.670978#
+EsDs = t(attr(res1t,"intermediates")$init)#
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq#
+sum(attr(res1t,"intermediates")$lq)#
+#
+# This corresponds to:#
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq#
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda#
+sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)#
+# ...but is double-counting lnLs#
+########################################################
+# Look at ASRs#
+########################################################
+########################################################
+# TRYING TO FIT TO SIMULATED DATA#
+# This **FAILS** with such tiny data#
+########################################################
+########################################################
+# Look at find.mle#
+########################################################
+methods("find.mle")#
+diversitree:::find.mle.default#
+diversitree:::find.mle.dtlik#
+diversitree:::find.mle.mixed#
+diversitree:::do.mle.search#
+# change to create some ambiguity#
+#
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+names(pars) = names(coef(fit2))#
+pars["mu0"] = 0#
+pars["mu1"] = 0#
+st2 <- asr.marginal(lik2, pars)
+st2
+tr
+phy
+plot(phy)
+axisPhylo()
+lik
+res1t
+?asr.marginal
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+st2 <- asr.marginal(lik2, pars)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+t(st2)#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)
+attr(res1t,"intermediates")$root.p
+attr(res1,"intermediates")$root.p#
+attr(res2,"intermediates")$root.p#
+attr(res3,"intermediates")$root.p#
+attr(res4,"intermediates")$root.p#
+attr(res5,"intermediates")$root.p#
+attr(res6,"intermediates")$root.p#
+#
+attr(res1t,"intermediates")$root.p#
+attr(res2t,"intermediates")$root.p#
+attr(res3t,"intermediates")$root.p#
+attr(res4t,"intermediates")$root.p#
+attr(res5t,"intermediates")$root.p#
+attr(res6t,"intermediates")$root.p
+rbind(attr(res6t,"intermediates")$root.p#
+,attr(res6t,"intermediates")$root.p#
+,attr(res6t,"intermediates")$root.p#
+)
+tmpmat = rbind(attr(res1,"intermediates")$root.p, #
+attr(res2,"intermediates")$root.p, #
+attr(res3,"intermediates")$root.p, #
+attr(res4,"intermediates")$root.p, #
+attr(res5,"intermediates")$root.p, #
+attr(res6,"intermediates")$root.p, #
+attr(res1t,"intermediates")$root.p, #
+attr(res2t,"intermediates")$root.p, #
+attr(res3t,"intermediates")$root.p, #
+attr(res4t,"intermediates")$root.p, #
+attr(res5t,"intermediates")$root.p, #
+attr(res6t,"intermediates")$root.p#
+)
+tmpmat
+tmpmat = rbind(attr(res1,"intermediates")$root.p, #
+attr(res2,"intermediates")$root.p, #
+attr(res3,"intermediates")$root.p, #
+attr(res4,"intermediates")$root.p, #
+attr(res5,"intermediates")$root.p, #
+attr(res6,"intermediates")$root.p, #
+attr(res1t,"intermediates")$root.p, #
+attr(res2t,"intermediates")$root.p, #
+attr(res3t,"intermediates")$root.p, #
+attr(res4t,"intermediates")$root.p, #
+attr(res5t,"intermediates")$root.p, #
+attr(res6t,"intermediates")$root.p#
+)#
+#
+tmpnames = paste0("ancstate", seq(1,ncol(tmpmat),1))
+tmpnames
+tmpmat = rbind(attr(res1,"intermediates")$root.p, #
+attr(res2,"intermediates")$root.p, #
+attr(res3,"intermediates")$root.p, #
+attr(res4,"intermediates")$root.p, #
+attr(res5,"intermediates")$root.p, #
+attr(res6,"intermediates")$root.p, #
+attr(res1t,"intermediates")$root.p, #
+attr(res2t,"intermediates")$root.p, #
+attr(res3t,"intermediates")$root.p, #
+attr(res4t,"intermediates")$root.p, #
+attr(res5t,"intermediates")$root.p, #
+attr(res6t,"intermediates")$root.p#
+)#
+#
+tmpnames = paste0("ancstate", seq(1,ncol(tmpmat),1))#
+#
+tmprownames = c("res1", "res2", "res3", "res4", "res5", "res6", "res1t", "res2t", "res3t", "res4t", "res5t", "res6t")#
+#
+rootstates_df = adf2(tmpmat)#
+names(rootstates_df) = tmpnames#
+row.names(rootstates_df) = tmprownames#
+rootstates_df
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)
+pars
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+orig_pars = pars
+# change to create some ambiguity#
+#
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+orig_pars = pars#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)
+t(st2)
+ROOT.OBS
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=TRUE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)
+t(st2)
+st2 <- asr.marginal(lik2, pars, condition.surv=TRUE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, condition.surv=TRUE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)#
+t(st2)
+res1
+t(attr(res1,"intermediates")$init)
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res1,"intermediates")$init)#
+EsDs[rootnode, 3:4]#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res2,"intermediates")$init)#
+EsDs[rootnode, 3:4]#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res3,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res4,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res5,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res6,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res6t,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])
+res1
+t(st2)
+solver_options.solver = CVODE_BDF{:Newton, :GMRES, Nothing, Nothing}(0, 0, 0, false, 10, 5, 7, 3, 10, nothing, nothing, 0)#
+#solver_options.solver = Tsit5()#
+solver_options.solver = Vern9()#
+solver_options.abstol = 1e-6#
+solver_options.reltol = 1e-6#
+solver_options.save_everystep = false#
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")#
+tspan = (anctime, dectime)#
+#
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2A, u0, tspan, p_Ds_v5);#
+sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);#
+#
+sol_Ds_v5(anctime)#
+sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))#
+sol_Ds_v5(dectime)#
+lbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))#
+#
+uppass_likes = lbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[lnode]#
+uppass_likes ./ sum(uppass_likes)
+library(BioGeoBEARS)#
+library(diversitree)#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+orig_pars = pars#
+bisse_params = pars#
+birthRate = pars[1]#
+deathRate = pars[3]#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+write.tree(phy, file="")#
+#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+phy$tip.state#
+#
+bisse_2areas = lik#
+#fit <- find.mle(lik, pars, method="subplex")#
+# MLE doesn't make much sense with tiny data#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit)#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+t(st)#
+res1 = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+res2 = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0, 1)#
+res3 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.25, 0.75)#
+res4 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.5,0.5)#
+res5 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+res6 = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+#
+# Res1t is BiSSE default#
+# "lik" matches res1t#
+res1t = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+res2t = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0, 1)#
+res3t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.25, 0.75)#
+res4t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.5,0.5)#
+res5t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+res6t = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+# get_classe_LnLs returns the total log-likelihood, and #
+# the total of the branch likelihoods#
+LnLs1 = get_classe_LnLs(res1)#
+LnLs2 = get_classe_LnLs(res2)#
+LnLs3 = get_classe_LnLs(res3)#
+LnLs4 = get_classe_LnLs(res4)#
+LnLs5 = get_classe_LnLs(res5)#
+LnLs6 = get_classe_LnLs(res6)#
+LnLs1t = get_classe_LnLs(res1t)#
+LnLs2t = get_classe_LnLs(res2t)#
+LnLs3t = get_classe_LnLs(res3t)#
+LnLs4t = get_classe_LnLs(res4t)#
+LnLs5t = get_classe_LnLs(res5t)#
+LnLs6t = get_classe_LnLs(res6t)#
+#
+LnLst = as.data.frame(rbind(LnLs1, LnLs2, LnLs3, LnLs4, LnLs5, LnLs6, LnLs1t, LnLs2t, LnLs3t, LnLs4t, LnLs5t, LnLs6t), stringsAsFactors=FALSE)#
+names(LnLst) = c("ttl_LnL", "branch_LnL")#
+ObsDiff = (LnLst$ttl_LnL - LnLst$branch_LnL)#
+exp_ObsDiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL))#
+LnLdiff = round((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)), digits=4)#
+exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))#
+LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)#
+cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)#
+#
+# Compare to Julia:#
+# > LnLs1#
+# [1] -9.574440 -6.670978#
+# > LnLs1t#
+# [1] -7.464283 -6.670978#
+EsDs = t(attr(res1t,"intermediates")$init)#
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq#
+sum(attr(res1t,"intermediates")$lq)#
+#
+# This corresponds to:#
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq#
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda#
+sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)#
+# ...but is double-counting lnLs#
+########################################################
+# Look at ASRs#
+########################################################
+tmpmat = rbind(attr(res1,"intermediates")$root.p, #
+attr(res2,"intermediates")$root.p, #
+attr(res3,"intermediates")$root.p, #
+attr(res4,"intermediates")$root.p, #
+attr(res5,"intermediates")$root.p, #
+attr(res6,"intermediates")$root.p, #
+attr(res1t,"intermediates")$root.p, #
+attr(res2t,"intermediates")$root.p, #
+attr(res3t,"intermediates")$root.p, #
+attr(res4t,"intermediates")$root.p, #
+attr(res5t,"intermediates")$root.p, #
+attr(res6t,"intermediates")$root.p#
+)#
+#
+tmpnames = paste0("ancstate", seq(1,ncol(tmpmat),1))#
+#
+tmprownames = c("res1", "res2", "res3", "res4", "res5", "res6", "res1t", "res2t", "res3t", "res4t", "res5t", "res6t")#
+#
+rootstates_df = adf2(tmpmat)#
+names(rootstates_df) = tmpnames#
+row.names(rootstates_df) = tmprownames#
+rootstates_df#
+#
+# rootstates_df#
+#       ancstate1 ancstate2#
+# res1  0.4303571 0.5696429 # <- this is what asr.marginal gives#
+# res2  0.5000000 0.5000000#
+# res3  0.0000000 1.0000000#
+# res4  0.2500000 0.7500000#
+# res5  0.5000000 0.5000000#
+# res6  0.5392658 0.4607342#
+# res1t 0.4303571 0.5696429 # <- this is what asr.marginal gives#
+# res2t 0.5000000 0.5000000#
+# res3t 0.0000000 1.0000000#
+# res4t 0.2500000 0.7500000#
+# res5t 0.5000000 0.5000000#
+# res6t 0.5392658 0.4607342#
+#
+# Same for everything:#
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res1,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])#
+########################################################
+# TRYING TO FIT TO SIMULATED DATA#
+# This **FAILS** with such tiny data#
+########################################################
+########################################################
+# Look at find.mle#
+########################################################
+methods("find.mle")#
+diversitree:::find.mle.default#
+diversitree:::find.mle.dtlik#
+diversitree:::find.mle.mixed#
+diversitree:::do.mle.search#
+# change to create some ambiguity#
+#
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+orig_pars = pars#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)#
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)#
+t(st2)#
+#
+# t(st2)#
+#             [,1]         [,2]#
+# [1,] 0.430357148 0.5696428522  # <- matches res1 or res1t#
+# [2,] 0.005145312 0.9948546878#
+# [3,] 0.999681941 0.0003180585#
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, condition.surv=TRUE)#
+t(st2)#
+# > t(st2)#
+#           [,1]        [,2]#
+# [1,] 0.49926227 0.500737731#
+# [2,] 0.00570688 0.994293120#
+# [3,] 0.99963639 0.000363611#
+# Turn off extinction; the speciation/extinction thing dominates on large branches I guess#
+pars["mu0"] = 0#
+pars["mu1"] = 0#
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+t(st2)#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)#
+#
+########################################################
+# Edit to clarify node structure#
+########################################################
+st2[,1] = c(0.5, 0.5)#
+st2[,2] = c(0.75, 0.25)#
+st2[,3] = c(1.0, 0.0)#
+#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+# So, this shows nodes 5,6,7:#
+t(st2)
+include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")#
+#
+ctable1 = prtCp(p_Ds_v5)#
+make_ctable_single_events(ctable1)#
+u0 = left_likes#
+prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2G, u0, tspan, p_Ds_v5);#
+sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);#
+#
+sol_Ds_v5(anctime)#
+sol_Ds_v5(anctime) ./ sum(sol_Ds_v5(anctime))#
+sol_Ds_v5(dectime)#
+rbranch_top = sol_Ds_v5(dectime) ./ sum(sol_Ds_v5(dectime))#
+#
+uppass_likes = rbranch_top .* res.normlikes_at_each_nodeIndex_branchTop[rnode]#
+asr_at_node7 = uppass_likes ./ sum(uppass_likes)#
+#
+# calcDs_4states2B, calcDs_4states2C   # <- closest! (and same)#
+#  0.9996842305583383#
+#  0.00031576944166156017#
+# Diversitree: asr.marginal#
+# 0.999620338 0.0003796623#
+#
+diversitree_bisse_Rnode7_01 = [0.999620338, 0.0003796623]#
+asr_at_node7 .== diversitree_bisse_Rnode7_01#
+#
+@test round(asr_at_node7[1]; digits=3) .== round(diversitree_bisse_Rnode7_01[1]; digits=3)#
+@test round(asr_at_node7[2]; digits=3) .== round(diversitree_bisse_Rnode7_01[2]; digits=3)
+methods("find.mle")#
+diversitree:::find.mle.default#
+diversitree:::find.mle.dtlik#
+diversitree:::find.mle.mixed#
+diversitree:::do.mle.search#
+# change to create some ambiguity#
+#
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+orig_pars = pars#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)#
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)#
+t(st2)
+library(BioGeoBEARS)#
+library(diversitree)#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")#
+#
+## Start with a simple tree evolved under a BiSSE with all rates#
+## asymmetric:#
+# lambda0, lambda1, mu0, mu1, q01, q10#
+#
+# Gives weird result -- green nodes, blue truth#
+set.seed(47) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.05, 0.1, 0.15)#
+orig_pars = pars#
+bisse_params = pars#
+birthRate = pars[1]#
+deathRate = pars[3]#
+#
+set.seed(48) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=4, max.t=Inf, x0=0)[[1]]#
+write.tree(phy, file="")#
+#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+phy$tip.state#
+#
+bisse_2areas = lik#
+#fit <- find.mle(lik, pars, method="subplex")#
+# MLE doesn't make much sense with tiny data#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit)#
+st <- asr.marginal(lik, coef(fit))#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)#
+t(st)#
+res1 = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+res2 = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0, 1)#
+res3 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.25, 0.75)#
+res4 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+root_probs = c(0.5,0.5)#
+res5 = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=FALSE)#
+res6 = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=FALSE)#
+#
+# Res1t is BiSSE default#
+# "lik" matches res1t#
+res1t = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+res2t = bisse_2areas(pars=bisse_params, root=ROOT.FLAT, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0, 1)#
+res3t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.25, 0.75)#
+res4t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+root_probs = c(0.5,0.5)#
+res5t = bisse_2areas(pars=bisse_params, root=ROOT.GIVEN, root.p=root_probs, intermediates=TRUE, condition.surv=TRUE)#
+res6t = bisse_2areas(pars=bisse_params, root=ROOT.EQUI, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)#
+# get_classe_LnLs returns the total log-likelihood, and #
+# the total of the branch likelihoods#
+LnLs1 = get_classe_LnLs(res1)#
+LnLs2 = get_classe_LnLs(res2)#
+LnLs3 = get_classe_LnLs(res3)#
+LnLs4 = get_classe_LnLs(res4)#
+LnLs5 = get_classe_LnLs(res5)#
+LnLs6 = get_classe_LnLs(res6)#
+LnLs1t = get_classe_LnLs(res1t)#
+LnLs2t = get_classe_LnLs(res2t)#
+LnLs3t = get_classe_LnLs(res3t)#
+LnLs4t = get_classe_LnLs(res4t)#
+LnLs5t = get_classe_LnLs(res5t)#
+LnLs6t = get_classe_LnLs(res6t)#
+#
+LnLst = as.data.frame(rbind(LnLs1, LnLs2, LnLs3, LnLs4, LnLs5, LnLs6, LnLs1t, LnLs2t, LnLs3t, LnLs4t, LnLs5t, LnLs6t), stringsAsFactors=FALSE)#
+names(LnLst) = c("ttl_LnL", "branch_LnL")#
+ObsDiff = (LnLst$ttl_LnL - LnLst$branch_LnL)#
+exp_ObsDiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL))#
+LnLdiff = round((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)), digits=4)#
+exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))#
+LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)#
+cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)#
+#
+# Compare to Julia:#
+# > LnLs1#
+# [1] -9.574440 -6.670978#
+# > LnLs1t#
+# [1] -7.464283 -6.670978#
+EsDs = t(attr(res1t,"intermediates")$init)#
+sum(log(rowSums(EsDs[,3:4])))#
+attr(res1t,"intermediates")$lq#
+sum(attr(res1t,"intermediates")$lq)#
+#
+# This corresponds to:#
+# Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq#
+# R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda#
+sum(log(rowSums(EsDs[,3:4]))) + sum(attr(res1t,"intermediates")$lq)#
+# ...but is double-counting lnLs#
+########################################################
+# Look at ASRs#
+########################################################
+tmpmat = rbind(attr(res1,"intermediates")$root.p, #
+attr(res2,"intermediates")$root.p, #
+attr(res3,"intermediates")$root.p, #
+attr(res4,"intermediates")$root.p, #
+attr(res5,"intermediates")$root.p, #
+attr(res6,"intermediates")$root.p, #
+attr(res1t,"intermediates")$root.p, #
+attr(res2t,"intermediates")$root.p, #
+attr(res3t,"intermediates")$root.p, #
+attr(res4t,"intermediates")$root.p, #
+attr(res5t,"intermediates")$root.p, #
+attr(res6t,"intermediates")$root.p#
+)#
+#
+tmpnames = paste0("ancstate", seq(1,ncol(tmpmat),1))#
+#
+tmprownames = c("res1", "res2", "res3", "res4", "res5", "res6", "res1t", "res2t", "res3t", "res4t", "res5t", "res6t")#
+#
+rootstates_df = adf2(tmpmat)#
+names(rootstates_df) = tmpnames#
+row.names(rootstates_df) = tmprownames#
+rootstates_df#
+#
+# rootstates_df#
+#       ancstate1 ancstate2#
+# res1  0.4303571 0.5696429 # <- this is what asr.marginal gives#
+# res2  0.5000000 0.5000000#
+# res3  0.0000000 1.0000000#
+# res4  0.2500000 0.7500000#
+# res5  0.5000000 0.5000000#
+# res6  0.5392658 0.4607342#
+# res1t 0.4303571 0.5696429 # <- this is what asr.marginal gives#
+# res2t 0.5000000 0.5000000#
+# res3t 0.0000000 1.0000000#
+# res4t 0.2500000 0.7500000#
+# res5t 0.5000000 0.5000000#
+# res6t 0.5392658 0.4607342#
+#
+# Same for everything:#
+rootnode = length(phy$tip.label)+1#
+EsDs = t(attr(res1,"intermediates")$init)#
+EsDs[rootnode, 3:4] / sum(EsDs[rootnode, 3:4])#
+########################################################
+# TRYING TO FIT TO SIMULATED DATA#
+# This **FAILS** with such tiny data#
+########################################################
+########################################################
+# Look at find.mle#
+########################################################
+methods("find.mle")#
+diversitree:::find.mle.default#
+diversitree:::find.mle.dtlik#
+diversitree:::find.mle.mixed#
+diversitree:::do.mle.search#
+# change to create some ambiguity#
+#
+phy2 = phy#
+#
+plot(phy2, label.offset=0.1)#
+tiplabels(text=phy2$tip.state, tip=1:4, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik2 <- make.bisse(phy2, phy2$tip.state)#
+fit2 <- find.mle(func=lik2, x.init=coef(fit), method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+coef(fit2 )#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st2 <- asr.marginal(lik2, coef(fit2))#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+orig_pars = pars#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)#
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, condition.surv=TRUE)#
+t(st2)
+orig_pars = pars#
+names(pars) = names(coef(fit2))#
+st2 <- asr.marginal(lik2, pars)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, root.p=NULL, condition.surv=FALSE)#
+t(st2)
+st2 <- asr.marginal(lik2, pars, root=ROOT.OBS, condition.surv=TRUE)#
+t(st2)
+library(ape)
+rotate
+? rotate
+library(ape)#
+library(BioGeoBEARS)#
+#
+# Try some basic commands: Tree reading with APE#
+newick_string = "(orang:12.0,((chimp:6.0,(human:2.5,Lucy:0.5):3.5):1.0,gorilla:7.0):5.0);"#
+tr = read.tree(file="", text=newick_string)#
+tr#
+plot(tr)#
+title("Example phylogeny: great apes")#
+axisPhylo() # plots timescale#
+mtext(text="Mega-annum (Ma)", side=1, line=2)#
+# Try some basic commands: BioGeoBEARS#
+#
+# The function "prt": prints the tree to a table#
+# This can be very handy for understanding R node numbers,#
+# the APE phylo object tree structure, etc.#
+trtable = prt(tr, printflag=FALSE, get_tipnames=TRUE, fossils_older_than=0.001)#
+trtable#
+# Ladderize the tree#
+tr2 = ladderize(tr, right=FALSE)#
+plot(tr2)#
+title("Example phylogeny: great apes, ladderized")#
+axisPhylo() # plots timescale#
+mtext(text="Mega-annum (Ma)", side=1, line=2)#
+#
+trtable2 = prt(tr2, printflag=FALSE, get_tipnames=TRUE, fossils_older_than=0.001)#
+trtable2#
+#
+# Rotate a node#
+tr3 = rotate(phy=tr2, node=9)
+plot_BioGeoBEARS_results
+library(BioGeoBEARS)
+get_indices_where_list1_occurs_in_list2
+library(devtools)#
+devtools::install_github(repo="nmatzke/BioGeoBEARS", INSTALL_opts="--byte-compile")
+library(BioGeoBEARS)
+remove.packages("lifecycle")
+install.packages("lifecycle")
+library(lifecycle)
+detach(lifecycle)
+detach("lifecycle")
+library(lifecycle)
+library(BioGeoBEARS)
+library(optimx)   # optimx seems better than R's default optim()#
+library(GenSA)    # GenSA seems better than optimx (but slower) on 5+ parameters, #
+                  # seems to sometimes fail on simple problems (2-3 parameters)#
+library(FD)       # for FD::maxent() (make sure this is up-to-date)#
+library(snow)     # (if you want to use multicore functionality; some systems/R versions prefer library(parallel), try either)#
+library(parallel)#
+#
+########################################################
+# 2018-10-10 update: I have been putting the #
+# updates on CRAN/GitHub#
+# You should use:#
+# rexpokit version 0.26.6 from CRAN#
+# cladoRcpp version 0.15 from CRAN#
+# BioGeoBEARS version 1.1 from GitHub, install with:#
+# library(devtools)#
+# devtools::install_github(repo="nmatzke/BioGeoBEARS")#
+########################################################
+library(rexpokit)#
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+#
+########################################################
+# CUT: The old instructions to source() online upgrade .R files have been deleted,#
+#         all updates are now on the GitHub version of the package, version 1.1+#
+########################################################
+#
+########################################################
+# (This local-sourcing is mostly useful for Nick, while actively developing)#
+# Local source()-ing method -- uses BioGeoBEARS sourceall() function #
+# on a directory of .R files, so you don't have to type them out.#
+# The directories here are on my machine, you would have to make a #
+# directory, save the .R files there, and refer to them.#
+##
+# NOTE: it's best to source the "cladoRcpp.R" update first, to avoid warnings like this:#
+###
+## Note: possible error in 'rcpp_calc_anclikes_sp_COOweights_faster(Rcpp_leftprobs = tmpca_1, ': #
+##         unused arguments (m = m, m_null_range = include_null_range, jts_matrix = jts_matrix) #
+###
+##
+# TO USE: Delete or comment out the 'source("http://...")' commands above, and un-comment#
+#              the below...#
+#########################################################################
+# Un-comment (and fix directory paths) to use:#
+#library(BioGeoBEARS)#
+#source("/drives/Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp.R")#
+#sourceall("/drives/Dropbox/_njm/__packages/BioGeoBEARS_setup/")#
+#calc_loglike_sp = compiler::cmpfun(calc_loglike_sp_prebyte)    # crucial to fix bug in uppass calculations#
+#calc_independent_likelihoods_on_each_branch = compiler::cmpfun(calc_independent_likelihoods_on_each_branch_prebyte)#
+#########################################################################
+#
+########################################################
+# SETUP: YOUR WORKING DIRECTORY#
+########################################################
+# You will need to set your working directory to match your local system#
+#
+# Note these very handy functions!#
+# Command "setwd(x)" sets your working directory#
+# Command "getwd()" gets your working directory and tells you what it is.#
+# Command "list.files()" lists the files in your working directory#
+# To get help on any command, use "?".  E.g., "?list.files"#
+#
+# Set your working directory for output files#
+# default here is your home directory ("~")#
+# Change this as you like#
+wd = np("~")#
+setwd(wd)#
+#
+# Double-check your working directory with getwd()#
+getwd()#
+#
+########################################################
+# SETUP: Extension data directory#
+########################################################
+# When R packages contain extra files, they are stored in the "extdata" directory #
+# inside the installed package.#
+##
+# BioGeoBEARS contains various example files and scripts in its extdata directory.#
+# #
+# Each computer operating system might install BioGeoBEARS in a different place, #
+# depending on your OS and settings. #
+# #
+# However, you can find the extdata directory like this:#
+extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#
+extdata_dir#
+list.files(extdata_dir)#
+#
+# "system.file" looks in the directory of a specified package (in this case BioGeoBEARS)#
+# The function "np" is just a shortcut for normalizePath(), which converts the #
+# path to the format appropriate for your system (e.g., Mac/Linux use "/", but #
+# Windows uses "\\", if memory serves).#
+#
+# Even when using your own data files, you should KEEP these commands in your #
+# script, since the plot_BioGeoBEARS_results function needs a script from the #
+# extdata directory to calculate the positions of "corners" on the plot. This cannot#
+# be made into a straight up BioGeoBEARS function because it uses C routines #
+# from the package APE which do not pass R CMD check for some reason.#
+#
+########################################################
+# SETUP: YOUR TREE FILE AND GEOGRAPHY FILE#
+########################################################
+# Example files are given below. To run your own data,#
+# make the below lines point to your own files, e.g.#
+# trfn = "/mydata/frogs/frogBGB/tree.newick"#
+# geogfn = "/mydata/frogs/frogBGB/geog.data"#
+#
+########################################################
+# Phylogeny file#
+# Notes: #
+# 1. Must be binary/bifurcating: no polytomies#
+# 2. No negative branchlengths (e.g. BEAST MCC consensus trees sometimes have negative branchlengths)#
+# 3. Be careful of very short branches, as BioGeoBEARS will interpret ultrashort branches as direct ancestors#
+# 4. You can use non-ultrametric trees, but BioGeoBEARS will interpret any tips significantly below the #
+#    top of the tree as fossils!  This is only a good idea if you actually do have fossils in your tree,#
+#    as in e.g. Wood, Matzke et al. (2013), Systematic Biology.#
+# 5. The default settings of BioGeoBEARS make sense for trees where the branchlengths are in units of #
+#    millions of years, and the tree is 1-1000 units tall. If you have a tree with a total height of#
+#    e.g. 0.00001, you will need to adjust e.g. the max values of d and e, or (simpler) multiply all#
+#    your branchlengths to get them into reasonable units.#
+# 6. DON'T USE SPACES IN SPECIES NAMES, USE E.G. "_"#
+########################################################
+# This is the example Newick file for Hawaiian Psychotria#
+# (from Ree & Smith 2008)#
+# "trfn" = "tree file name"#
+trfn = np(paste(addslash(extdata_dir), "Psychotria_5.2.newick", sep=""))#
+#
+# Look at the raw Newick file:#
+moref(trfn)#
+#
+# Look at your phylogeny (plots to a PDF, which avoids issues with multiple graphics in same window):#
+pdffn = "tree.pdf"#
+pdf(file=pdffn, width=9, height=12)#
+#
+tr = read.tree(trfn)#
+tr#
+plot(tr)#
+title("Example Psychotria phylogeny from Ree & Smith (2008)")#
+axisPhylo() # plots timescale#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)#
+#
+########################################################
+# Geography file#
+# Notes:#
+# 1. This is a PHYLIP-formatted file. This means that in the #
+#    first line, #
+#    - the 1st number equals the number of rows (species)#
+#    - the 2nd number equals the number of columns (number of areas)#
+#    - after a tab, put the areas in parentheses, with spaces: (A B C D)#
+##
+# 1.5. Example first line:#
+#    10    4    (A B C D)#
+# #
+# 2. The second line, and subsequent lines:#
+#    speciesA    0110#
+#    speciesB    0111#
+#    speciesC    0001#
+#         ...#
+# #
+# 2.5a. This means a TAB between the species name and the area 0/1s#
+# 2.5b. This also means NO SPACE AND NO TAB between the area 0/1s.#
+# #
+# 3. See example files at:#
+#    http://phylo.wikidot.com/biogeobears#files#
+# #
+# 4. Make you understand what a PLAIN-TEXT EDITOR is:#
+#    http://phylo.wikidot.com/biogeobears#texteditors#
+##
+# 3. The PHYLIP format is the same format used for C++ LAGRANGE geography files.#
+##
+# 4. All names in the geography file must match names in the phylogeny file.#
+##
+# 5. DON'T USE SPACES IN SPECIES NAMES, USE E.G. "_"#
+##
+# 6. Operational taxonomic units (OTUs) should ideally be phylogenetic lineages, #
+#    i.e. genetically isolated populations.  These may or may not be identical #
+#    with species.  You would NOT want to just use specimens, as each specimen #
+#    automatically can only live in 1 area, which will typically favor DEC+J #
+#    models.  This is fine if the species/lineages really do live in single areas,#
+#    but you wouldn't want to assume this without thinking about it at least. #
+#    In summary, you should collapse multiple specimens into species/lineages if #
+#    data indicates they are the same genetic population.#
+#######################################################
+#
+# This is the example geography file for Hawaiian Psychotria#
+# (from Ree & Smith 2008)#
+geogfn = np(paste(addslash(extdata_dir), "Psychotria_geog.data", sep=""))#
+#
+# Look at the raw geography text file:#
+moref(geogfn)#
+#
+# Look at your geographic range data:#
+tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)#
+tipranges#
+#
+# Maximum range size observed:#
+max(rowSums(dfnums_to_numeric(tipranges@df)))#
+#
+# Set the maximum number of areas any species may occupy; this cannot be larger #
+# than the number of areas you set up, but it can be smaller.#
+max_range_size = 4#
+#
+#####################################################
+#####################################################
+# KEY HINT: The number of states (= number of different possible geographic ranges)#
+# depends on (a) the number of areas and (b) max_range_size.#
+# If you have more than about 500-600 states, the calculations will get REALLY slow,#
+# since the program has to exponentiate a matrix of e.g. 600x600.  Often the computer#
+# will just sit there and crunch, and never get through the calculation of the first#
+# likelihood.#
+# #
+# (this is also what is usually happening when LAGRANGE hangs: you have too many states!)#
+##
+# To check the number of states for a given number of ranges, try:#
+numstates_from_numareas(numareas=4, maxareas=4, include_null_range=TRUE)#
+numstates_from_numareas(numareas=4, maxareas=4, include_null_range=FALSE)#
+numstates_from_numareas(numareas=4, maxareas=3, include_null_range=TRUE)#
+numstates_from_numareas(numareas=4, maxareas=2, include_null_range=TRUE)#
+#
+# Large numbers of areas have problems:#
+numstates_from_numareas(numareas=10, maxareas=10, include_null_range=TRUE)#
+#
+# ...unless you limit the max_range_size:#
+numstates_from_numareas(numareas=10, maxareas=2, include_null_range=TRUE)#
+#####################################################
+#####################################################
+#
+########################################################
+########################################################
+# DEC AND DEC+J ANALYSIS#
+########################################################
+########################################################
+# NOTE: The BioGeoBEARS "DEC" model is identical with #
+# the Lagrange DEC model, and should return identical#
+# ML estimates of parameters, and the same #
+# log-likelihoods, for the same datasets.#
+##
+# Ancestral state probabilities at nodes will be slightly #
+# different, since BioGeoBEARS is reporting the #
+# ancestral state probabilities under the global ML#
+# model, and Lagrange is reporting ancestral state#
+# probabilities after re-optimizing the likelihood#
+# after fixing the state at each node. These will #
+# be similar, but not identical. See Matzke (2014),#
+# Systematic Biology, for discussion.#
+##
+# Also see Matzke (2014) for presentation of the #
+# DEC+J model.#
+########################################################
+########################################################
+#
+########################################################
+########################################################
+#
+########################################################
+# Run DEC#
+########################################################
+#
+# Intitialize a default model (DEC model)#
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+#
+# Give BioGeoBEARS the location of the phylogeny Newick file#
+BioGeoBEARS_run_object$trfn = trfn#
+#
+# Give BioGeoBEARS the location of the geography text file#
+BioGeoBEARS_run_object$geogfn = geogfn#
+#
+# Input the maximum range size#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+# (For DEC* and other "*" models, please cite: Massana, Kathryn A.; Beaulieu, #
+#  Jeremy M.; Matzke, Nicholas J.; O’Meara, Brian C. (2015). Non-null Effects of #
+#  the Null Range in Biogeographic Models: Exploring Parameter Estimation in the #
+#  DEC Model. bioRxiv,  http://biorxiv.org/content/early/2015/09/16/026914 )#
+# Also: search script on "include_null_range" for other places to change#
+#
+# Set up a time-stratified analysis:#
+# 1. Here, un-comment ONLY the files you want to use.#
+# 2. Also un-comment "BioGeoBEARS_run_object = section_the_tree(...", below.#
+# 3. For example files see (a) extdata_dir, #
+#  or (b) http://phylo.wikidot.com/biogeobears#files#
+#  and BioGeoBEARS Google Group posts for further hints)#
+##
+# Uncomment files you wish to use in time-stratified analyses:#
+#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"#
+#BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"#
+#BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"#
+#BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"#
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"#
+# See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.#
+#
+# Speed options and multicore processing if desired#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();#
+# if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional#
+# problems (5+ parameters), but seems to sometimes fail to optimize on simple problems#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+# (use more cores to speed it up; this requires#
+# library(parallel) and/or library(snow). The package "parallel" #
+# is now default on Macs in R 3.0+, but apparently still #
+# has to be typed on some Windows machines. Note: apparently #
+# parallel works on Mac command-line R, but not R.app.#
+# BioGeoBEARS checks for this and resets to 1#
+# core with R.app)#
+#
+# Sparse matrix exponentiation is an option for huge numbers of ranges/states (600+)#
+# I have experimented with sparse matrix exponentiation in EXPOKIT/rexpokit,#
+# but the results are imprecise and so I haven't explored it further.#
+# In a Bayesian analysis, it might work OK, but the ML point estimates are#
+# not identical.#
+# Also, I have not implemented all functions to work with force_sparse=TRUE.#
+# Volunteers are welcome to work on it!!#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+#
+# This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!#
+# (It also runs some checks on these inputs for certain errors.)#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)#
+#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE)#
+# The stratified tree is described in this table:#
+#BioGeoBEARS_run_object$master_table#
+#
+# Good default settings to get ancestral states#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+#
+# Set up DEC model#
+# (nothing to do; defaults)#
+#
+# Look at the BioGeoBEARS_run_object; it's just a list of settings etc.#
+BioGeoBEARS_run_object#
+#
+# This contains the model object#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object#
+#
+# This table contains the parameters of the model #
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table#
+#
+# Run this to check inputs. Read the error messages if you get them!#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# For a slow analysis, run once, then set runslow=FALSE to just #
+# load the saved result.#
+runslow = TRUE#
+resfn = "Psychotria_DEC_M0_unconstrained_v1.Rdata"#
+if (runslow)#
+    {#
+    res = bears_optim_run(BioGeoBEARS_run_object)#
+    res    #
+#
+    save(res, file=resfn)#
+    resDEC = res#
+    } else {#
+    # Loads to "res"#
+    load(resfn)#
+    resDEC = res#
+    }#
+#
+########################################################
+# Run DEC+J#
+########################################################
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+BioGeoBEARS_run_object$trfn = trfn#
+BioGeoBEARS_run_object$geogfn = geogfn#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+# (For DEC* and other "*" models, please cite: Massana, Kathryn A.; Beaulieu, #
+#  Jeremy M.; Matzke, Nicholas J.; O’Meara, Brian C. (2015). Non-null Effects of #
+#  the Null Range in Biogeographic Models: Exploring Parameter Estimation in the #
+#  DEC Model. bioRxiv,  http://biorxiv.org/content/early/2015/09/16/026914 )#
+# Also: search script on "include_null_range" for other places to change#
+#
+# Set up a time-stratified analysis:#
+#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"#
+#BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"#
+#BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"#
+#BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"#
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"#
+# See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.#
+#
+# Speed options and multicore processing if desired#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();#
+# if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional#
+# problems (5+ parameters), but seems to sometimes fail to optimize on simple problems#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+#
+# This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!#
+# (It also runs some checks on these inputs for certain errors.)#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)#
+#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE)#
+# The stratified tree is described in this table:#
+#BioGeoBEARS_run_object$master_table#
+#
+# Good default settings to get ancestral states#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+#
+# Set up DEC+J model#
+# Get the ML parameter values from the 2-parameter nested model#
+# (this will ensure that the 3-parameter model always does at least as good)#
+dstart = resDEC$outputs@params_table["d","est"]#
+estart = resDEC$outputs@params_table["e","est"]#
+jstart = 0.0001#
+#
+# Input starting values for d, e#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","est"] = dstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","init"] = estart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","est"] = estart#
+#
+# Add j as a free parameter#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","type"] = "free"#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = jstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart#
+#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+resfn = "Psychotria_DEC+J_M0_unconstrained_v1.Rdata"#
+runslow = TRUE#
+if (runslow)#
+    {#
+    #sourceall("/Dropbox/_njm/__packages/BioGeoBEARS_setup/")#
+#
+    res = bears_optim_run(BioGeoBEARS_run_object)#
+    res    #
+#
+    save(res, file=resfn)#
+#
+    resDECj = res#
+    } else {#
+    # Loads to "res"#
+    load(resfn)#
+    resDECj = res#
+    }#
+#
+########################################################
+# PDF plots#
+########################################################
+pdffn = "Psychotria_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"#
+pdf(pdffn, width=6, height=6)#
+#
+########################################################
+# Plot ancestral states - DEC#
+########################################################
+analysis_titletxt ="BioGeoBEARS DEC on Psychotria M0_unconstrained"#
+#
+# Setup#
+results_object = resDEC#
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))#
+#
+# States#
+res2 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+# Pie chart#
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+########################################################
+# Plot ancestral states - DECJ#
+########################################################
+analysis_titletxt ="BioGeoBEARS DEC+J on Psychotria M0_unconstrained"#
+#
+# Setup#
+results_object = resDECj#
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))#
+#
+# States#
+res1 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+# Pie chart#
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+dev.off()  # Turn off PDF#
+cmdstr = paste("open ", pdffn, sep="")#
+system(cmdstr) # Plot it
+warnings()
+library(devtools)#
+devtools::install_github(repo="nmatzke/BioGeoBEARS", INSTALL_opts="--byte-compile")
+’#
+─  building ‘BioGeoBEARS_1.1.2.tar.gz’s/apes_SSE/apes_DEC+J_M0_unconstrained_v#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/395lab/Psychotria_M4_DistanceDispersal/Psychotria_M4_DistanceDispersal_v1.R’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/BSM_3taxa/M3areas_allowed/3taxa_DIVALIKE_vs_DIVALIKE+J_M3areas_allowed_v1.pdf’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/Psychotria_DEC_vs_DEC+J_M3areas_allowed_v1.pdf’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/Psychotria_DIVALIKE+J_M3areas_allowed_v1.Rdata’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/Psychotria_DIVALIKE_M3areas_allowed_v1.Rdata’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/Psychotria_DIVALIKE_vs_DIVALIKE+J_M3areas_allowed_v1.pdf’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/RES_ana_events_tables_PARTIAL.Rdata’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/all_dispersals_counts_fromto_means.txt’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+     storing paths of more than 100 bytes is not portable:#
+     ‘BioGeoBEARS/inst/extdata/examples/Psychotria_M3strat/BSM_to_simmap/all_dispersals_counts_fromto_sds.txt’#
+   Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+   storing paths of more than 100 bytes is n Warning in utils::tar(filepath, pkgname, compression = compression, compression_level = 9L,  :#
+#
+Sys.getenv("R_MAX_NUM_DLLS"):	[1] "1000"#
+Loading ~/.Rprofile...#
+Currently viewed PATH:#
+/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/ncbi/blast/bin:/usr/texbin:/usr/local/ncbi/blast/bin:/usr/texbin#
+* installing *source* package ‘BioGeoBEARS’ ...#
+** using staged installation#
+** R#
+** inst#
+** byte-compile and prepare package for lazy loading
+library(optimx)   # optimx seems better than R's default optim()#
+library(GenSA)    # GenSA seems better than optimx (but slower) on 5+ parameters, #
+                  # seems to sometimes fail on simple problems (2-3 parameters)#
+library(FD)       # for FD::maxent() (make sure this is up-to-date)#
+library(snow)     # (if you want to use multicore functionality; some systems/R versions prefer library(parallel), try either)#
+library(parallel)#
+#
+########################################################
+# 2018-10-10 update: I have been putting the #
+# updates on CRAN/GitHub#
+# You should use:#
+# rexpokit version 0.26.6 from CRAN#
+# cladoRcpp version 0.15 from CRAN#
+# BioGeoBEARS version 1.1 from GitHub, install with:#
+# library(devtools)#
+# devtools::install_github(repo="nmatzke/BioGeoBEARS")#
+########################################################
+library(rexpokit)#
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+#
+########################################################
+# CUT: The old instructions to source() online upgrade .R files have been deleted,#
+#         all updates are now on the GitHub version of the package, version 1.1+#
+########################################################
+#
+########################################################
+# (This local-sourcing is mostly useful for Nick, while actively developing)#
+# Local source()-ing method -- uses BioGeoBEARS sourceall() function #
+# on a directory of .R files, so you don't have to type them out.#
+# The directories here are on my machine, you would have to make a #
+# directory, save the .R files there, and refer to them.#
+##
+# NOTE: it's best to source the "cladoRcpp.R" update first, to avoid warnings like this:#
+###
+## Note: possible error in 'rcpp_calc_anclikes_sp_COOweights_faster(Rcpp_leftprobs = tmpca_1, ': #
+##         unused arguments (m = m, m_null_range = include_null_range, jts_matrix = jts_matrix) #
+###
+##
+# TO USE: Delete or comment out the 'source("http://...")' commands above, and un-comment#
+#              the below...#
+#########################################################################
+# Un-comment (and fix directory paths) to use:#
+#library(BioGeoBEARS)#
+#source("/drives/Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp.R")#
+#sourceall("/drives/Dropbox/_njm/__packages/BioGeoBEARS_setup/")#
+#calc_loglike_sp = compiler::cmpfun(calc_loglike_sp_prebyte)    # crucial to fix bug in uppass calculations#
+#calc_independent_likelihoods_on_each_branch = compiler::cmpfun(calc_independent_likelihoods_on_each_branch_prebyte)#
+#########################################################################
+#
+########################################################
+# SETUP: YOUR WORKING DIRECTORY#
+########################################################
+# You will need to set your working directory to match your local system#
+#
+# Note these very handy functions!#
+# Command "setwd(x)" sets your working directory#
+# Command "getwd()" gets your working directory and tells you what it is.#
+# Command "list.files()" lists the files in your working directory#
+# To get help on any command, use "?".  E.g., "?list.files"#
+#
+# Set your working directory for output files#
+# default here is your home directory ("~")#
+# Change this as you like#
+wd = np("~")#
+setwd(wd)#
+#
+# Double-check your working directory with getwd()#
+getwd()#
+#
+########################################################
+# SETUP: Extension data directory#
+########################################################
+# When R packages contain extra files, they are stored in the "extdata" directory #
+# inside the installed package.#
+##
+# BioGeoBEARS contains various example files and scripts in its extdata directory.#
+# #
+# Each computer operating system might install BioGeoBEARS in a different place, #
+# depending on your OS and settings. #
+# #
+# However, you can find the extdata directory like this:#
+extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#
+extdata_dir#
+list.files(extdata_dir)#
+#
+# "system.file" looks in the directory of a specified package (in this case BioGeoBEARS)#
+# The function "np" is just a shortcut for normalizePath(), which converts the #
+# path to the format appropriate for your system (e.g., Mac/Linux use "/", but #
+# Windows uses "\\", if memory serves).#
+#
+# Even when using your own data files, you should KEEP these commands in your #
+# script, since the plot_BioGeoBEARS_results function needs a script from the #
+# extdata directory to calculate the positions of "corners" on the plot. This cannot#
+# be made into a straight up BioGeoBEARS function because it uses C routines #
+# from the package APE which do not pass R CMD check for some reason.#
+#
+########################################################
+# SETUP: YOUR TREE FILE AND GEOGRAPHY FILE#
+########################################################
+# Example files are given below. To run your own data,#
+# make the below lines point to your own files, e.g.#
+# trfn = "/mydata/frogs/frogBGB/tree.newick"#
+# geogfn = "/mydata/frogs/frogBGB/geog.data"#
+#
+########################################################
+# Phylogeny file#
+# Notes: #
+# 1. Must be binary/bifurcating: no polytomies#
+# 2. No negative branchlengths (e.g. BEAST MCC consensus trees sometimes have negative branchlengths)#
+# 3. Be careful of very short branches, as BioGeoBEARS will interpret ultrashort branches as direct ancestors#
+# 4. You can use non-ultrametric trees, but BioGeoBEARS will interpret any tips significantly below the #
+#    top of the tree as fossils!  This is only a good idea if you actually do have fossils in your tree,#
+#    as in e.g. Wood, Matzke et al. (2013), Systematic Biology.#
+# 5. The default settings of BioGeoBEARS make sense for trees where the branchlengths are in units of #
+#    millions of years, and the tree is 1-1000 units tall. If you have a tree with a total height of#
+#    e.g. 0.00001, you will need to adjust e.g. the max values of d and e, or (simpler) multiply all#
+#    your branchlengths to get them into reasonable units.#
+# 6. DON'T USE SPACES IN SPECIES NAMES, USE E.G. "_"#
+########################################################
+# This is the example Newick file for Hawaiian Psychotria#
+# (from Ree & Smith 2008)#
+# "trfn" = "tree file name"#
+trfn = np(paste(addslash(extdata_dir), "Psychotria_5.2.newick", sep=""))#
+#
+# Look at the raw Newick file:#
+moref(trfn)#
+#
+# Look at your phylogeny (plots to a PDF, which avoids issues with multiple graphics in same window):#
+pdffn = "tree.pdf"#
+pdf(file=pdffn, width=9, height=12)#
+#
+tr = read.tree(trfn)#
+tr#
+plot(tr)#
+title("Example Psychotria phylogeny from Ree & Smith (2008)")#
+axisPhylo() # plots timescale#
+#
+dev.off()#
+cmdstr = paste0("open ", pdffn)#
+system(cmdstr)#
+#
+########################################################
+# Geography file#
+# Notes:#
+# 1. This is a PHYLIP-formatted file. This means that in the #
+#    first line, #
+#    - the 1st number equals the number of rows (species)#
+#    - the 2nd number equals the number of columns (number of areas)#
+#    - after a tab, put the areas in parentheses, with spaces: (A B C D)#
+##
+# 1.5. Example first line:#
+#    10    4    (A B C D)#
+# #
+# 2. The second line, and subsequent lines:#
+#    speciesA    0110#
+#    speciesB    0111#
+#    speciesC    0001#
+#         ...#
+# #
+# 2.5a. This means a TAB between the species name and the area 0/1s#
+# 2.5b. This also means NO SPACE AND NO TAB between the area 0/1s.#
+# #
+# 3. See example files at:#
+#    http://phylo.wikidot.com/biogeobears#files#
+# #
+# 4. Make you understand what a PLAIN-TEXT EDITOR is:#
+#    http://phylo.wikidot.com/biogeobears#texteditors#
+##
+# 3. The PHYLIP format is the same format used for C++ LAGRANGE geography files.#
+##
+# 4. All names in the geography file must match names in the phylogeny file.#
+##
+# 5. DON'T USE SPACES IN SPECIES NAMES, USE E.G. "_"#
+##
+# 6. Operational taxonomic units (OTUs) should ideally be phylogenetic lineages, #
+#    i.e. genetically isolated populations.  These may or may not be identical #
+#    with species.  You would NOT want to just use specimens, as each specimen #
+#    automatically can only live in 1 area, which will typically favor DEC+J #
+#    models.  This is fine if the species/lineages really do live in single areas,#
+#    but you wouldn't want to assume this without thinking about it at least. #
+#    In summary, you should collapse multiple specimens into species/lineages if #
+#    data indicates they are the same genetic population.#
+#######################################################
+#
+# This is the example geography file for Hawaiian Psychotria#
+# (from Ree & Smith 2008)#
+geogfn = np(paste(addslash(extdata_dir), "Psychotria_geog.data", sep=""))#
+#
+# Look at the raw geography text file:#
+moref(geogfn)#
+#
+# Look at your geographic range data:#
+tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)#
+tipranges#
+#
+# Maximum range size observed:#
+max(rowSums(dfnums_to_numeric(tipranges@df)))#
+#
+# Set the maximum number of areas any species may occupy; this cannot be larger #
+# than the number of areas you set up, but it can be smaller.#
+max_range_size = 4#
+#
+#####################################################
+#####################################################
+# KEY HINT: The number of states (= number of different possible geographic ranges)#
+# depends on (a) the number of areas and (b) max_range_size.#
+# If you have more than about 500-600 states, the calculations will get REALLY slow,#
+# since the program has to exponentiate a matrix of e.g. 600x600.  Often the computer#
+# will just sit there and crunch, and never get through the calculation of the first#
+# likelihood.#
+# #
+# (this is also what is usually happening when LAGRANGE hangs: you have too many states!)#
+##
+# To check the number of states for a given number of ranges, try:#
+numstates_from_numareas(numareas=4, maxareas=4, include_null_range=TRUE)#
+numstates_from_numareas(numareas=4, maxareas=4, include_null_range=FALSE)#
+numstates_from_numareas(numareas=4, maxareas=3, include_null_range=TRUE)#
+numstates_from_numareas(numareas=4, maxareas=2, include_null_range=TRUE)#
+#
+# Large numbers of areas have problems:#
+numstates_from_numareas(numareas=10, maxareas=10, include_null_range=TRUE)#
+#
+# ...unless you limit the max_range_size:#
+numstates_from_numareas(numareas=10, maxareas=2, include_null_range=TRUE)#
+#####################################################
+#####################################################
+#
+########################################################
+########################################################
+# DEC AND DEC+J ANALYSIS#
+########################################################
+########################################################
+# NOTE: The BioGeoBEARS "DEC" model is identical with #
+# the Lagrange DEC model, and should return identical#
+# ML estimates of parameters, and the same #
+# log-likelihoods, for the same datasets.#
+##
+# Ancestral state probabilities at nodes will be slightly #
+# different, since BioGeoBEARS is reporting the #
+# ancestral state probabilities under the global ML#
+# model, and Lagrange is reporting ancestral state#
+# probabilities after re-optimizing the likelihood#
+# after fixing the state at each node. These will #
+# be similar, but not identical. See Matzke (2014),#
+# Systematic Biology, for discussion.#
+##
+# Also see Matzke (2014) for presentation of the #
+# DEC+J model.#
+########################################################
+########################################################
+#
+########################################################
+########################################################
+#
+########################################################
+# Run DEC#
+########################################################
+#
+# Intitialize a default model (DEC model)#
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+#
+# Give BioGeoBEARS the location of the phylogeny Newick file#
+BioGeoBEARS_run_object$trfn = trfn#
+#
+# Give BioGeoBEARS the location of the geography text file#
+BioGeoBEARS_run_object$geogfn = geogfn#
+#
+# Input the maximum range size#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+# (For DEC* and other "*" models, please cite: Massana, Kathryn A.; Beaulieu, #
+#  Jeremy M.; Matzke, Nicholas J.; O’Meara, Brian C. (2015). Non-null Effects of #
+#  the Null Range in Biogeographic Models: Exploring Parameter Estimation in the #
+#  DEC Model. bioRxiv,  http://biorxiv.org/content/early/2015/09/16/026914 )#
+# Also: search script on "include_null_range" for other places to change#
+#
+# Set up a time-stratified analysis:#
+# 1. Here, un-comment ONLY the files you want to use.#
+# 2. Also un-comment "BioGeoBEARS_run_object = section_the_tree(...", below.#
+# 3. For example files see (a) extdata_dir, #
+#  or (b) http://phylo.wikidot.com/biogeobears#files#
+#  and BioGeoBEARS Google Group posts for further hints)#
+##
+# Uncomment files you wish to use in time-stratified analyses:#
+#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"#
+#BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"#
+#BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"#
+#BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"#
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"#
+# See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.#
+#
+# Speed options and multicore processing if desired#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();#
+# if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional#
+# problems (5+ parameters), but seems to sometimes fail to optimize on simple problems#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+# (use more cores to speed it up; this requires#
+# library(parallel) and/or library(snow). The package "parallel" #
+# is now default on Macs in R 3.0+, but apparently still #
+# has to be typed on some Windows machines. Note: apparently #
+# parallel works on Mac command-line R, but not R.app.#
+# BioGeoBEARS checks for this and resets to 1#
+# core with R.app)#
+#
+# Sparse matrix exponentiation is an option for huge numbers of ranges/states (600+)#
+# I have experimented with sparse matrix exponentiation in EXPOKIT/rexpokit,#
+# but the results are imprecise and so I haven't explored it further.#
+# In a Bayesian analysis, it might work OK, but the ML point estimates are#
+# not identical.#
+# Also, I have not implemented all functions to work with force_sparse=TRUE.#
+# Volunteers are welcome to work on it!!#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+#
+# This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!#
+# (It also runs some checks on these inputs for certain errors.)#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)#
+#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE)#
+# The stratified tree is described in this table:#
+#BioGeoBEARS_run_object$master_table#
+#
+# Good default settings to get ancestral states#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+#
+# Set up DEC model#
+# (nothing to do; defaults)#
+#
+# Look at the BioGeoBEARS_run_object; it's just a list of settings etc.#
+BioGeoBEARS_run_object#
+#
+# This contains the model object#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object#
+#
+# This table contains the parameters of the model #
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table#
+#
+# Run this to check inputs. Read the error messages if you get them!#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# For a slow analysis, run once, then set runslow=FALSE to just #
+# load the saved result.#
+runslow = TRUE#
+resfn = "Psychotria_DEC_M0_unconstrained_v1.Rdata"#
+if (runslow)#
+    {#
+    res = bears_optim_run(BioGeoBEARS_run_object)#
+    res    #
+#
+    save(res, file=resfn)#
+    resDEC = res#
+    } else {#
+    # Loads to "res"#
+    load(resfn)#
+    resDEC = res#
+    }#
+#
+########################################################
+# Run DEC+J#
+########################################################
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+BioGeoBEARS_run_object$trfn = trfn#
+BioGeoBEARS_run_object$geogfn = geogfn#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+# (For DEC* and other "*" models, please cite: Massana, Kathryn A.; Beaulieu, #
+#  Jeremy M.; Matzke, Nicholas J.; O’Meara, Brian C. (2015). Non-null Effects of #
+#  the Null Range in Biogeographic Models: Exploring Parameter Estimation in the #
+#  DEC Model. bioRxiv,  http://biorxiv.org/content/early/2015/09/16/026914 )#
+# Also: search script on "include_null_range" for other places to change#
+#
+# Set up a time-stratified analysis:#
+#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"#
+#BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"#
+#BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"#
+#BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"#
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"#
+# See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.#
+#
+# Speed options and multicore processing if desired#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();#
+# if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional#
+# problems (5+ parameters), but seems to sometimes fail to optimize on simple problems#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+#
+# This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!#
+# (It also runs some checks on these inputs for certain errors.)#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+# Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)#
+#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE)#
+# The stratified tree is described in this table:#
+#BioGeoBEARS_run_object$master_table#
+#
+# Good default settings to get ancestral states#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+#
+# Set up DEC+J model#
+# Get the ML parameter values from the 2-parameter nested model#
+# (this will ensure that the 3-parameter model always does at least as good)#
+dstart = resDEC$outputs@params_table["d","est"]#
+estart = resDEC$outputs@params_table["e","est"]#
+jstart = 0.0001#
+#
+# Input starting values for d, e#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","est"] = dstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","init"] = estart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","est"] = estart#
+#
+# Add j as a free parameter#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","type"] = "free"#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = jstart#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart#
+#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+#
+resfn = "Psychotria_DEC+J_M0_unconstrained_v1.Rdata"#
+runslow = TRUE#
+if (runslow)#
+    {#
+    #sourceall("/Dropbox/_njm/__packages/BioGeoBEARS_setup/")#
+#
+    res = bears_optim_run(BioGeoBEARS_run_object)#
+    res    #
+#
+    save(res, file=resfn)#
+#
+    resDECj = res#
+    } else {#
+    # Loads to "res"#
+    load(resfn)#
+    resDECj = res#
+    }#
+#
+########################################################
+# PDF plots#
+########################################################
+pdffn = "Psychotria_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"#
+pdf(pdffn, width=6, height=6)#
+#
+########################################################
+# Plot ancestral states - DEC#
+########################################################
+analysis_titletxt ="BioGeoBEARS DEC on Psychotria M0_unconstrained"#
+#
+# Setup#
+results_object = resDEC#
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))#
+#
+# States#
+res2 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+# Pie chart#
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+########################################################
+# Plot ancestral states - DECJ#
+########################################################
+analysis_titletxt ="BioGeoBEARS DEC+J on Psychotria M0_unconstrained"#
+#
+# Setup#
+results_object = resDECj#
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))#
+#
+# States#
+res1 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+# Pie chart#
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#
+#
+dev.off()  # Turn off PDF#
+cmdstr = paste("open ", pdffn, sep="")#
+system(cmdstr) # Plot it
+source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
+source('/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R', chdir = TRUE)
+/GitHub/PhyBEARS.jl/data/Psychotria
+source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
+res
+names(res)
+res$ML_marginal_prob_each_state_at_branch_top_AT_node
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file="
+outfn = "Psychotria_DEC_ancstates_nodes.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+names(res)
+outfn = "Psychotria_DEC_ancstates_corners.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+res$total_loglikelihood
+########################################################
+# Compare BioGeoBEARS and diversitree-ClaSSE calculations#
+##
+# This script will illustrate, for any input tree#
+# and geography file, and BioGeoBEARS parameters, the #
+# equivalence of comparing BioGeoBEARS models (such as #
+# DEC and DEC+J, but this applies to any 2 models) and #
+# comparing 2 equivalent ClaSSE models, in the case where:#
+##
+# * the claSSE lambdas = BGB_cladogenesis_probs * birthRate#
+# * the birthRate = the Maximum Likelihood estimate under Yule#
+# * the sampling is assumed to be 100%#
+##
+# The key insight is that BioGeoBEARS calculates the #
+# likelihood of the geography data (just a complex #
+# character dataset). Adding a Yule process likelihood, #
+# i.e. the probability density of a tree under a pure-birth#
+# process with an extinction rate of 0 and assuming #
+# complete sampling, creates a special case of the #
+# ClaSSE model.#
+##
+# Therefore, comparing the likelihood difference between#
+# two BioGeoBEARS models is exactly equivalent to comparing#
+# two equivalent ClaSSE models. The likelihood difference#
+# will be identical, because the Yule-process likelihood#
+# is a constant across the different BioGeoBEARS of the #
+# geography data.#
+##
+# Note: This is only set up for non-time-stratified analyses.#
+# Also, the Yule-process assumption fails for a tree#
+# that includes fossils (non-contemporaneous tips).#
+# #
+########################################################
+#
+library(ape)#
+library(diversitree)#
+library(rexpokit)#
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")  # utility functions from diversitree#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")       # helper functions in plain-R#
+wd = "~"#
+setwd(wd)#
+#
+# Load simple example tree (newick format, must be ultrametric, i.e. #
+# all the tips come to the present)#
+trfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_tree.newick"#
+tr = read.tree(trfn)#
+#
+# Load geography data#
+geogfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"#
+########################################################
+# BioGeoBEARS Q and C matrices#
+########################################################
+library(BioGeoBEARS)#
+max_range_size = 4#
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+BioGeoBEARS_run_object$trfn = trfn#
+BioGeoBEARS_run_object$geogfn = geogfn#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = "GenSA"    # if FALSE, use optim() instead of optimx()#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+include_null_range = BioGeoBEARS_run_object$include_null_range#
+#
+# Add j as a free parameter#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","type"] = "free"#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = 0.001#
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = 0.001#
+# Run the Maximum Likelihood optimization#
+res = bears_optim_run(BioGeoBEARS_run_object)#
+res$total_loglikelihood#
+# -20.94759 for Psychotria, under DEC#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC+J_ancstates_nodes.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC+J_ancstates_corners.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+library(ape)#
+library(diversitree)#
+library(rexpokit)#
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")  # utility functions from diversitree#
+source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")       # helper functions in plain-R#
+wd = "~"#
+setwd(wd)#
+#
+# Load simple example tree (newick format, must be ultrametric, i.e. #
+# all the tips come to the present)#
+trfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_tree.newick"#
+tr = read.tree(trfn)#
+#
+# Load geography data#
+geogfn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"#
+########################################################
+# BioGeoBEARS Q and C matrices#
+########################################################
+library(BioGeoBEARS)#
+max_range_size = 4#
+BioGeoBEARS_run_object = define_BioGeoBEARS_run()#
+BioGeoBEARS_run_object$trfn = trfn#
+BioGeoBEARS_run_object$geogfn = geogfn#
+BioGeoBEARS_run_object$max_range_size = max_range_size#
+BioGeoBEARS_run_object$min_branchlength = 0.000001    # Min to treat tip as a direct ancestor (no speciation event)#
+BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC* model, DEC*+J, etc.#
+BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)#
+BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)#
+BioGeoBEARS_run_object$use_optimx = "GenSA"    # if FALSE, use optim() instead of optimx()#
+BioGeoBEARS_run_object$num_cores_to_use = 1#
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale#
+BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+BioGeoBEARS_run_object$return_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_TTL_loglike_from_condlikes_table = TRUE#
+BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim run#
+check_BioGeoBEARS_run(BioGeoBEARS_run_object)#
+include_null_range = BioGeoBEARS_run_object$include_null_range#
+#
+# Run the Maximum Likelihood optimization#
+res = bears_optim_run(BioGeoBEARS_run_object)#
+res$total_loglikelihood#
+# -34.54313 for Psychotria, under DEC#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_top_AT_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)#
+#
+outfn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"#
+write.table(res$ML_marginal_prob_each_state_at_branch_bottom_below_node, file=outfn, sep="\t", row.names=FALSE, col.names=FALSE, quote=FALSE)
+?subset
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)
+cbind(sars_cov2_changes, coronaviridae_changes)
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df
+subset_df = subset(x=df, subset=(coronaviridae_changes==0))
+subset_df
+subset_df_when_coronaviridae_eq_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+subset_df_when_coronaviridae_gt_0 = subset(x=df, subset=(coronaviridae_changes>0))
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_eq_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (gt0 = # changes greater than 0)#
+subset_df_when_coronaviridae_gt_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_eq_0$sars_cov2_changes, xlim=c(0,1))
+?hist
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_eq_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (gt0 = # changes greater than 0)#
+subset_df_when_coronaviridae_gt_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_eq_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes"), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_eq_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes"), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_eq_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (gt0 = # changes greater than 0)#
+subset_df_when_coronaviridae_gt_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_eq_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_eq_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, xlab="# of Coronaviridae changes", xlim=c(0,12), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, xlab="# of Coronaviridae changes", xlim=c(0,12), main=titletxt)
+?hist
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,12), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,12), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=xmax, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=xmax, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=xmax, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=xmax, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=xmax, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=xmax, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=xmax, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=xmax, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+?hist
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+max(df)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+xmax = max(df$sars_cov2_changes)#
+breakvals = 0:xmax#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = max(df$coronaviridae_changes)#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = 12#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+xmax = max(df$sars_cov2_changes)#
+breakvals = 0:xmax#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = max(df$coronaviridae_changes)#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+xmax = max(df$sars_cov2_changes)#
+breakvals = 0:xmax#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)
+breakvals
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+xmax = max(df$sars_cov2_changes)#
+breakvals = 0:(xmax+1)#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = max(df$coronaviridae_changes)#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+?barplot
+summary(subset_df_when_coronaviridae_EQ_0$sars_cov2_changes)
+table(subset_df_when_coronaviridae_EQ_0$sars_cov2_changes)
+# Example data#
+sars_cov2_changes = c(0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,1,1,1,1)#
+coronaviridae_changes = c(0,1,0,0,0,0,0,0,0,1,0,1,2,1,1,1,1,0,2,5)#
+#
+# Make a data.frame#
+df = as.data.frame(cbind(sars_cov2_changes, coronaviridae_changes))#
+df#
+# Subset and histograms#
+#
+# 0 changes in coronaviridae#
+subset_df_when_coronaviridae_EQ_0 = subset(x=df, subset=(coronaviridae_changes==0))#
+#
+# 1 or more changes in coronaviridae (GT_0 = # changes greater than 0)#
+subset_df_when_coronaviridae_GT_0 = subset(x=df, subset=(coronaviridae_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+xmax = max(df$sars_cov2_changes)#
+breakvals = 0:(xmax+1)#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_coronaviridae_EQ_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_coronaviridae_GT_0$sars_cov2_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of SARS-CoV-2 changes", main=titletxt)#
+#
+# Another way, with barplot, looks better when the values are just counts of 0 and 1#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+counts = table(subset_df_when_coronaviridae_EQ_0$sars_cov2_changes)#
+barplot(counts, main=titletxt)#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+counts = table(subset_df_when_coronaviridae_GT_0$sars_cov2_changes)#
+barplot(counts, main=titletxt)#
+# Do it the reverse way -- subset based on the # of SARS-CoV-2 changes being 0 or >0#
+#
+# 0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_EQ_0 = subset(x=df, subset=(sars_cov2_changes==0))#
+#
+# >0 changes in SARS-CoV-2#
+subset_df_when_sarscov2_GT_0 = subset(x=df, subset=(sars_cov2_changes>0))#
+#
+# Histograms of each, on same plot#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+xmax = max(df$coronaviridae_changes)#
+breakvals = 0:xmax#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=TRUE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histograms of each, on same plot - DENSITY VERSION#
+#
+# Blank plot with 2 rows and 1 column#
+par(mfrow=c(2,1))#
+#
+# Histogram when Coronaviridae changes == 0 #
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae=0"#
+hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)#
+# Histogram when Coronaviridae changes > 0 #
+# freq=FALSE makes the y axis the relative probability density rather than the count#
+#
+titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
+hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+library(ape)#
+library(castor)#
+#
+# Set the random number seed, to make it repeatable#
+set.seed(54321)#
+#
+time_grid = seq(0,10,0.1) # About halfway through#
+A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+#
+# Make it more like a DEC model (anagenetic)#
+d_rate = 0.06 # range expansion#
+e_rate = 0.01 # range contraction#
+#
+# 4 states are:#
+# null, A, B, AB#
+A[,] = 0#
+A[2,4] = d_rate # A->AB#
+A[3,4] = d_rate # B->AB#
+A[2,1] = e_rate # A->null#
+A[3,1] = e_rate # B->null#
+A[4,2] = e_rate # AB->A#
+A[4,3] = e_rate # AB->B#
+A#
+#
+# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)#
+diag(A) = 0.0#
+A#
+diag(A) = -rowSums(A)#
+A#
+# Cladogenetic part of the DEC model#
+# At speciation, we have:#
+# Specify probabilities of different events, given that speciation has occurred#
+########################################################
+# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 0#
+# AB -> B,A	# 0#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 0#
+# AB -> A,AB	# 0#
+# AB -> AB,B	# 0#
+# AB -> B,AB	# 0#
+# AB -> AB, AB # 1.0#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 0.0 # AB->A#
+transition_matrix_C[4,3] = 0.0 # AB->B#
+transition_matrix_C[4,4] = 6/6 # AB->AB#
+transition_matrix_C1 = transition_matrix_C#
+transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C1 = transition_table_C[,4]#
+########################################################
+# 2nd regime: vicariance, subset sympatry are allowed - DEC model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 1/6#
+# AB -> B,A	# 1/6#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 1/6#
+# AB -> A,AB	# 1/6#
+# AB -> AB,B	# 1/6#
+# AB -> B,AB	# 1/6#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 2/6 # AB->A#
+transition_matrix_C[4,3] = 2/6 # AB->B#
+transition_matrix_C[4,4] = 2/6 # AB->AB#
+transition_matrix_C2 = transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,0.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C2 = transition_table_C[,4]#
+# Make the arrays for the parameters#
+transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
+#
+# Probs encoded in a num_clado_events * 2 * num_times array#
+# the "2" just duplicates, ensures we have a 3D array#
+transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))#
+#
+# Fill in the transition_matrix_C and transition_table_probs#
+for (i in 1:length(time_grid))#
+	{#
+	if (time_grid[i] < 5.0)#
+		{#
+		transition_matrix_C_array[,,i] = transition_matrix_C1#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C1#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C1#
+		} else {#
+		transition_matrix_C_array[,,i] = transition_matrix_C2		#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C2#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C2#
+		}#
+	}#
+parameters = list(birth_rates         = 0.3,#
+                  death_rates         = 0.0,#
+                  transition_matrix_A = A,#
+                  transition_matrix_C = transition_matrix_C_array,#
+                  transition_table_indices_C = transition_table_indices_C,#
+                  transition_table_probs_C = transition_table_probs_C_matrix )#
+simulation = simulate_tdsse2( Nstates = 4, #
+                            parameters = parameters, #
+														splines_degree      = 1,#
+                            start_state = 2,#
+                            max_tips = 50,#
+                            time_grid = time_grid,#
+                            include_birth_times=TRUE,#
+                            include_death_times=TRUE,#
+                            coalescent=FALSE)#
+plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
+simulation$Ntransitions_A#
+simulation$Ntransitions_C#
+#
+simtree = simulation$tree#
+simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)#
+newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))#
+newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)#
+#
+match_simtree_in_new1 = match(x=simtable$tipnames, table=newtable$tipnames)#
+match_simtree_in_new1#
+#
+match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)#
+match_simtree_in_new2#
+match_simtree_in_new1sub = match_simtree_in_new1[match_simtree_in_new1 > length(simtree$tip.label)]-length(simtree$tip.label)#
+match_simtree_in_new1sub#
+match_simtree_in_new2sub = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)#
+match_simtree_in_new2sub#
+#
+simstates = c(as.numeric(simulation$tip_states), simulation$node_states)#
+#
+simstates#
+simstates[match_simtree_in_new1]#
+simstates[match_simtree_in_new2]#
+#
+simulation$node_states#
+simulation$node_states[match_simtree_in_new1sub]#
+simulation$node_states[match_simtree_in_new2sub]
+?simulate_tdsse2
+simulation
+simulation = reorder_castor_sim_to_default_ape_node_order(simulation)
+source('~/HD/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R', chdir = TRUE)
+source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+simulation = reorder_castor_sim_to_default_ape_node_order(simulation)
+simulation
+prt(source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
+trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
+tree_age = max(trtable$time_bp)
+source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
+trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
+tree_age = max(trtable$time_bp)
+treeage
+tree_age
+last_tips_TF = simulation$birth_times == simulation$final_time
+last_tips_TF
+simulation = simulate_tdsse2( Nstates = 4, #
+                            parameters = parameters, #
+														splines_degree      = 1,#
+                            start_state = 2,#
+                            max_tips = 51,#
+                            time_grid = time_grid,#
+                            include_birth_times=TRUE,#
+                            include_death_times=TRUE,#
+                            coalescent=FALSE)#
+plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
+simulation$Ntransitions_A#
+simulation$Ntransitions_C#
+source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+#simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
+trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
+tree_age = max(trtable$time_bp)#
+#
+# Node times#
+last_tips_TF = simulation$birth_times == simulation$final_time
+last_tips_TF
+simulation
+plot(simulation)
+plot(simulation$tree)
+sum(simulation$Ntransitions_C)
+library(cladoRcpp)#
+library(BioGeoBEARS)#
+library(ape)#
+library(castor)#
+#
+# Set the random number seed, to make it repeatable#
+set.seed(54321)#
+#
+time_grid = seq(0,10,0.1) # About halfway through#
+A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+#
+# Make it more like a DEC model (anagenetic)#
+d_rate = 0.06 # range expansion#
+e_rate = 0.01 # range contraction#
+#
+# 4 states are:#
+# null, A, B, AB#
+A[,] = 0#
+A[2,4] = d_rate # A->AB#
+A[3,4] = d_rate # B->AB#
+A[2,1] = e_rate # A->null#
+A[3,1] = e_rate # B->null#
+A[4,2] = e_rate # AB->A#
+A[4,3] = e_rate # AB->B#
+A#
+#
+# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)#
+diag(A) = 0.0#
+A#
+diag(A) = -rowSums(A)#
+A#
+# Cladogenetic part of the DEC model#
+# At speciation, we have:#
+# Specify probabilities of different events, given that speciation has occurred#
+########################################################
+# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 0#
+# AB -> B,A	# 0#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 0#
+# AB -> A,AB	# 0#
+# AB -> AB,B	# 0#
+# AB -> B,AB	# 0#
+# AB -> AB, AB # 1.0#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 0.0 # AB->A#
+transition_matrix_C[4,3] = 0.0 # AB->B#
+transition_matrix_C[4,4] = 6/6 # AB->AB#
+transition_matrix_C1 = transition_matrix_C#
+transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C1 = transition_table_C[,4]#
+########################################################
+# 2nd regime: vicariance, subset sympatry are allowed - DEC model#
+########################################################
+#
+# Sympatry#
+# null->null,null#
+# A -> A,A  # 100#
+# B -> B,B	# 100#
+# Vicariance#
+# AB -> A,B	# 1/6#
+# AB -> B,A	# 1/6#
+# Subset sympatry (speciation within widespread ancestor)#
+# AB -> AB,A	# 1/6#
+# AB -> A,AB	# 1/6#
+# AB -> AB,B	# 1/6#
+# AB -> B,AB	# 1/6#
+#
+transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
+transition_matrix_C[,] = 0.0#
+transition_matrix_C#
+transition_matrix_C[1,1] = 1.0 # null->null#
+transition_matrix_C[2,2] = 1.0 # A->A#
+transition_matrix_C[3,3] = 1.0 # B->B#
+transition_matrix_C[4,] = 0.0#
+transition_matrix_C[4,1] = 0.0#
+transition_matrix_C[4,2] = 2/6 # AB->A#
+transition_matrix_C[4,3] = 2/6 # AB->B#
+transition_matrix_C[4,4] = 2/6 # AB->AB#
+transition_matrix_C2 = transition_matrix_C#
+#
+# Rows of transition_table_C#
+transition_table_C = NULL#
+tmprow = c(1,1,1,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(2,2,2,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(3,3,3,1.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,3,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,2,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,3,4,1/3)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+tmprow = c(4,4,4,0.0)#
+transition_table_C = rbind(transition_table_C, tmprow)#
+transition_table_C#
+#
+# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
+transition_table_indices_C = transition_table_C[,1:3] - 1#
+transition_table_probs_C2 = transition_table_C[,4]#
+# Make the arrays for the parameters#
+transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
+#
+# Probs encoded in a num_clado_events * 2 * num_times array#
+# the "2" just duplicates, ensures we have a 3D array#
+transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))#
+#
+# Fill in the transition_matrix_C and transition_table_probs#
+for (i in 1:length(time_grid))#
+	{#
+	if (time_grid[i] < 5.0)#
+		{#
+		transition_matrix_C_array[,,i] = transition_matrix_C1#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C1#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C1#
+		} else {#
+		transition_matrix_C_array[,,i] = transition_matrix_C2		#
+		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C2#
+		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C2#
+		}#
+	}#
+parameters = list(birth_rates         = 0.3,#
+                  death_rates         = 0.0,#
+                  transition_matrix_A = A,#
+                  transition_matrix_C = transition_matrix_C_array,#
+                  transition_table_indices_C = transition_table_indices_C,#
+                  transition_table_probs_C = transition_table_probs_C_matrix )#
+simulation = simulate_tdsse2( Nstates = 4, #
+                            parameters = parameters, #
+														splines_degree      = 1,#
+                            start_state = 2,#
+                            max_tips = 51,#
+                            time_grid = time_grid,#
+                            include_birth_times=TRUE,#
+                            include_death_times=TRUE,#
+                            coalescent=FALSE)#
+plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
+simulation$Ntransitions_A#
+simulation$Ntransitions_C#
+source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)
+getwd()
+~/HD/GitHsource('~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R', chdir = TRUE)ub/PhyBEARS.jl/simulator/examples/ex1
+source('~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R', chdir = TRUE)
+wd
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+write_out_reordered_castor_simfiles(simulation3, wd)
+names(simulation)
+simulation
+# Helper functions for castor#
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
+#
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D")
+)
+?cladoRcpp
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(areas), include_null_range=TRUE)#
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
+rcpp_areas_list_to_states_list(
+)
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(areas), include_null_range=TRUE)
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+#
+# External inputs for making geography files etc.#
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
+#
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+#
+# External inputs for making geography files etc.#
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
+#
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+#
+# External inputs for making geography files etc.#
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
+# Helper functions for castor#
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
+#
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
+#
+# External inputs for making geography files etc.#
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
+#
+# Reorder, and also write out the reordered files plus geography etc.#
+write_out_reordered_castor_simfiles(simulation, wd, area_names=c("A","B","C","D"), states_list=states_list)
+system(paste0("open ", wd))
+# Helper functions for castor#
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
+#
+wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
+setwd(wd)#
+#
+write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
+#
+# Remove the last tip from the simulation#
+simulation2 = remove_last_tip_from_simulation(simulation)#
+plot(simulation2$tree)#
+#
+# Write out files with tip 51 removed#
+write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
+#
+# Reorder to be more readable#
+# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2)#
+#
+# External inputs for making geography files etc.#
+area_names = c("A","B","C","D")#
+states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
+#
+# Reorder, and also write out the reordered files plus geography etc.#
+write_out_reordered_castor_simfiles(simulation2, wd, area_names=c("A","B","C","D"), states_list=states_list)#
+#
+# Look at the files in Finder#
+system(paste0("open ", wd))
