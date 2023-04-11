@@ -1,3 +1,6 @@
+
+# Dependencies
+library(rexpokit)
 library(cladoRcpp)
 library(BioGeoBEARS)
 library(ape)
@@ -218,7 +221,7 @@ area_names = c("A","B","C","D")
 states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)
 
 # Reorder, and also write out the reordered files plus geography etc.
-write_out_reordered_castor_simfiles(simulation2, wd, area_names=c("A","B","C","D"), states_list=states_list)
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
 
 # Look at the files in Finder
 system(paste0("open ", wd))

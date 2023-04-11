@@ -650,7 +650,7 @@ write_out_original_castor_simfiles <- function(simulation, wd, fn="rawsim")
 	
 	# Save the original Rdata output
 	outfn = slashslash(paste0(wd, "/", fn, "_orig_castor_sim.Rdata"))
-	save(simulation2, file=outfn)
+	save(simulation, file=outfn)
 	
 	# Original castor simstates
 	simstates_in_orig_castor_order = c(unname(simulation$tip_states), simulation$node_states)

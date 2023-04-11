@@ -1,3 +1,323 @@
+st <- asr.marginal(lik, coef(fit))#
+states_df = cft(adf2(t(st)))#
+states_df
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+?plot.phylo
+plot(phy, label.offset=0.05)
+plot(phy, label.offset=0.5)
+plot(phy, label.offset=0.5, main="Inferred history")#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+parsdf = cft(adf2(matrix(coef(fit),nrow=1))); names(parsdf)=names(coef(fit))#
+parsdf#
+#
+st <- asr.marginal(lik, coef(fit))#
+states_df = cft(adf2(t(st)))#
+states_df#
+#
+nodelabels(thermo=t(st), piecol=cols, cex=0.5)
+set.seed(59) # Rare to have a transition, but observed here#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
+fit
+names(fit)
+fit$par
+set.seed(59) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.1, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars
+lik
+st <- asr.marginal(lik, pars)
+st
+set.seed(59) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)
+set.seed(61) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(63) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(65) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(67) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.03, 0.02)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.222222222, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])
+phy$tip.state
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+h
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)#
+#
+# ML on this tiny dataset is meaningless#
+fit$par[1:length(fit$par)] = pars#
+#
+plot(phy, label.offset=0.1)#
+tiplabels(text=phy$tip.state, tip=1:5, col="black", bg=cols[phy2$tip.state+1])#
+#diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+#fit2 <- find.mle(lik2, pars, method="subplex", fail.value=-1e10)#
+st <- asr.marginal(lik, pars)#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)#
+t(st2)#
+#
+states_df2 = cft(adf2(t(st2)))#
+states_df2#
+#
+nodelabels(thermo=t(st2), piecol=cols, cex=0.5)
+set.seed(75) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(77) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(79) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(81) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(813) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)#
+#
+lik <- make.bisse(phy, phy$tip.state)#
+#fit <- find.mle(lik, pars, method="subplex")#
+fit <- find.mle(func=lik, x.init=pars, method="subplex", fail.value=-1e10, lower=lower, upper=upper)
+set.seed(8153) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
+set.seed(654) # Rare to have a transition, but observed here#
+pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
+#
+phy <- trees(pars, "bisse", max.taxa=5, max.t=Inf, x0=0)[[1]]#
+cols = c("blue", "green3")#
+lower = rep(0.0, times=length(pars))#
+upper = rep(10.0, times=length(pars))#
+#
+## Here is the true history#
+h <- history.from.sim.discrete(phy, 0:1)#
+diversitree:::plot.history(h, phy, main="True history", cols=cols)
 set.seed(6534) # Rare to have a transition, but observed here#
 pars <- c(0.222222222, 0.222222222, 0.111111111, 0.0111111111, 0.06, 0.05)#
 #
@@ -3022,6 +3342,8 @@ hist(x=subset_df_when_sarscov2_EQ_0$coronaviridae_changes, breaks=breakvals, rig
 #
 titletxt = "# of SARS-CoV-2 changes when # of changes in Coronaviridae>0"#
 hist(x=subset_df_when_sarscov2_GT_0$coronaviridae_changes, breaks=breakvals, right=FALSE, freq=FALSE, xlab="# of Coronaviridae changes", xlim=c(0,xmax), main=titletxt)
+1/4000*100
+library(rexpokit)#
 library(cladoRcpp)#
 library(BioGeoBEARS)#
 library(ape)#
@@ -3031,9 +3353,8 @@ library(castor)#
 set.seed(54321)#
 #
 time_grid = seq(0,10,0.1) # About halfway through#
-A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
-#
-# Make it more like a DEC model (anagenetic)#
+A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
+A
 d_rate = 0.06 # range expansion#
 e_rate = 0.01 # range contraction#
 #
@@ -3052,28 +3373,7 @@ A#
 diag(A) = 0.0#
 A#
 diag(A) = -rowSums(A)#
-A#
-# Cladogenetic part of the DEC model#
-# At speciation, we have:#
-# Specify probabilities of different events, given that speciation has occurred#
-########################################################
-# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
-########################################################
-#
-# Sympatry#
-# null->null,null#
-# A -> A,A  # 100#
-# B -> B,B	# 100#
-# Vicariance#
-# AB -> A,B	# 0#
-# AB -> B,A	# 0#
-# Subset sympatry (speciation within widespread ancestor)#
-# AB -> AB,A	# 0#
-# AB -> A,AB	# 0#
-# AB -> AB,B	# 0#
-# AB -> B,AB	# 0#
-# AB -> AB, AB # 1.0#
-#
+A
 transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
 transition_matrix_C[,] = 0.0#
 transition_matrix_C#
@@ -3108,24 +3408,7 @@ transition_table_C#
 #
 # convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
 transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_probs_C1 = transition_table_C[,4]#
-########################################################
-# 2nd regime: vicariance, subset sympatry are allowed - DEC model#
-########################################################
-#
-# Sympatry#
-# null->null,null#
-# A -> A,A  # 100#
-# B -> B,B	# 100#
-# Vicariance#
-# AB -> A,B	# 1/6#
-# AB -> B,A	# 1/6#
-# Subset sympatry (speciation within widespread ancestor)#
-# AB -> AB,A	# 1/6#
-# AB -> A,AB	# 1/6#
-# AB -> AB,B	# 1/6#
-# AB -> B,AB	# 1/6#
-#
+transition_table_probs_C1 = transition_table_C[,4]
 transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
 transition_matrix_C[,] = 0.0#
 transition_matrix_C#
@@ -3159,252 +3442,7 @@ transition_table_C#
 #
 # convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
 transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_probs_C2 = transition_table_C[,4]#
-# Make the arrays for the parameters#
-transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
-#
-# Probs encoded in a num_clado_events * 2 * num_times array#
-# the "2" just duplicates, ensures we have a 3D array#
-transition_table_probs_C_matrix = array(data=0.0, dim=c(length(transition_table_probs_C1), 2, length(time_grid)))#
-#
-# Fill in the transition_matrix_C and transition_table_probs#
-for (i in 1:length(time_grid))#
-	{#
-	if (time_grid[i] < 5.0)#
-		{#
-		transition_matrix_C_array[,,i] = transition_matrix_C1#
-		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C1#
-		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C1#
-		} else {#
-		transition_matrix_C_array[,,i] = transition_matrix_C2		#
-		transition_table_probs_C_matrix[,1,i] = transition_table_probs_C2#
-		transition_table_probs_C_matrix[,2,i] = transition_table_probs_C2#
-		}#
-	}#
-parameters = list(birth_rates         = 0.3,#
-                  death_rates         = 0.0,#
-                  transition_matrix_A = A,#
-                  transition_matrix_C = transition_matrix_C_array,#
-                  transition_table_indices_C = transition_table_indices_C,#
-                  transition_table_probs_C = transition_table_probs_C_matrix )#
-simulation = simulate_tdsse2( Nstates = 4, #
-                            parameters = parameters, #
-														splines_degree      = 1,#
-                            start_state = 2,#
-                            max_tips = 50,#
-                            time_grid = time_grid,#
-                            include_birth_times=TRUE,#
-                            include_death_times=TRUE,#
-                            coalescent=FALSE)#
-plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
-simulation$Ntransitions_A#
-simulation$Ntransitions_C#
-#
-simtree = simulation$tree#
-simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)#
-newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))#
-newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)#
-#
-match_simtree_in_new1 = match(x=simtable$tipnames, table=newtable$tipnames)#
-match_simtree_in_new1#
-#
-match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)#
-match_simtree_in_new2#
-match_simtree_in_new1sub = match_simtree_in_new1[match_simtree_in_new1 > length(simtree$tip.label)]-length(simtree$tip.label)#
-match_simtree_in_new1sub#
-match_simtree_in_new2sub = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)#
-match_simtree_in_new2sub#
-#
-simstates = c(as.numeric(simulation$tip_states), simulation$node_states)#
-#
-simstates#
-simstates[match_simtree_in_new1]#
-simstates[match_simtree_in_new2]#
-#
-simulation$node_states#
-simulation$node_states[match_simtree_in_new1sub]#
-simulation$node_states[match_simtree_in_new2sub]
-?simulate_tdsse2
-simulation
-simulation = reorder_castor_sim_to_default_ape_node_order(simulation)
-source('~/HD/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R', chdir = TRUE)
-source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
-simulation = reorder_castor_sim_to_default_ape_node_order(simulation)
-simulation
-prt(source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
-simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
-trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
-tree_age = max(trtable$time_bp)
-source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
-simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
-trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
-tree_age = max(trtable$time_bp)
-treeage
-tree_age
-last_tips_TF = simulation$birth_times == simulation$final_time
-last_tips_TF
-simulation = simulate_tdsse2( Nstates = 4, #
-                            parameters = parameters, #
-														splines_degree      = 1,#
-                            start_state = 2,#
-                            max_tips = 51,#
-                            time_grid = time_grid,#
-                            include_birth_times=TRUE,#
-                            include_death_times=TRUE,#
-                            coalescent=FALSE)#
-plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
-simulation$Ntransitions_A#
-simulation$Ntransitions_C#
-source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
-#simulation = reorder_castor_sim_to_default_ape_node_order(simulation)#
-trtable = prt(simulation$tree, printflag=FALSE, get_tipnames=TRUE)#
-tree_age = max(trtable$time_bp)#
-#
-# Node times#
-last_tips_TF = simulation$birth_times == simulation$final_time
-last_tips_TF
-simulation
-plot(simulation)
-plot(simulation$tree)
-sum(simulation$Ntransitions_C)
-library(cladoRcpp)#
-library(BioGeoBEARS)#
-library(ape)#
-library(castor)#
-#
-# Set the random number seed, to make it repeatable#
-set.seed(54321)#
-#
-time_grid = seq(0,10,0.1) # About halfway through#
-A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
-#
-# Make it more like a DEC model (anagenetic)#
-d_rate = 0.06 # range expansion#
-e_rate = 0.01 # range contraction#
-#
-# 4 states are:#
-# null, A, B, AB#
-A[,] = 0#
-A[2,4] = d_rate # A->AB#
-A[3,4] = d_rate # B->AB#
-A[2,1] = e_rate # A->null#
-A[3,1] = e_rate # B->null#
-A[4,2] = e_rate # AB->A#
-A[4,3] = e_rate # AB->B#
-A#
-#
-# In Q transition matrices, the diagonals = -sum(off-diagonal for that row)#
-diag(A) = 0.0#
-A#
-diag(A) = -rowSums(A)#
-A#
-# Cladogenetic part of the DEC model#
-# At speciation, we have:#
-# Specify probabilities of different events, given that speciation has occurred#
-########################################################
-# 1st regime: vicariance, subset sympatry not allowed - BAYAREALIKE model#
-########################################################
-#
-# Sympatry#
-# null->null,null#
-# A -> A,A  # 100#
-# B -> B,B	# 100#
-# Vicariance#
-# AB -> A,B	# 0#
-# AB -> B,A	# 0#
-# Subset sympatry (speciation within widespread ancestor)#
-# AB -> AB,A	# 0#
-# AB -> A,AB	# 0#
-# AB -> AB,B	# 0#
-# AB -> B,AB	# 0#
-# AB -> AB, AB # 1.0#
-#
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
-transition_matrix_C[,] = 0.0#
-transition_matrix_C#
-transition_matrix_C[1,1] = 1.0 # null->null#
-transition_matrix_C[2,2] = 1.0 # A->A#
-transition_matrix_C[3,3] = 1.0 # B->B#
-transition_matrix_C[4,] = 0.0#
-transition_matrix_C[4,1] = 0.0#
-transition_matrix_C[4,2] = 0.0 # AB->A#
-transition_matrix_C[4,3] = 0.0 # AB->B#
-transition_matrix_C[4,4] = 6/6 # AB->AB#
-transition_matrix_C1 = transition_matrix_C#
-transition_matrix_C#
-#
-# Rows of transition_table_C#
-transition_table_C = NULL#
-tmprow = c(1,1,1,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(2,2,2,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(3,3,3,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,2,3,0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,2,4,0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,3,4,0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,4,4,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-transition_table_C#
-#
-# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
-transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_probs_C1 = transition_table_C[,4]#
-########################################################
-# 2nd regime: vicariance, subset sympatry are allowed - DEC model#
-########################################################
-#
-# Sympatry#
-# null->null,null#
-# A -> A,A  # 100#
-# B -> B,B	# 100#
-# Vicariance#
-# AB -> A,B	# 1/6#
-# AB -> B,A	# 1/6#
-# Subset sympatry (speciation within widespread ancestor)#
-# AB -> AB,A	# 1/6#
-# AB -> A,AB	# 1/6#
-# AB -> AB,B	# 1/6#
-# AB -> B,AB	# 1/6#
-#
-transition_matrix_C = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)#
-transition_matrix_C[,] = 0.0#
-transition_matrix_C#
-transition_matrix_C[1,1] = 1.0 # null->null#
-transition_matrix_C[2,2] = 1.0 # A->A#
-transition_matrix_C[3,3] = 1.0 # B->B#
-transition_matrix_C[4,] = 0.0#
-transition_matrix_C[4,1] = 0.0#
-transition_matrix_C[4,2] = 2/6 # AB->A#
-transition_matrix_C[4,3] = 2/6 # AB->B#
-transition_matrix_C[4,4] = 2/6 # AB->AB#
-transition_matrix_C2 = transition_matrix_C#
-#
-# Rows of transition_table_C#
-transition_table_C = NULL#
-tmprow = c(1,1,1,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(2,2,2,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(3,3,3,1.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,2,3,1/3)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,2,4,1/3)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,3,4,1/3)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-tmprow = c(4,4,4,0.0)#
-transition_table_C = rbind(transition_table_C, tmprow)#
-transition_table_C#
-#
-# convert from 1-based to 0-based indices (turns out this is NOT needed for the C++ code)#
-transition_table_indices_C = transition_table_C[,1:3] - 1#
-transition_table_probs_C2 = transition_table_C[,4]#
+transition_table_probs_C2 = transition_table_C[,4]
 # Make the arrays for the parameters#
 transition_matrix_C_array = array(data=0.0, dim=c(nrow(transition_matrix_C1), ncol(transition_matrix_C), length(time_grid)))#
 #
@@ -3443,176 +3481,10 @@ simulation = simulate_tdsse2( Nstates = 4, #
                             coalescent=FALSE)#
 plot(simulation$tree); axisPhylo(); mtext(text="Millions of years ago (Ma)", side=1, line=2)#
 simulation$Ntransitions_A#
-simulation$Ntransitions_C#
-source("/GitHub/PhyBEARS.jl/simulator/castor_helper_functions_v1.R")#
+simulation$Ntransitions_C
+source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
 #
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)
-getwd()
-~/HD/GitHsource('~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R', chdir = TRUE)ub/PhyBEARS.jl/simulator/examples/ex1
-source('~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R', chdir = TRUE)
-wd
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
 setwd(wd)#
 #
 write_out_original_castor_simfiles(simulation, wd, fn="rawsim")
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-write_out_reordered_castor_simfiles(simulation3, wd)
-names(simulation)
-simulation
-# Helper functions for castor#
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
-#
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D")
-)
-?cladoRcpp
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(areas), include_null_range=TRUE)#
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
-rcpp_areas_list_to_states_list(
-)
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(areas), include_null_range=TRUE)
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-#
-# External inputs for making geography files etc.#
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
-#
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-#
-# External inputs for making geography files etc.#
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
-#
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-#
-# External inputs for making geography files etc.#
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
-write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B","C","D"), states_list=states_list)
-# Helper functions for castor#
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
-#
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)#
-#
-# External inputs for making geography files etc.#
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
-#
-# Reorder, and also write out the reordered files plus geography etc.#
-write_out_reordered_castor_simfiles(simulation, wd, area_names=c("A","B","C","D"), states_list=states_list)
-system(paste0("open ", wd))
-# Helper functions for castor#
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")#
-#
-wd = "/GitHub/PhyBEARS.jl/simulator/examples/ex1/"#
-setwd(wd)#
-#
-write_out_original_castor_simfiles(simulation, wd, fn="rawsim")#
-#
-# Remove the last tip from the simulation#
-simulation2 = remove_last_tip_from_simulation(simulation)#
-plot(simulation2$tree)#
-#
-# Write out files with tip 51 removed#
-write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")#
-#
-# Reorder to be more readable#
-# Write out A WHOLE BUNCH OF FILES, e.g. geography etc.#
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2)#
-#
-# External inputs for making geography files etc.#
-area_names = c("A","B","C","D")#
-states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)#
-#
-# Reorder, and also write out the reordered files plus geography etc.#
-write_out_reordered_castor_simfiles(simulation2, wd, area_names=c("A","B","C","D"), states_list=states_list)#
-#
-# Look at the files in Finder#
-system(paste0("open ", wd))
