@@ -1,0 +1,10 @@
+
+
+It errors out at 
+
+"Bounds error: attempt to access 86-element interpolate" on the uppass_ancstates_v12!
+
+
+I've been trying to find that error in the github
+but it happens with this one for example
+
