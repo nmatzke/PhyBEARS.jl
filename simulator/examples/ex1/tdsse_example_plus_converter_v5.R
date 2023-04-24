@@ -243,7 +243,7 @@ preorder = dorder[rev(order(dorder$nodenums)),]
 preorder
 
 # Remove the last tip from the simulation
-source('~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R', chdir = TRUE)
+source("~/HD/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 simulation3 = remove_last_tip_from_simulation(simulation2)
 plot(simulation3$tree)
 
