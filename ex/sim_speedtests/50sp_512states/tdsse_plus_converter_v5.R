@@ -9,7 +9,7 @@ library(castor)
 # Helper functions for castor
 source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-wd = "/Users/nmat471/HD/GitHub/PhyBEARS.jl/ex/sim_speedtests/50sp_1024states/"
+wd = "/Users/nmat471/HD/GitHub/PhyBEARS.jl/ex/sim_speedtests/50sp_512states/"
 setwd(wd)
 
 # Set the random number seed, to make it repeatable
@@ -24,7 +24,7 @@ set.seed(5423523)		# for 51 tips
 # Areas: A, B
 # States: null, A, B, AB
 
-area_names = c("A","B", "C", "D", "E", "F", "G", "H", "I", "J")
+area_names = c("A","B", "C", "D", "E", "F", "G")
 max_range_size = length(area_names)
 include_null_range = TRUE
 
