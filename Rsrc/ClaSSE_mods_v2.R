@@ -208,7 +208,8 @@ q31 = 0, q32 = 0)
 	if (k <= 9)
 		{
 		ijs_vector = unlist(sapply(X=Qij_txt, FUN=strsplit, split="", USE.NAMES=FALSE))
-		Qij_mat = matrix(as.numeric(ijs_vector), ncol=k, byrow=TRUE)
+		# 2023-06-17_ ncol=2, for ij, not k
+		Qij_mat = matrix(as.numeric(ijs_vector), ncol=2, byrow=TRUE)
 		Qij_mat
 		} else {
 		# Split by 2
@@ -281,7 +282,8 @@ q31 = 0, q32 = 0)
 	if (k <= 9)
 		{
 		ijks_vector = unlist(sapply(X=lambda_ijk_txt, FUN=strsplit, split="", USE.NAMES=FALSE))
-		lambda_ijk_mat = matrix(as.numeric(ijks_vector), ncol=k, byrow=TRUE)
+		# 2023-06-17: ncol = 3, for ijk, not 8 for 8 states!!
+		lambda_ijk_mat = matrix(as.numeric(ijks_vector), ncol=3, byrow=TRUE)
 		lambda_ijk_mat
 		} else {
 		# Split by 2
@@ -850,6 +852,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	# Get basic info from BioGeoBEARS res object:
 	include_null_range = res$inputs$include_null_range
 	numstates = ncol(res$ML_marginal_prob_each_state_at_branch_top_AT_node)
+	root_nodenum = length(tr$tip.label) + 1
 
 	
 	
@@ -864,6 +867,24 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	# Get the pieces of the birthdeath log-likelihood
 	bd_ape = bd_liks(tr, birthRate=birthRate, deathRate=deathRate)
 	
+
+	bgb1 = sum(log(res$computed_likelihoods_at_each_node[-root_nodenum]))
+	bgb2 = sum(log(res$computed_likelihoods_at_each_node))
+	BGB_lnL = bgb2
+	bgb_root_lnL = sum(log(res$computed_likelihoods_at_each_node[root_nodenum]))
+	equal_root_prob = log(1/numstates)
+	equal_root_prob2 = log(1/(numstates-include_null_range)) 
+
+	bggb_plus_Yule = bgb2 + bd_ape$lnL
+	bggb_plus_Yule_minus_root = bgb1 + bd_ape$lnL
+	bggb_plus_Yule_minus_root_topology = bgb1 + bd_ape$lnL - bd_ape$lnl_topology
+
+	# Matches classe branch_lnL
+	bggb_plus_Yule_1br_minus_root_topology = bgb1 + bd_ape$lnL - bd_ape$lnl_topology + 1-log(1/birthRate)
+	classe_branch_lnL = bggb_plus_Yule_1br_minus_root_topology
+
+
+
 	
 	# B. Let's start by summing the BioGeoBEARS likelihoods
 	# but exclude the root node.
@@ -1557,10 +1578,12 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	bggb_plus_Yule = bgb2 + bd_ape$lnL
 	bggb_plus_Yule_minus_root = bgb1 + bd_ape$lnL
 	bggb_plus_Yule_minus_root_topology = bgb1 + bd_ape$lnL - bd_ape$lnl_topology
-
+	Julia_sum_lq = bggb_plus_Yule_minus_root_topology
+	
 	# Matches classe branch_lnL
 	bggb_plus_Yule_1br_minus_root_topology = bgb1 + bd_ape$lnL - bd_ape$lnl_topology + 1-log(1/birthRate)
 	classe_branch_lnL = bggb_plus_Yule_1br_minus_root_topology
+	one_minus_lnBirthRate = 1-log(1/birthRate)
 
 	# res1 match
 	res1_bgb_classe = bgb2 + bd_ape$lnL - bd_ape$lnl_topology + 1-log(1/birthRate) - bgb_root_lnL +  log(sum(d_root_orig_BGB*d_root_orig_BGB/sum(d_root_orig_BGB)))
@@ -1604,15 +1627,15 @@ DECj_converted_lnLs - DEC_converted_lnLs
 
 	
 	# Assemble results
-	resmat = rbind(BGB_lnL, bggb_plus_Yule, bggb_plus_Yule_minus_root, bggb_plus_Yule_minus_root_topology, bggb_plus_Yule_1br_minus_root_topology, classe_branch_lnL, res1_bgb_classe, res2_bgb_classe, res3_bgb_classe, res5_bgb_classe, res1t_bgb_classe, res2t_bgb_classe, res3t_bgb_classe, res5t_bgb_classe)
+	resmat = rbind(BGB_lnL, bggb_plus_Yule, bggb_plus_Yule_minus_root, bggb_plus_Yule_minus_root_topology, Julia_sum_lq, one_minus_lnBirthRate, bggb_plus_Yule_1br_minus_root_topology, classe_branch_lnL, res1_bgb_classe, res2_bgb_classe, res3_bgb_classe, res5_bgb_classe, res1t_bgb_classe, res2t_bgb_classe, res3t_bgb_classe, res5t_bgb_classe)
 	converted_lnLs = adf(resmat)
 
-	row_names = c("BGB_lnL", "bggb_plus_Yule", "bggb_plus_Yule_minus_root", "bggb_plus_Yule_minus_root_topology", "bggb_plus_Yule_1br_minus_root_topology", "classe_branch_lnL", "res1", "res2", "res3", "res5", "res1t", "res2t", "res3t", "res5t")
+	row_names = c("BGB_lnL", "bggb_plus_Yule", "bggb_plus_Yule_minus_root", "bggb_plus_Yule_minus_root_topology", "Julia_sum_lq", "one_minus_lnBirthRate", "bggb_plus_Yule_1br_minus_root_topology", "classe_branch_lnL", "res1", "res2", "res3", "res5", "res1t", "res2t", "res3t", "res5t")
 	colnames(converted_lnLs) = "lnL"
 	row.names(converted_lnLs) = row_names
 	converted_lnLs
 	return(converted_lnLs)
-	} # END convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
+	} # END convert_BGB_to_BGB_Yule_SFs <- function(res, tr=NULL)
 
 
 
