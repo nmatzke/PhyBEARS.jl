@@ -281,7 +281,7 @@ bmo.est
 bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows);
 bmo.est
 
-max_range_size = NaN # replaces any background max_range_size=1
+max_range_size = 3 # replaces any background max_range_size=1
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
 max_range_size = NaN # replaces any background max_range_size=1
 global inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
