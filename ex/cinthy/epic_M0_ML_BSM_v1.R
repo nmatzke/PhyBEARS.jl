@@ -1,7 +1,7 @@
-library(ape)
 library(optimx)   # optimx seems better than R's default optim()
 library(GenSA)    # GenSA seems better than optimx (but slower) on 5+ parameters, 
                   # seems to sometimes fail on simple problems (2-3 parameters)
+library(FD)       # for FD::maxent() (make sure this is up-to-date)
 library(snow)     # (if you want to use multicore functionality; some systems/R versions prefer library(parallel), try either)
 library(parallel)
 
@@ -62,7 +62,7 @@ library(BioGeoBEARS)
 # Set your working directory for output files
 # default here is your home directory ("~")
 # Change this as you like
-wd = "/GitHub/PhyBEARS.jl/ex/cinthy/"
+wd = "~/GitHub/PhyBEARS.jl/ex/cinthy/"
 setwd(wd)
 
 # Double-check your working directory with getwd()
@@ -118,13 +118,16 @@ list.files(extdata_dir)
 #    your branchlengths to get them into reasonable units.
 # 6. DON'T USE SPACES IN SPECIES NAMES, USE E.G. "_"
 #######################################################
-# This is the example Newick file for Epacridoideae
+# This is the example Newick file for Hawaiian Psychotria
 # (from Ree & Smith 2008)
 # "trfn" = "tree file name"
 trfn = "tree.newick"
 
 # Look at the raw Newick file:
 moref(trfn)
+
+# Tip labels
+cat(sort(tr$tip.label), sep="\n")
 
 # Look at your phylogeny (plots to a PDF, which avoids issues with multiple graphics in same window):
 pdffn = "tree.pdf"
@@ -139,11 +142,6 @@ axisPhylo() # plots timescale
 dev.off()
 cmdstr = paste0("open ", pdffn)
 system(cmdstr)
-
-
-# Tip labels
-cat(sort(tr$tip.label), sep="\n")
-
 
 #######################################################
 # Geography file
@@ -188,7 +186,7 @@ cat(sort(tr$tip.label), sep="\n")
 #    data indicates they are the same genetic population.
 ######################################################
 
-# This is the example geography file for Epacridoideae
+# This is the example geography file for Hawaiian Psychotria
 # (from Ree & Smith 2008)
 geogfn = "geog.data"
 
@@ -354,7 +352,7 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
 runslow = FALSE
-resfn = "Epacridoideae_DEC_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_DEC_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -435,7 +433,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Epacridoideae_DEC+J_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_DEC+J_M0_unconstrained_v1.Rdata"
 runslow = FALSE
 if (runslow)
     {
@@ -456,13 +454,13 @@ if (runslow)
 #######################################################
 # PDF plots
 #######################################################
-pdffn = "Epacridoideae_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"
+pdffn = "Psychotria_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=18, width=9)
 
 #######################################################
 # Plot ancestral states - DEC
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DEC on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resDEC
@@ -477,7 +475,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DECJ
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC+J on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DEC+J on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resDECj
@@ -584,7 +582,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = FALSE
-resfn = "Epacridoideae_DIVALIKE_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_DIVALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -684,7 +682,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 1.9999
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Epacridoideae_DIVALIKE+J_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_DIVALIKE+J_M0_unconstrained_v1.Rdata"
 runslow = FALSE
 if (runslow)
     {
@@ -702,13 +700,13 @@ if (runslow)
     resDIVALIKEj = res
     }
 
-pdffn = "Epacridoideae_DIVALIKE_vs_DIVALIKE+J_M0_unconstrained_v1.pdf"
+pdffn = "Psychotria_DIVALIKE_vs_DIVALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=18, width=9)
 
 #######################################################
 # Plot ancestral states - DIVALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DIVALIKE on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resDIVALIKE
@@ -723,7 +721,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DIVALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resDIVALIKEj
@@ -853,7 +851,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = FALSE
-resfn = "Epacridoideae_BAYAREALIKE_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_BAYAREALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -972,7 +970,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 0.9999
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Epacridoideae_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
+resfn = "Psychotria_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
 runslow = FALSE
 if (runslow)
     {
@@ -988,13 +986,13 @@ if (runslow)
     resBAYAREALIKEj = res
     }
 
-pdffn = "Epacridoideae_BAYAREALIKE_vs_BAYAREALIKE+J_M0_unconstrained_v1.pdf"
+pdffn = "Psychotria_BAYAREALIKE_vs_BAYAREALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=18, width=9)
 
 #######################################################
 # Plot ancestral states - BAYAREALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resBAYAREALIKE
@@ -1009,7 +1007,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - BAYAREALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Epacridoideae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Psychotria M0_unconstrained"
 
 # Setup
 results_object = resBAYAREALIKEj
@@ -1203,10 +1201,10 @@ write.table(conditional_format_table(restable_AICc_rellike), file="restable_AICc
 model_name = "DECj"
 res = resDECj
 
-pdffn = paste0("Epacridoideae_", model_name, "_v1.pdf")
+pdffn = paste0("Psychotria_", model_name, "_v1.pdf")
 pdf(pdffn, height=18, width=9)
 
-analysis_titletxt = paste0(model_name, " on Epacridoideae")
+analysis_titletxt = paste0(model_name, " on Psychotria")
 
 # Setup
 results_object = res
@@ -1257,13 +1255,12 @@ stochastic_mapping_inputs_list$COO_weights_columnar
 stochastic_mapping_inputs_list$unconstr
 set.seed(seed=as.numeric(Sys.time()))
 
-nummaps_goal = 500
 runBSMslow = TRUE
-if (runBSMslow == FALSE)
+if (runBSMslow == TRUE)
     {
     # Saves to: RES_clado_events_tables.Rdata
     # Saves to: RES_ana_events_tables.Rdata
-    BSM_output = runBSM(res, stochastic_mapping_inputs_list=stochastic_mapping_inputs_list, maxnum_maps_to_try=100, nummaps_goal=nummaps_goal, maxtries_per_branch=40000, save_after_every_try=TRUE, savedir=getwd(), seedval=12345, wait_before_save=0.01)
+    BSM_output = runBSM(res, stochastic_mapping_inputs_list=stochastic_mapping_inputs_list, maxnum_maps_to_try=100, nummaps_goal=50, maxtries_per_branch=40000, save_after_every_try=TRUE, savedir=getwd(), seedval=12345, wait_before_save=0.01)
 
     RES_clado_events_tables = BSM_output$RES_clado_events_tables
     RES_ana_events_tables = BSM_output$RES_ana_events_tables
@@ -1277,7 +1274,7 @@ if (runBSMslow == FALSE)
     BSM_output = NULL
     BSM_output$RES_clado_events_tables = RES_clado_events_tables
     BSM_output$RES_ana_events_tables = RES_ana_events_tables
-    } # END if (runBSMslow == FALSE)
+    } # END if (runBSMslow == TRUE)
 
 # Extract BSM output
 clado_events_tables = BSM_output$RES_clado_events_tables
@@ -1355,7 +1352,7 @@ stratified = stratified
 pdffn = paste0(model_name, "_", length(clado_events_tables), "BSMs_v1.pdf")
 pdf(pdffn, height=18, width=9)
 
-nummaps_goal = 10
+nummaps_goal = 50
 for (i in 1:nummaps_goal)
     {
     clado_events_table = clado_events_tables[[i]]
@@ -1451,20 +1448,10 @@ check_ML_vs_BSM(res, clado_events_tables, model_name, tr=NULL, plot_each_node=FA
 #######################################################
 library(diversitree)
 sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
-
-# Calculate the birthRate and deathRate from the outputs
-BD =  birthdeath(tr)
-x1 = unname(BD$para["d/b"])
-x2 = unname(BD$para["b-d"])
-deathRate = (x2*x1) / (1-x1)
-birthRate = deathRate+x2
-c(birthRate, deathRate)
-
-bd_liks(tr, birthRate=birthRate, deathRate=deathRate)
-
-
 resdf = convert_BGB_lnL_to_ClaSSE(res, tr=tr, root_probs_biased=NULL)
 resdf
+
+
 
 converted_lnLs = convert_BGB_to_BGB_Yule_SFs(res, tr=tr)
 converted_lnLs

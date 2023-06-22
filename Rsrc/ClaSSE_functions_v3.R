@@ -93,7 +93,7 @@
 # rootfunc <- diversitree:::rootfunc.classe
 # 
 # 
-# f.pars <- make.pars.classe(k)
+# f.pars <- diversitree:::make.pars.classe(k)
 # 
 
 # diversitree/R/util.R
@@ -120,12 +120,10 @@ bisse_2areas_default <- function(pars, condition.surv=TRUE, root=ROOT.OBS, root.
 
 
 # Get total LnL and branch LnL from ClaSSE output
-get_classe_LnLs <- function(classe_res, root_nodenum)
+get_classe_LnLs <- function(classe_res)
 	{
-	lq = attr(classe_res, "intermediates")$lq
 	
-	
-	branch_LnL = sum(lq)
+	branch_LnL = sum(attr(classe_res, "intermediates")$lq)
 	ttl_LnL = classe_res
 	attributes(ttl_LnL) = NULL
 	
@@ -150,14 +148,13 @@ classe_2areas <- function(pars, condition.surv = TRUE, root = ROOT.OBS, root.p =
 
 
 
-# f.pars <- make.pars.classe(k)
-f.pars <- function(pars)
+# f.pars <- diversitree:::make.pars.classe(k)
+f.pars <- function(pars, k)
 	{
-	k = sum(grepl(pattern="mu", x=names(classe_params)))
-	check.pars.classe(pars, k)
-	qmat[idx.qmat] <- pars[idx.q]
-	diag(qmat) <- -rowSums(qmat)
-	c(pars[idx.lm], qmat)
+    check.pars.classe(pars, k)
+    qmat[idx.qmat] <- pars[idx.q]
+    diag(qmat) <- -rowSums(qmat)
+    c(pars[idx.lm], qmat)
 	}
 
 # diversitree:::check.pars.classe
@@ -186,7 +183,7 @@ check.pars.nonnegative <- function(pars, npar)
 #all.branches <- diversitree:::make.all.branches.dtlik(cache, control, initial.conditions)
 all.branches <- function(pars, intermediates, preset = NULL)
 	{
-	branches <- make.branches.dtlik(cache$info, control)
+	branches <- diversitree:::make.branches.dtlik(cache$info, control)
 	all.branches.matrix(pars, cache, initial.conditions, branches, preset)
 	}
 
@@ -275,7 +272,7 @@ make.bisse <- function(tree, states, unresolved=NULL, sampling.f=NULL, nt.extra=
 	{
 	cache <- diversitree:::make.cache.bisse(tree, states, unresolved, sampling.f, nt.extra, strict)
 	unresolved <- cache$unresolved
-	all.branches <- make.all.branches.dtlik(cache, control, diversitree:::initial.conditions.bisse)
+	all.branches <- diversitree:::make.all.branches.dtlik(cache, control, diversitree:::initial.conditions.bisse)
 	rootfunc <- rootfunc.musse
 	ll <- function(pars, condition.surv = TRUE, root = ROOT.OBS, root.p = NULL, intermediates = FALSE)
 		{
@@ -390,48 +387,18 @@ root.p.calc <- function(vals, pars, root, root.p=NULL, root.equi=NULL)
 	}
 
 
-make.cache.classe <- function(tree, states, k, sampling.f = NULL, strict = TRUE) 
-	{
-	if (k > 31) 
-		stop("No more than 31 states allowed.  Increase in classe-eqs.c.")
-	cache <- make.cache.musse(tree, states, k, sampling.f, strict)
-	cache$info <- make.info.classe(k, tree)
-	cache
-	}
 
-
-make.initial.conditions.classe <- function(n) 
-	{
-	nseq <- seq_len(n)
-	lam.idx <- matrix(seq_len(n * n * (n + 1)/2), byrow = TRUE, nrow = n)
-	idxD <- (n + 1):(2 * n)
-	j <- rep(nseq, times = seq(n, 1, -1))
-	k <- unlist(lapply(1:n, function(i) nseq[i:n]))
-	d <- rep(NA, n)
-	initial.conditions.classe <- function(init, pars, t, is.root = FALSE)
-		{
-		e <- init[nseq, 1]
-		DM <- init[idxD, 1]
-		DN <- init[idxD, 2]
-		DM.DN <- 0.5 * (DM[j] * DN[k] + DM[k] * DN[j])
-		for (i in nseq)
-			{
-			d[i] <- sum(pars[lam.idx[i, ]] * DM.DN)
-			}
-		c(e, d)
-		}
-	}
 
 
 
 make.classe <- function(tree, states, k, sampling.f=NULL, strict=TRUE, control=list())
 	{
 	## Note that this uses MuSSE's cache...
-	cache <- make.cache.classe(tree, states, k, sampling.f, strict)
-	initial.conditions <- make.initial.conditions.classe(k)
-	all.branches <- make.all.branches.dtlik(cache, control, initial.conditions)
-	rootfunc <- rootfunc.classe
-	f.pars <- make.pars.classe(k)
+	cache <- diversitree:::make.cache.classe(tree, states, k, sampling.f, strict)
+	initial.conditions <- diversitree:::make.initial.conditions.classe(k)
+	all.branches <- diversitree:::make.all.branches.dtlik(cache, control, initial.conditions)
+	rootfunc <- diversitree:::rootfunc.classe
+	f.pars <- diversitree:::make.pars.classe(k)
 
 	ll <- function(pars, condition.surv=TRUE, root=ROOT.OBS, root.p=NULL, intermediates=FALSE)
 		{
@@ -661,7 +628,7 @@ make.branches.dtlik <- function(info, control)
     ode <- diversitree:::make.ode(info, control)
     branches <- function(y, len, pars, t0, idx) 
     	{
-    	ode(vars=y, times=c(t0, t0 + len), pars=pars)
+    	ode(vars=y, times=c(t0, t0 + len), pars=pars2)
     	}
     make.branches.comp(branches, comp.idx, eps)
 	}
@@ -875,7 +842,7 @@ make.branches.comp <- function(branches, comp.idx, eps = 0)
 
 # f.pars <- make.pars.classe(k)
 
-# make.pars.classe
+# diversitree:::make.pars.classe
 # k = # of states
 
 # Make a function that returns the 
