@@ -144,15 +144,26 @@ Es_interpolator(1.0)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
+Julia_total_lnLs1 + log(1/birthRate)
+Julia_total_lnLs1 - log(1/birthRate)
+Julia_total_lnLs1 + log(1/(1-birthRate))
+Julia_total_lnLs1 - log(1/(1-birthRate))
+Julia_total_lnLs1 + (1-log(1/birthRate))
+Julia_total_lnLs1 - (1-log(1/birthRate))
+Julia_total_lnLs1 + 1-log(1/birthRate)
+Julia_total_lnLs1 - 1-log(1/birthRate)
+DECj_R_result_total_LnLs1t
+
 Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
+
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
