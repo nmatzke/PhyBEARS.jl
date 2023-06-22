@@ -35,8 +35,8 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 """
 # 
 # """
@@ -73,10 +73,10 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -120.1545;
 
 # DEC+J
-DECj_lnL = −74.70;
-DECj_R_result_branch_lnL = -385.80976;
-DECj_R_result_total_LnLs1 = -390.18588;  # res1
-DECj_R_result_total_LnLs1t = -388.02982; # res1t
+DECj_lnL = -71.951005;										# BGB_lnL
+DECj_R_result_branch_lnL = -383.065520;		# Julia_sum_lq or bggb_plus_Yule_minus_root_topology
+DECj_R_result_total_LnLs1 = -385.102712;		# res1
+DECj_R_result_total_LnLs1t = -382.946649;	# res1t
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
 
 #######################################################
@@ -100,13 +100,13 @@ tr = readTopology(trfn)
 
 # DEC model on Hawaiian Epacridoideae
 bmo = construct_BioGeoBEARS_model_object()
-birthRate = 0.11578
+birthRate = 0.1157795
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 7.260439e-04
+bmo.est[bmo.rownames .== "d"] .= 0.0007341845
 bmo.est[bmo.rownames .== "e"] .= 1.000000e-12 
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 5.775812e-02
+bmo.est[bmo.rownames .== "j"] .= 0.05320481
 bmo.type[bmo.rownames .== "j"] .= "free"
 numareas = 3
 n = 8            # 3 areas, 8 states

@@ -19,9 +19,10 @@ library(rexpokit)
 library(cladoRcpp)
 library(BioGeoBEARS)
 
-source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")  # utility functions from diversitree
-source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R") # assisting functions for ClaSSE models
-source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_pureR_v1.R") # simple implementations in plain-R
+sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
+# ClaSSE_functions_v3.R		# utility functions from diversitree
+# ClaSSE_mods_v2.R"  			# assisting functions for ClaSSE models
+# ClaSSE_pureR_v1.R"			# simple implementations in plain-R
 
 
 # Load simple example tree
