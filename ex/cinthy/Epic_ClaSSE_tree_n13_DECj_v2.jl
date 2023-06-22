@@ -35,8 +35,8 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 """
 # 
 # """
@@ -73,10 +73,10 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -120.1545;
 
 # DEC+J
-DECj_lnL = −74.70;
-DECj_R_result_branch_lnL = -385.80976;
-DECj_R_result_total_LnLs1 = -390.18588;  # res1
-DECj_R_result_total_LnLs1t = -388.02982; # res1t
+DECj_lnL = -71.951005;										# BGB_lnL
+DECj_R_result_branch_lnL = -383.065520;		# Julia_sum_lq or bggb_plus_Yule_minus_root_topology
+DECj_R_result_total_LnLs1 = -385.102712;		# res1
+DECj_R_result_total_LnLs1t = -382.946649;	# res1t
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
 
 #######################################################
@@ -100,13 +100,13 @@ tr = readTopology(trfn)
 
 # DEC model on Hawaiian Epacridoideae
 bmo = construct_BioGeoBEARS_model_object()
-birthRate = 0.11578
+birthRate = 0.1157795
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 7.260439e-04
+bmo.est[bmo.rownames .== "d"] .= 0.0007341845
 bmo.est[bmo.rownames .== "e"] .= 1.000000e-12 
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 5.775812e-02
+bmo.est[bmo.rownames .== "j"] .= 0.05320481
 bmo.type[bmo.rownames .== "j"] .= "free"
 numareas = 3
 n = 8            # 3 areas, 8 states
@@ -144,15 +144,26 @@ Es_interpolator(1.0)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
+Julia_total_lnLs1 + log(1/birthRate)
+Julia_total_lnLs1 - log(1/birthRate)
+Julia_total_lnLs1 + log(1/(1-birthRate))
+Julia_total_lnLs1 - log(1/(1-birthRate))
+Julia_total_lnLs1 + (1-log(1/birthRate))
+Julia_total_lnLs1 - (1-log(1/birthRate))
+Julia_total_lnLs1 + 1-log(1/birthRate)
+Julia_total_lnLs1 - 1-log(1/birthRate)
+DECj_R_result_total_LnLs1t
+
 Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
+
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 

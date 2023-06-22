@@ -123,7 +123,31 @@ bd_liks <- function(tr, birthRate=1.0, deathRate=0.0)
 
 
 # Get total LnL and branch LnL from ClaSSE output
-get_classe_LnLs <- function(classe_res)
+# 2023-06-22_NJM note:
+# After a diverstiree update today, sum(lq) started giving
+# the ttl_lnL, rather than the sum(branch_lnL).
+# They may have changed something in the internal calculations.
+# The fix is " - lq[root_nodenum]" inserted here, then doing 
+# the root state lnLs as before.
+get_classe_LnLs <- function(classe_res, root_nodenum=NULL)
+	{
+	lq = attr(classe_res, "intermediates")$lq
+
+	if (is.null(root_nodenum) == TRUE)
+		{
+		root_nodenum = 1+ ceiling(length(lq) / 2)
+		}
+	
+	branch_LnL = sum(lq) - lq[root_nodenum]
+	#ttl_LnL = classe_res
+	ttl_LnL = classe_res - lq[root_nodenum]
+	attributes(ttl_LnL) = NULL
+	
+	return(c(ttl_LnL, branch_LnL))
+	}
+
+
+get_classe_LnLs_OLD <- function(classe_res)
 	{
 	
 	branch_LnL = sum(attr(classe_res, "intermediates")$lq)
@@ -837,6 +861,8 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 		cat("\n\n")
 		stop(txt)
 		} # END if (is.ultrametric(tr) == FALSE)
+
+	trtable = prt(tr, get_tipnames=TRUE)
 	
 	
 	#######################################################
@@ -1567,7 +1593,11 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	bd_ape$lnl_numtips_wOneMinusDeathRate
 	bd_ape$lnl_branching_times
 	bd_ape$lnL
-
+	
+	
+	root_nodenum = length(tr$tip.label) + 1
+	d_root_orig_BGB = res$ML_marginal_prob_each_state_at_branch_top_AT_node[root_nodenum,]
+	
 	bgb1 = sum(log(res$computed_likelihoods_at_each_node[-root_nodenum]))
 	bgb2 = sum(log(res$computed_likelihoods_at_each_node))
 	BGB_lnL = bgb2
