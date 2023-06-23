@@ -123,7 +123,6 @@ bd_liks <- function(tr, birthRate=1.0, deathRate=0.0)
 
 
 # Get total LnL and branch LnL from ClaSSE output
-<<<<<<< HEAD
 # 2023-06-22_NJM note:
 # After a diverstiree update today, sum(lq) started giving
 # the ttl_lnL, rather than the sum(branch_lnL).
@@ -150,11 +149,7 @@ get_classe_LnLs <- function(classe_res, root_nodenum=NULL)
 
 
 get_classe_LnLs_OLD <- function(classe_res)
-=======
-get_classe_LnLs <- function(classe_res)
->>>>>>> 755632b9ac9b736718b46eec1dfedaf9293a7f7b
 	{
-	
 	branch_LnL = sum(attr(classe_res, "intermediates")$lq)
 	ttl_LnL = classe_res
 	attributes(ttl_LnL) = NULL
@@ -890,7 +885,6 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 		cat("\n\n")
 		stop(txt)
 		} # END if (is.ultrametric(tr) == FALSE)
-<<<<<<< HEAD
 
 	# Error trap: tree must be binary
 	if (is.binary(tr) == FALSE)
@@ -905,9 +899,6 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 
 
 	trtable = prt(tr, get_tipnames=TRUE)
-=======
->>>>>>> 755632b9ac9b736718b46eec1dfedaf9293a7f7b
-	
 	
 	#######################################################
 	# Matching diversitree and BioGeoBEARS
@@ -1638,6 +1629,9 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	bd_ape$lnl_numtips_wOneMinusDeathRate
 	bd_ape$lnl_branching_times
 	bd_ape$lnL
+
+	root_nodenum = length(tr$tip.label) + 1
+	d_root_orig_BGB = res$ML_marginal_prob_each_state_at_branch_top_AT_node[root_nodenum,]
 
 	bgb1 = sum(log(res$computed_likelihoods_at_each_node[-root_nodenum]))
 	bgb2 = sum(log(res$computed_likelihoods_at_each_node))
