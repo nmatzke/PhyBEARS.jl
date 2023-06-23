@@ -399,6 +399,411 @@ make.cache.classe <- function(tree, states, k, sampling.f = NULL, strict = TRUE)
 	cache
 	}
 
+#diversitree:::make.cache.musse
+make.cache.musse <- function(tree, states, k, sampling.f = NULL, strict = TRUE) 
+	{
+	tree <- check.tree(tree)
+	states <- check.states(tree, states, strict = strict, strict.vals = 1:k)
+	cache <- make.cache(tree)
+	cache$info <- make.info.musse(k, tree)
+	cache$states <- states
+	cache$sampling.f <- check.sampling.f(sampling.f, k)
+	cache$y <- initial.tip.xxsse(cache)
+	cache
+	}
+
+
+
+#diversitree:::check.tree
+check.tree <- function(tree, ultrametric = TRUE, bifurcating = TRUE, node.labels = FALSE) 
+	{
+	if (!inherits(tree, "phylo")) 
+			stop("'tree' must be a valid phylo tree")
+	if (ultrametric && !is.ultrametric(tree)) 
+			stop("'tree' must be ultrametric")
+	if (any(tree$edge.length < 0)) 
+			stop("Negative branch lengths in tree")
+	if (bifurcating && (!is.binary(tree) || any(tabulate(tree$edge[, 
+			1]) == 1))) 
+			stop("'tree must be bifurcating (no polytomies or unbranched nodes)'")
+	if (any(duplicated(tree$tip.label))) 
+			stop("Tree contains duplicated tip labels")
+	if (node.labels)
+		{
+		if (is.null(tree$node.label))
+			{
+			tree$node.label <- sprintf("nd%d", seq_len(tree$Nnode))
+			}
+		else if (any(duplicated(tree$node.label)))
+			{
+			stop("Tree contains duplicated node labels")
+			}
+		}
+	return(tree)
+	} # END check.tree <- function(tree, ultrametric = TRUE, bifurcating = TRUE, node.labels = FALSE) 
+
+
+#diversitree:::check.states
+check.states <- function(tree, states, allow.unnamed=FALSE, strict=FALSE, strict.vals=NULL, as.integer=TRUE) 
+	{
+	if (is.matrix(states))
+		{
+			if (inherits(tree, "clade.tree")) 
+					stop("Clade trees won't work with multistate tips yet")
+			n <- rowSums(states > 0)
+			if (any(n == 0)) 
+					stop(sprintf("No state found for taxa: %s", paste(names(n)[n == 
+							0], collapse = ", ")))
+			i.mono <- which(n == 1)
+			i.mult <- which(n > 1)
+			tmp <- diversitree:::matrix.to.list(states)
+			names(tmp) <- rownames(states)
+			states.mult <- lapply(tmp[i.mult], as.numeric)
+			states <- rep(NA, length(tmp))
+			names(states) <- names(tmp)
+			states[i.mono] <- sapply(tmp[i.mono], function(x) which(x != 
+					0))
+			attr(states, "multistate") <- list(i = i.mult, states = states.mult)
+		} # END if (is.matrix(states))
+
+	if (is.null(names(states)))
+		{
+		if (allow.unnamed)
+			{
+			if (length(states) == length(tree$tip.label))
+				{
+				names(states) <- tree$tip.label
+				warning("Assuming states are in tree$tip.label order")
+				} else {
+				stop(sprintf("Invalid states length (expected %d)", length(tree$tip.label)))
+				}
+		} else {
+		stop("The states vector must contain names")
+		}
+	} # END if (is.null(names(states)))
+
+	if (!all(tree$tip.label %in% names(states))) 
+		stop("Not all species have state information")
+	
+	
+	if (!is.null(strict.vals))
+		{
+		if (isTRUE(all.equal(strict.vals, 0:1))) 
+				if (is.logical(states)) 
+						states[] <- as.integer(states)
+		if (strict)
+			{
+			if (!isTRUE(all.equal(sort(strict.vals), sort(unique(na.omit(states)))))) 
+					stop("Because strict state checking requested, all (and only) ", 
+						sprintf("states in %s are allowed", paste(strict.vals, 
+							collapse = ", ")))
+			} else {
+			extra <- setdiff(sort(unique(na.omit(states))), strict.vals)
+			if (length(extra) > 0) 
+					stop(sprintf("Unknown states %s not allowed in states vector", paste(extra, collapse = ", ")))
+			}
+		if (as.integer && any(!is.na(states))) 
+				states <- check.integer(states)
+		} # END if (!is.null(strict.vals))
+
+	if (inherits(tree, "clade.tree"))
+		{
+		spp.clades <- unlist(tree$clades)
+		if (!all(spp.clades %in% names(states))) 
+				stop("Species in 'clades' do not have states information")
+		states[union(tree$tip.label, spp.clades)]
+		} else {
+		ret <- states[tree$tip.label]
+		attr(ret, "multistate") <- attr(states, "multistate")
+		ret
+		} # END if (inherits(tree, "clade.tree"))
+	} # END check.states <- function(tree, states, allow.unnamed=FALSE, strict=FALSE, strict.vals=NULL, as.integer=TRUE) 
+
+
+
+#diversitree:::check.integer
+check.integer <- function(x) 
+	{
+	if (is.null(x)) 
+		stop("NULL argument for ", deparse(substitute(x)))
+	nna <- !is.na(x)
+	if (length(x) > 0 && !any(nna)) 
+		stop("No non-NA values for ", deparse(substitute(x)))
+	if (length(x) && max(abs(x[nna] - round(x[nna]))) > 1e-08) 
+		stop("Non-integer argument for ", deparse(substitute(x)))
+	storage.mode(x) <- "integer"
+	return(x)
+	} # END check.integer <- function(x) 
+
+
+
+
+
+#diversitree:::make.cache
+make.cache <- function (tree) 
+	{
+	if (inherits(tree, "phylo")) 
+			class(tree) <- "phylo"
+	edge <- tree$edge
+	edge.length <- tree$edge.length
+	idx <- seq_len(max(edge))
+	n.tip <- length(tree$tip.label)
+	tips <- seq_len(n.tip)
+	root <- n.tip + 1
+	is.tip <- idx <= n.tip
+	children <- get.children(edge, n.tip)
+	parent <- edge[match(idx, edge[, 2]), 1]
+	order <- get.ordering(children, is.tip, root)
+	len <- edge.length[match(idx, edge[, 2])]
+	height <- branching.heights(tree)
+	depth <- max(height) - height
+	depth2 <- branching.depth(len, children, order, tips)
+	i <- abs(depth - depth2) < 1e-08
+	depth[i] <- depth2[i]
+	if (is.ultrametric(tree)) 
+			depth[tips] <- 0
+	anc <- vector("list", max(order))
+	for (i in c(rev(order[-length(order)]), tips)) anc[[i]] <- c(parent[i], 
+			anc[[parent[i]]])
+	ans <- list(tip.label = tree$tip.label, node.label = tree$node.label, 
+			len = len, children = children, parent = parent, order = order, 
+			root = root, n.tip = n.tip, n.node = tree$Nnode, tips = tips, 
+			height = height, depth = depth, ancestors = anc, edge = edge, 
+			edge.length = edge.length)
+	ans
+	} # END make.cache <- function (tree) 
+
+
+#diversitree:::get.children
+get.children <- function(edge, n.tip) 
+	{
+	x <- as.integer(edge[, 1])
+	levels <- as.integer((n.tip + 1):max(edge[, 1]))
+	f <- match(x, levels)
+	levels(f) <- as.character(levels)
+	class(f) <- "factor"
+	children <- split(edge[, 2], f)
+	names(children) <- NULL
+	if (!all(unlist(lapply(children, length)) == 2)) 
+			stop("Multifircations/unbranched nodes in tree - best get rid of them")
+	rbind(matrix(NA, n.tip, 2), t(matrix(unlist(children), 2)))
+	} # END get.children <- function(edge, n.tip) 
+
+# diversitree:::get.ordering
+get.ordering <- function(children, is.tip, root) 
+	{
+	todo <- list(root)
+	i <- root
+	repeat
+		{
+		kids <- children[i, ]
+		i <- kids[!is.tip[kids]]
+		if (length(i) > 0) 
+			todo <- c(todo, list(i))
+		else break
+		}
+	as.vector(unlist(rev(todo)))
+	} # END get.ordering <- function(children, is.tip, root) 
+
+# diversitree:::branching.heights
+branching.heights <- function(phy) 
+	{
+	if (!inherits(phy, "phylo")) 
+			stop("object \"phy\" is not of class \"phylo\"")
+	phy <- reorder(phy, "cladewise")
+	edge <- phy$edge
+	n.node <- phy$Nnode
+	n.tip <- length(phy$tip.label)
+	ht <- numeric(n.node + n.tip)
+	for (i in seq_len(nrow(edge))) ht[edge[i, 2]] <- ht[edge[i,1]] + phy$edge.length[i]
+	names.node <- phy$node.label
+	if (is.null(names.node)) 
+			names.node <- (n.tip + 1):(n.tip + n.node)
+	names(ht) <- c(phy$tip.label, names.node)
+	ht
+	} # END branching.heights <- function(phy) 
+
+
+
+# diversitree:::branching.depth
+branching.depth <- function(len, children, order, tips) 
+	{
+	depth <- numeric(nrow(children))
+	depth[tips] <- 0
+	for (i in order) depth[i] <- depth[children[i, 1]] + len[children[i,1]]
+	depth
+	} # END branching.depth <- function(len, children, order, tips) 
+
+
+
+
+# diversitree:::make.info.musse
+make.info.musse <- function(k, phy) 
+	{
+	list(name = "musse", name.pretty = "MuSSE", np = as.integer(k * 
+			(k + 2)), argnames = default.argnames.musse(k), ny = as.integer(2 * 
+			k), k = as.integer(k), idx.e = as.integer(1:k), idx.d = as.integer((k + 
+			1):(2 * k)), derivs = derivs.musse, phy = phy, ml.default = "subplex", 
+			mcmc.lowerzero = TRUE, doc = NULL, reference = c("FitzJohn (submitted)"))
+	} # END make.info.musse <- function(k, phy) 
+
+
+# diversitree:::make.info.classe
+make.info.classe <- function(k, phy) 
+	{
+	list(name = "classe", name.pretty = "ClaSSE", np = as.integer((k + 
+		3) * k * k/2 + k), argnames = default.argnames.classe(k), 
+		ny = as.integer(2 * k), k = as.integer(k), idx.e = as.integer(1:k), 
+		idx.d = as.integer((k + 1):(2 * k)), derivs = derivs.classe, 
+		phy = phy, ml.default = "subplex", mcmc.lowerzero = TRUE, 
+		doc = NULL, reference = c("Goldberg (submitted)"))
+	} # END make.info.classe <- function(k, phy) 
+
+
+
+# diversitree:::default.argnames.musse
+default.argnames.musse <- function(k) 
+	{
+	fmt <- sprintf("%%0%dd", ceiling(log10(k + 0.5)))
+	str <- sprintf(fmt, 1:k)
+	c(sprintf("lambda%s", str), sprintf("mu%s", str), sprintf("q%s%s", 
+			rep(str, each = k - 1), unlist(lapply(1:k, function(i) str[-i]))))
+	} # END default.argnames.musse <- function(k) 
+
+
+
+# diversitree:::default.argnames.classe
+default.argnames.classe <- function(k) 
+	{
+	fmt <- sprintf("%%0%dd", ceiling(log10(k + 0.5)))
+	sstr <- sprintf(fmt, 1:k)
+	lambda.names <- sprintf("lambda%s%s%s", rep(sstr, each = k * 
+			(k + 1)/2), rep(rep(sstr, times = seq(k, 1, -1)), k), 
+			unlist(lapply(1:k, function(i) sstr[i:k])))
+	mu.names <- sprintf("mu%s", sstr)
+	q.names <- sprintf("q%s%s", rep(sstr, each = k - 1), unlist(lapply(1:k, 
+			function(i) sstr[-i])))
+	c(lambda.names, mu.names, q.names)
+	} # END default.argnames.classe <- function(k) 
+
+
+# diversitree:::derivs.musse
+derivs.musse <- function(t, y, pars) 
+	{
+	k <- length(y)/2L
+	i1 <- seq_len(k)
+	i2 <- i1 + k
+	i3 <- (2 * k + 1L):(k * (k + 2L))
+	E <- y[i1]
+	D <- y[i2]
+	lambda <- pars[i1]
+	mu <- pars[i2]
+	Q <- matrix(pars[i3], k, k)
+	c(mu - (lambda + mu) * E + lambda * E * E + Q %*% E, -(lambda + 
+			mu) * D + 2 * lambda * E * D + Q %*% D)
+	} # END derivs.musse <- function(t, y, pars) 
+
+
+
+# diversitree:::derivs.classe
+derivs.classe <- function(t, y, pars) 
+	{
+	stop("Not yet possible")
+	}
+
+
+# diversitree:::check.sampling.f
+check.sampling.f <- function (sampling.f, n) 
+	{
+	if (is.null(sampling.f)) 
+			sampling.f <- rep(1, n)
+	else sampling.f <- check.par.length(sampling.f, n)
+	if (max(sampling.f) > 1 || min(sampling.f) <= 0) 
+			stop("sampling.f must be on range (0,1]")
+	sampling.f
+	} # END check.sampling.f <- function (sampling.f, n) 
+	
+
+# diversitree:::check.par.length
+check.par.length <- function(x, length) 
+	{
+	if (length(x) == 1) 
+			rep(x, length)
+	else if (length(x) == length) 
+			x
+	else stop(sprintf("'%s' of incorrect length", deparse(substitute(x))))
+	} # END check.par.length <- function(x, length) 
+
+# diversitree:::initial.tip.xxsse
+initial.tip.xxsse <- function(cache, base.zero = FALSE) 
+	{
+	k <- cache$info$k
+	f <- cache$sampling.f
+	y <- matrix(rep(c(1 - f, rep(0, k)), k + 1), k + 1, 2 * k, 
+			TRUE)
+	y[k + 1, (k + 1):(2 * k)] <- diag(y[1:k, (k + 1):(2 * k)]) <- f
+	y <- diversitree:::matrix.to.list(y)
+	y.i <- cache$states
+	if (base.zero) 
+			y.i <- y.i + 1L
+	y.i[is.na(y.i)] <- k + 1
+	if (!is.null(multistate <- attr(cache$states, "multistate")))
+		{
+		y.multi <- unique(multistate$states)
+		y.i.multi <- match(multistate$states, y.multi)
+		y <- c(y, lapply(y.multi, function(x) c(1 - f, x)))
+		y.i[multistate$i] <- y.i.multi + k + 1
+		}
+	dt.tips.grouped(y, y.i, cache)
+	} # END initial.tip.xxsse <- function(cache, base.zero = FALSE) 
+
+
+# diversitree:::matrix.to.list
+# This one has to refer to diversitree:::matrix.to.list
+#matrix.to.list <- function(m) 
+#	{
+#	storage.mode(m) <- "double"
+#	.Call(r_matrix_to_list, m)
+#	}
+
+
+
+
+# diversitree:::dt.tips.grouped
+dt.tips.grouped <- function(y, y.i, cache) 
+	{
+	tips <- cache$tips
+	t <- cache$len[tips]
+	if (!is.list(y)) 
+		stop("'y' must be a list of initial conditions")
+	if (max(y.i) > length(y) || min(y.i) < 1) 
+		stop("'y.i' must be integers on 1..", length(y))
+	if (length(y.i) != length(tips)) 
+		stop("y must be same length as tips")
+	if (length(y.i) != length(t)) 
+		stop("y must be the same length as t")
+	if (any(is.na(y.i)))
+		{
+		k <- cache$info$k
+		if (!is.null(k) && !is.na(k) && length(y) == k + 1) 
+				y.i[is.na(y.i)] <- k + 1
+		else stop("Unhandled NA values in state vector")
+		}
+	if (max(abs(cache$depth[tips])) > .Machine$double.eps^0.5) 
+		stop("This currently only works for ultrametric trees")
+	types <- sort(unique(y.i))
+	res <- vector("list", length(types))
+	for (i in seq_along(types))
+		{
+		type <- types[i]
+		j <- which(y.i == type)
+		ord <- order(t[j])
+		res[[i]] <- list(y = y[[type]], y.i=i, target=tips[j][ord], t=t[j][ord], type="GROUPED")
+		}
+	res
+	} # END dt.tips.grouped <- function(y, y.i, cache) 
+
+
 
 make.initial.conditions.classe <- function(n) 
 	{

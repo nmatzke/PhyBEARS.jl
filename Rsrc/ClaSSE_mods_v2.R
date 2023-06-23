@@ -131,6 +131,7 @@ bd_liks <- function(tr, birthRate=1.0, deathRate=0.0)
 # the root state lnLs as before.
 get_classe_LnLs <- function(classe_res, root_nodenum=NULL)
 	{
+	# attributes(classe_res)$intermediates$lq
 	lq = attr(classe_res, "intermediates")$lq
 
 	if (is.null(root_nodenum) == TRUE)
@@ -551,20 +552,19 @@ q31 = 0, q32 = 0)
 	classe_res_dfs
 	names(classe_res_dfs)
 	' # END ex
+
+
+	# ?make.classe
+	# intermediates: Add intermediates to the returned value as attributes:
+	#   cache: Cached tree traversal information.
+	#   intermediates: Mostly branch end information.
+	#   vals: Root D values.
 	
 	# Branch top values ("initial")
 	init = t(attr(res,"intermediates")$init)
 	
 	# Branch bottom values ("base")
 	base = t(attr(res,"intermediates")$base)
-	
-	# lqs = log-likelihoods at each branch bottom
-	lq = attr(res,"intermediates")$lq
-	q = exp(attr(res,"intermediates")$lq)
-	
-	vals = t(attr(res2, "intermediates")$vals)	# Es and Ds at the root	
-	E_indices = 1:k
-	d_root_orig = vals[-E_indices]							# Original D likelihoods at root
 
 	# Assumes bifurcating tree
 	numstates = ncol(init) / 2
@@ -574,6 +574,21 @@ q31 = 0, q32 = 0)
 	numTips = length(tr$tip.label)
 	numInternal = numTips - 1
 	
+	# lqs = log-likelihoods at each branch bottom
+	lq_including_root = attr(res,"intermediates")$lq
+	lq_at_root = lq_including_root[rootnode]
+	lq = lq_including_root
+	lq[rootnode] = 0
+	q = exp(attr(res,"intermediates")$lq)
+
+	tmp = get_classe_LnLs(res, root_nodenum=rootnode)
+	ttl_LnL = tmp[1]
+	branch_LnL = tmp[2]
+
+	vals = t(attr(res2, "intermediates")$vals)	# Es and Ds at the root	
+	E_indices = 1:k
+	d_root_orig = vals[-E_indices]							# Original D likelihoods at root
+
 	# Intitializing
 	Es_atNode_branchTop = matrix(data=0, ncol=numstates, nrow=numnodes)
 	Es_atNode_branchBot = matrix(data=0, ncol=numstates, nrow=numnodes) 
@@ -627,7 +642,10 @@ sum_log_nodelikes
 # R_result_total_LnLs1t = -6.228375
 # R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -11.57223
 
-	R_result_branch_lnL = sum(lq)
+	R_result_lq_at_root = lq_at_root
+	R_result_ttl_lnL = ttl_LnL
+	R_result_branch_lnL = branch_LnL
+	R_result_sum_all_lq_including_root = sum(lq_including_root)
 	R_result_total_LnLs1 = loglik_s1
 	R_result_total_LnLs1t = loglik_s1t
 	R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = sum_log_nodelikes
@@ -637,6 +655,7 @@ sum_log_nodelikes
 	classe_res_dfs$init = t(attr(res,"intermediates")$init)
 	classe_res_dfs$base = t(attr(res,"intermediates")$init)
 	classe_res_dfs$lq = lq
+	classe_res_dfs$lq_including_root = lq_including_root
 	classe_res_dfs$Es_atNode_branchTop = Es_atNode_branchTop
 	classe_res_dfs$Es_atNode_branchBot = Es_atNode_branchBot
 	classe_res_dfs$likes_at_each_nodeIndex_branchTop = likes_at_each_nodeIndex_branchTop
@@ -644,6 +663,12 @@ sum_log_nodelikes
 	classe_res_dfs$normlikes_at_each_nodeIndex_branchTop = normlikes_at_each_nodeIndex_branchTop
 	classe_res_dfs$normlikes_at_each_nodeIndex_branchBot = normlikes_at_each_nodeIndex_branchBot
 	classe_res_dfs$computed_likelihoods_at_each_node_just_before_speciation = computed_likelihoods_at_each_node_just_before_speciation
+
+	classe_res_dfs$R_result_lq_at_root = R_result_lq_at_root
+	classe_res_dfs$R_result_ttl_lnL = R_result_ttl_lnL
+	classe_res_dfs$R_result_branch_lnL = R_result_branch_lnL
+	classe_res_dfs$R_result_sum_all_lq_including_root = R_result_sum_all_lq_including_root
+	
 	classe_res_dfs$R_result_branch_lnL = R_result_branch_lnL
 	classe_res_dfs$R_result_total_LnLs1 = R_result_total_LnLs1
 	classe_res_dfs$R_result_total_LnLs1t = R_result_total_LnLs1t
@@ -862,6 +887,18 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 		stop(txt)
 		} # END if (is.ultrametric(tr) == FALSE)
 
+	# Error trap: tree must be binary
+	if (is.binary(tr) == FALSE)
+		{
+		txt = "STOP ERROR in convert_BGB_lnL_to_ClaSSE(): is.binary(tr) returned FALSE. convert_BGB_lnL_to_ClaSSE()'s calculations only make sense if you have an binary tree, i.e. all of the branches are bifurcations."
+		
+		cat("\n\n")
+		cat(txt)
+		cat("\n\n")
+		stop(txt)
+		} # END if (is.binary(tr) == FALSE)
+
+
 	trtable = prt(tr, get_tipnames=TRUE)
 	
 	
@@ -936,7 +973,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
   
   # D. Put them all together to get the "branch_lnL" -- matches the
   # "branch_lnLs", i.e. sum(lq) from diversitree's claSSE
-	branch_lnL = sumBGBlike_not_root + sum_branchBot_likes + (1-log(1/birthRate))
+	branch_lnL = sumBGBlike_not_root + sum_branchBot_likes #+ (1-log(1/birthRate))
   
   # This matches the "branch lnLs" from diversitree claSSE:
   # lq is the Ds log-likelihood summed at each branch bottom, and extracted
@@ -1195,16 +1232,17 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	
 	# Assemble results
 	row_names = c("res1", "res2", "res3", "res4", "res5", "res6", "res1t", "res2t", "res3t", "res4t", "res5t", "res6t")
-	
 	BGB_lnLs = rep(res$total_loglikelihood, times=length(row_names))
 	branch_lnLs = rep(branch_lnL, times=length(row_names))
+	branch_lnLs_p1mLnB = branch_lnLs + (1-log(1/birthRate))
 	sumBGBlnL_notRoots = rep(sumBGBlike_not_root, times=length(row_names))
 	sumBranchBot_lnL = rep(sum_branchBot_likes, times=length(row_names))
-	one_minus_lnBirthRate = rep((1-log(1/birthRate)), times=length(row_names))
+	one_mLnBirth = rep((1-log(1/birthRate)), times=length(row_names))
 	ln_rootlikes = c(res1_rootlikes, res2_rootlikes, res3_rootlikes, res4_rootlikes, res5_rootlikes, res6_rootlikes, res1t_rootlikes, res2t_rootlikes, res3t_rootlikes, res4t_rootlikes, res5t_rootlikes, res6t_rootlikes)
+	ln_rootlikes_p1mLnB = one_mLnBirth + ln_rootlikes
 	BGB_to_classe_lnLs = c(claSSE_res1_lnL, claSSE_res2_lnL, claSSE_res3_lnL, claSSE_res4_lnL, claSSE_res5_lnL, claSSE_res6_lnL, claSSE_res1t_lnL, claSSE_res2t_lnL, claSSE_res3t_lnL, claSSE_res4t_lnL, claSSE_res5t_lnL, claSSE_res6t_lnL)
 
-	resmat = cbind(BGB_lnLs, branch_lnLs, sumBGBlnL_notRoots, sumBranchBot_lnL, one_minus_lnBirthRate, ln_rootlikes, BGB_to_classe_lnLs)
+	resmat = cbind(BGB_lnLs, branch_lnLs, branch_lnLs_p1mLnB, sumBGBlnL_notRoots, sumBranchBot_lnL, one_mLnBirth, ln_rootlikes, ln_rootlikes_p1mLnB, BGB_to_classe_lnLs)
 	resdf = adf(resmat)
 	row.names(resdf) = row_names
 	resdf
@@ -1613,7 +1651,7 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	# Matches classe branch_lnL
 	bggb_plus_Yule_1br_minus_root_topology = bgb1 + bd_ape$lnL - bd_ape$lnl_topology + 1-log(1/birthRate)
 	classe_branch_lnL = bggb_plus_Yule_1br_minus_root_topology
-	one_minus_lnBirthRate = 1-log(1/birthRate)
+	one_minus_lnBirth = 1-log(1/birthRate)
 
 	# res1 match
 	res1_bgb_classe = bgb2 + bd_ape$lnL - bd_ape$lnl_topology + 1-log(1/birthRate) - bgb_root_lnL +  log(sum(d_root_orig_BGB*d_root_orig_BGB/sum(d_root_orig_BGB)))
@@ -1657,10 +1695,10 @@ DECj_converted_lnLs - DEC_converted_lnLs
 
 	
 	# Assemble results
-	resmat = rbind(BGB_lnL, bggb_plus_Yule, bggb_plus_Yule_minus_root, bggb_plus_Yule_minus_root_topology, Julia_sum_lq, one_minus_lnBirthRate, bggb_plus_Yule_1br_minus_root_topology, classe_branch_lnL, res1_bgb_classe, res2_bgb_classe, res3_bgb_classe, res5_bgb_classe, res1t_bgb_classe, res2t_bgb_classe, res3t_bgb_classe, res5t_bgb_classe)
+	resmat = rbind(BGB_lnL, bggb_plus_Yule, bggb_plus_Yule_minus_root, bggb_plus_Yule_minus_root_topology, Julia_sum_lq, one_minus_lnBirth, bggb_plus_Yule_1br_minus_root_topology, classe_branch_lnL, res1_bgb_classe, res2_bgb_classe, res3_bgb_classe, res5_bgb_classe, res1t_bgb_classe, res2t_bgb_classe, res3t_bgb_classe, res5t_bgb_classe)
 	converted_lnLs = adf(resmat)
 
-	row_names = c("BGB_lnL", "bggb_plus_Yule", "bggb_plus_Yule_minus_root", "bggb_plus_Yule_minus_root_topology", "Julia_sum_lq", "one_minus_lnBirthRate", "bggb_plus_Yule_1br_minus_root_topology", "classe_branch_lnL", "res1", "res2", "res3", "res5", "res1t", "res2t", "res3t", "res5t")
+	row_names = c("BGB_lnL", "bggb_plus_Yule", "bggb_plus_Yule_minus_root", "bggb_plus_Yule_minus_root_topology", "Julia_sum_lq", "one_minus_lnBirth", "bggb_plus_Yule_1br_minus_root_topology", "classe_branch_lnL", "res1", "res2", "res3", "res5", "res1t", "res2t", "res3t", "res5t")
 	colnames(converted_lnLs) = "lnL"
 	row.names(converted_lnLs) = row_names
 	converted_lnLs
