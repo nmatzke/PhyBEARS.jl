@@ -23,6 +23,7 @@ using DelimitedFiles				# for readdlm()
 using NLopt									# seems to be the best gradient-free, box-constrained								
 
 # List each PhyBEARS code file prefix here
+using PhyloBits
 using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
 using PhyloBits.TreeTable
 using PhyBEARS.BGExample
@@ -73,11 +74,20 @@ include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -120.1545;
 
 # DEC+J
+DECj_lnL = -71.95101;
+DECj_R_result_branch_lnL = -383.0655;
+DECj_R_result_total_LnLs1 = -387.4385;  # res1
+DECj_R_result_total_LnLs1t = -385.2824; # res1t
+#DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
+
+
+# DEC+J
 DECj_lnL = −74.70;
 DECj_R_result_branch_lnL = -385.80976;
 DECj_R_result_total_LnLs1 = -390.18588;  # res1
 DECj_R_result_total_LnLs1t = -388.02982; # res1t
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
+
 
 #######################################################
 
@@ -96,17 +106,17 @@ geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Epacridoideae tree
 trfn = "tree.newick"
-tr = readTopology(trfn)
+tr = PhyloBits.PNreadwrite.readTopology(trfn)
 
 # DEC model on Hawaiian Epacridoideae
 bmo = construct_BioGeoBEARS_model_object()
-birthRate = 0.11578
+birthRate = 0.2
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 7.260439e-04
+bmo.est[bmo.rownames .== "d"] .= 0.0007341845
 bmo.est[bmo.rownames .== "e"] .= 1.000000e-12 
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 5.775812e-02
+bmo.est[bmo.rownames .== "j"] .= 0.05320481
 bmo.type[bmo.rownames .== "j"] .= "free"
 numareas = 3
 n = 8            # 3 areas, 8 states

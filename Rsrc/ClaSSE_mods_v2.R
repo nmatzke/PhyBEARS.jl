@@ -1629,9 +1629,10 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	bd_ape$lnl_numtips_wOneMinusDeathRate
 	bd_ape$lnl_branching_times
 	bd_ape$lnL
-
+	
+	# 2023-06-23_NJM
 	root_nodenum = length(tr$tip.label) + 1
-	d_root_orig_BGB = res$ML_marginal_prob_each_state_at_branch_top_AT_node[root_nodenum,]
+	d_root_orig_BGB = res$ML_marginal_prob_each_state_at_branch_top_AT_node[root_nodenum]
 
 	bgb1 = sum(log(res$computed_likelihoods_at_each_node[-root_nodenum]))
 	bgb2 = sum(log(res$computed_likelihoods_at_each_node))

@@ -801,7 +801,7 @@ make.classe <- function(tree, states, k, sampling.f=NULL, strict=TRUE, control=l
 	## Note that this uses MuSSE's cache...
 	cache <- diversitree:::make.cache.classe(tree, states, k, sampling.f, strict)
 	initial.conditions <- diversitree:::make.initial.conditions.classe(k)
-	all.branches <- diversitree:::make.all.branches.dtlik(cache, control, initial.conditions)
+	all.branches <- make.all.branches.dtlik(cache, control, initial.conditions)
 	rootfunc <- diversitree:::rootfunc.classe
 	f.pars <- diversitree:::make.pars.classe(k)
 
