@@ -19,34 +19,7 @@ library(rexpokit)
 library(cladoRcpp)
 library(BioGeoBEARS)
 
-#######################################################
-# CUT: The old instructions to source() online upgrade .R files have been deleted,
-#         all updates are now on the GitHub version of the package, version 1.1+
-#######################################################
-
-#######################################################
-# (This local-sourcing is mostly useful for Nick, while actively developing)
-# Local source()-ing method -- uses BioGeoBEARS sourceall() function 
-# on a directory of .R files, so you don't have to type them out.
-# The directories here are on my machine, you would have to make a 
-# directory, save the .R files there, and refer to them.
-#
-# NOTE: it's best to source the "cladoRcpp.R" update first, to avoid warnings like this:
-##
-## Note: possible error in 'rcpp_calc_anclikes_sp_COOweights_faster(Rcpp_leftprobs = tmpca_1, ': 
-##         unused arguments (m = m, m_null_range = include_null_range, jts_matrix = jts_matrix) 
-##
-#
-# TO USE: Delete or comment out the 'source("http://...")' commands above, and un-comment
-#              the below...
-########################################################################
-# Un-comment (and fix directory paths) to use:
-#library(BioGeoBEARS)
-#source("/drives/Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp.R")
-#sourceall("/drives/Dropbox/_njm/__packages/BioGeoBEARS_setup/")
-#calc_loglike_sp = compiler::cmpfun(calc_loglike_sp_prebyte)    # crucial to fix bug in uppass calculations
-#calc_independent_likelihoods_on_each_branch = compiler::cmpfun(calc_independent_likelihoods_on_each_branch_prebyte)
-########################################################################
+#######################################################################
 
 #######################################################
 # SETUP: YOUR WORKING DIRECTORY
