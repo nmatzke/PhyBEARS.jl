@@ -126,9 +126,6 @@ trfn = "tree.newick"
 # Look at the raw Newick file:
 moref(trfn)
 
-# Tip labels
-cat(sort(tr$tip.label), sep="\n")
-
 # Look at your phylogeny (plots to a PDF, which avoids issues with multiple graphics in same window):
 pdffn = "tree.pdf"
 pdf(file=pdffn, width=9, height=12)
@@ -142,6 +139,11 @@ axisPhylo() # plots timescale
 dev.off()
 cmdstr = paste0("open ", pdffn)
 system(cmdstr)
+
+# Tip labels
+cat(sort(tr$tip.label), sep="\n")
+
+
 
 #######################################################
 # Geography file
@@ -317,7 +319,7 @@ BioGeoBEARS_run_object$num_cores_to_use = 1
 # not identical.
 # Also, I have not implemented all functions to work with force_sparse=TRUE.
 # Volunteers are welcome to work on it!!
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -351,7 +353,7 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
-runslow = TRUE
+runslow = FALSE
 resfn = "Psychotria_DEC_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
@@ -396,7 +398,7 @@ BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of o
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
 BioGeoBEARS_run_object$num_cores_to_use = 1
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -434,7 +436,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 resfn = "Psychotria_DEC+J_M0_unconstrained_v1.Rdata"
-runslow = TRUE
+runslow = FALSE
 if (runslow)
     {
     #sourceall("/Dropbox/_njm/__packages/BioGeoBEARS_setup/")
@@ -541,7 +543,7 @@ BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of o
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
 BioGeoBEARS_run_object$num_cores_to_use = 1
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -581,7 +583,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01v","est"] = 0.
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-runslow = TRUE
+runslow = FALSE
 resfn = "Psychotria_DIVALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
@@ -626,7 +628,7 @@ BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of o
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
 BioGeoBEARS_run_object$num_cores_to_use = 1
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -683,7 +685,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 resfn = "Psychotria_DIVALIKE+J_M0_unconstrained_v1.Rdata"
-runslow = TRUE
+runslow = FALSE
 if (runslow)
     {
     #sourceall("/Dropbox/_njm/__packages/BioGeoBEARS_setup/")
@@ -803,7 +805,7 @@ BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of o
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
 BioGeoBEARS_run_object$num_cores_to_use = 1
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -850,7 +852,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","est"] = 0.
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-runslow = TRUE
+runslow = FALSE
 resfn = "Psychotria_BAYAREALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
@@ -893,7 +895,7 @@ BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if paramet
 BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)
 BioGeoBEARS_run_object$use_optimx = "GenSA"
 BioGeoBEARS_run_object$num_cores_to_use = 1
-BioGeoBEARS_run_object$force_sparse = TRUE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
+BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -971,7 +973,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 resfn = "Psychotria_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
-runslow = TRUE
+runslow = FALSE
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -1238,7 +1240,7 @@ lnum = 0
 # the same settings will be used for get_inputs_for_stochastic_mapping().
 #######################################################
 BSM_inputs_fn = "BSM_inputs_file.Rdata"
-runInputsSlow = TRUE
+runInputsslow = FALSE
 if (runInputsSlow)
     {
     stochastic_mapping_inputs_list = get_inputs_for_stochastic_mapping(res=res)
@@ -1255,7 +1257,7 @@ stochastic_mapping_inputs_list$COO_weights_columnar
 stochastic_mapping_inputs_list$unconstr
 set.seed(seed=as.numeric(Sys.time()))
 
-runBSMslow = TRUE
+runBSMslow = FALSE
 if (runBSMslow == TRUE)
     {
     # Saves to: RES_clado_events_tables.Rdata
@@ -1451,11 +1453,15 @@ sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
 resdf = convert_BGB_lnL_to_ClaSSE(res, tr=tr, root_probs_biased=NULL)
 resdf
 
-
-
 converted_lnLs = convert_BGB_to_BGB_Yule_SFs(res, tr=tr)
 converted_lnLs
 
+# Yule process birthRate
+birthRate = (tr$Nnode-1)/sum(tr$edge.length)
+birthRate
+
+ML_yule_birthRate(tr)
+ML_yule_birthRate_wRoot(tr)
 
 
 

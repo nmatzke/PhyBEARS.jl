@@ -36,8 +36,8 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 """
 # 
 # """
@@ -79,16 +79,6 @@ DECj_R_result_branch_lnL = -383.0655;
 DECj_R_result_total_LnLs1 = -387.4385;  # res1
 DECj_R_result_total_LnLs1t = -385.2824; # res1t
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
-
-
-# DEC+J
-DECj_lnL = −74.70;
-DECj_R_result_branch_lnL = -385.80976;
-DECj_R_result_total_LnLs1 = -390.18588;  # res1
-DECj_R_result_total_LnLs1t = -388.02982; # res1t
-#DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
-
-
 #######################################################
 
 
@@ -108,9 +98,13 @@ geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 trfn = "tree.newick"
 tr = PhyloBits.PNreadwrite.readTopology(trfn)
 
+ML_yule_birthRate(tr)
+ML_yule_birthRate_wRoot(tr)
+
+
 # DEC model on Hawaiian Epacridoideae
 bmo = construct_BioGeoBEARS_model_object()
-birthRate = 0.2
+birthRate = 0.11578
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 bmo.est[bmo.rownames .== "d"] .= 0.0007341845
@@ -159,10 +153,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
@@ -172,10 +166,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
@@ -185,10 +179,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 
 
