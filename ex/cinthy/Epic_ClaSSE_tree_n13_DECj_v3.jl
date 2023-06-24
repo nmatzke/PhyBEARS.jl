@@ -36,17 +36,12 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-<<<<<<< HEAD
 cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
 include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 #
 Check against:
 cd /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/
 Rscript /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
-=======
-cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
->>>>>>> 9289d366f6c401e77c594b1f40398a2cd0ec569b
 """
 # 
 # """
@@ -528,10 +523,10 @@ vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop)
 vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot)
 vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot)
 
-sum.(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop), dim=2)
-sum.(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop), dim=2)
-sum.(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot), dim=2)
-sum.(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot), dim=2)
+rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop))
+rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop))
+rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot))
+rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot))
 
 
 
@@ -625,7 +620,7 @@ opt.upper_bounds
 pars = optx
 
 # 2023-02-08_archived pars
-optx = [1.0e-12, 1.0e-12, 0.10999899813382318, 0.34816245870282203, 0.0]
+#optx = [1.0e-12, 1.0e-12, 0.10999899813382318, 0.34816245870282203, 0.0]
 pars = optx
 
 inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
@@ -662,7 +657,7 @@ vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot)
 vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot)
 
 rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop))
-rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop),)
+rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop))
 rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot))
 rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot))
 
