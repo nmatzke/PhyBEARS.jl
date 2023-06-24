@@ -1,4 +1,125 @@
 
+#######################################################
+# Likelihood equation in the birthdeath function
+# (derived by pulling apart the birthdeath() function from ape)
+# This version stores all of the pieces of the calculation, for comparison
+#######################################################
+bd_liks <- function(tr, birthRate=1.0, deathRate=0.0)
+	{
+	ex='
+	trtxt = "((((((((P_hawaiiensis_WaikamoiL1:0.9665748366,P_mauiensis_Eke:0.9665748366):0.7086257935,(P_fauriei2:1.231108298,P_hathewayi_1:1.231108298):0.4440923324):0.1767115552,(P_kaduana_PuuKukuiAS:1.851022399,P_mauiensis_PepeAS:1.851022399):0.0008897862802):0.3347375986,P_kaduana_HawaiiLoa:2.186649784):0.302349378,(P_greenwelliae07:1.132253042,P_greenwelliae907:1.132253042):1.35674612):1.689170274,((((P_mariniana_MauiNui:1.99490084,P_hawaiiensis_Makaopuhi:1.99490084):0.7328279804,P_mariniana_Oahu:2.72772882):0.2574151709,P_mariniana_Kokee2:2.985143991):0.4601084855,P_wawraeDL7428:3.445252477):0.732916959):0.7345185743,(P_grandiflora_Kal2:2.480190277,P_hobdyi_Kuia:2.480190277):2.432497733):0.2873119899,((P_hexandra_K1:2.364873976,P_hexandra_M:2.364873976):0.4630447802,P_hexandra_Oahu:2.827918756):2.372081244);"
+	tr = read.tree(file="", text=trtxt)
+	branching.times(tr)
+	birthRate=0.3288164   # ML birthRate for Psychotria tree
+	deathRate=0.0					# ML deathRate for Psychotria tree
+	bd = bd_liks(tr, birthRate, deathRate)
+	bd
+	
+	trtxt = "((chimp:1,human:1):1,gorilla:2);"
+	tr = read.tree(file="", text=trtxt)
+	branching.times(tr)
+	birthRate=1.0
+	deathRate=0.0
+	bd = bd_liks(tr, birthRate, deathRate)
+	bd
+
+	trtxt = "((chimp:1,human:1):1,gorilla:2);"
+	tr = read.tree(file="", text=trtxt)
+	branching.times(tr)
+	birthRate=1.0
+	deathRate=0.999
+	bd = bd_liks(tr, birthRate, deathRate)
+	bd
+
+
+
+	# Getting the birthRate and deathRate from
+	# a = deathRate / birthRate	# relative death rate
+	# r = birthRate - deathRate	# net diversification rate
+	BD =  birthdeath(tr)
+	BD
+	names(BD)
+
+	# Calculate the birthRate and deathRate from the outputs
+	x1 = unname(BD$para["d/b"])
+	x2 = unname(BD$para["b-d"])
+	deathRate = (x2*x1) / (1-x1)
+	birthRate = deathRate+x2
+	c(birthRate, deathRate)
+	'
+	
+	
+	a = deathRate / birthRate	# relative death rate
+	r = birthRate - deathRate	# net diversification rate
+
+	N <- length(tr$tip.label)
+	nb_node = tr$Nnode - 1
+	sptimes <- c(NA, branching.times(tr)) # NA so the number of times equals number of tips?
+	x = sptimes
+	# a = "d/b"
+	# r = "b-d"
+
+	# dev <- function(a=0.1, r=0.2, N, x, return_deviance=FALSE)
+	# 	{
+	if (r < 0 || a > 1)
+		{
+		return(-1e+100)
+		}
+	
+	lnl_topology = lfactorial(tr$Nnode)
+	lnl_numBirths = nb_node * log(r)
+	lnl_Births_above_root = r * sum(sptimes[3:N])
+	
+	lnl_numtips_wOneMinusDeathRate = N * log(1 - a)
+	# Interpretation: more tips are less likely, if relativeDeathRate is >0
+	# If relativeDeathRate = 1, a=0, and lnl=-Inf... 
+	#    CLEARLY WRONG EXCEPT IN A MAXIMUM LIKELIHOOD CONTEXT!!!
+	# If relativeDeathRate = 0, a=0, and lnl=0, i.e. any number of tips is equiprobable
+	
+	lnl_branching_times = -2 * sum(log(exp(r * sptimes[2:N]) - a))
+	# For each observed branching,
+	# netDiversificationRate * timeOfEvent <- take exponent of that ; this means recorded events are less likely in the past
+	# <- subtract "a", a constant (relativeDeathRate)
+	#
+	# This would be a straight likelihood as:
+	# 1/
+	# (exp(r*branching_time)-a)^2
+	#
+	# Sum the logs of these
+	#
+	# If deathRate = 0
+	# lnl_branching_times = -2 * sum(log(exp(birthRate*sptimes[2:N]) - 0))
+	# lnl_branching_times = -2 * sum(log( exp(birthRate*sptimes[2:N]) )
+	# lnl_branching_times = -2 * sum( birthRate*sptimes[2:N] )
+	#
+	# Note: sum(X) = 9 = total branchlength of tr
+	# In BD:
+	# -2*sum(sptimes[2:N]) = -12
+	# sum(sptimes[3:N]) = 3
+	# So, lnl_branching_times + lnl_Births_above_root = yule's -lambda * X
+	lnL = lnl_topology + lnl_numBirths + lnl_Births_above_root + lnl_numtips_wOneMinusDeathRate + lnl_branching_times
+	dev =  -2 * lnL
+	
+	bd = NULL
+	bd$tr = tr
+	bd$birthRate = birthRate
+	bd$deathRate = deathRate
+	bd$relative_deathRate = a
+	bd$net_diversification_rate = r
+	bd$dev = dev
+	bd$lnl_topology = lnl_topology
+	bd$lnl_numBirths = lnl_numBirths
+	bd$lnl_Births_above_root = lnl_Births_above_root
+	bd$lnl_numtips_wOneMinusDeathRate = lnl_numtips_wOneMinusDeathRate
+	bd$lnl_branching_times = lnl_branching_times
+	bd$lnL = lnL
+	
+	return(bd)
+	}
+
+
+
+
 
 
 # Get total LnL and branch LnL from ClaSSE output
@@ -900,7 +1021,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 2. res2 for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res2 (ROOT.FLAT state frequencies)
+	# Match BioGeoBEARS to diverstree res2 (ROOT.FLAT state frequencies)
 	root.p = rep(1/numstates, times=numstates)
 	rootlikes = log(sum(root.p * d_root_orig_BGB))
 	res2_rootlikes = rootlikes
@@ -912,7 +1033,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 3. res3 for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res3 (all equal, except null range -- ROOT.GIVEN)
+	# Match BioGeoBEARS to diverstree res3 (all equal, except null range -- ROOT.GIVEN)
 	# Set up various assumptions about the root state probabilities
 	# All probabilities equal, except null range has prob=0
 	root_probs_equal = rep(1, times=numstates)
@@ -949,7 +1070,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 5. res5 for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res5 (all 1s, except null range -- ROOT.GIVEN)
+	# Match BioGeoBEARS to diverstree res5 (all 1s, except null range -- ROOT.GIVEN)
 	# All states, except null range, get "probability" 1
 	# (i.e., ignore root state frequencies, like DEC-type models)
 	root_probs_single = rep(1, times=numstates)
@@ -963,7 +1084,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 6. res6 for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res6 (equilibrium frequencies for root states)
+	# Match BioGeoBEARS to diverstree res6 (equilibrium frequencies for root states)
 	# SKIP: Requires classe inputs and functions
 	# res6: Equilibrium root frequencies
 	# If root=ROOT.EQUI, condition.surv=FALSE
@@ -1010,7 +1131,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 2. res2t for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res2 (ROOT.FLAT state frequencies)
+	# Match BioGeoBEARS to diverstree res2 (ROOT.FLAT state frequencies)
 	root.p = rep(1/numstates, times=numstates)
 	root.p[sum(include_null_range)] = 0
 	root.p = root.p / sum(root.p)
@@ -1024,7 +1145,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 3. res3t for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res3t (all equal, except null range -- ROOT.GIVEN)
+	# Match BioGeoBEARS to diverstree res3t (all equal, except null range -- ROOT.GIVEN)
 	# Set up various assumptions about the root state probabilities
 	# All probabilities equal, except null range has prob=0
 	root_probs_equal = rep(1, times=numstates)
@@ -1064,7 +1185,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 5. res5t for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res5t (all 1s, except null range -- ROOT.GIVEN)
+	# Match BioGeoBEARS to diverstree res5t (all 1s, except null range -- ROOT.GIVEN)
 	# All states, except null range, get "probability" 1
 	# (i.e., ignore root state frequencies, like DEC-type models)
 	root_probs_single = rep(1, times=numstates)
@@ -1080,7 +1201,7 @@ convert_BGB_lnL_to_ClaSSE <- function(res, tr=NULL, root_probs_biased=NULL)
 	#####################################
   # 6. res6t for diversitree claSSE, from BioGeoBEARS starting point
 	#####################################
-	# Match BioGeoBEARS to diversitree res6t (equilibrium frequencies for root states)
+	# Match BioGeoBEARS to diverstree res6t (equilibrium frequencies for root states)
 	# SKIP: Requires classe inputs and functions
 	# res6: Equilibrium root frequencies
 	# If root=ROOT.EQUI, condition.surv=FALSE
@@ -1248,7 +1369,7 @@ classe_params = BGBres_construct_classe_states_plus_params(res, tr=tr)
 	classe_Kstates = make.classe(tree=tr, states=states, k=k, sampling.f=sampling.f, strict=FALSE)
 
 	# The names of the ClaSSE parameters:
-	# Note that diversitree creates ALL the possible parameters, which gets
+	# Note that diverstree creates ALL the possible parameters, which gets
 	# ridiculous quickly, e.g. 
 	# 4 areas = 16 geographic range states = 2432 parameters in param_names
 	param_names = argnames(classe_Kstates)
@@ -1508,8 +1629,7 @@ DECj_converted_lnLs - DEC_converted_lnLs
 	bd_ape$lnl_numtips_wOneMinusDeathRate
 	bd_ape$lnl_branching_times
 	bd_ape$lnL
-	
-	# 2023-06-23_NJM
+
 	root_nodenum = length(tr$tip.label) + 1
 	d_root_orig_BGB = res$ML_marginal_prob_each_state_at_branch_top_AT_node[root_nodenum,]
 

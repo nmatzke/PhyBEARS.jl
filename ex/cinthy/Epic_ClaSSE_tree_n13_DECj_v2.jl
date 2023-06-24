@@ -23,6 +23,7 @@ using DelimitedFiles				# for readdlm()
 using NLopt									# seems to be the best gradient-free, box-constrained								
 
 # List each PhyBEARS code file prefix here
+using PhyloBits
 using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
 using PhyloBits.TreeTable
 using PhyBEARS.BGExample
@@ -35,12 +36,8 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
-#
-Check against:
-cd /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/
-Rscript /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
+cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 """
 # 
 # """
@@ -61,7 +58,7 @@ Rscript /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
 # # under a variety of simple and more complex models
 # #######################################################
 # 
-#@testset "runtests_ClaSSE_tree_n13_DECj_WORKS.jl" begin
+@testset "runtests_ClaSSE_tree_n13_DECj_WORKS.jl" begin
 # 
 #######################################################
 # DEMONSTRATES MATCHING BETWEEN DIVERSITREE, BIOGEOBEARS, AND JULIA
@@ -77,12 +74,11 @@ Rscript /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -120.1545;
 
 # DEC+J
-DECj_lnL = −74.70;
-DECj_R_result_branch_lnL = -385.80976;
-DECj_R_result_total_LnLs1 = -390.18588;  # res1
-DECj_R_result_total_LnLs1t = -388.02982; # res1t
+DECj_lnL = -71.95101;
+DECj_R_result_branch_lnL = -383.0655;
+DECj_R_result_total_LnLs1 = -387.4385;  # res1
+DECj_R_result_total_LnLs1t = -385.2824; # res1t
 #DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
-
 #######################################################
 
 
@@ -100,17 +96,21 @@ geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Epacridoideae tree
 trfn = "tree.newick"
-tr = readTopology(trfn)
+tr = PhyloBits.PNreadwrite.readTopology(trfn)
+
+ML_yule_birthRate(tr)
+ML_yule_birthRate_wRoot(tr)
+
 
 # DEC model on Hawaiian Epacridoideae
 bmo = construct_BioGeoBEARS_model_object()
 birthRate = 0.11578
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 7.260439e-04
+bmo.est[bmo.rownames .== "d"] .= 0.0007341845
 bmo.est[bmo.rownames .== "e"] .= 1.000000e-12 
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 5.775812e-02
+bmo.est[bmo.rownames .== "j"] .= 0.05320481
 bmo.type[bmo.rownames .== "j"] .= "free"
 numareas = 3
 n = 8            # 3 areas, 8 states
@@ -153,10 +153,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
@@ -166,10 +166,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
@@ -179,10 +179,10 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 #R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 #@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
-@test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
-@test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
-@test round(DECj_R_result_total_LnLs1, digits=1) == round(Julia_total_lnLs1, digits=1)
-@test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
+@test abs(DECj_lnL - bgb_lnL) < 0.01
+@test abs(DECj_R_result_branch_lnL - Julia_sum_lq) < 0.01
+@test abs(DECj_R_result_total_LnLs1 - Julia_total_lnLs1) < 0.01
+@test abs(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t) < 0.01
 
 
 
@@ -199,7 +199,7 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 @test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
 
 
-print("\nDifferences between Julia and R lnLs for\n/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R\n calculation:\n")
+print("\nDifferences between Julia and R lnLs for\n/GitHub/PhyBEARS.jl/Rsrc/_compare_ClaSSE_calcs_v3_compare2julia.R\n calculation:\n")
 print("DECj_R_result_branch_lnL (lq) - Julia_sum_lq: ")
 print(DECj_R_result_branch_lnL - Julia_sum_lq)
 print("\n")
@@ -209,9 +209,61 @@ print("\n")
 print("DECj_R_result_total_LnLs1t (lq) - Julia_total_lnLs1t: ")
 print(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t)
 print("\n")
-#print("DECj_R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
-#print(R_sum_lq_nodes - Julia_sum_lq_nodes)
-#print("\n")
+print("DECj_R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
+print(R_sum_lq_nodes - Julia_sum_lq_nodes)
+print("\n")
+
+
+
+
+
+
+
+
+# The standard diversitree lnL calculation sums:
+# 1. log-likelihoods at branch-bottoms (lq)
+# 2. root-state likelihoods (e.g. rootstates_lnL)
+
+# We can get this in R also:
+# 1. sum(lq)
+# 2. res1t = bisse_2areas(pars=bisse_params, root=ROOT.OBS, root.p=NULL, intermediates=TRUE, condition.surv=TRUE)
+#    (is sum(lq) + sum(rootstates_lnL)
+
+# Weirdly, it seems like this R calculation extracts the total likelihood at the 
+# branch bottoms (lq), but not the total likelihood at the nodes, after 
+# the normlikes from above branches are combined at the node, and multiplied by
+# the birthRate.
+#
+# This suggests another possible likelihood:
+#
+# 1. Julia: sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
+#
+# ...which matches...
+#
+# 2. sum(log(computed_likelihoods_at_each_node_x_lambda))
+#
+# (And which might be correct!  PhyBEARS will produce both.)
+#
+
+
+
+
+print("\nDifferences between Julia and R lnLs for\n/GitHub/PhyBEARS.jl/Rsrc/_compare_ClaSSE_calcs_v3_compare2julia.R\n calculation:\n")
+print("DECj_R_result_branch_lnL (lq) - Julia_sum_lq: ")
+print(DECj_R_result_branch_lnL - Julia_sum_lq)
+print("\n")
+print("DECj_R_result_total_LnLs1 (lq) - Julia_total_lnLs1: ")
+print(DECj_R_result_total_LnLs1 - Julia_total_lnLs1)
+print("\n")
+print("DECj_R_result_total_LnLs1t (lq) - Julia_total_lnLs1t: ")
+print(DECj_R_result_total_LnLs1t - Julia_total_lnLs1t)
+print("\n")
+print("DECj_R_result_total_lnL (lq) - Julia_sum_lq_nodes: ")
+print(R_sum_lq_nodes - Julia_sum_lq_nodes)
+print("\n")
+
+
+
 
 
 
@@ -229,8 +281,7 @@ bmo.est[bmo.rownames .== "e"] .= 1.000000e-12
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 5.775812e-02
 bmo.type[bmo.rownames .== "j"] .= "free"
-numareas = 3
-n = 8            # 3 areas, 8 states
+bmo.est
 bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows);
 bmo.est
 
@@ -270,7 +321,7 @@ end # END function func2(pars, dummy_gradient!)
 #######################################################
 
 using NLopt
-pars = [0.9, 0.9, 0.9]
+#pars = [0.9, 0.9, 0.9]
 func(pars)
 opt = NLopt.Opt(:LN_BOBYQA, length(pars))
 ndims(opt)
@@ -281,7 +332,7 @@ opt.lower_bounds = lower::Union{AbstractVector,Real}
 opt.upper_bounds = upper::Union{AbstractVector,Real}
 opt.lower_bounds
 opt.upper_bounds
-#opt.ftol_abs = 0.001 # tolerance on log-likelihood
+opt.ftol_abs = 0.001 # tolerance on log-likelihood
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
 
@@ -315,11 +366,13 @@ p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
 Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
-#R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
+R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
 @test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
 @test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
@@ -331,8 +384,8 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
 Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
-#R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
+R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
 @test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
 @test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
@@ -344,8 +397,8 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 # If you add BioGeoBEARS node likelihoods to Julia branch likelihoods...
 Julia_total_lnLs1t = Julia_total_lnLs1 + log(1/birthRate)
 Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Julia_sum_lq
-#R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
-#@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
+R_sum_lq_nodes = DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
+@test round(Julia_sum_lq_nodes; digits=1) == round(R_sum_lq_nodes; digits=1)
 
 @test round(DECj_lnL, digits=1) == round(bgb_lnL, digits=1)
 @test round(DECj_R_result_branch_lnL, digits=1) == round(Julia_sum_lq, digits=1)
@@ -384,281 +437,14 @@ bgb_lnL + bd_ape.lnL - bd_ape.lnl_topology + equal_root_prob2
 # (bgb1 + bd_ape.lnL - bd_ape.lnl_topology + 1-log(1/birthRate)) + equal_root_prob2 + bgb_root_lnL - (1-log(1/birthRate))
 
 # Go back to BioGeoBEARS log-likelihood, under Yule process assumptions
-bgb2 = res5t - (bd_ape.lnL - bd_ape.lnl_topology) - equal_root_prob2
-bgb2 = res5t - (bd_ape.lnl_numBirths + bd_ape.lnl_Births_above_root + bd_ape.lnl_numtips_wOneMinusDeathRate + bd_ape.lnl_branching_times) - equal_root_prob2
+bgb2 = res5t - (bd.lnL - bd.lnl_topology) - equal_root_prob2
+bgb2 = res5t - (bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_numtips_wOneMinusDeathRate + bd.lnl_branching_times) - equal_root_prob2
 
-bgb2 = res5t - (bd_ape.lnl_numBirths + bd_ape.lnl_Births_above_root + bd_ape.lnl_branching_times) - equal_root_prob2
+bgb2 = res5t - (bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_branching_times) - equal_root_prob2
 
-bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd_ape.lnL - bd_ape.lnl_topology)
+bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd.lnL - bd.lnl_topology)
 
-bd_lnL_noTopo = bd_ape.lnL - bd_ape.lnl_topology
 bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_noTopo
-
-
-
-
-
-
-
-
-
-
-
-#######################################################
-# ML inference on DEC+J + birth-death
-#######################################################
-bmo = construct_BioGeoBEARS_model_object()
-bmo.type[bmo.rownames .== "j"] .= "free"
-bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "free"
-bmo.est[bmo.rownames .== "birthRate"] .= 0.3288164
-bmo.est[bmo.rownames .== "deathRate"] .= 0.1
-bmo.est[bmo.rownames .== "d"] .= 0.03505038
-bmo.est[bmo.rownames .== "e"] .= 0.02832370
-bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.1
-bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
-
-
-root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
-max_range_size = NaN # replaces any background max_range_size=1
-inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
-
-
-
-parnames = bmo.rownames[bmo.type .== "free"]
-lower = bmo.min[bmo.type .== "free"]
-upper = bmo.max[bmo.type .== "free"]
-
-pars = bmo.est[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo); # works
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);  # WORKS 2022-03-10
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, sol_Es_v5=sol_Es_v5);
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-
-pars = bmo.est[bmo.type .== "free"]
-func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="lnL")
-function func2(pars, dummy_gradient!)
-	return func(pars)
-end # END function func2(pars, dummy_gradient!)
-
-pars = [0.9, 0.9, 0.1, 0.3, 0.2]
-func(pars)
-func2(pars, [])
-
-#######################################################
-# Best optimizer so far - 2022-03-15
-#######################################################
-using NLopt
-opt = NLopt.Opt(:LN_BOBYQA, length(pars))
-ndims(opt)
-opt.algorithm
-algorithm_name(opt::Opt)
-opt.min_objective = func2
-opt.lower_bounds = lower::Union{AbstractVector,Real}
-opt.upper_bounds = upper::Union{AbstractVector,Real}
-opt.lower_bounds
-opt.upper_bounds
-#opt.ftol_abs = 0.00001 # tolerance on log-likelihood
-(optf,optx,ret) = NLopt.optimize!(opt, pars)
-#######################################################
-
-# Get the inputs & res:
-pars = optx
-
-# 2023-02-08_archived pars
-optx = [1.0e-12, 1.0e-12, 0.10999899813382318, 0.34816245870282203, 0.0]
-pars = optx
-
-inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
-bmo_updater_v1!(inputs.bmo);
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
-
-func(pars)
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, sol_Es_v5=sol_Es_v5);
-
-
-# inputs.solver_options.save_everystep = false
-#	inputs.solver_options.saveat = nodetimes(trdf)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-resDECj_BD = deepcopy(inputs.res);
-Rnames(resDECj_BD)
-vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop)
-vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop)
-vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot)
-vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot)
-
-sum.(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop), dim=2)
-sum.(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop), dim=2)
-sum.(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot), dim=2)
-sum.(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot), dim=2)
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Birth EQUALS death
-#######################################################
-# ML inference on DEC+J + birth=death
-#######################################################
-bmo = construct_BioGeoBEARS_model_object()
-bmo.type[bmo.rownames .== "j"] .= "free"
-bmo.type[bmo.rownames .== "birthRate"] .= "free"
-bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
-bmo.est[bmo.rownames .== "birthRate"] .= 0.3288164
-bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "birthRate"]
-bmo.est[bmo.rownames .== "d"] .= 0.03505038
-bmo.est[bmo.rownames .== "e"] .= 0.02832370
-bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.1
-bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
-
-
-root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
-max_range_size = NaN # replaces any background max_range_size=1
-inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
-
-
-
-parnames = bmo.rownames[bmo.type .== "free"]
-lower = bmo.min[bmo.type .== "free"]
-upper = bmo.max[bmo.type .== "free"]
-
-pars = bmo.est[bmo.type .== "free"]
-bmo_updater_v1!(inputs.bmo); # works
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);  # WORKS 2022-03-10
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, sol_Es_v5=sol_Es_v5);
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-
-pars = bmo.est[bmo.type .== "free"]
-func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="lnL")
-function func2(pars, dummy_gradient!)
-	return func(pars)
-end # END function func2(pars, dummy_gradient!)
-
-pars = [0.9, 0.9, 0.1, 0.3]
-func(pars)
-func2(pars, [])
-
-#######################################################
-# Best optimizer so far - 2022-03-15
-#######################################################
-using NLopt
-opt = NLopt.Opt(:LN_BOBYQA, length(pars))
-ndims(opt)
-opt.algorithm
-algorithm_name(opt::Opt)
-opt.min_objective = func2
-opt.lower_bounds = lower::Union{AbstractVector,Real}
-opt.upper_bounds = upper::Union{AbstractVector,Real}
-opt.lower_bounds
-opt.upper_bounds
-#opt.ftol_abs = 0.00001 # tolerance on log-likelihood
-(optf,optx,ret) = NLopt.optimize!(opt, pars)
-#######################################################
-
-# Get the inputs & res:
-pars = optx
-
-# 2023-02-08_archived pars
-optx = [1.0e-12, 1.0e-12, 0.10999899813382318, 0.34816245870282203, 0.0]
-pars = optx
-
-inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
-bmo_updater_v1!(inputs.bmo);
-p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
-
-func(pars)
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, sol_Es_v5=sol_Es_v5);
-
-
-# inputs.solver_options.save_everystep = false
-#	inputs.solver_options.saveat = nodetimes(trdf)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
-resDECj_BD = deepcopy(inputs.res);
-Rnames(resDECj_BD)
-vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop)
-vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop)
-vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot)
-vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot)
-
-rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop))
-rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop),)
-rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot))
-rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot))
-
-
-
 
 
 
@@ -898,7 +684,6 @@ bgb2 = res5t - (bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_branching_t
 
 bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd.lnL - bd.lnl_topology)
 
-bd_lnL_noTopo = bd_ape.lnL - bd_ape.lnl_topology
 bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_noTopo
 
 
@@ -1171,15 +956,165 @@ bgb2 = res5t - (bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_numtips_wOn
 
 bgb2 = res5t - (bd.lnl_numBirths + bd.lnl_Births_above_root + bd.lnl_branching_times) - equal_root_prob2
 
-bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd_ape.lnL - bd_ape.lnl_topology)
+bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd.lnL - bd.lnl_topology)
 
-bd_lnL_noTopo = bd_ape.lnL - bd_ape.lnl_topology
 bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_noTopo
 
 
 
 
 
+
+
+#######################################################
+# ML inference on DEC+J + birth-death
+#######################################################
+bmo = construct_BioGeoBEARS_model_object()
+bmo.type[bmo.rownames .== "j"] .= "free"
+bmo.type[bmo.rownames .== "birthRate"] .= "free"
+bmo.type[bmo.rownames .== "deathRate"] .= "free"
+bmo.est[bmo.rownames .== "birthRate"] .= 0.3288164
+bmo.est[bmo.rownames .== "deathRate"] .= 0.1
+bmo.est[bmo.rownames .== "d"] .= 0.03505038
+bmo.est[bmo.rownames .== "e"] .= 0.02832370
+bmo.est[bmo.rownames .== "a"] .= 0.0
+bmo.est[bmo.rownames .== "j"] .= 0.1
+bmo.est[:] = bmo_updater_v1(bmo, inputs.setup.bmo_rows) # works
+
+
+root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
+max_range_size = NaN # replaces any background max_range_size=1
+inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
+(setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
+
+
+
+parnames = bmo.rownames[bmo.type .== "free"]
+lower = bmo.min[bmo.type .== "free"]
+upper = bmo.max[bmo.type .== "free"]
+
+pars = bmo.est[bmo.type .== "free"]
+bmo_updater_v1!(inputs.bmo); # works
+p_Ds_v5_updater_v1!(p_Ds_v5, inputs);  # WORKS 2022-03-10
+
+# Solve the Es
+print("\nSolving the Es once, for the whole tree timespan...")
+prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
+# This solution is an interpolator
+sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+Es_interpolator = sol_Es_v5;
+p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, sol_Es_v5=sol_Es_v5);
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+Julia_sum_lq_ORIG = -61.93671341508372
+Julia_rootstates_lnL_ORIG = -4.410696408468018
+Julia_total_lnLs1_ORIG = -66.34740982355174
+Julia_bgb_lnL_ORIG = -27.984254087036682
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
+
+
+pars = bmo.est[bmo.type .== "free"]
+func = x -> func_to_optimize(x, parnames, inputs, p_Ds_v5; returnval="lnL")
+function func2(pars, dummy_gradient!)
+	return func(pars)
+end # END function func2(pars, dummy_gradient!)
+
+pars = [0.9, 0.9, 0.1, 0.3, 0.2]
+func(pars)
+func2(pars, [])
+
+#######################################################
+# Best optimizer so far - 2022-03-15
+#######################################################
+using NLopt
+opt = NLopt.Opt(:LN_BOBYQA, length(pars))
+ndims(opt)
+opt.algorithm
+algorithm_name(opt::Opt)
+opt.min_objective = func2
+opt.lower_bounds = lower::Union{AbstractVector,Real}
+opt.upper_bounds = upper::Union{AbstractVector,Real}
+opt.lower_bounds
+opt.upper_bounds
+opt.ftol_abs = 0.00001 # tolerance on log-likelihood
+(optf,optx,ret) = NLopt.optimize!(opt, pars)
+#######################################################
+
+# Get the inputs & res:
+pars = optx
+
+# 2023-02-08_archived pars
+optx = [1.0e-12, 1.0e-12, 0.10999899813382318, 0.34816245870282203, 0.0]
+pars = optx
+
+inputs.bmo.est[inputs.bmo.type .== "free"] .= optx
+bmo_updater_v1!(inputs.bmo);
+p_Ds_v5_updater_v1!(p_Ds_v5, inputs);
+
+func(pars)
+
+# Solve the Es
+print("\nSolving the Es once, for the whole tree timespan...")
+prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Ds_v5.uE, Es_tspan, p_Ds_v5);
+# This solution is an interpolator
+sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
+Es_interpolator = sol_Es_v5;
+p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, sol_Es_v5=sol_Es_v5);
+
+
+# inputs.solver_options.save_everystep = false
+#	inputs.solver_options.saveat = nodetimes(trdf)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(inputs.res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+Julia_sum_lq_ORIG = -72.798
+Julia_rootstates_lnL_ORIG = NaN
+Julia_total_lnLs1_ORIG = -77.77
+Julia_bgb_lnL_ORIG =  -39.711
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
+
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+
+@test round(Julia_bgb_lnL_ORIG, digits=3) == round(bgb_lnL, digits=3)
+@test round(Julia_sum_lq_ORIG, digits=3) == round(Julia_sum_lq, digits=3)
+@test round(Julia_total_lnLs1_ORIG, digits=3) == round(Julia_total_lnLs1, digits=3)
 
 
 

@@ -32,6 +32,7 @@ tr = read.tree(trfn)
 
 trstr = "((chimp:1,human:1):1,gorilla:2);"
 tr = read.tree(file="", text=trstr)
+rootnode = length(tr$tip.label) + 1
 
 # Run a BiSSE model from diversitree
 
@@ -190,12 +191,18 @@ exp_LnLdiff = exp((LnLst$ttl_LnL - LnLst$branch_LnL - log(birthRate)))
 LnLst2 = cbind(LnLst, ObsDiff, LnLdiff, exp_ObsDiff, exp_LnLdiff)
 cft(LnLst2, numdigits_inbetween_have_fixed_digits=8)
 
+sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
+claSSE_res_to_prt(res=res1, tr, classe_params)
+claSSE_res_to_prt(res=res1t, tr, classe_params)
 
 
 init = t(attr(res2, "intermediates")$init)
 init
 
-lq = t(attr(res2, "intermediates")$lq)
+lq_including_root =  = attr(res,"intermediates")$lq
+tmp_lq = lq_including_root
+tmp_lq[rootnode] = 0
+lq = t(tmp_lq)
 lq
 
 base = t(attr(res2, "intermediates")$base)

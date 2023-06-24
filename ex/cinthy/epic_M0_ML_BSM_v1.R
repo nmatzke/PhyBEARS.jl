@@ -19,34 +19,7 @@ library(rexpokit)
 library(cladoRcpp)
 library(BioGeoBEARS)
 
-#######################################################
-# CUT: The old instructions to source() online upgrade .R files have been deleted,
-#         all updates are now on the GitHub version of the package, version 1.1+
-#######################################################
-
-#######################################################
-# (This local-sourcing is mostly useful for Nick, while actively developing)
-# Local source()-ing method -- uses BioGeoBEARS sourceall() function 
-# on a directory of .R files, so you don't have to type them out.
-# The directories here are on my machine, you would have to make a 
-# directory, save the .R files there, and refer to them.
-#
-# NOTE: it's best to source the "cladoRcpp.R" update first, to avoid warnings like this:
-##
-## Note: possible error in 'rcpp_calc_anclikes_sp_COOweights_faster(Rcpp_leftprobs = tmpca_1, ': 
-##         unused arguments (m = m, m_null_range = include_null_range, jts_matrix = jts_matrix) 
-##
-#
-# TO USE: Delete or comment out the 'source("http://...")' commands above, and un-comment
-#              the below...
-########################################################################
-# Un-comment (and fix directory paths) to use:
-#library(BioGeoBEARS)
-#source("/drives/Dropbox/_njm/__packages/cladoRcpp_setup/cladoRcpp.R")
-#sourceall("/drives/Dropbox/_njm/__packages/BioGeoBEARS_setup/")
-#calc_loglike_sp = compiler::cmpfun(calc_loglike_sp_prebyte)    # crucial to fix bug in uppass calculations
-#calc_independent_likelihoods_on_each_branch = compiler::cmpfun(calc_independent_likelihoods_on_each_branch_prebyte)
-########################################################################
+#######################################################################
 
 #######################################################
 # SETUP: YOUR WORKING DIRECTORY
@@ -126,9 +99,6 @@ trfn = "tree.newick"
 # Look at the raw Newick file:
 moref(trfn)
 
-# Tip labels
-cat(sort(tr$tip.label), sep="\n")
-
 # Look at your phylogeny (plots to a PDF, which avoids issues with multiple graphics in same window):
 pdffn = "tree.pdf"
 pdf(file=pdffn, width=9, height=12)
@@ -142,6 +112,11 @@ axisPhylo() # plots timescale
 dev.off()
 cmdstr = paste0("open ", pdffn)
 system(cmdstr)
+
+# Tip labels
+cat(sort(tr$tip.label), sep="\n")
+
+
 
 #######################################################
 # Geography file
@@ -1238,7 +1213,7 @@ lnum = 0
 # the same settings will be used for get_inputs_for_stochastic_mapping().
 #######################################################
 BSM_inputs_fn = "BSM_inputs_file.Rdata"
-runInputsSlow = TRUE
+runInputsslow = FALSE
 if (runInputsSlow)
     {
     stochastic_mapping_inputs_list = get_inputs_for_stochastic_mapping(res=res)
@@ -1255,7 +1230,7 @@ stochastic_mapping_inputs_list$COO_weights_columnar
 stochastic_mapping_inputs_list$unconstr
 set.seed(seed=as.numeric(Sys.time()))
 
-runBSMslow = TRUE
+runBSMslow = FALSE
 if (runBSMslow == TRUE)
     {
     # Saves to: RES_clado_events_tables.Rdata
@@ -1299,7 +1274,7 @@ colors_list_for_states = get_colors_for_states_list_0based(areanames=areanames, 
 # Setup for painting a single stochastic map
 ############################################
 scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
-stratified = FALSE
+stratified = TRUE
 clado_events_table = clado_events_tables[[1]]
 ana_events_table = ana_events_tables[[1]]
 
@@ -1451,11 +1426,15 @@ sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
 resdf = convert_BGB_lnL_to_ClaSSE(res, tr=tr, root_probs_biased=NULL)
 resdf
 
-
-
 converted_lnLs = convert_BGB_to_BGB_Yule_SFs(res, tr=tr)
 converted_lnLs
 
+# Yule process birthRate
+birthRate = (tr$Nnode-1)/sum(tr$edge.length)
+birthRate
+
+ML_yule_birthRate(tr)
+ML_yule_birthRate_wRoot(tr)
 
 
 
