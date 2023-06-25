@@ -34,7 +34,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, modify_tiplikes_sampling_fossils_v7!, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12
+export extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, modify_tiplikes_sampling_fossils_v7!, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12, juliaRes_to_Rdata, tuple_to_Rcode, build_optim_result
 
 #######################################################
 # Temporary file to store functions under development
@@ -1038,9 +1038,9 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 end # END function files_to_interpolators()
 
 #######################################################
-# Output a time-varying model to text files
+# Output a time-varying model to text files, for castor simulation
+# _sim , _simulation, not really .Rdata
 #######################################################
-
 """
 outfns = ["setup_df.txt",
 "timepoints.txt", 
@@ -1053,7 +1053,6 @@ outfns = ["setup_df.txt",
 "states_list.R"
 ]
 """
-
 function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 	area_names = p_Ds_v12.setup.area_names
 	# Initialize list of output filenames
@@ -1126,11 +1125,215 @@ function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
 			write(io, "\n")
 		end
 	end # END open,do
+	#close(io)
 	
 	outfns[9] = paste0([prefix2, "states_list.R"]);
 	states_list_to_R_cmd(p_Ds_v12.setup.states_list; outfn=outfns[9])
 	
 	return(outfns)
 end # END function model_to_text_v12(p_Ds_v12, timepoints; prefix="")
+
+
+#######################################################
+# Output a PhyBEARS results object to text files, for
+# input into an Rdata object like resDEC.Rdata
+#######################################################
+"""
+outfns = [
+"computed_likelihoods_at_each_node.txt"
+"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt"
+"condlikes_of_each_state.txt"
+"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt"
+"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt"
+"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt"
+"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt"
+"ML_marginal_prob_each_state_at_branch_top_AT_node.txt"
+"relative_probs_of_each_state_at_bottom_of_root_branch.txt"
+"total_loglikelihood.txt"
+"inputs.txt"
+"outputs.txt"
+"optim_result.txt"]
+"""
+function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, geogfn, trfn; outfns=NaN)
+	setup="""
+	res = resDECj;
+	geogfn = lgdata_fn
+
+	outfns = [
+	"computed_likelihoods_at_each_node.txt",
+	"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
+	"condlikes_of_each_state.txt",
+	"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
+	"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
+	"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
+	"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
+	"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
+	"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
+	"BioGeoBEARS_model_object.txt",
+	"res_inputs_tuple.R"]
+	""" # END setup
+
+	if (isnan(outfns) == true)
+		outfns = [
+		"computed_likelihoods_at_each_node.txt",
+		"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
+		"condlikes_of_each_state.txt",
+		"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
+		"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
+		"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
+		"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
+		"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
+		"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
+		"BioGeoBEARS_model_object.txt",
+		"res_inputs_tuple.R"]
+	end
+	
+	
+	numstates = length(res.anc_estimates_at_each_nodeIndex_branchTop[1])
+	
+	# Get Julia-to-R node ordering
+	sort!(trdf, :Rnodenums);
+	j2r = deepcopy(trdf.nodeIndex);
+	sort!(trdf, :nodeIndex);
+	j2r[1:5]
+	
+	
+	
+	computed_likelihoods_at_each_node = DataFrame(reshape(res.sumLikes_at_node_at_branchTop[j2r], length(res.sumLikes_at_node_at_branchTop[j2r]), 1), :auto); # vector to matrix to DF
+	relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS = vfft(deepcopy(res.normlikes_at_each_nodeIndex_branchTop[j2r,:]));
+	condlikes_of_each_state = vfft(deepcopy(res.likes_at_each_nodeIndex_branchTop[j2r,:]));
+	relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS = vfft(deepcopy(res.normlikes_at_each_nodeIndex_branchBot[j2r,:]));
+	relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS = vfft(deepcopy(res.uppass_probs_at_each_nodeIndex_branchBot[j2r,:]));
+	relative_probs_of_each_state_at_branch_top_AT_node_UPPASS = vfft(deepcopy(res.uppass_probs_at_each_nodeIndex_branchTop[j2r,:]));
+	ML_marginal_prob_each_state_at_branch_bottom_below_node = vfft(deepcopy(res.anc_estimates_at_each_nodeIndex_branchBot[j2r,:]));
+	ML_marginal_prob_each_state_at_branch_top_AT_node = vfft(deepcopy(res.anc_estimates_at_each_nodeIndex_branchTop[j2r,:]));
+	relative_probs_of_each_state_at_bottom_of_root_branch = repeat(["NA"], numstates);
+	relative_probs_of_each_state_at_bottom_of_root_branch = DataFrame(reshape(relative_probs_of_each_state_at_bottom_of_root_branch, length(relative_probs_of_each_state_at_bottom_of_root_branch), 1), :auto); # vector to matrix to DF
+	#total_loglikelihood = lnLs_tuple.total_loglikelihood
+	
+	# Write to files
+	CSV.write(outfns[1], computed_likelihoods_at_each_node; delim="\t")
+	CSV.write(outfns[2], relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS; delim="\t")
+	CSV.write(outfns[3], condlikes_of_each_state; delim="\t")
+	CSV.write(outfns[4], relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS; delim="\t")
+	CSV.write(outfns[5], relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS; delim="\t")
+	CSV.write(outfns[6], relative_probs_of_each_state_at_branch_top_AT_node_UPPASS; delim="\t")
+	CSV.write(outfns[7], ML_marginal_prob_each_state_at_branch_bottom_below_node; delim="\t")
+	CSV.write(outfns[8], ML_marginal_prob_each_state_at_branch_top_AT_node; delim="\t")
+	CSV.write(outfns[9], relative_probs_of_each_state_at_bottom_of_root_branch; delim="\t")
+
+	# A big tuple for the "res" object in BioGeoBEARS
+	julia_wd = getwd()
+	if (inputs.setup.include_null_range == true)
+		include_null_range = "TRUE"
+	else
+		include_null_range = "FALSE"
+	end
+
+	# BioGeoBEARS_model_object
+	CSV.write(outfns[10], inputs.bmo; delim="\t")
+	
+	# Various other inputs
+	res_inputs_tuple = (
+	geogfn = paste0(['"', geogfn, "'"]),
+	trfn = paste0(['"', trfn, "'"]),
+	abbr = "'res'",
+	description = "'PhyBEARS res object'",
+	timesfn = "''",
+	distsfn = "''",
+	dispersal_multipliers_fn = "''",
+	area_of_areas_fn = "''",
+	areas_allowed_fn = "''",
+	areas_adjacency_fn = "''",
+	detects_fn = "''",
+	controls_fn = "''",
+	max_range_size = inputs.setup.max_range_size,
+	force_sparse = "FALSE",
+	use_detection_model = "FALSE",
+	print_optim = "TRUE",
+	printlevel = 0,
+	on_NaN_error = -1e+50,
+	wd = paste0(['"', julia_wd, '"']),
+	num_cores_to_use = 1,
+	cluster_already_open = "FALSE",
+	use_optimx = "TRUE",
+	rescale_params = "FALSE",
+	return_condlikes_table = "TRUE",
+	calc_TTL_loglike_from_condlikes_table = "TRUE",
+	calc_ancprobs = "TRUE",
+	speedup = "TRUE",
+	include_null_range = include_null_range,
+	useAmbiguities = "FALSE",
+	min_branchlength = 1e-06,
+	allow_null_tips = "FALSE",
+	all_geog_states_list_usually_inferred_from_areas_maxareas = "''")
+	
+	# Write those inputs to R code
+	tuple_to_Rcode(res_inputs_tuple; outfn=outfns[11])
+	
+	return(outfns)
+end	# END function juliaRes_to_Rdata(res)
+
+"""
+Write a tuple to a .R file
+(source()ing the file in R will load the info as a list)
+"""
+function tuple_to_Rcode(res_inputs_tuple; outfn="res_inputs_tuple.R")
+	setup="""
+	outfn="res_inputs_tuple.R"
+	"""
+	
+	tmp_names = Rnames(res_inputs_tuple)
+	
+	# Write each line of the .R file
+	open(outfn, "w") do io
+		txt = "res_inputs_tuple = list()"
+		write(io, txt)
+		write(io, "\n")
+		for i=1:length(res_inputs_tuple)
+			txt = paste0(["res_inputs_tuple\$", tmp_names[i], " = ", string(res_inputs_tuple[i])])
+			write(io, txt)
+			write(io, "\n")
+		end
+	end # END open,do
+	#close(io)
+		
+	moref(outfn)
+	return(outfn)
+end # END function tuple_to_Rcode(res_inputs_tuple)
+
+
+
+"""
+Put the NLopt results into a DataFrame for saving to a text table
+"""
+function build_optim_result(opt, optf, optx, ret)
+	words = split(string(opt), ",")
+	str2 = words[1]
+	words = split(str2, "(")
+	rowname = words[2]
+	
+	p_colnames = repeat([""], length(optx))
+	for i in 1:length(p_colnames)
+		p_colnames[i] = paste0(["p", string(i)])
+	end
+	p_colnames
+	
+	value = -1 * optf
+	convcode = ret
+	tmpnames = vcat(["rowname", p_colnames, "value", "convcode"])
+	tmpnames = flat2(tmpnames)
+	#tmpnames = reshape(tmpnames, 1, length(tmpnames))
+	
+	tmpvals = flat2(vcat(rowname, optx, value, convcode))
+	tmpvals = reshape(tmpvals, 1, length(tmpvals))
+	optim_results = DataFrame(tmpvals, :auto)
+	
+	# See also rename_df!
+	rename!(optim_results, names(optim_results) .=> tmpnames)
+	
+	return(optim_results)
+end # END function build_optim_result(opt, optf, optx, ret)
+
 
 end # ENDING Parsers

@@ -36,12 +36,12 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
 #
 Check against:
-cd /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/
-Rscript /Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
+cd /GitHub/PhyBEARS.jl/ex/cinthy/
+Rscript /GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R
 """
 # 
 # """
@@ -203,7 +203,7 @@ Julia_sum_lq_nodes = sum(log.(sum.(res.likes_at_each_nodeIndex_branchTop))) + Ju
 @test round(DECj_R_result_total_LnLs1t, digits=1) == round(Julia_total_lnLs1t, digits=1)
 
 
-print("\nDifferences between Julia and R lnLs for\n/Users/nickm/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R\n calculation:\n")
+print("\nDifferences between Julia and R lnLs for\n/GitHub/PhyBEARS.jl/ex/cinthy/epic_M0_ML_BSM_v1.R\n calculation:\n")
 print("DECj_R_result_branch_lnL (lq) - Julia_sum_lq: ")
 print(DECj_R_result_branch_lnL - Julia_sum_lq)
 print("\n")
@@ -288,8 +288,8 @@ opt.upper_bounds
 #opt.ftol_abs = 0.001 # tolerance on log-likelihood
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
-
-
+# For saving to dataframe
+optim_results = build_optim_result(opt, optf, optx, ret)
 
 
 # Get the inputs & res:
@@ -400,12 +400,13 @@ bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_n
 
 
 
+# Ancestral states estimation
+uppass_ancstates_v7!(inputs.res, trdf, p_Ds_v7, solver_options);
+resDECj = deepcopy(inputs.res);
+lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
 
-
-
-
-
-
+juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, geogfn, trfn; outfns=NaN)
+CSV.write("optim_results.txt", optim_results; delim="\t")
 
 
 #######################################################
@@ -516,21 +517,29 @@ p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(inputs.res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
+
+# Ancestral states estimation
+uppass_ancstates_v7!(inputs.res, trdf, p_Ds_v7, solver_options);
 resDECj_BD = deepcopy(inputs.res);
+
 Rnames(resDECj_BD)
 vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop)
 vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop)
 vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot)
 vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot)
+vfft(resDECj_BD.anc_estimates_at_each_nodeIndex_branchBot)
+vfft(resDECj_BD.anc_estimates_at_each_nodeIndex_branchTop)
 
 rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchTop))
 rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchTop))
 rowSums(vfft(resDECj_BD.likes_at_each_nodeIndex_branchBot))
 rowSums(vfft(resDECj_BD.normlikes_at_each_nodeIndex_branchBot))
+rowSums(vfft(resDECj_BD.anc_estimates_at_each_nodeIndex_branchBot))
+rowSums(vfft(resDECj_BD.anc_estimates_at_each_nodeIndex_branchTop))
 
 
-
-
+# Write out to tables, for constructing a BioGeoBEARS R object
+lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
 
 
 
@@ -1179,8 +1188,6 @@ bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) - -log(1/yuleBirthRate) - (bd_ape
 
 bd_lnL_noTopo = bd_ape.lnL - bd_ape.lnl_topology
 bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_noTopo
-
-
 
 
 
