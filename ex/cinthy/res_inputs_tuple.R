@@ -1,6 +1,6 @@
 res_inputs_tuple = list()
-res_inputs_tuple$geogfn = "geog.data'
-res_inputs_tuple$trfn = "tree.newick'
+res_inputs_tuple$geogfn = "geog.data"
+res_inputs_tuple$trfn = "tree.newick"
 res_inputs_tuple$abbr = 'res'
 res_inputs_tuple$description = 'PhyBEARS res object'
 res_inputs_tuple$timesfn = ''

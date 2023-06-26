@@ -1734,3 +1734,103 @@ abs(all_lnLs_diffs - DEC_DECj_lnL_difference) < 0.01
 	}
 
 
+
+# R code goes with e.g.:
+# 
+# cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
+# include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+#
+PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
+	{
+	example_code='
+	wd = "/GitHub/PhyBEARS.jl/ex/cinthy/"
+	setwd(wd)
+	
+	outfns = c("computed_likelihoods_at_each_node.txt",
+	"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
+	"condlikes_of_each_state.txt",
+	"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
+	"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
+	"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
+	"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
+	"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
+	"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
+	"BioGeoBEARS_model_object.txt",
+	"optim_result.txt",
+	"lnLs_tuple.R",
+	"res_inputs_tuple.R")
+
+	
+	res = PhyBEARS_res_to_BGB_res(outfns)
+	' # END example_code
+	
+	# Load filenames
+	if (is.nan(outfns) == TRUE)
+		{
+		outfns = c("computed_likelihoods_at_each_node.txt",
+		"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
+		"condlikes_of_each_state.txt",
+		"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
+		"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
+		"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
+		"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
+		"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
+		"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
+		"BioGeoBEARS_model_object.txt",
+		"optim_result.txt",
+		"lnLs_tuple.R",
+		"res_inputs_tuple.R")
+		} # END if is.nan
+	
+	computed_likelihoods_at_each_node = read.table(outfns[1], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS = read.table(outfns[2], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	condlikes_of_each_state = read.table(outfns[3], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS = read.table(outfns[4], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS = read.table(outfns[5], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	relative_probs_of_each_state_at_branch_top_AT_node_UPPASS = read.table(outfns[6], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	ML_marginal_prob_each_state_at_branch_bottom_below_node = read.table(outfns[7], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	ML_marginal_prob_each_state_at_branch_top_AT_node = read.table(outfns[8], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	BioGeoBEARS_model_object = read.table(outfns[10], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	rownames(BioGeoBEARS_model_object) = BioGeoBEARS_model_object$rownames
+	BioGeoBEARS_model_object = BioGeoBEARS_model_object[,-1]
+	BioGeoBEARS_model_object[1:5, 1:6]
+	class(BioGeoBEARS_model_object) = "BioGeoBEARS_model"
+	attr(class(BioGeoBEARS_model_object),"package") = "BioGeoBEARS"
+	 
+	# Load optim_results
+	optim_result = read.table(outfns[11], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	class(res$optim_result) = c("Julia_NLopt", "data.frame")
+	
+	# Make lnLs_tuple
+	source(outfns[12])
+	lnLs_tuple
+	
+	# Makes res_inputs_tuple
+	source(outfns[13])
+	res_inputs_tuple
+	
+	
+	res = list()
+	res$computed_likelihoods_at_each_node = unname(c(computed_likelihoods_at_each_node))
+	res$relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS = relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS
+	res$condlikes_of_each_state = condlikes_of_each_state
+	res$relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS = relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS
+	res$relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS = relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS
+	res$relative_probs_of_each_state_at_branch_top_AT_node_UPPASS = relative_probs_of_each_state_at_branch_top_AT_node_UPPASS
+	res$ML_marginal_prob_each_state_at_branch_bottom_below_node = ML_marginal_prob_each_state_at_branch_bottom_below_node
+	res$ML_marginal_prob_each_state_at_branch_top_AT_node = ML_marginal_prob_each_state_at_branch_top_AT_node
+	res$relative_probs_of_each_state_at_bottom_of_root_branch = relative_probs_of_each_state_at_bottom_of_root_branch
+	res$lnLs = lnLs_tuple
+	res$total_loglikelihood = lnLs_tuple.total_loglikelihood
+	res$inputs = res_inputs_tuple
+	res$outputs = BioGeoBEARS_model_object
+	res$optim_result = optim_result
+
+	
+	
+	}
+
+
+
+
+

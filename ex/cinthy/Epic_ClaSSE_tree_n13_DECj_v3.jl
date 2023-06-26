@@ -405,9 +405,7 @@ uppass_ancstates_v7!(inputs.res, trdf, p_Ds_v7, solver_options);
 resDECj = deepcopy(inputs.res);
 lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
 
-juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, geogfn, trfn; outfns=NaN)
-CSV.write("optim_results.txt", optim_results; delim="\t")
-
+juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, optim_results, geogfn, trfn; outfns=NaN)
 
 #######################################################
 # ML inference on DEC+J + birth-death
