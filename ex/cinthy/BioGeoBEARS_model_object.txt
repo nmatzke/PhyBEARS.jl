@@ -1,5 +1,5 @@
 rownames	type	init	min	max	est	note	desc
-d	free	0.01	1.0e-12	4.999999999999	1.0e-12	works	anagenesis: rate of 'dispersal' (range expansion)
+d	free	0.01	1.0e-12	4.999999999999	0.0007339160404244127	works	anagenesis: rate of 'dispersal' (range expansion)
 e	free	0.01	1.0e-12	4.999999999999	1.0e-12	works	anagenesis: rate of 'extinction' (range contraction)
 a	fixed	0.0	1.0e-12	4.999999999999	0.0	works	anagenesis: rate of range-switching (i.e. for a standard char.)
 b	fixed	1.0	1.0e-12	0.999999999999	1.0	non-stratified only	anagenesis: exponent on branch lengths
@@ -12,14 +12,14 @@ w	fixed	1.0	-10.0	10.0	1.0	works	exponent on manual dispersal multipliers (modif
 u	fixed	0.0	-1.0	2.5	0.0	works	anagenesis: exponent on extinction risk with area (modifies e)
 u_e	u	0.0	-1.0	2.5	0.0	works	anagenesis: exponent on range extirpation risk with area (modifies e)
 u_mu	u	0.0	-1.0	2.5	0.0	works	u_mu: exponent on lineage extinction risk with area (modifies mu|deathRate)
-j	free	0.0	1.0e-5	2.99999	0.10999899813382318	works	cladogenesis: relative per-event weight of jump dispersal
-ysv	3-j	2.99999	1.0e-5	3.0	2.890001001866177	works	cladogenesis: y+s+v
-ys	ysv*2/3	1.99999	1.0e-5	2.0	1.9266673345774512	works	cladogenesis: y+s
-y	ysv*1/3	1.0	1.0e-5	1.0	0.9633336672887256	works	cladogenesis: relative per-event weight of sympatry (range-copying)
-s	ysv*1/3	1.0	1.0e-5	1.0	0.9633336672887256	works	cladogenesis: relative per-event weight of subset speciation
-v	ysv*1/3	1.0	1.0e-5	1.0	0.9633336672887256	works	cladogenesis: relative per-event weight of vicariant speciation
-birthRate	free	0.3288164	0.0	2.0	0.34816245870282203	works	speciation rate
-deathRate	free	0.0	0.0	2.0	0.0	works	extinction rate (lineages)
+j	free	0.0	1.0e-5	2.99999	0.0532046155148378	works	cladogenesis: relative per-event weight of jump dispersal
+ysv	3-j	2.99999	1.0e-5	3.0	2.946795384485162	works	cladogenesis: y+s+v
+ys	ysv*2/3	1.99999	1.0e-5	2.0	1.9645302563234415	works	cladogenesis: y+s
+y	ysv*1/3	1.0	1.0e-5	1.0	0.9822651281617207	works	cladogenesis: relative per-event weight of sympatry (range-copying)
+s	ysv*1/3	1.0	1.0e-5	1.0	0.9822651281617207	works	cladogenesis: relative per-event weight of subset speciation
+v	ysv*1/3	1.0	1.0e-5	1.0	0.9822651281617207	works	cladogenesis: relative per-event weight of vicariant speciation
+birthRate	fixed	0.3288164	0.0	2.0	0.11578	works	speciation rate
+deathRate	fixed	0.0	0.0	2.0	0.0	works	extinction rate (lineages)
 psiRate	fixed	0.0	0.0	2.0	0.0	works	sampling rate (fossils)
 mx01	fixed	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
 mx01j	mx01	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter

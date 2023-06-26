@@ -1295,11 +1295,11 @@ function tuple_to_Rcode(res_inputs_tuple; outfn="res_inputs_tuple.R")
 	
 	# Write each line of the .R file
 	open(outfn, "w") do io
-		txt = "res_inputs_tuple = list()"
+		txt = "input_tuple = list()"
 		write(io, txt)
 		write(io, "\n")
 		for i=1:length(res_inputs_tuple)
-			txt = paste0(["res_inputs_tuple\$", tmp_names[i], " = ", string(res_inputs_tuple[i])])
+			txt = paste0(["input_tuple\$", tmp_names[i], " = ", string(res_inputs_tuple[i])])
 			write(io, txt)
 			write(io, "\n")
 		end

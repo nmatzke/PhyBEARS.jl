@@ -1801,13 +1801,13 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	optim_result = read.table(outfns[11], header=TRUE, sep="\t", stringsAsFactors=FALSE)
 	class(res$optim_result) = c("Julia_NLopt", "data.frame")
 	
-	# Make lnLs_tuple
+	# Make input_tuple, into lnLs_tuple
 	source(outfns[12])
-	lnLs_tuple
+	lnLs_tuple = input_tuple
 	
-	# Makes res_inputs_tuple
+	# Makes input_tuple, into res_inputs_tuple
 	source(outfns[13])
-	res_inputs_tuple
+	res_inputs_tuple = input_tuple
 	
 	
 	res = list()
