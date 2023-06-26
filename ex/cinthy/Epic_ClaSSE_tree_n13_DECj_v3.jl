@@ -289,7 +289,7 @@ opt.upper_bounds
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
 # For saving to dataframe
-optim_results = build_optim_result(opt, optf, optx, ret)
+optim_result = build_optim_result(opt, optf, optx, ret)
 
 
 # Get the inputs & res:
@@ -403,10 +403,15 @@ bgb_lnL = Julia_sum_lq + log(sum(d_root_orig)) + log(1/yuleBirthRate) - bd_lnL_n
 # Ancestral states estimation
 uppass_ancstates_v7!(inputs.res, trdf, p_Ds_v7, solver_options);
 resDECj = deepcopy(inputs.res);
+geogfn = lgdata_fn
 lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
-
+optim_result = build_optim_result(opt, optf, optx, ret)
 juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, optim_results, geogfn, trfn; outfns=NaN)
-
+"""
+# Then run, in R:
+sourceall("~/HD/GitHub/PhyBEARS.jl/Rsrc/")
+res = PhyBEARS_res_to_BGB_res(outfns=NaN)
+"""
 
 
 #######################################################
