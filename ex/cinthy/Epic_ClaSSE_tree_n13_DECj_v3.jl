@@ -37,7 +37,7 @@ using PhyBEARS.Uppass
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/ex/cinthy/")
-include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v2.jl")
+include("/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v3.jl")
 #
 Check against:
 cd /GitHub/PhyBEARS.jl/ex/cinthy/
@@ -406,7 +406,7 @@ resDECj = deepcopy(inputs.res);
 geogfn = lgdata_fn
 lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
 optim_result = build_optim_result(opt, optf, optx, ret)
-juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, optim_results, geogfn, trfn; outfns=NaN)
+juliaRes_to_Rdata(resDECj, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outfns=NaN)
 """
 # Then run, in R:
 sourceall("~/HD/GitHub/PhyBEARS.jl/Rsrc/")

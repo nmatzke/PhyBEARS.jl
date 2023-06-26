@@ -1759,28 +1759,64 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	"optim_result.txt",
 	"lnLs_tuple.R",
 	"res_inputs_tuple.R")
-
 	
+	# In Julia, run:
+	# /Users/nmat471/HD/GitHub/PhyBEARS.jl/ex/cinthy/Epic_ClaSSE_tree_n13_DECj_v3.jl
+	# Then in R, run:
+	sourceall("~/HD/GitHub/PhyBEARS.jl/Rsrc/")
 	res = PhyBEARS_res_to_BGB_res(outfns)
+	resDECj = res
+	tr = read.tree(res$inputs$trfn)
+	tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=res$inputs$geogfn)
+	max(rowSums(dfnums_to_numeric(tipranges@df)))
+
+	max_range_size = res$inputs$max_range_size
+	include_null_range = res$inputs$include_null_range
+	
+	pdffn = "Psychotria_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"
+	pdf(pdffn, height=18, width=9)
+
+	#######################################################
+	# Plot ancestral states - DECJ
+	#######################################################
+	analysis_titletxt ="BioGeoBEARS DEC+J+Yule on Epic M0_unconstrained - from PhyBEARS"
+
+	# Setup
+	results_object = resDECj
+	scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
+
+	# States
+	res1 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)
+
+	# Pie chart
+	plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)
+
+	dev.off()  # Turn off PDF
+	cmdstr = paste("open ", pdffn, sep="")
+	system(cmdstr) # Plot it
+
 	' # END example_code
 	
 	# Load filenames
-	if (is.nan(outfns) == TRUE)
+	if (length(outfns) == 1)
 		{
-		outfns = c("computed_likelihoods_at_each_node.txt",
-		"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
-		"condlikes_of_each_state.txt",
-		"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
-		"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
-		"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
-		"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
-		"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
-		"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
-		"BioGeoBEARS_model_object.txt",
-		"optim_result.txt",
-		"lnLs_tuple.R",
-		"res_inputs_tuple.R")
-		} # END if is.nan
+		if (is.nan(outfns) == TRUE)
+			{
+			outfns = c("computed_likelihoods_at_each_node.txt",
+			"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
+			"condlikes_of_each_state.txt",
+			"relative_probs_of_each_state_at_branch_bottom_below_node_DOWNPASS.txt",
+			"relative_probs_of_each_state_at_branch_bottom_below_node_UPPASS.txt",
+			"relative_probs_of_each_state_at_branch_top_AT_node_UPPASS.txt",
+			"ML_marginal_prob_each_state_at_branch_bottom_below_node.txt",
+			"ML_marginal_prob_each_state_at_branch_top_AT_node.txt",
+			"relative_probs_of_each_state_at_bottom_of_root_branch.txt",
+			"BioGeoBEARS_model_object.txt",
+			"optim_result.txt",
+			"lnLs_tuple.R",
+			"res_inputs_tuple.R")
+			} # END if is.nan
+		} # END if length
 	
 	computed_likelihoods_at_each_node = read.table(outfns[1], header=TRUE, sep="\t", stringsAsFactors=FALSE)
 	relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS = read.table(outfns[2], header=TRUE, sep="\t", stringsAsFactors=FALSE)
@@ -1790,16 +1826,25 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	relative_probs_of_each_state_at_branch_top_AT_node_UPPASS = read.table(outfns[6], header=TRUE, sep="\t", stringsAsFactors=FALSE)
 	ML_marginal_prob_each_state_at_branch_bottom_below_node = read.table(outfns[7], header=TRUE, sep="\t", stringsAsFactors=FALSE)
 	ML_marginal_prob_each_state_at_branch_top_AT_node = read.table(outfns[8], header=TRUE, sep="\t", stringsAsFactors=FALSE)
-	BioGeoBEARS_model_object = read.table(outfns[10], header=TRUE, sep="\t", stringsAsFactors=FALSE)
-	rownames(BioGeoBEARS_model_object) = BioGeoBEARS_model_object$rownames
-	BioGeoBEARS_model_object = BioGeoBEARS_model_object[,-1]
-	BioGeoBEARS_model_object[1:5, 1:6]
-	class(BioGeoBEARS_model_object) = "BioGeoBEARS_model"
-	attr(class(BioGeoBEARS_model_object),"package") = "BioGeoBEARS"
+
+	# Normalize to remove rounding errors
+	ML_marginal_prob_each_state_at_branch_top_AT_node = ML_marginal_prob_each_state_at_branch_top_AT_node / rowSums(ML_marginal_prob_each_state_at_branch_top_AT_node)
+	ML_marginal_prob_each_state_at_branch_bottom_below_node[is.na(ML_marginal_prob_each_state_at_branch_bottom_below_node)] = 0.0
+	ML_marginal_prob_each_state_at_branch_bottom_below_node = ML_marginal_prob_each_state_at_branch_bottom_below_node / rowSums(ML_marginal_prob_each_state_at_branch_bottom_below_node)
+	
+	relative_probs_of_each_state_at_bottom_of_root_branch = read.table(outfns[9], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+
+	params_table = read.table(outfns[10], header=TRUE, sep="\t", stringsAsFactors=FALSE)
+	rownames(params_table) = params_table$rownames
+	params_table = params_table[,-1]
+	params_table[1:5, 1:6]
+	
+	BioGeoBEARS_model_object = define_BioGeoBEARS_model_object()
+	BioGeoBEARS_model_object@params_table = params_table
 	 
 	# Load optim_results
 	optim_result = read.table(outfns[11], header=TRUE, sep="\t", stringsAsFactors=FALSE)
-	class(res$optim_result) = c("Julia_NLopt", "data.frame")
+	#attr(res$optim_result, "class") = c("Julia_NLopt", "data.frame")
 	
 	# Make input_tuple, into lnLs_tuple
 	source(outfns[12])
@@ -1821,13 +1866,12 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	res$ML_marginal_prob_each_state_at_branch_top_AT_node = ML_marginal_prob_each_state_at_branch_top_AT_node
 	res$relative_probs_of_each_state_at_bottom_of_root_branch = relative_probs_of_each_state_at_bottom_of_root_branch
 	res$lnLs = lnLs_tuple
-	res$total_loglikelihood = lnLs_tuple.total_loglikelihood
+	res$total_loglikelihood = lnLs_tuple$total_loglikelihood
 	res$inputs = res_inputs_tuple
 	res$outputs = BioGeoBEARS_model_object
 	res$optim_result = optim_result
 
-	
-	
+	return(res)
 	}
 
 
