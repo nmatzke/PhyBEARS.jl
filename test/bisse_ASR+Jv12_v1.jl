@@ -162,8 +162,6 @@ interpolators.distances_interpolator(ts)
 interpolators.area_of_areas_interpolator(ts)
 
 
-
-
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 
 # Add Q, C interpolators
