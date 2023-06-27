@@ -58,20 +58,6 @@ uuid_strs[1]
 
 
 
-
-
-
-
-
-# Perhaps useful for Revise, but couldn't get Revise() to work on my Mac
-print("Adding package developing directories to LOAD_PATH (JULIA_LOAD_PATH externall)...")
-print("\n")
-push!(LOAD_PATH, "/GitHub/PhyBEARS.jl")
-print("Printing current LOAD_PATH:\n")
-print(LOAD_PATH)
-print("\n\n")
-
-
 # print("Setting up Revise...")
 # 
 # atreplinit() do repl
@@ -227,6 +213,8 @@ Psychotria_tree = readTopology("((((((((P_hawaiiensis_WaikamoiL1:0.9665748366,P_
 
 show(Psychotria_tree)
 
-#include("/GitHub/PhyBEARS.jl/test/runtests.jl")
 
+include("/GitHub/PhyBEARS.jl/test/runtests.jl")
+#include("/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
+#include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
 
