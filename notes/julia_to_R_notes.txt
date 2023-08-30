@@ -54,3 +54,7 @@ juliaRes_to_Rdata
 tuple_to_Rcode
 build_optim_result
 
+opd
+opf
+ls
+list.files
