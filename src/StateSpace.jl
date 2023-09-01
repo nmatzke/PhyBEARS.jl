@@ -2304,6 +2304,8 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 							continue # skip to next loop, no sister for vicariance
 						end
 						sort!(lstate)
+						print(states_list)
+						print(lstate)
 						lstate_index = (1:numstates)[[lstate] .== states_list][1]
 						lsize = length(lstate)
 						smaller_range_size = min(lsize, rsize)
