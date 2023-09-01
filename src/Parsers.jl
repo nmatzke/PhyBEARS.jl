@@ -34,7 +34,7 @@ print("...done.\n")
 
 
 # (1) List all function names here:
-export extract_first_integer_from_string, states_list_to_R_cmd, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, modify_tiplikes_sampling_fossils_v7!, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12, juliaRes_to_Rdata, tuple_to_Rcode, build_optim_result
+export extract_first_integer_from_string, states_list_to_R_cmd, states_list_to_binary, getranges_from_LagrangePHYLIP, tipranges_to_tiplikes, modify_tiplikes_sampling_fossils_v7!, check_tr_geog_tip_labels, parse_distances_fn, parse_areas_fn, parse_numbers_list_fn, parse_times_fn, files_to_interpolators, model_to_text_v12, juliaRes_to_Rdata, tuple_to_Rcode, build_optim_result
 
 #######################################################
 # Temporary file to store functions under development
@@ -116,6 +116,37 @@ function states_list_to_R_cmd(states_list; outfn="")
 	end # END if
 	
 	return(tmpstr5)
+end
+
+"""
+areas_list = setup.areas_list
+states_list = setup.states_list
+binary_states_df = states_list_to_binary(areas_list, states_list)
+
+# Assuming areas:
+# 1 = L = lowlands
+# 2 = M = mountains
+# 3 = D = dioecious
+# 4 = H = hermaphrodite
+# Remove states where D and H are both 0
+removeTF1 = binary_states_df[:,3] .+ binary_states_df[:,4] .== 0
+# Remove states where D and H are both 1
+removeTF2 = binary_states_df[:,3] .+ binary_states_df[:,4] .== 2
+# Remove states where L and M are both 0
+removeTF3 = binary_states_df[:,1] .+ binary_states_df[:,2] .== 0
+removeTF = (removeTF1 .+ removeTF2 .+ removeTF3) .> 0
+statenums_to_cut = (1:length(removeTF))[removeTF]
+statenums_to_keep = (1:length(removeTF))[removeTF .== false]
+new_statenums = 1:length(statenums_to_keep)
+
+"""
+function states_list_to_binary(areas_list, states_list)
+	binary_states_list = [Vector{Bool}(zeros(length(areas_list))) for _ = 1:length(states_list)]
+	for i in 1:length(states_list)
+		binary_states_list[i][states_list[i]] .= true
+	end
+	binary_states_df = vvdf(binary_states_list)  # vvdf: no rounding, so returns Bool; vfft: rounding
+	return(binary_states_df)
 end
 
 
