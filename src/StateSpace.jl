@@ -2300,6 +2300,9 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 					#if ( is_event_vicariance(ancstate, lstate, rstate) )
 						# Find the left state
 						lstate = ancstate[(!in).(ancstate,Ref(rstate))]
+						if (length(lstate) == 0)
+							continue # skip to next loop, no sister for vicariance
+						end
 						sort!(lstate)
 						lstate_index = (1:numstates)[[lstate] .== states_list][1]
 						lsize = length(lstate)
