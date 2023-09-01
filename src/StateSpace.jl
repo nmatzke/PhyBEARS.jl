@@ -2306,7 +2306,11 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 						sort!(lstate)
 						print(states_list)
 						print(lstate)
-						lstate_index = (1:numstates)[[lstate] .== states_list][1]
+						TF = [lstate] .== states_list
+						if (sum(TF) == 0)
+							continue # skip to next loop, no sister for vicariance
+						end
+						lstate_index = (1:numstates)[TF][1]
 						lsize = length(lstate)
 						smaller_range_size = min(lsize, rsize)
 						tmp_weightval = v_wt * maxent01vic[ancsize,smaller_range_size] * 1.0 * 1.0
