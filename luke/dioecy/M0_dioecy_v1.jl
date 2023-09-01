@@ -50,8 +50,8 @@ bmo.est[bmo.rownames .== "a"] .= 0.1;
 
 # Set up the model with 4 areas / traits; eliminate any xx11, 00xx, xx00 states
 numareas = 4;
-manual_states_list = Vector{Any}[[1, 3], [1, 4], [2, 3], [2, 4], [1, 2, 3], [1, 2, 4]]
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo, manual_states_list=manual_states_list);
+#manual_states_list = Vector{Any}[[1, 3], [1, 4], [2, 3], [2, 4], [1, 2, 3], [1, 2, 4]]
+inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # Edit states list
