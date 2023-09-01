@@ -2108,9 +2108,9 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	# Set up a dictionary for each rangesize category
 	if rangesizes[1] == 0
 		range_size_category_indexes_dict = Dict(0 => [1])
-	else if rangesizes[1] == 1
+	elseif rangesizes[1] == 1
 		range_size_category_indexes_dict = Dict(1 => [1])
-	else if rangesizes[1] > 1
+	elseif rangesizes[1] > 1
 		range_size_category_indexes_dict = Dict(1 => [rangesizes[1]])
 	end
 	
