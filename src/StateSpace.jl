@@ -2259,9 +2259,15 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	# Loop through possible rangesizes, starting at rangesize=2 areas
 	# (because vicariance can only happen, starting from 2+ areas)
 	############################################
+	max_size_of_range = maximum(range_size_category_indexes_dict).first
+	min_size_of_range = minimum(range_size_category_indexes_dict).first
+	if (min_size_of_range < 1)
+		min_size_of_range = 1
+	end
+	
 	# This line fails if include_null_ranges=false
 	#	if ((v_wt > min_precision) && (length(range_size_category_indexes_dict) > 2))
-	if ((v_wt > min_precision) && (maximum(range_size_category_indexes_dict).first > 1))
+	if ((v_wt > min_precision) && (max_size_of_range > 1) && (max_size_of_range > min_size_of_range))
 		# Loop through possible rangesizes, starting at rangesize=2 areas
 		for i in minimum(range_size_category_indexes_dict[2]):numstates
 			ancstate = states_list[i]
@@ -2283,7 +2289,7 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 			# WITHIN the anc areas--the tough thing here is that you don't have the indexes
 			
 			# Go through the states of the possible smaller descendants
-			for daughter_size in 1:(max_min_rangesize)
+			for daughter_size in min_size_of_range:(max_min_rangesize)
 				for state_index in range_size_category_indexes_dict[daughter_size]
 					rstate = states_list[state_index]
 					rstate_index = state_index
@@ -2351,7 +2357,7 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 			# WITHIN the anc areas--the tough thing here is that you don't have the indexes
 			
 			# Go through the states of the possible smaller descendants
-			for daughter_size in 1:(max_min_rangesize)
+			for daughter_size in min_size_of_range:(max_min_rangesize)
 				for state_index in range_size_category_indexes_dict[daughter_size]
 					rstate = states_list[state_index]
 					rstate_index = state_index
