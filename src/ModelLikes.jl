@@ -513,13 +513,13 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	end
 	
 	
-	if (use_manual_states_list == true)
+	if (use_manual_states_list == false)
 		states_list = areas_list_to_states_list(areas_list, max_range_size, include_null_range)
 		n = length(states_list)
 	else
 		states_list = manual_states_list
 		n = length(states_list)
-	end # END if isnan(manual_states_list) == true
+	end # END if (use_manual_states_list == false)
 
 	# Make a list of text labels for the ranges
 	txt_states_list = states_list_to_txt(states_list, area_names)	
