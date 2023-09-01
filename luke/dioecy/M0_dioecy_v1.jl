@@ -32,7 +32,7 @@ tr = readTopology(trfn)
 lgdata_fn = "geog.txt"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 rowSums_df(geog_df)
-maximum(rowSums_df(geog_df[:,2]))
+maximum(rowSums_df(geog_df))
 minimum(rowSums_df(geog_df))
 
 # Add trait to bmo
@@ -44,10 +44,14 @@ geotrait_fn = "geog+trait.txt"
 geotrait_df = Parsers.getranges_from_LagrangePHYLIP(geotrait_fn)
 
 bmo = construct_BioGeoBEARS_model_object();
+bmo.type[bmo.rownames .== "a"] .= "free";
+bmo.init[bmo.rownames .== "a"] .= 0.1;
+bmo.est[bmo.rownames .== "a"] .= 0.1;
 
 # Set up the model with 4 areas / traits; eliminate any xx11, 00xx, xx00 states
 numareas = 4;
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
+manual_states_list = Vector{Any}[[1, 3], [1, 4], [2, 3], [2, 4], [1, 2, 3], [1, 2, 4]]
+inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo, manual_states_list=manual_states_list);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # Edit states list
@@ -68,7 +72,7 @@ statenums_to_cut = (1:length(removeTF))[removeTF]
 statenums_to_keep = (1:length(removeTF))[removeTF .== false]
 new_statenums = 1:length(statenums_to_keep)
 
-
+# Systematically edit everything
 
 
 prtCp(p_Ds_v5)
