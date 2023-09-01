@@ -2304,8 +2304,8 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 							continue # skip to next loop, no sister for vicariance
 						end
 						sort!(lstate)
-						print(states_list)
-						print(lstate)
+						#print(states_list)
+						#print(lstate)
 						TF = [lstate] .== states_list
 						if (sum(TF) == 0)
 							continue # skip to next loop, no sister for vicariance
