@@ -42,6 +42,7 @@ minimum(rowSums_df(geog_df))
 # D = Dioecious
 geotrait_fn = "geog+trait.txt"
 geotrait_df = Parsers.getranges_from_LagrangePHYLIP(geotrait_fn)
+area_names = names(geotrait_df)[2:ncol(geotrait_df)]
 
 bmo = construct_BioGeoBEARS_model_object();
 bmo.type[bmo.rownames .== "a"] .= "free";
@@ -51,7 +52,8 @@ bmo.est[bmo.rownames .== "a"] .= 0.1;
 # Set up the model with 4 areas / traits; eliminate any xx11, 00xx, xx00 states
 numareas = 4;
 #manual_states_list = Vector{Any}[[1, 3], [1, 4], [2, 3], [2, 4], [1, 2, 3], [1, 2, 4]]
-inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
+#inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo);
+inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geotrait_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=false, bmo=bmo, manual_states_list=NaN, area_names=area_names);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 # Edit states list
@@ -60,6 +62,9 @@ setup.area_names
 areas_list = setup.areas_list
 states_list = setup.states_list
 binary_states_df = states_list_to_binary(areas_list, states_list)
+
+
+
 
 # Remove states where D and H are both 0
 removeTF1 = binary_states_df[:,3] .+ binary_states_df[:,4] .== 0
@@ -71,6 +76,15 @@ removeTF = (removeTF1 .+ removeTF2 .+ removeTF3) .> 0
 statenums_to_cut = (1:length(removeTF))[removeTF]
 statenums_to_keep = (1:length(removeTF))[removeTF .== false]
 new_statenums = 1:length(statenums_to_keep)
+
+# Old-to-New Dictionary (ond)
+orig2new_statenums = Rcbind(statenums_to_keep, new_statenums)
+ond = Dict{Int64,Int64}(eachrow(orig2new_statenums))
+(ond::Dict)(k) = ond[k]  # make it a broadcastable function
+setup.observed_statenums
+ond.(setup.observed_statenums)
+
+Rcbind(setup.observed_statenums, ond.(setup.observed_statenums))
 
 # Systematically edit everything
 
