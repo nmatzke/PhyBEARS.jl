@@ -50,13 +50,48 @@ bmo_rows = setup.bmo_rows
 
 
 
+# inputs.res: subset to new space space
+# node-tops (no subset needed)
+regime = res.regime
+node_state = res.node_state
+node_method = res.node_method
+node_Lparent_state = res.node_Lparent_state
+node_Rparent_state = res.node_Rparent_state
+root_nodeIndex = res.root_nodeIndex
+numNodes = res.numNodes
+uppass_edgematrix = res.uppass_edgematrix
+thread_for_each_nodeOp = res.thread_for_each_nodeOp
+thread_for_each_branchOp = res.thread_for_each_branchOp
+calc_spawn_start = res.calc_spawn_start
+calc_start_time = res.calc_start_time
+calc_end_time = res.calc_end_time
+calc_duration = res.calc_duration
+calctime_iterations = res.calctime_iterations
 
+# subset
+sampling_f = res.sampling_f[statenums_to_keep]
+tipsamp_f = res.tipsamp_f[statenums_to_keep]
 
+# branch-tops (nodes)
+sumLikes_at_node_at_branchTop = res.sumLikes_at_node_at_branchTop
+lnL_at_node_at_branchTop = res.lnL_at_node_at_branchTop
+lq_at_branchBot = res.lq_at_branchBot
+like_at_branchBot = res.like_at_branchBot
 
-
-
-
-
+# Subset each node/row to the new number of states / columns
+Es_at_each_nodeIndex_branchTop = subvv(res.Es_at_each_nodeIndex_branchTop, statenums_to_keep)
+Es_at_each_nodeIndex_branchBot = subvv(res.Es_at_each_nodeIndex_branchBot, statenums_to_keep)
+fakeX0s_at_each_nodeIndex_branchTop = subvv(res.fakeX0s_at_each_nodeIndex_branchTop, statenums_to_keep)
+likes_at_each_nodeIndex_branchTop = subvv(res.likes_at_each_nodeIndex_branchTop, statenums_to_keep)
+normlikes_at_each_nodeIndex_branchTop = subvv(res.normlikes_at_each_nodeIndex_branchTop, statenums_to_keep)
+likes_at_each_nodeIndex_branchBot = subvv(res.likes_at_each_nodeIndex_branchBot, statenums_to_keep)
+normlikes_at_each_nodeIndex_branchBot = subvv(res.normlikes_at_each_nodeIndex_branchBot, statenums_to_keep)
+uppass_probs_at_each_nodeIndex_branchBot = subvv(res.uppass_probs_at_each_nodeIndex_branchBot, statenums_to_keep)
+anc_estimates_at_each_nodeIndex_branchBot = subvv(res.anc_estimates_at_each_nodeIndex_branchBot, statenums_to_keep)
+uppass_probs_at_each_nodeIndex_branchTop = subvv(res.uppass_probs_at_each_nodeIndex_branchTop, statenums_to_keep)
+anc_estimates_at_each_nodeIndex_branchTop = subvv(res.anc_estimates_at_each_nodeIndex_branchTop, statenums_to_keep)
+fixNodesMult_at_each_nodeIndex_branchBot = subvv(res.fixNodesMult_at_each_nodeIndex_branchBot, statenums_to_keep)
+fixNodesMult_at_each_nodeIndex_branchTop = subvv(res.fixNodesMult_at_each_nodeIndex_branchTop, statenums_to_keep)
 
 
 
