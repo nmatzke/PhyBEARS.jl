@@ -3,6 +3,7 @@
 
 # Double inputs.setup for a trait
 trait_states_txt = ["H", "D"]   # hermaphrodite, dioecy
+trait_areanums = [3,4]
 num_trait_states = length(trait_states_txt)
 nt = num_trait_states
 
@@ -95,16 +96,23 @@ fixNodesMult_at_each_nodeIndex_branchTop = subvv(res.fixNodesMult_at_each_nodeIn
 
 
 
+# Subset inputs.p_Ds_v5
+# inputs.p_Ds_v5.params
+# inputs.p_Ds_v5.p_indices
+# inputs.p_Ds_v5.p_TFs
 
+# inputs.p_Ds_v5.uE
+uE = p_Ds_v5.uE[statenums_to_keep]
 
+# inputs.p_Ds_v5.p_indices
+rn(inputs.p_Ds_v5.p_indices)
 
-
-
-
-
-
-
-
+# Subset the Q matrix to only states you are keeping
+Qdf = prtQp(inputs.p_Ds_v5)
+keepTF = R_in(Qdf.i, statenums_to_keep);
+TF = R_in(Qdf.j, statenums_to_keep);
+keepTF[TF] .= true;
+sum(keepTF)
 
 # inputs.setup: Anagenetic transitions shortcuts - edit after re-doing anagenesis table
 d_rows = setup.d_rows
@@ -116,8 +124,114 @@ a_froms = setup.a_froms
 a_tos = setup.a_tos
 a_arows = setup.a_arows
 e_rows = setup.e_rows
+
+# Areas gained and lost;
+# when areas 3 and 4 are traits (H and D), no d events should add them
+# when areas 3 and 4 are traits (H and D), no e events should lose them
+
 gains = setup.gains
 losses = setup.losses
+
+dTF = Qdf.event .== "d"
+gain_of_trait_TF = R_in_vv_ints(gains, trait_areanums)
+prohibitTF = (dTF .+ gain_of_trait_TF) .== 2
+keepTF[prohibitTF] .= false
+sum(keepTF)
+
+eTF = Qdf.event .== "e"
+loss_of_trait_TF = R_in_vv_ints(losses, trait_areanums)
+prohibitTF = (eTF .+ loss_of_trait_TF) .== 2
+keepTF[prohibitTF] .= false
+sum(keepTF)
+
+
+# The "a" events should have only gains/losses in trait states (3->4 and 4->3)
+z = DataFrame(Rcbind(vv_to_v_ints(gains), vv_to_v_ints(losses)), :auto)
+z = rename_df!(z, ["gains", "losses"])
+Qdfz = Rcbind(Qdf, z)
+
+aTF = Qdf.event .== "a"
+loss_of_trait_TF = R_in_vv_ints(losses, trait_areanums)
+gain_of_trait_TF = R_in_vv_ints(gains, trait_areanums)
+a_events_to_keepTF = (aTF .+ loss_of_trait_TF .+ gain_of_trait_TF) .== 3
+# Apply only to a events
+keepTF[aTF][a_events_to_keepTF[aTF] .== false] .= false
+sum(keepTF)  # no change, as the matching "a" events were all excluded based on statenums_to_keep
+
+# Reduced Q matrix
+Qdfz[keepTF,:]
+
+# Add the necessary "a" events in the Q matrix (off-diagonal events)
+num_nonzero_rates = length(statenums_to_keep) * (length(statenums_to_keep) - 1)
+
+# Initialize empty arrays
+Qarray_ivals = repeat(Int64[0], num_nonzero_rates)
+Qarray_jvals = repeat(Int64[0], num_nonzero_rates)
+Qarray_i_losses = repeat(Int64[0], num_nonzero_rates)
+Qarray_j_gains = repeat(Int64[0], num_nonzero_rates)
+
+Qij_vals =  repeat(Float64[0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
+Qij_vals_t =  repeat(Float64[0.0], num_nonzero_rates)  # 0-element Array{Any,1}  
+										 # This is populated by calculating through the others
+#base_vals = Array{Float64, num_nonzero_rates}  # base rates -- d, e, a
+#mod_vals = Array{Float64, num_nonzero_rates}  # base modifiers -- e.g., "2" for AB -> ABC
+#mult_vals = Array{Float64, num_nonzero_rates} # multipliers from mult_mat, e_mult 
+# (ie modification by distance, area, etc.)
+Qarray_event_types = repeat(String[""], num_nonzero_rates)
+index = 0
+
+numstates_new = length(states_list)
+index = 0
+for i in 1:(numstates_new-1)
+	for j in (i+1):numstates_new
+		areas_i = Vector{Int64}(states_list[i])
+		areas_j = Vector{Int64}(states_list[j])
+		
+		# Must have same number of areas
+		if (length(areas_i) != length(areas_j))
+			continue
+		end
+		
+		#shared_areas = intersect(areas_j, areas_i)
+		#all_areas = union(areas_j, areas_i)
+		diff_areas = sort!(symdiff(areas_j, areas_i))
+		diff_areas = Vector{Int64}(diff_areas)
+		
+		# If there are 2 different areas, and they are both in the trait_areanums vector,
+		# then it's a trait-transition "a" event:
+		TF = R_in(diff_areas, trait_areanums);
+		if (sum(TF) == length(TF))
+			print(i)
+			print(j)
+			
+			index = index + 1
+			Qarray_event_types[index] = "a"
+			Qarray_ivals[index] = i
+			Qarray_jvals[index] = j
+			Qarray_i_losses[index] = intersect(areas_i, diff_areas)[1]
+			Qarray_j_gains[index] = intersect(areas_j, diff_areas)[1]
+			Qij_vals[index] = 0.123
+			Qij_vals_t[index] = 0.123
+			
+			# Reverse event, as well
+			index = index + 1
+			Qarray_event_types[index] = "a"
+			Qarray_ivals[index] = j
+			Qarray_jvals[index] = i
+			Qarray_i_losses[index] = intersect(areas_j, diff_areas)[1]
+			Qarray_j_gains[index] = intersect(areas_i, diff_areas)[1]
+			Qij_vals[index] = 0.123
+			Qij_vals_t[index] = 0.123
+
+		end
+	end
+end
+
+Qdf_add_as = DataFrame(event=Qarray_event_types, i=Qarray_ivals, j=Qarray_jvals, val=Qij_vals, vals_t=Qij_vals_t, gains=Qarray_j_gains, losses=Qarray_i_losses);
+Qdf_add_as = Qdf_add_as[1:index,:]
+
+
+
 
 # inputs.setup: Cladogenetic transitions shortcuts - edit after re-doing cladogenesis table
 j_rows = setup.j_rows
