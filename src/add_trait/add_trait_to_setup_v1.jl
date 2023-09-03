@@ -111,7 +111,8 @@ rn(inputs.p_Ds_v5.p_indices)
 Qdf = prtQp(inputs.p_Ds_v5)
 keepTF = R_in(Qdf.i, statenums_to_keep);
 TF = R_in(Qdf.j, statenums_to_keep);
-keepTF[TF] .= true;
+keepTF[TF.==false] .= false;
+Qdf[keepTF,:]
 sum(keepTF)
 
 # inputs.setup: Anagenetic transitions shortcuts - edit after re-doing anagenesis table
@@ -137,6 +138,7 @@ gain_of_trait_TF = R_in_vv_ints(gains, trait_areanums)
 prohibitTF = (dTF .+ gain_of_trait_TF) .== 2
 keepTF[prohibitTF] .= false
 sum(keepTF)
+Qdf[keepTF,:]
 
 eTF = Qdf.event .== "e"
 loss_of_trait_TF = R_in_vv_ints(losses, trait_areanums)
@@ -148,7 +150,7 @@ sum(keepTF)
 # The "a" events should have only gains/losses in trait states (3->4 and 4->3)
 z = DataFrame(Rcbind(vv_to_v_ints(gains), vv_to_v_ints(losses)), :auto)
 z = rename_df!(z, ["gains", "losses"])
-Qdfz = Rcbind(Qdf, z)
+Qdf_gl = Rcbind(Qdf, z)
 
 aTF = Qdf.event .== "a"
 loss_of_trait_TF = R_in_vv_ints(losses, trait_areanums)
@@ -159,7 +161,12 @@ keepTF[aTF][a_events_to_keepTF[aTF] .== false] .= false
 sum(keepTF)  # no change, as the matching "a" events were all excluded based on statenums_to_keep
 
 # Reduced Q matrix
-Qdfz[keepTF,:]
+Qdf_reduced = Qdf_gl[keepTF,:]
+
+# Convert the i and j states to the new numbering
+Qdf_reduced.i = ond.(Qdf_reduced.i);
+Qdf_reduced.j = ond.(Qdf_reduced.j);
+Qdf_reduced
 
 # Add the necessary "a" events in the Q matrix (off-diagonal events)
 num_nonzero_rates = length(statenums_to_keep) * (length(statenums_to_keep) - 1)
@@ -227,10 +234,12 @@ for i in 1:(numstates_new-1)
 	end
 end
 
-Qdf_add_as = DataFrame(event=Qarray_event_types, i=Qarray_ivals, j=Qarray_jvals, val=Qij_vals, vals_t=Qij_vals_t, gains=Qarray_j_gains, losses=Qarray_i_losses);
-Qdf_add_as = Qdf_add_as[1:index,:]
+Qdf_add_As = DataFrame(event=Qarray_event_types, i=Qarray_ivals, j=Qarray_jvals, val=Qij_vals, vals_t=Qij_vals_t, gains=Qarray_j_gains, losses=Qarray_i_losses);
+Qdf_add_As = Qdf_add_As[1:index,:]
 
+Qdf_new = Rrbind(Qdf_reduced, Qdf_add_As)
 
+# Q matrix DONE
 
 
 # inputs.setup: Cladogenetic transitions shortcuts - edit after re-doing cladogenesis table
