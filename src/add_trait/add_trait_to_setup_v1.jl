@@ -116,15 +116,15 @@ Qdf[keepTF,:]
 sum(keepTF)
 
 # inputs.setup: Anagenetic transitions shortcuts - edit after re-doing anagenesis table
-d_rows = setup.d_rows
-d_froms = setup.d_froms
-d_tos = setup.d_tos
-d_drows = setup.d_drows
-a_rows = setup.a_rows
-a_froms = setup.a_froms
-a_tos = setup.a_tos
-a_arows = setup.a_arows
-e_rows = setup.e_rows
+# d_rows = setup.d_rows
+# d_froms = setup.d_froms
+# d_tos = setup.d_tos
+# d_drows = setup.d_drows
+# a_rows = setup.a_rows
+# a_froms = setup.a_froms
+# a_tos = setup.a_tos
+# a_arows = setup.a_arows
+# e_rows = setup.e_rows
 
 # Areas gained and lost;
 # when areas 3 and 4 are traits (H and D), no d events should add them
@@ -238,8 +238,39 @@ Qdf_add_As = DataFrame(event=Qarray_event_types, i=Qarray_ivals, j=Qarray_jvals,
 Qdf_add_As = Qdf_add_As[1:index,:]
 
 Qdf_new = Rrbind(Qdf_reduced, Qdf_add_As)
+gains_new = vec_to_vecvec(Qdf_new.gains; nodata=-999)
+losses_new = vec_to_vecvec(Qdf_new.losses; nodata=-999)
 
 # Q matrix DONE
+
+# inputs.setup: Anagenetic transitions shortcuts - edit after re-doing anagenesis table
+d_rows = (1:nrow(Qdf_new))[Qdf_new.event .== "d"]
+#d_froms = setup.d_froms
+d_tos = setup.d_tos
+d_drows = setup.d_drows
+a_rows = (1:nrow(Qdf_new))[Qdf_new.event .== "a"]
+a_froms = setup.a_froms
+a_tos = setup.a_tos
+a_arows = setup.a_arows
+e_rows = (1:nrow(Qdf_new))[Qdf_new.event .== "e"]
+
+# The _froms and _tos are Vectors of Ints, i.e. starting and ending area numbers
+# (they are NOT in lists; this is to avoid loops-within-loops)
+d_froms = Vector{Int64}(undef, 0)
+d_tos = Vector{Int64}(undef, 0)
+d_drows = Vector{Int64}(undef, 0)
+for i in 1:length(d_rows)
+	starting_areas = states_list[Qarray_ivals[d_rows[i]]]
+	ending_area = gains[d_rows[i]]
+	for j in 1:length(starting_areas)
+		push!(d_froms, starting_areas[j])
+		push!(d_tos, ending_area[1])
+		push!(d_drows, d_rows[i])
+	end
+end
+
+
+
 
 
 # inputs.setup: Cladogenetic transitions shortcuts - edit after re-doing cladogenesis table
