@@ -50,10 +50,10 @@ library(binsreg)
 
 
 # Bins plot *including* 0s and 1s ("plotyrange" doesn't appear to work to set y-axis, boo!)
-binsreg(y=df1$control_csp, x=df1$node_age, line=NULL, noplot=FALSE, plotyrange=c(0,1))
+binsreg(y=df1$control_csp, x=df1$node_age, line=NULL, plotyrange=c(0,1))
 title("df1$control_csp")
 # with 95% CI
-binsreg_df1_control_csp = binsreg(y=df1$control_csp, x=df1$node_age, line=TRUE, ci=TRUE, noplot=FALSE, plotyrange=c(0,1))
+binsreg_df1_control_csp = binsreg(y=df1$control_csp, x=df1$node_age, line=TRUE, ci=TRUE, plotyrange=c(0,1))
 title("df1$control_csp")
 
 # Bins plot *excluding* 0s and 1s ("plotyrange" doesn't appear to work to set y-axis, boo!)
