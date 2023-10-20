@@ -256,3 +256,20 @@ with(summary(glm_df2_CSP_csp), 1 - deviance/null.deviance)
 # NOTE: AICs and lnLs can be compared on *identical* datasets, but not different datasets
 #######################################################
 
+
+
+
+# Trying a logit plot, for kicks:
+xvals = df1$node_age
+yvals = df1$control_csp
+
+# Subtract a tiny random bit from y=1.0
+yvals[yvals == 1.0] = yvals[yvals == 1.0] - runif(n=sum(yvals == 1.0), min=0, max=0.000001)
+yvals[yvals == 0.0] = yvals[yvals == 0.0] + runif(n=sum(yvals == 0.0), min=0, max=0.000001)
+
+
+plot(xvals, yvals)
+title("Standard plot of node age vs. accuracy for df1$control_csp")
+plot(xvals, logit(yvals))
+title("Plot of node age vs. logit(accuracy) for df1$control_csp")
+
