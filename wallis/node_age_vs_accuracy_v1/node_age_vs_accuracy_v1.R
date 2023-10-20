@@ -221,6 +221,7 @@ AIC(glm_df1_control_csp)
 
 # calculate McFadden's R-squared for GLM model with logit link function
 # https://www.statology.org/glm-r-squared/
+# 0.4 is considered "high", so 0.1 is meaningful
 with(summary(glm_df1_control_csp), 1 - deviance/null.deviance)
 
 
@@ -234,6 +235,7 @@ AIC(glm_df1_spread_csp)
 
 # calculate McFadden's R-squared for GLM model with logit link function
 # https://www.statology.org/glm-r-squared/
+# 0.4 is considered "high", so 0.1 is meaningful
 with(summary(glm_df1_spread_csp), 1 - deviance/null.deviance)
 
 
@@ -245,6 +247,7 @@ AIC(glm_df2_CSP_csp)
 
 # calculate McFadden's R-squared for GLM model with logit link function
 # https://www.statology.org/glm-r-squared/
+# 0.4 is considered "high", so 0.1 is meaningful
 with(summary(glm_df2_CSP_csp), 1 - deviance/null.deviance)
 
 
