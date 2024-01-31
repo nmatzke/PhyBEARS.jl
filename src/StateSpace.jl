@@ -14,7 +14,7 @@ using DataFrames     # for e.g. DataFrame()
 using PhyloBits
 using Distributions  # for quantile
 using PhyBEARS.MaxentInterp # for discrete_maxent_distrib_of_smaller_daughter_ranges
-using PhyloBits.TrUtils # for e.g. flat2
+using PhyloBits.TrUtils # for e.g. flat2, isnan2
 
 print("...done.\n")
 
@@ -1303,7 +1303,7 @@ function setup_DEC_Cmat(areas_list, states_list, maxent01=NaN, Cparams=default_C
 	
 	# Check if max_range_size=NaN
 	type_string = string(typeof(maxent01))
-	if (startswith(type_string, "NamedTuple") == false) && (isnan(maxent01) == true)
+	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(maxent01) == true)
 		maxent01 = maxent01_defaults(total_numareas)
 	end
 	
@@ -1664,7 +1664,7 @@ function setup_DEC_Cmat2(areas_list, states_list, maxent01=NaN, Cparams=default_
 	
 	# Check if max_range_size=NaN
 	type_string = string(typeof(maxent01))
-	if (startswith(type_string, "NamedTuple") == false) && (isnan(maxent01) == true)
+	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(maxent01) == true)
 		maxent01 = maxent01_defaults(total_numareas)
 	end
 	
@@ -2034,7 +2034,7 @@ function setup_DEC_Cmat3(areas_list, states_list, maxent01=NaN, Cparams=default_
 	
 	# Check if max_range_size=NaN
 	type_string = string(typeof(maxent01))
-	if (startswith(type_string, "NamedTuple") == false) && (isnan(maxent01) == true)
+	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(maxent01) == true)
 		maxent01 = maxent01_defaults(total_numareas)
 	end
 	

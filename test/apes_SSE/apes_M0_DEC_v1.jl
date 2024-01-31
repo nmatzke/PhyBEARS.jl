@@ -53,6 +53,7 @@ lgdata_fn = "geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
 include_null_range = true
 numareas = Rncol(geog_df)-1
+area_names = names(geog_df)[2:length(names(geog_df))]
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 
@@ -72,7 +73,7 @@ bmo.est[bmo.rownames .== "x"] .= 0.0;
 bmo.est[:] .= bmo_updater_v1_SLOW(bmo);
 
 # Set up the model
-inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
+inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo, manual_states_list=NaN, area_names=area_names, fossils_older_than=1e-5, allow_null_cladogenesis=false);
 (setup, res, trdf, bmo, files, solver_options, p_Ds_v5, Es_tspan) = inputs;
 
 p_Es_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo);
