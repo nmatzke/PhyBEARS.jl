@@ -20,7 +20,7 @@ using Base.Threads  # <-- this is good for @spawn, Distributed.@spawn is BAD, it
 using Random					# for MersenneTwister()
 using Dates						# for e.g. DateTime, Dates.now()
 using PhyloBits
-using PhyloBits.TrUtils # for flat2() (similar to unlist), LETTERS, and 
+using PhyloBits.TrUtils # for flat2() (similar to unlist), LETTERS, isnan2, and 
                         # pair_of_indices_to_single_index_column_first()
 using PhyloBits.PNtypes
 #using Plots						# for plot
@@ -77,7 +77,7 @@ function setup_MuSSE_biogeo(numstates=2, tr=readTopology("((chimp:1,human:1):1,g
 	numareas = length(areas_list)
 	
 	type_string = string(typeof(in_params))
-	if (startswith(type_string, "NamedTuple") == false) && (isnan(in_params) == true)
+	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(in_params) == true)
 		in_params = (birthRate=0.2, deathRate=0.0, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
 	end
 	
@@ -487,7 +487,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	
 	
 #	type_string = string(typeof(in_params))
-#	if (startswith(type_string, "NamedTuple") == false) && (isnan(in_params) == true)
+#	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(in_params) == true)
 #		in_params = (birthRate=0.2, deathRate=0.0, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
 #	end
 	
@@ -503,7 +503,7 @@ function setup_DEC_SSE2(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorill
 	# Carray (and 0 for the relevant transitions in the Q matrix as well)
 	use_manual_states_list = false
 	if (length(manual_states_list) == 1)
-		if (isnan(manual_states_list) == true)
+		if (PhyloBits.TrUtils.isnan2(manual_states_list) == true)
 			use_manual_states_list = false
 		else
 			use_manual_states_list = true
@@ -1000,7 +1000,7 @@ function setup_DEC_SSE(numareas=2, tr=readTopology("((chimp:1,human:1):1,gorilla
 	total_numareas = length(areas_list)
 	
 	type_string = string(typeof(in_params))
-	if (startswith(type_string, "NamedTuple") == false) && (isnan(in_params) == true)
+	if (startswith(type_string, "NamedTuple") == false) && (PhyloBits.TrUtils.isnan2(in_params) == true)
 		in_params = (birthRate=0.2, deathRate=0.0, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)
 	end
 	
