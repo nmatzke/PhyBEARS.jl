@@ -1,4 +1,6 @@
-
+# install.packages("blm")  # for logit() and expit/inverse of logit
+library(blm)
+library(BioGeoBEARS)
 
 # START Plot to PDF, if desired
 pdffn = "node_age_vs_accuracy_plots_v1.pdf"
