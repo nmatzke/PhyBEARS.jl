@@ -98,6 +98,9 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 end
 
+print(paste0(("test: ", "apes_M0_DEC_v1.jl", "apes", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL); delim="\t"))
+
+
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
@@ -118,6 +121,9 @@ get_max_df_diffs_byCol(df1top, df2top)
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
 	@test all(flat2(compare_dfs(df1top, df2top; tol=1e-4) .== 1.0))
 end
+
+print(paste0(("test: ", "apes_M0_DEC_v1.jl", "apes", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL); delim="\t"))
+
 
 
 #######################################################
