@@ -98,9 +98,12 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 end
 
-print(paste0(("test: ", "apes_M0_DEC_v1.jl", "apes", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL); delim="\t"))
-
-
+txt = paste0(["test: ", "apes_M0_DEC_v1.jl", "apes", "areas:2", "states:4", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]; delim="\t")
+fn = "/GitHub/PhyBEARS.jl/test/test_results.txt"
+open(fn, "w") do io
+	writedlm(io, txt)
+end
+moref(fn)
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
