@@ -104,26 +104,34 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 end
 
-txts = ["test: ", "apes_M0_DEC_v1.jl", "apes", "areas:2", "states:4", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
-txt = paste0(txts; delim="\t")
-txt = paste0([txt, "\n"]; delim="")
 
-fn = "/GitHub/PhyBEARS.jl/test/test_results.txt"
-write_txt(fn, txt)
-TrUtils.moref(fn)
-append_txt(fn, txt)
+# Save results
+fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+afn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # ancstates
+
+txtvec = ["test: ", "apes_M0_DEC_v1.jl", "apes", "areas:2", "states:4", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
+
+write_txtvec(fn, txtvec)
 TrUtils.moref(fn)
 
+append_txtvec(fn, txtvec)
+TrUtils.moref(fn)
 
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
-df1 = df1bot = bgb_ancstates_AT_branchBots_df
-df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+write_trdf_ancstates(fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
+moref(fn)
+
+
+df1 = df1bot = bgb_ancstates_AT_branchBots_df
+df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)

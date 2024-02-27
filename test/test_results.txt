@@ -1,2 +1,22 @@
-test: 	apes_M0_DEC_v1.jl	apes	areas:2	states:4	DEC SSE	1 like	0.001	3	-8.695784978077587	-2.7548088546802036	-11.45059383275779	-4.481004153894408	-4.481012
-test: 	apes_M0_DEC_v1.jl	apes	areas:2	states:4	DEC SSE	1 like	0.001	3	-8.695784978077587	-2.7548088546802036	-11.45059383275779	-4.481004153894408	-4.481012
+test: 	apes_M0_DEC_v1.jl	apes	areas:2	states:4	DEC SSE	1 like	0.003	3	-8.695784978077587	-2.7548088546802036	-11.45059383275779	-4.481004153894408	-4.481012
+test: 	apes_M0_DEC_v1.jl	apes	areas:2	states:4	DEC SSE	1 like	0.003	3	-8.695784978077587	-2.7548088546802036	-11.45059383275779	-4.481004153894408	-4.481012
+t	o	p	s	t	a	t	e	s
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	0.0	0.0	0.0	1.0	0.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	6.42693382782259e-14	0.757828232249181	0.242171767750754	0.0	0.0	0.7578	0.2422
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	0.0	2.27415872607374e-14	0.630413602214152	0.369586397785825	0.0	0.0	0.6304	0.3696
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	9.55885855108166e-14	1.85939274383416e-12	0.999999999998045	0.0	0.0	0.0	1.0
+
+topstates
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	0.0	0.0	0.0	1.0	0.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	6.42693382782259e-14	0.757828232249181	0.242171767750754	0.0	0.0	0.7578	0.2422
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	0.0	2.27415872607374e-14	0.630413602214152	0.369586397785825	0.0	0.0	0.6304	0.3696
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	9.55885855108166e-14	1.85939274383416e-12	0.999999999998045	0.0	0.0	0.0	1.0
+
