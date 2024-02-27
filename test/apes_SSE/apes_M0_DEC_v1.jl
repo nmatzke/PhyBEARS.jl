@@ -12,11 +12,17 @@ using Interpolations	# for Linear, Gridded, interpolate
 using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
 using Sundials				# for CVODE_BDF
+using DifferentialEquations
 using Test						# for @test, @testset
 using PhyloBits
 using PhyloBits.TrUtils	# for vvdf
+using PhyloBits.PNreadwrite # for readTopology
+using PhyloBits.TreeTable # for ML_yule_birthRate
 using PhyBEARS
 using PhyBEARS.Uppass
+using PhyBEARS.Parsers
+using PhyBEARS.StateSpace		# for numstates_from_numareas
+using PhyBEARS.Optimizers		# for bmo_updater_v1_SLOW
 using DataFrames
 using CSV
 
@@ -98,12 +104,17 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-5
 end
 
-txt = paste0(["test: ", "apes_M0_DEC_v1.jl", "apes", "areas:2", "states:4", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]; delim="\t")
+txts = ["test: ", "apes_M0_DEC_v1.jl", "apes", "areas:2", "states:4", "DEC SSE", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
+txt = paste0(txts; delim="\t")
+txt = paste0([txt, "\n"]; delim="")
+
 fn = "/GitHub/PhyBEARS.jl/test/test_results.txt"
-open(fn, "w") do io
-	writedlm(io, txt)
-end
-moref(fn)
+write_txt(fn, txt)
+TrUtils.moref(fn)
+append_txt(fn, txt)
+TrUtils.moref(fn)
+
+
 
 # All ancestral states:
 R_order = sort(trdf, :Rnodenums).nodeIndex
