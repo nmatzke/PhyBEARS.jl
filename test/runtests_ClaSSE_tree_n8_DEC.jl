@@ -8,17 +8,24 @@ using DataFrames						# for DataFrame()
 using DelimitedFiles				# for readdlm()
 
 # List each PhyBEARS code file prefix here
-using PhyloBits.TrUtils			# for e.g. numstxt_to_df()
-using PhyloBits.TreeTable
-using PhyBEARS.BGExample
-using PhyBEARS.StateSpace
-#using PhyBEARS.TreeTable
-using PhyBEARS.TreePass
-#using PhyBEARS.TrUtils
-using PhyBEARS.SSEs
-using PhyBEARS.Parsers
-using PhyBEARS.ModelLikes # e.g. setup_DEC_SSE2
+using Interpolations	# for Linear, Gridded, interpolate
+using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
+										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
+using Sundials				# for CVODE_BDF
+using DifferentialEquations
+using Test						# for @test, @testset
+using PhyloBits
+using PhyloBits.TrUtils	# for vvdf
+using PhyloBits.PNreadwrite # for readTopology
+using PhyloBits.TreeTable # for ML_yule_birthRate
+using PhyBEARS
 using PhyBEARS.Uppass
+using PhyBEARS.Parsers
+using PhyBEARS.StateSpace		# for numstates_from_numareas
+using PhyBEARS.Optimizers		# for bmo_updater_v1_SLOW
+using DataFrames
+using CSV
+
 
 """
 # Run with:
@@ -132,6 +139,16 @@ Es_interpolator(1.0)
 vfft(res.likes_at_each_nodeIndex_branchTop)
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 vfft(res.likes_at_each_nodeIndex_branchTop)
+
+# Save results
+results_fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+
+txtvec = ["test, v5 ancstates", "runtests_ClaSSE_tree_n8_DEC.jl", "Psychotria", "areas:4", "states:16", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, DEC_R_result_total_LnLs1]
+
+append_txtvec(results_fn, txtvec)
+
+
+
 
 @test round(DEC_lnL; digits=2) == round(bgb_lnL; digits=2)
 
@@ -283,6 +300,15 @@ Julia_ancstates_corners_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_b
 @test all(get_max_df_diffs_byCol(R_ancstates_nodes, Julia_ancstates_nodes_v5) .< 0.0002)
 @test all(get_max_df_diffs_byCol(R_ancstates_corners, Julia_ancstates_corners_v5) .< 0.0002)
 
+df1 = df1bot = bgb_ancstates_AT_branchBots_df = R_ancstates_corners
+df2 = df2bot = Julia_ancstates_corners_v5
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
+df1 = df1top = bgb_ancstates_AT_branchTops_df = R_ancstates_nodes
+df2 = df2top = Julia_ancstates_nodes_v5
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
+
 end # END @testset "Psychotria ancstates DEC" begin
 
 
@@ -306,6 +332,21 @@ Julia_ancstates_corners_v5 = vvdf(deepcopy(res.anc_estimates_at_each_nodeIndex_b
 
 @test all(get_max_df_diffs_byCol(R_ancstates_nodes, Julia_ancstates_nodes_v5) .< 0.0002)
 @test all(get_max_df_diffs_byCol(R_ancstates_corners, Julia_ancstates_corners_v5) .< 0.0002)
+
+# Save results
+txtvec = ["test, v7 ancstates: ", "runtests_ClaSSE_tree_n8_DEC.jl", "Psychotria", "areas:4", "states:16", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, DEC_R_result_total_LnLs1]
+
+append_txtvec(results_fn, txtvec)
+
+df1 = df1bot = bgb_ancstates_AT_branchBots_df = R_ancstates_corners
+df2 = df2bot = Julia_ancstates_corners_v5
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
+df1 = df1top = bgb_ancstates_AT_branchTops_df = R_ancstates_nodes
+df2 = df2top = Julia_ancstates_nodes_v5
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
+
 
 end # END @testset "Psychotria ancstates DEC" begin
 

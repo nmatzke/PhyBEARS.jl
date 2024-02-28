@@ -12,13 +12,20 @@ using Interpolations	# for Linear, Gridded, interpolate
 using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 										 	# https://www.reddit.com/r/Julia/comments/9cfosj/identity_matrix_in_julia_v10/
 using Sundials				# for CVODE_BDF
+using DifferentialEquations
 using Test						# for @test, @testset
 using PhyloBits
 using PhyloBits.TrUtils	# for vvdf
+using PhyloBits.PNreadwrite # for readTopology
+using PhyloBits.TreeTable # for ML_yule_birthRate
 using PhyBEARS
 using PhyBEARS.Uppass
+using PhyBEARS.Parsers
+using PhyBEARS.StateSpace		# for numstates_from_numareas
+using PhyBEARS.Optimizers		# for bmo_updater_v1_SLOW
 using DataFrames
 using CSV
+
 
 # Change the working directory as needed
 wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
@@ -165,6 +172,15 @@ prtCp(p_Ds_v7)
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Save results
+results_fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+
+txtvec = ["test: ", "fossils_apes_M0_DEC_v1.jl", "apes_wFossilAncNode", "areas:2", "states:4", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
+
+append_txtvec(results_fn, txtvec)
+
+
+
 prtQp(p_Ds_v7)
 prtQp(p_Ds_v7_NF)
 prtCp(p_Ds_v7)
@@ -212,8 +228,11 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][index_branchBots])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][1:7])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)
@@ -336,6 +355,15 @@ log(exp(Julia_sum_lqNF) * 4)
 rootstates_lnL - rootstates_lnL_NF
 (bgb_lnL+log(1/4)) - bgb_lnL_NF
 
+
+txtvec = ["test: ", "fossils_apes_M0_DEC_v1.jl", "apes_wFossilHookNode", "areas:2", "states:4", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, bgb_lnL_NF-log(1/4)]
+
+append_txtvec(results_fn, txtvec)
+
+
+
+
+
 ind = [1,2,5,6,7,8,9]
 vfft(res.likes_at_each_nodeIndex_branchBot[ind])
 vfft(resNF.likes_at_each_nodeIndex_branchBot)
@@ -373,8 +401,11 @@ Rind = [1,2,4,5,6,7,8] # cut the hooknode/tip from the R-ordered table
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][Rind])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][Rind])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
 
 @testset "Apes DEC ancstates, after adding a fossil hooktip with all 1s" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
@@ -661,6 +692,14 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 psi_modifier_to_lnL = log(psi) + -(psi * sum_edge_lengths)
 
 
+
+txtvec = ["test: ", "fossils_apes_M0_DEC_v1.jl", "apes_sampledFossilBranch", "areas:2", "states:4", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, bgb_lnL_NF-log(1/4)+psi_modifier_to_lnL]
+
+append_txtvec(results_fn, txtvec)
+
+
+
+
 @testset "Apes DEC lnL, after adding a fossil hooktip with all 1s with a log(1/4) correction, & subtracting a psi*9 lnL" begin
 	@test abs((bgb_lnL + log(1/4) - psi_modifier_to_lnL) - R_bgb_lnL) < 1e-4
 	@test abs((Julia_sum_lq + log(1/4) - psi_modifier_to_lnL) - Julia_sum_lqNF) < 1e-4
@@ -679,8 +718,11 @@ Rind = [1,2,4,5,6,7,8] # cut the hooknode/tip from the R-ordered table
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][Rind])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][Rind])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
 
 @testset "Apes DEC ancstates, after adding a fossil hooktip with all 1s" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
@@ -735,6 +777,12 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 
 psi_modifier_to_lnL = log(psi) + -(psi * sum_edge_lengths)
 
+txtvec = ["test: ", "fossils_apes_M0_DEC_v1.jl", "apes_sampledFossilBranch_DiffPsi", "areas:2", "states:4", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, bgb_lnL_NF-log(1/4)+psi_modifier_to_lnL]
+
+append_txtvec(results_fn, txtvec)
+
+
+
 
 @testset "Apes DEC lnL, after adding a fossil hooktip with all 1s with a log(1/4) correction, & subtracting a psi*9 lnL" begin
 	@test abs((bgb_lnL + log(1/4) - psi_modifier_to_lnL) - R_bgb_lnL) < 1e-2
@@ -753,8 +801,11 @@ Rind = [1,2,4,5,6,7,8] # cut the hooknode/tip from the R-ordered table
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][Rind])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][Rind])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:][Rind,:], df1, df2; mode="a", delim="\t")
 
 @testset "Apes DEC ancstates, after adding a fossil hooktip with all 1s" begin
 	@test all(flat2(compare_dfs(df1bot, df2bot; tol=1e-4) .== 1.0))
