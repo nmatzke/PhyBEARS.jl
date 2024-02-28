@@ -225,14 +225,17 @@ trdfNF
 R_order = sort(trdf, :Rnodenums).nodeIndex
 index_branchBots = [1,8,3,4,5,6,7]
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+trdf2 = trdf[index_branchBots,:]
+sort!(trdf2, :Rnodenums)
+trdf2
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order][index_branchBots])
-write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+write_trdf_ancstates(results_fn, ["botstates"], trdf2, df1, df2; mode="a", delim="\t")
 
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order][1:7])
-write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+write_trdf_ancstates(results_fn, ["topstates"], trdf2, df1, df2; mode="a", delim="\t")
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)
