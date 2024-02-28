@@ -845,3 +845,5 @@ test: 	fossils_apes_M0_DEC_v1.jl	apes_wFossilAncNode	areas:2	states:4	DEC+Yule	1
 botstates
 test: 	fossils_apes_M0_DEC_v1.jl	apes_wFossilAncNode	areas:2	states:4	DEC+Yule	1 like	0.003	4	-8.695792991666293	-2.7548088546802054	-11.450601846346498	-4.481012167483114	-4.481012
 botstates
+botstates
+botstates
