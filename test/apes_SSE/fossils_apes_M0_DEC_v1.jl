@@ -225,7 +225,7 @@ trdfNF
 R_order = sort(trdf, :Rnodenums).nodeIndex
 index_branchBots = [1,8,3,4,5,6,7]
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
-trdf2 = trdf[index_branchBots,:]
+trdf2 = deepcopy(trdf[index_branchBots,:])
 sort!(trdf2, :Rnodenums)
 trdf2
 
