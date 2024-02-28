@@ -121,7 +121,7 @@ df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
 write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
 
-moref(fn)
+moref(results_fn)
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
