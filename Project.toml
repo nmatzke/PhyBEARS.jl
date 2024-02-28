@@ -1,6 +1,7 @@
 name = "PhyBEARS"
 uuid = "7876af07-990d-54b4-ab0e-23690620f79a"
-version = "0.5.1"
+authors = ["Nick Matzke <nickmatzke.ncse@gmail.com> and Wallis Bland"]
+version = "1.0.0"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"

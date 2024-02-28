@@ -105,6 +105,13 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Save results
+results_fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+
+txtvec = ["test: ", "apes_M0_BAYAREALIKE_v1.jl", "apes", "areas:2", "states:4", "BAYAREALIKE+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
+
+append_txtvec(results_fn, txtvec)
+
 
 @testset "Apes BAYAREALIKE lnL" begin
 	@test abs(R_bgb_lnL - bgb_lnL) < 1e-4
@@ -117,8 +124,11 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)
@@ -194,6 +204,12 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
+# Save results
+txtvec = ["test: ", "apes_M0_BAYAREALIKE_v1.jl", "apes", "areas:2", "states:4", "BAYAREALIKE+Yule", "ML", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
+
+append_txtvec(results_fn, txtvec)
+
+
 # Root ancestral states:
 Rnames(res)
 round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
@@ -205,8 +221,11 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 
 df1 = df1bot = bgb_ancstates_AT_branchBots_df
 df2 = df2bot = vfft(res.anc_estimates_at_each_nodeIndex_branchBot[R_order])
+write_trdf_ancstates(results_fn, ["botstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
+
 df1 = df1top = bgb_ancstates_AT_nodes_df
 df2 = df2top = vfft(res.anc_estimates_at_each_nodeIndex_branchTop[R_order])
+write_trdf_ancstates(results_fn, ["topstates"], trdf[R_order,:], df1, df2; mode="a", delim="\t")
 
 compare_dfs(df1bot, df2bot; tol=1e-4)
 get_max_df_diffs_byCol(df1bot, df2bot)

@@ -219,8 +219,8 @@ Psychotria_tree = readTopology("((((((((P_hawaiiensis_WaikamoiL1:0.9665748366,P_
 
 show(Psychotria_tree)
 
-
-#include("/GitHub/PhyBEARS.jl/test/runtests.jl")
+# Small ape tree
 include("/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
+#include("/GitHub/PhyBEARS.jl/test/runtests.jl")
 #include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
 

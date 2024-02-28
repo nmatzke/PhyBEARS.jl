@@ -24,5 +24,5 @@ println.(list_of_installed_packages)	# Messy
 
 # Or:
 x["PhyBEARS"]
-# v"0.0.1"
+# v"0.1.0"
 
