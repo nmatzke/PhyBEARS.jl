@@ -23,6 +23,7 @@ using PhyBEARS.Uppass
 using PhyBEARS.Parsers
 using PhyBEARS.StateSpace		# for numstates_from_numareas
 using PhyBEARS.Optimizers		# for bmo_updater_v1_SLOW
+using PhyBEARS.ModelLikes		# for setup_DEC_SSE2
 using DataFrames
 using CSV
 
