@@ -26,3 +26,8 @@ println.(list_of_installed_packages)	# Messy
 x["PhyBEARS"]
 # v"0.1.0"
 
+# Unit tests (checks and validation)
+
+2024-02-29:
+Test Summary: | Pass  Total     Time
+All tests     |  511    511  4m59.6s
