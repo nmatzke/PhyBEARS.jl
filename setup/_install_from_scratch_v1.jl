@@ -55,7 +55,7 @@ using DataFrames
 using UUIDs
 using CSV
 using FilePathsBase
-using BenchmarkTools")
+using BenchmarkTools
 
 using SciMLBase
 
@@ -91,3 +91,50 @@ Pkg.update()
 Pkg.resolve()
 Pkg.gc()
 
+
+
+
+
+using Pkg; Pkg.add(PackageSpec(path="/GitHub/PhyloBits.jl"))
+# OR: 
+# Pkg.add(url="https://github.com/nmatzke/PhyloBits.jl")
+
+using PhyloBits
+
+using PhyloBits.PNtypes						# Types: Tree, Node, Edge etc.
+using PhyloBits.PNmanipulateNet
+using PhyloBits.PNreadwrite				# Helper functions
+using PhyloBits.PNreadwrite 			# Reading and writing trees; readTopology
+using PhyloBits.PNdescriptive			# show() commands for trees etc.
+using PhyloBits.TrUtils						# basic utility functions, R-like functions
+using PhyloBits.TreeTable					# for prt() tree tables (tree dataframes, trdfs), bd_liks(), etc.
+
+print("Unloading and re-loading PhyBEARS...\n")
+
+
+# Activate PhyBEARS
+#if isfile("Project.toml") && isfile("Manifest.toml")
+#    Pkg.activate(".")
+#end
+#Pkg.rm(PackageSpec(name="PhyBEARS", uuid="7876af07-990d-54b4-ab0e-23690620f79a"))
+using Pkg; Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl"))
+# OR: 
+# Pkg.add(url="https://github.com/nmatzke/PhyBEARS.jl")
+using PhyBEARS
+
+#using PhyloBits.TrUtils
+#using PhyloBits.TreeTable
+using PhyBEARS.BGExample
+using PhyBEARS.TimeDep
+using PhyBEARS.MaxentInterp
+using PhyBEARS.StateSpace
+using PhyBEARS.SSEs
+using PhyBEARS.Parsers
+using PhyBEARS.TreePass
+using PhyBEARS.Flow
+using PhyBEARS.Gmaps
+using PhyBEARS.Optimizers
+
+Pkg.update()
+Pkg.resolve()
+Pkg.gc()
