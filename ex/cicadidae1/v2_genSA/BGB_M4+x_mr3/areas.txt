@@ -1,0 +1,11 @@
+Guess	names	single-letter
+North America	NA	N
+Central America	CA	C
+South America	SA	S
+Africa	AF	F
+Middle-east?	MA	M
+West Eurasia	WE	W
+East Eurasia	EE	E
+India	IN	I
+South East Asia	SE	D
+Australia	AU	Z

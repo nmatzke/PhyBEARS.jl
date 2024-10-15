@@ -1,0 +1,1768 @@
+
+Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
+Loading ~/.Rprofile...
+Currently viewed PATH:
+/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin
+[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/v2_genSA/BGB_M3+x_mr3"
+[1] "/Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/BioGeoBEARS/extdata"
+ [1] "a_scripts"                                 "examples"                                  "Hawaii_abbreviations_table.txt"            "Phylowiki_M0_2023_v1.R"                   
+ [5] "Phylowiki_M3_2023_v1.R"                    "Psychotria_5.2_old_not_ultrametric.newick" "Psychotria_5.2_ultrametric.newick"         "Psychotria_5.2.newick"                    
+ [9] "Psychotria_controls_v1.txt"                "Psychotria_detections_v1.txt"              "Psychotria_geog_noAreaNames.data"          "Psychotria_geog.data"                     
+[13] "z_old_code"                               
+(Derotettix_mendosensis_Argentina:135.1930836,((((((((Jassopsaltria_rufifacies_Australia:41.7356802,((Psaltoda_moerens_Australia:33.77673692,(Cyclochila_australasiae_Australia:32.34526104,(Thopha_saccata_Australia:31.74271852,(Macrotristria_angularis_Australia:10.82212063,Illyria_burkei_Australia:10.82212063):20.92059789):0.6025425133):1.431475886):7.156155807,(Burbunga_hillieri_Australia:40.57495017,(Parnquila_unicolor_Australia:28.59268822,Tamasa_tristigma_Australia:28.59268822):11.98226195):0.357942556):0.8027874677):0.994696695,(Kimberpsaltria_taenia_Australia:27.76659927,Talcopsaltria_olivei_Australia:27.76659927):14.96377762):15.60590464,((Antankaria_madagascariensis_Madagascar:45.23295616,(Durangona_tigrina_Ecuador:37.12307492,((Afzeliada_sp.1_Zambia:23.88554163,((Albanycada_albigera_S.Africa:14.18266916,(Azanicada_zuluensis_S.Africa:7.378836093,(Platypleura_capensis_S.Africa:0.775792626,Platypleura_stridula_S.Africa:0.775792626):6.603043467):6.80383307):4.90195308,(Hamza_ciliaris_Philippines:13.46749335,(Platypleura_octoguttata_India:11.94201041,Eopycna_sp._India:11.94201041):1.52548294):5.617128898):4.800919382):4.080916117,(Dyticopycna_semiclara_S.Africa:24.89920665,(Ugada_limbata_Ghana:21.37754429,(Yanga_heathi_Madagascar:9.472979484,Pycna_strix_Madagascar:9.472979484):11.9045648):3.521662362):3.067251092):9.156617182):8.109881238):10.64936211,(Distantada_thomasseti_Mauritius:49.89409366,(((Karenia_ravida_S.E.Asia:8.854370368,Dundubia_annandalei_India:8.854370368):18.66616739,(Cicada_orni_Greece:26.28530384,Tosena_melanopteryx_Thailand:26.28530384):1.235233924):4.132708195,((Hyalessa_maculaticollis_China:23.17766854,(Formotosena_sp._Vietnam:14.02566821,Graptopsaltria_nigrofuscata_Japan:14.02566821):9.152000326):4.658445146,(Gaeana_maculata_Vietnam:13.09553669,Talainga_chinensis_Vietnam:13.09553669):14.740577):3.81713227):18.2408477):5.988224611):2.453963262):3.172182091,((Adusella_insignifera_Argentina:46.25033481,(((Tympanoterpes_serricosta_Argentina:23.94539612,(Prasinosoma_heidemanni_Argentina:17.31624379,(Proarna_sp._Bolivia:11.70230776,Nosola_paradoxa_Bolivia:11.70230776):5.61393603):6.629152335):0.6634938479,(Beameria_venosa_USA:14.7984315,Diceroprocta_viridifascia_USA:14.7984315):9.810458469):8.042237196,(Quesada_gigas_Mexico:22.49517271,(Dorisiana_amoena_Guatemala:15.88971252,(Dorisiana_sp._Argentina:3.773900419,Guyalna_sp._Bolivia:3.773900419):12.1158121):6.605460183):10.15595446):13.59920764):1.7625314,(((Borencona_aguadilla_Puert.Rico:21.72826805,Chinaria_vivianae_Dom.Rep.:21.72826805):7.651519737,((Chinaria_sp._Mexico:13.23426319,(Miranha_imbellis_Guatemala:11.18962655,Daza_montezuma_Guatemala:11.18962655):2.044636633):1.742240469,(Dazollina_petilunca_Cost.Rica:12.63560546,(Dyticodopoea_signoreti_Guatemala:8.672242778,Procollina_sp.1_Guatemala:8.672242778):3.96336268):2.340898197):14.40328413):5.164787805,(N.gen._sp.tepui_Venezuela:19.07748795,(Zammara_cf.erna_Ecuador:7.843097777,Zammara_tympanum_Brazil:7.843097777):11.23439017):15.46708764):13.46829062):13.49559742):11.75737159,((((Auritibicen_flammatus_Japan:34.08656661,Lyristes_gemellus_Greece:34.08656661):2.721201638,(Heteropsaltria_aliena_Solom.Is.:25.67018802,(Cryptotympana_atrata_China:21.78923121,(Neotibicen_winnemanna_USA:9.199194209,Megatibicen_resonans_USA:9.199194209):12.590037):3.880956809):11.13758023):2.666053726,(Hadoa_townsendii_USA:22.1836487,Cacama_moorei_USA:22.1836487):17.29017327):1.085016423,(Tacua_speciosa_Malaysia:28.99355485,(Chremistica_sp._Malaysia:14.33550952,Chremistica_ribhoi_India:14.33550952):14.65804533):11.56528354):32.70702501):17.88093663,((Paectira_dulcis_E.Africa:25.33217566,(Nablistes_heterochroma_Ghana:4.148851909,Maroboduus_fractus_Ghana:4.148851909):21.18332375):40.07619012,(Hovana_distanti_Madagascar:61.66061681,((Lacetas_sp._Ghana:40.17799081,(Stagira_sp._S.Africa:28.44966394,(Xosopsaltria_thunbergi_S.Africa:3.74178805,Tettigomyia_vespiformis_S.Africa:3.74178805):24.70787589):11.72832686):15.87751124,(((nr.Jafuna_sp._Madagascar:36.816344,(Malagasia_sp._Madagascar:11.56771884,Malgotilia_sogai_Madagascar:11.56771884):25.24862516):2.113729239,(Masupha_ampliata_S.Africa:25.89376996,(Quintilia_wealei_S.Africa:19.71756778,(nr.Quintilia_sp._S.Africa:16.09191992,Koranna_analis_S.Africa:16.09191992):3.625647857):6.176202181):13.03630328):3.875957232,(nr.Gogga_sp._S.Africa:33.76905235,(Quintilia_rufiventris_S.Africa:26.96677746,(Neomuda_sp._S.Africa:0.152334668,Neomuda_peringueyi_S.Africa:0.152334668):26.81444279):6.802274893):9.036978116):13.24947158):5.605114759):3.74774898):25.73840823):4.702603124,(((Katoa_sp._Vietnam:69.23333741,(((Monomatapa_matoposa_Malawi:34.7680262,((Allobroma_kedenburgi_Malaysia:23.60140898,(Trismarcha_sp._Togo:0.3919262285,nr.Trismarcha_sp.Ghana_Ghana:0.3919262285):23.20948276):9.630156959,(Taipinga_nigricans_S.Africa:32.31767227,(Panka_lungunca_Iv.Coast:28.00698815,(Brevialavenosa_sp.1_Brazil:22.97690777,(Abricta_brunnea_Mauritius:19.76818892,(Tryella_willsi_Australia:16.9766763,(Magicicada_tredecim_USA:2.387246619,Magicicada_cassini_USA:2.387246619):14.58942968):2.791512617):3.208718851):5.030080378):4.310684116):0.9138936786):1.536460255):27.28541323,(Nelcyndana_sp._Malaysia:50.37497292,(Taphura_sp._Peru:30.32952382,(Herrera_sp._Argentina:16.07195374,Carineta_diardi_Brazil:16.07195374):14.25757008):20.0454491):11.67846651):5.285762506,(Pagiphora_annulata_Turkey:65.58918553,(Klapperichicen_sp._Pakistan:35.16479404,(Cicadatra_atra_Greece:21.68900535,Mogannia_hebes_Taiwan:21.68900535):13.47578869):30.42439149):1.750016411):1.894135476):1.055786177,(nr.Decebalus_sp.Mad_Madagascar:69.04074074,((Fractuosella_breoni_Reunion:63.23733852,(Calopsaltria_sp._S.Africa:54.96931062,(nr.Zouga_sp._S.Africa:14.601339,Zouga_sp._S.Africa:14.601339):40.36797162):8.2680279):2.191500357,((Calyria_sp._Ecuador:23.81840962,Parnisa_sp._Argentina:23.81840962):18.8957267,(Prunasis_sp._Brazil:25.85276389,(Parnisa_sp.1_Brazil:17.29339611,(Parnisa_sp.2_Brazil:14.11958895,Parnisa_sp.3_Brazil:14.11958895):3.173807161):8.559367781):16.86137242):22.71470256):3.611901865):1.248382852):2.341694711,(((Lembeja_paradoxa_Australia:25.41174905,Prasia_faticina_Indonesia:25.41174905):14.25629067,(Chlorocysta_suffusa_Australia:25.21480372,(Baeturia_sp._Vanuatu:22.59767644,Venustria_superba_Australia:22.59767644):2.617127276):14.45323599):12.77481828,(Chrysocicada_sp._Australia:41.94323825,((Huechys_sanguinea_Vietnam:17.86752762,((((Rhodopsalta_cruentata_NZ:8.448830383,(Kikihia_rosea_NZ:2.899091157,Kikihia_scutellaris_NZ:2.899091157):5.549739226):1.16254246,(Maoricicada_hamiltoni_NZ:2.971263938,Maoricicada_mangu_multicostata_NZ:2.971263938):6.640108904):4.345621687,((Caledopsalta_johanae_N.Caledonia:3.02995698,Caledopsalta_judithae_N.Caledonia:3.02995698):9.328248567,(Myersalna_depicta_N.Caledonia:11.67205136,UNKNOWN_Cicadettini_speciesT_N.Caledonia:11.67205136):0.686154188):1.598788982):0.6499684273,(Germalna_germaini_N.Caledonia:9.474835724,Cicadetta_fangoana_France:9.474835724):5.132127233):3.260564664):2.378420915,(Vastarena_pumila_N.Caledonia:14.82207481,UNKNOWN_Cicadettini_speciesU_N.Caledonia:14.82207481):5.423873726):21.69728971):10.49961974):20.18796031):23.21855593):18.82446701,((((Neoplatypedia_constricta_USA:1.478567904,Platypedia_putnami_USA:1.478567904):36.30033354,(Chilecicada_trifascia_Chile:2.834940425,Chilecicada_sp._Chile:2.834940425):34.94396102):7.592822648,((Hemidictya_frondosa_Bolivia:38.56084497,Aragualna_plenalinea_Venezuela:38.56084497):3.820516281,(Selymbria_guianensis_Fr.Guiana:7.04176714,Selymbria_madredediosensis_Peru:7.04176714):35.33959412):2.990362834):20.37787824,(((Torrescada_sanjuanensis_Argentina:24.86405007,Chonosia_sp._Argentina:24.86405007):4.584028964,(Acuticephala_alipuncta_Argentina:24.51727071,(Tettigades_sp._Argentina:9.295182818,Tettigades_ulnaria_Chile:9.295182818):15.22208789):4.930808323):33.72615704,((Okanagodes_gracilis_USA:21.83126613,Clidophleps_sp._USA:21.83126613):18.0457537,(Okanagana_canadensis_USA:19.87820287,Tibicina_haematodes_Greece:19.87820287):19.99881696):23.29721625):2.57536625):48.92425198):20.51920525);
+
+Phylogenetic tree with 156 tips and 155 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Jassopsaltria_rufifacies_Australia, Psaltoda_moerens_Australia, Cyclochila_australasiae_Australia, Thopha_saccata_Australia, Macrotristria_angularis_Australia, ...
+
+Rooted; includes branch lengths.
+null device 
+          1 
+156	10 (N C S F M W E I D Z)
+Derotettix_mendosensis_Argentina	0010000000
+Auritibicen_flammatus_Japan	0000001010
+Lyristes_gemellus_Greece	0000010000
+Hadoa_townsendii_USA	1000000000
+Cacama_moorei_USA	1000000000
+Heteropsaltria_aliena_Solom.Is.	0000000001
+Neotibicen_winnemanna_USA	1000000000
+Chremistica_sp._Malaysia	0000000010
+Cryptotympana_atrata_China	0000001000
+Tacua_speciosa_Malaysia	0000000010
+Megatibicen_resonans_USA	1000000000
+Chremistica_ribhoi_India	0000000100
+Neoplatypedia_constricta_USA	1000000000
+Hemidictya_frondosa_Bolivia	0010000000
+Torrescada_sanjuanensis_Argentina	0010000000
+Chilecicada_trifascia_Chile	0010000000
+Selymbria_guianensis_Fr.Guiana	0010000000
+Okanagodes_gracilis_USA	1000000000
+Platypedia_putnami_USA	1000000000
+Tettigades_sp._Argentina	0010000000
+Acuticephala_alipuncta_Argentina	0010000000
+Aragualna_plenalinea_Venezuela	0010000000
+Chilecicada_sp._Chile	0010000000
+Chonosia_sp._Argentina	0010000000
+Clidophleps_sp._USA	1000000000
+Okanagana_canadensis_USA	1000000000
+Selymbria_madredediosensis_Peru	0010000000
+Tettigades_ulnaria_Chile	0010000000
+Tibicina_haematodes_Greece	0000010000
+Monomatapa_matoposa_Malawi	0001000000
+Trismarcha_sp._Togo	0001000000
+Abricta_brunnea_Mauritius	0000100000
+Fractuosella_breoni_Reunion	0000100000
+Lembeja_paradoxa_Australia	0000000001
+Rhodopsalta_cruentata_NZ	0000000001
+Maoricicada_hamiltoni_NZ	0000000001
+Vastarena_pumila_N.Caledonia	0000000001
+Germalna_germaini_N.Caledonia	0000000001
+Maoricicada_mangu_multicostata_NZ	0000000001
+Caledopsalta_johanae_N.Caledonia	0000000001
+Caledopsalta_judithae_N.Caledonia	0000000001
+Myersalna_depicta_N.Caledonia	0000000001
+UNKNOWN_Cicadettini_speciesT_N.Caledonia	0000000001
+UNKNOWN_Cicadettini_speciesU_N.Caledonia	0000000001
+Magicicada_tredecim_USA	1000000000
+Klapperichicen_sp._Pakistan	0000001000
+nr.Trismarcha_sp.Ghana_Ghana	0001000000
+Calyria_sp._Ecuador	0010000000
+Prasinosoma_heidemanni_Argentina	0010000000
+Baeturia_sp._Vanuatu	0000000001
+nr.Decebalus_sp.Mad_Madagascar	0000100000
+nr.Zouga_sp._S.Africa	0001000000
+Calopsaltria_sp._S.Africa	0001000000
+Prasia_faticina_Indonesia	0000000001
+Taipinga_nigricans_S.Africa	0001000000
+Panka_lungunca_Iv.Coast	0001000000
+Prunasis_sp._Brazil	0010000000
+Brevialavenosa_sp.1_Brazil	0010000000
+Parnisa_sp.1_Brazil	0010000000
+Parnisa_sp.2_Brazil	0010000000
+Parnisa_sp.3_Brazil	0010000000
+Magicicada_cassini_USA	1000000000
+Carineta_diardi_Brazil	0010000000
+Cicadetta_fangoana_France	0000010000
+Allobroma_kedenburgi_Malaysia	0000000010
+Chlorocysta_suffusa_Australia	0000000001
+Chrysocicada_sp._Australia	0000000001
+Cicadatra_atra_Greece	0000010000
+Huechys_sanguinea_Vietnam	0000000111
+Katoa_sp._Vietnam	0000000010
+Mogannia_hebes_Taiwan	0000001010
+Nelcyndana_sp._Malaysia	0000000010
+Pagiphora_annulata_Turkey	0000010000
+Parnisa_sp._Argentina	0010000000
+Taphura_sp._Peru	0010000000
+Tryella_willsi_Australia	0000000001
+Venustria_superba_Australia	0000000001
+Zouga_sp._S.Africa	0001000000
+Kikihia_rosea_NZ	0000000001
+Kikihia_scutellaris_NZ	0000000001
+Nablistes_heterochroma_Ghana	0001000000
+Xosopsaltria_thunbergi_S.Africa	0001000000
+Lacetas_sp._Ghana	0001000000
+Malagasia_sp._Madagascar	0000100000
+nr.Quintilia_sp._S.Africa	0001000000
+nr.Jafuna_sp._Madagascar	0000100000
+Quintilia_rufiventris_S.Africa	0001000000
+Masupha_ampliata_S.Africa	0001000000
+Malgotilia_sogai_Madagascar	0000100000
+Koranna_analis_S.Africa	0001000000
+nr.Gogga_sp._S.Africa	0001000000
+Neomuda_sp._S.Africa	0001000000
+Paectira_dulcis_E.Africa	0001000000
+Neomuda_peringueyi_S.Africa	0001000000
+Hovana_distanti_Madagascar	0000100000
+Maroboduus_fractus_Ghana	0001000000
+Quintilia_wealei_S.Africa	0001000000
+Stagira_sp._S.Africa	0001000000
+Tettigomyia_vespiformis_S.Africa	0001000000
+Jassopsaltria_rufifacies_Australia	0000000001
+Macrotristria_angularis_Australia	0000000001
+Psaltoda_moerens_Australia	0000000001
+Parnquila_unicolor_Australia	0000000001
+Albanycada_albigera_S.Africa	0001000000
+Platypleura_capensis_S.Africa	0001000000
+Antankaria_madagascariensis_Madagascar	0000100000
+Afzeliada_sp.1_Zambia	0001000000
+Tympanoterpes_serricosta_Argentina	0010000000
+Yanga_heathi_Madagascar	0000100000
+Illyria_burkei_Australia	0000000001
+Herrera_sp._Argentina	0010000000
+Proarna_sp._Bolivia	0010000000
+Dorisiana_sp._Argentina	0010000000
+Guyalna_sp._Bolivia	0010000000
+Pycna_strix_Madagascar	0000100000
+Karenia_ravida_S.E.Asia	0000000010
+Azanicada_zuluensis_S.Africa	0001000000
+Beameria_venosa_USA	1000000000
+Burbunga_hillieri_Australia	0000000001
+Cicada_orni_Greece	0000010000
+Cyclochila_australasiae_Australia	0000000001
+Diceroprocta_viridifascia_USA	1000000000
+Durangona_tigrina_Ecuador	0010000000
+Dorisiana_amoena_Guatemala	0100000000
+Formotosena_sp._Vietnam	0000000010
+Gaeana_maculata_Vietnam	0000000110
+Graptopsaltria_nigrofuscata_Japan	0000001010
+Hamza_ciliaris_Philippines	0000000010
+Hyalessa_maculaticollis_China	0000001010
+Nosola_paradoxa_Bolivia	0010000000
+Platypleura_stridula_S.Africa	0001000000
+Dyticopycna_semiclara_S.Africa	0001000000
+Quesada_gigas_Mexico	1110000000
+Kimberpsaltria_taenia_Australia	0000000001
+Talainga_chinensis_Vietnam	0000000010
+Talcopsaltria_olivei_Australia	0000000001
+Thopha_saccata_Australia	0000000001
+Tosena_melanopteryx_Thailand	0000000110
+Ugada_limbata_Ghana	0001000000
+Borencona_aguadilla_Puert.Rico	0100000000
+Chinaria_vivianae_Dom.Rep.	0100000000
+Miranha_imbellis_Guatemala	0100000000
+N.gen._sp.tepui_Venezuela	0010000000
+Adusella_insignifera_Argentina	0010000000
+Dyticodopoea_signoreti_Guatemala	0100000000
+Procollina_sp.1_Guatemala	0100000000
+Dazollina_petilunca_Cost.Rica	0100000000
+Zammara_cf.erna_Ecuador	0010000000
+Zammara_tympanum_Brazil	0110000000
+Chinaria_sp._Mexico	0100000000
+Daza_montezuma_Guatemala	0100000000
+Distantada_thomasseti_Mauritius	0000100000
+Tamasa_tristigma_Australia	0000000001
+Dundubia_annandalei_India	0000000100
+Platypleura_octoguttata_India	0000000100
+Eopycna_sp._India	0000000100
+An object of class "tipranges"
+numeric(0)
+Slot "df":
+                                         N C S F M W E I D Z
+Derotettix_mendosensis_Argentina         0 0 1 0 0 0 0 0 0 0
+Auritibicen_flammatus_Japan              0 0 0 0 0 0 1 0 1 0
+Lyristes_gemellus_Greece                 0 0 0 0 0 1 0 0 0 0
+Hadoa_townsendii_USA                     1 0 0 0 0 0 0 0 0 0
+Cacama_moorei_USA                        1 0 0 0 0 0 0 0 0 0
+Heteropsaltria_aliena_Solom.Is.          0 0 0 0 0 0 0 0 0 1
+Neotibicen_winnemanna_USA                1 0 0 0 0 0 0 0 0 0
+Chremistica_sp._Malaysia                 0 0 0 0 0 0 0 0 1 0
+Cryptotympana_atrata_China               0 0 0 0 0 0 1 0 0 0
+Tacua_speciosa_Malaysia                  0 0 0 0 0 0 0 0 1 0
+Megatibicen_resonans_USA                 1 0 0 0 0 0 0 0 0 0
+Chremistica_ribhoi_India                 0 0 0 0 0 0 0 1 0 0
+Neoplatypedia_constricta_USA             1 0 0 0 0 0 0 0 0 0
+Hemidictya_frondosa_Bolivia              0 0 1 0 0 0 0 0 0 0
+Torrescada_sanjuanensis_Argentina        0 0 1 0 0 0 0 0 0 0
+Chilecicada_trifascia_Chile              0 0 1 0 0 0 0 0 0 0
+Selymbria_guianensis_Fr.Guiana           0 0 1 0 0 0 0 0 0 0
+Okanagodes_gracilis_USA                  1 0 0 0 0 0 0 0 0 0
+Platypedia_putnami_USA                   1 0 0 0 0 0 0 0 0 0
+Tettigades_sp._Argentina                 0 0 1 0 0 0 0 0 0 0
+Acuticephala_alipuncta_Argentina         0 0 1 0 0 0 0 0 0 0
+Aragualna_plenalinea_Venezuela           0 0 1 0 0 0 0 0 0 0
+Chilecicada_sp._Chile                    0 0 1 0 0 0 0 0 0 0
+Chonosia_sp._Argentina                   0 0 1 0 0 0 0 0 0 0
+Clidophleps_sp._USA                      1 0 0 0 0 0 0 0 0 0
+Okanagana_canadensis_USA                 1 0 0 0 0 0 0 0 0 0
+Selymbria_madredediosensis_Peru          0 0 1 0 0 0 0 0 0 0
+Tettigades_ulnaria_Chile                 0 0 1 0 0 0 0 0 0 0
+Tibicina_haematodes_Greece               0 0 0 0 0 1 0 0 0 0
+Monomatapa_matoposa_Malawi               0 0 0 1 0 0 0 0 0 0
+Trismarcha_sp._Togo                      0 0 0 1 0 0 0 0 0 0
+Abricta_brunnea_Mauritius                0 0 0 0 1 0 0 0 0 0
+Fractuosella_breoni_Reunion              0 0 0 0 1 0 0 0 0 0
+Lembeja_paradoxa_Australia               0 0 0 0 0 0 0 0 0 1
+Rhodopsalta_cruentata_NZ                 0 0 0 0 0 0 0 0 0 1
+Maoricicada_hamiltoni_NZ                 0 0 0 0 0 0 0 0 0 1
+Vastarena_pumila_N.Caledonia             0 0 0 0 0 0 0 0 0 1
+Germalna_germaini_N.Caledonia            0 0 0 0 0 0 0 0 0 1
+Maoricicada_mangu_multicostata_NZ        0 0 0 0 0 0 0 0 0 1
+Caledopsalta_johanae_N.Caledonia         0 0 0 0 0 0 0 0 0 1
+Caledopsalta_judithae_N.Caledonia        0 0 0 0 0 0 0 0 0 1
+Myersalna_depicta_N.Caledonia            0 0 0 0 0 0 0 0 0 1
+UNKNOWN_Cicadettini_speciesT_N.Caledonia 0 0 0 0 0 0 0 0 0 1
+UNKNOWN_Cicadettini_speciesU_N.Caledonia 0 0 0 0 0 0 0 0 0 1
+Magicicada_tredecim_USA                  1 0 0 0 0 0 0 0 0 0
+Klapperichicen_sp._Pakistan              0 0 0 0 0 0 1 0 0 0
+nr.Trismarcha_sp.Ghana_Ghana             0 0 0 1 0 0 0 0 0 0
+Calyria_sp._Ecuador                      0 0 1 0 0 0 0 0 0 0
+Prasinosoma_heidemanni_Argentina         0 0 1 0 0 0 0 0 0 0
+Baeturia_sp._Vanuatu                     0 0 0 0 0 0 0 0 0 1
+ [ reached 'max' / getOption("max.print") -- omitted 106 rows ]
+
+[1] 3
+[1] 16
+[1] 15
+[1] 15
+[1] 11
+[1] 1024
+[1] 176
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t1.0\t15.0\t55.0\t140.0\t45.0\t10.0\t110.0\t110.0\t100.0"
+[1] "1.0\t0.00\t1.0\t50.0\t130.0\t60.0\t115.0\t130.0\t150.0\t112.0"
+[1] "15.0\t1.0\t0.00\t30.0\t85.0\t60.0\t115.0\t125.0\t145.0\t80.0"
+[1] "55.0\t50.0\t30.0\t0.00\t4.00\t1.0\t1.0\t8.00\t50.0\t80.0"
+[1] "140.0\t130.0\t85.0\t4.00\t0.00\t55.0\t45.0\t37.0\t55.0\t65.0"
+[1] "45.0\t60.0\t60.0\t1.0\t55.0\t0.00\t1.0\t20.0\t50.0\t98.0"
+[1] "10.0\t115.0\t115.0\t1.0\t45.0\t1.0\t0.00\t1.0\t1.0\t40.0"
+[1] "110.0\t130.0\t125.0\t8.00\t37.0\t20.0\t1.0\t0.00\t1.0\t48.0"
+[1] "110.0\t150.0\t145.0\t50.0\t55.0\t50.0\t1.0\t1.0\t0.00\t5.00"
+[1] "100.0\t112.0\t80.0\t80.0\t65.0\t98.0\t40.0\t48.0\t5.00\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t1.0\t20.0\t35.0\t110.0\t25.0\t1.0\t95.0\t125.0\t110.0"
+[1] "1.0\t0.00\t10.0\t50.0\t125.0\t55.0\t110.0\t130.0\t150.0\t115.0"
+[1] "20.0\t10.0\t0.00\t20.0\t75.0\t50.0\t95.0\t105.0\t135.0\t100.0"
+[1] "35.0\t50.0\t20.0\t0.00\t3.50\t5.00\t8.50\t9.50\t45.0\t67.0"
+[1] "110.0\t125.0\t75.0\t3.50\t0.00\t60.0\t55.0\t30.0\t58.0\t58.0"
+[1] "25.0\t55.0\t50.0\t5.00\t60.0\t0.00\t1.0\t25.0\t50.0\t105.0"
+[1] "1.0\t110.0\t95.0\t8.50\t55.0\t1.0\t0.00\t1.0\t1.0\t55.0"
+[1] "95.0\t130.0\t105.0\t9.50\t30.0\t25.0\t1.0\t0.00\t1.0\t50.0"
+[1] "125.0\t150.0\t135.0\t45.0\t58.0\t50.0\t1.0\t1.0\t0.00\t20.0"
+[1] "110.0\t115.0\t100.0\t67.0\t58.0\t105.0\t55.0\t50.0\t20.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t12.0\t25.0\t30.0\t110.0\t8.00\t1.0\t98.0\t120.0\t110.0"
+[1] "12.0\t0.00\t11.0\t45.0\t120.0\t55.0\t110.0\t130.0\t140.0\t100.0"
+[1] "25.0\t11.0\t0.00\t14.0\t63.0\t50.0\t90.0\t90.0\t130.0\t85.0"
+[1] "30.0\t45.0\t14.0\t0.00\t6.00\t5.00\t23.0\t20.0\t55.0\t55.0"
+[1] "110.0\t12.0\t60.0\t6.00\t0.00\t60.0\t58.0\t25.0\t70.0\t50.0"
+[1] "8.00\t55.0\t50.0\t5.00\t60.0\t0.00\t1.0\t40.0\t60.0\t110.0"
+[1] "1.0\t110.0\t90.0\t23.0\t58.0\t1.0\t0.00\t8.50\t1.0\t75.0"
+[1] "98.0\t130.0\t90.0\t20.0\t25.0\t40.0\t8.50\t0.00\t20.0\t45.0"
+[1] "120.0\t140.0\t130.0\t55.0\t70.0\t60.0\t1.0\t20.0\t0.00\t30.0"
+[1] "110.0\t100.0\t85.0\t55.0\t50.0\t110.0\t75.0\t45.0\t30.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t15.0\t30.0\t30.0\t120.0\t4.00\t1.0\t100.0\t100.0\t150.0"
+[1] "15.0\t0.00\t5.00\t37.0\t100.0\t50.0\t110.0\t120.0\t150.0\t140.0"
+[1] "30.0\t5.00\t0.00\t9.00\t55.0\t45.0\t95.0\t65.0\t140.0\t80.0"
+[1] "30.0\t37.0\t9.00\t0.00\t8.00\t6.00\t28.0\t16.0\t55.0\t50.0"
+[1] "120.0\t100.0\t55.0\t8.00\t0.00\t67.0\t60.0\t5.00\t75.0\t45.0"
+[1] "4.00\t50.0\t45.0\t6.00\t67.0\t0.00\t1.0\t55.0\t50.0\t100.0"
+[1] "1.0\t110.0\t95.0\t28.0\t60.0\t1.0\t0.00\t45.0\t1.0\t67.0"
+[1] "100.0\t120.0\t65.0\t16.0\t5.00\t55.0\t45.0\t0.00\t55.0\t40.0"
+[1] "100.0\t150.0\t140.0\t55.0\t75.0\t50.0\t1.0\t55.0\t0.00\t33.0"
+[1] "150.0\t140.0\t80.0\t50.0\t45.0\t100.0\t67.0\t40.0\t33.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t9.50\t27.0\t20.0\t110.0\t2.00\t1.0\t110.0\t97.0\t150.0"
+[1] "9.50\t0.00\t10.0\t35.0\t100.0\t50.0\t110.0\t110.0\t150.0\t140.0"
+[1] "27.0\t10.0\t0.00\t5.00\t46.0\t40.0\t90.0\t50.0\t130.0\t58.0"
+[1] "20.0\t35.0\t5.00\t0.00\t6.50\t6.00\t35.0\t10.0\t65.0\t48.0"
+[1] "110.0\t100.0\t46.0\t6.50\t0.00\t75.0\t72.0\t1.0\t80.0\t42.0"
+[1] "2.00\t50.0\t40.0\t6.00\t75.0\t0.00\t1.0\t70.0\t50.0\t110.0"
+[1] "1.0\t110.0\t90.0\t35.0\t72.0\t1.0\t0.00\t60.0\t1.0\t40.0"
+[1] "110.0\t110.0\t50.0\t10.0\t1.0\t70.0\t60.0\t0.00\t64.0\t25.0"
+[1] "97.0\t150.0\t130.0\t65.0\t80.0\t50.0\t1.0\t64.0\t0.00\t40.0"
+[1] "150.0\t140.0\t58.0\t48.0\t42.0\t110.0\t40.0\t25.0\t40.0\t0.00"
+[1] ""
+[1] "END"
+
+1- top: 0, bot: 25, rel_bot: 25
+
+2- top: 25, bot: 50, rel_bot: 25
+
+3- top: 50, bot: 75, rel_bot: 25
+
+4- top: 75, bot: 100, rel_bot: 25
+
+5- top: 100, bot: 150, rel_bot: 50
+$geogfn
+[1] "geog.data"
+
+$trfn
+[1] "tree.newick"
+
+$abbr
+[1] "default"
+
+$description
+[1] "defaults"
+
+$BioGeoBEARS_model_object
+An object of class "BioGeoBEARS_model"
+Slot "params_table":
+         type    init      min      max     est                note                                                                  desc
+d        free 0.01000  1.0e-12  5.00000 0.01000               works                     anagenesis: rate of 'dispersal' (range expansion)
+e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
+a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
+b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
+w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
+u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
+j       fixed 0.00000  1.0e-05  2.99999 0.00000               works             cladogenesis: relative per-event weight of jump dispersal
+ysv       3-j 2.99999  1.0e-05  3.00000 2.99999               works                                                   cladogenesis: y+s+v
+ys    ysv*2/3 1.99999  1.0e-05  2.00000 1.99999               works                                                     cladogenesis: y+s
+y     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works   cladogenesis: relative per-event weight of sympatry (range-copying)
+s     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works          cladogenesis: relative per-event weight of subset speciation
+v     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works       cladogenesis: relative per-event weight of vicariant speciation
+mx01    fixed 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01j    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01y    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01s    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01v    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01r   fixed 0.50000  1.0e-04  0.99990 0.50000                  no                       root: controls range size probabilities of root
+mf      fixed 0.10000  5.0e-03  0.99500 0.10000                 yes                      mean frequency of truly sampling OTU of interest
+dp      fixed 1.00000  5.0e-03  0.99500 1.00000                 yes              detection probability per true sample of OTU of interest
+fdp     fixed 0.00000  5.0e-03  0.99500 0.00000                 yes false detection of OTU probability per true taphonomic control sample
+
+
+$timesfn
+[1] "times.txt"
+
+$distsfn
+[1] "distances_changing.txt"
+
+$dispersal_multipliers_fn
+[1] NA
+
+$area_of_areas_fn
+[1] NA
+
+$areas_allowed_fn
+[1] NA
+
+$areas_adjacency_fn
+[1] NA
+
+$detects_fn
+[1] NA
+
+$controls_fn
+[1] NA
+
+$max_range_size
+[1] 3
+
+$force_sparse
+[1] FALSE
+
+$use_detection_model
+[1] FALSE
+
+$print_optim
+[1] TRUE
+
+$printlevel
+[1] 0
+
+$on_NaN_error
+[1] -1e+50
+
+$wd
+[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/v2_genSA/BGB_M3+x_mr3"
+
+$num_cores_to_use
+[1] 2
+
+$cluster_already_open
+[1] FALSE
+
+$use_optimx
+[1] "GenSA"
+
+$rescale_params
+[1] FALSE
+
+$return_condlikes_table
+[1] TRUE
+
+$calc_TTL_loglike_from_condlikes_table
+[1] TRUE
+
+$calc_ancprobs
+[1] TRUE
+
+$speedup
+[1] TRUE
+
+$include_null_range
+[1] TRUE
+
+$useAmbiguities
+[1] FALSE
+
+$min_branchlength
+[1] 1e-06
+
+$timeperiods
+[1]  25  50  75 100 150
+
+$list_of_distances_mats
+$list_of_distances_mats[[1]]
+     N   C   S  F   M  W   E   I   D   Z
+1   NA   1  15 55 140 45  10 110 110 100
+2    1  NA   1 50 130 60 115 130 150 112
+3   15   1  NA 30  85 60 115 125 145  80
+4   55  50  30 NA   4  1   1   8  50  80
+5  140 130  85  4  NA 55  45  37  55  65
+6   45  60  60  1  55 NA   1  20  50  98
+7   10 115 115  1  45  1  NA   1   1  40
+8  110 130 125  8  37 20   1  NA   1  48
+9  110 150 145 50  55 50   1   1  NA   5
+10 100 112  80 80  65 98  40  48   5  NA
+
+$list_of_distances_mats[[2]]
+     N   C   S    F     M   W     E     I   D   Z
+1   NA   1  20 35.0 110.0  25   1.0  95.0 125 110
+2    1  NA  10 50.0 125.0  55 110.0 130.0 150 115
+3   20  10  NA 20.0  75.0  50  95.0 105.0 135 100
+4   35  50  20   NA   3.5   5   8.5   9.5  45  67
+5  110 125  75  3.5    NA  60  55.0  30.0  58  58
+6   25  55  50  5.0  60.0  NA   1.0  25.0  50 105
+7    1 110  95  8.5  55.0   1    NA   1.0   1  55
+8   95 130 105  9.5  30.0  25   1.0    NA   1  50
+9  125 150 135 45.0  58.0  50   1.0   1.0  NA  20
+10 110 115 100 67.0  58.0 105  55.0  50.0  20  NA
+
+$list_of_distances_mats[[3]]
+     N   C   S  F   M   W     E     I   D   Z
+1   NA  12  25 30 110   8   1.0  98.0 120 110
+2   12  NA  11 45 120  55 110.0 130.0 140 100
+3   25  11  NA 14  63  50  90.0  90.0 130  85
+4   30  45  14 NA   6   5  23.0  20.0  55  55
+5  110  12  60  6  NA  60  58.0  25.0  70  50
+6    8  55  50  5  60  NA   1.0  40.0  60 110
+7    1 110  90 23  58   1    NA   8.5   1  75
+8   98 130  90 20  25  40   8.5    NA  20  45
+9  120 140 130 55  70  60   1.0  20.0  NA  30
+10 110 100  85 55  50 110  75.0  45.0  30  NA
+
+$list_of_distances_mats[[4]]
+     N   C   S  F   M   W   E   I   D   Z
+1   NA  15  30 30 120   4   1 100 100 150
+2   15  NA   5 37 100  50 110 120 150 140
+3   30   5  NA  9  55  45  95  65 140  80
+4   30  37   9 NA   8   6  28  16  55  50
+5  120 100  55  8  NA  67  60   5  75  45
+6    4  50  45  6  67  NA   1  55  50 100
+7    1 110  95 28  60   1  NA  45   1  67
+8  100 120  65 16   5  55  45  NA  55  40
+9  100 150 140 55  75  50   1  55  NA  33
+10 150 140  80 50  45 100  67  40  33  NA
+
+$list_of_distances_mats[[5]]
+       N     C   S    F     M   W   E   I   D   Z
+1     NA   9.5  27 20.0 110.0   2   1 110  97 150
+2    9.5    NA  10 35.0 100.0  50 110 110 150 140
+3   27.0  10.0  NA  5.0  46.0  40  90  50 130  58
+4   20.0  35.0   5   NA   6.5   6  35  10  65  48
+5  110.0 100.0  46  6.5    NA  75  72   1  80  42
+6    2.0  50.0  40  6.0  75.0  NA   1  70  50 110
+7    1.0 110.0  90 35.0  72.0   1  NA  60   1  40
+8  110.0 110.0  50 10.0   1.0  70  60  NA  64  25
+9   97.0 150.0 130 65.0  80.0  50   1  64  NA  40
+10 150.0 140.0  58 48.0  42.0 110  40  25  40  NA
+
+
+$tree_sections_list
+$tree_sections_list[[1]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 81 tips and 80 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Jassopsaltria_rufifacies_Australia, Psaltoda_moerens_Australia, Cyclochila_australasiae_Australia, Thopha_saccata_Australia, Illyria_burkei_Australia,Macrotristria_angularis_Australia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+[1] 25
+
+$return_pieces_list[[3]]
+[1] 25
+
+$return_pieces_list[[4]]
+[1] 25
+
+$return_pieces_list[[5]]
+[1] 25
+
+$return_pieces_list[[6]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Macrotristria_angularis_Australia, Illyria_burkei_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[7]]
+[1] 25
+
+$return_pieces_list[[8]]
+[1] 25
+
+$return_pieces_list[[9]]
+[1] 25
+
+$return_pieces_list[[10]]
+[1] 25
+
+$return_pieces_list[[11]]
+[1] 25
+
+$return_pieces_list[[12]]
+[1] 25
+
+$return_pieces_list[[13]]
+[1] 25
+
+$return_pieces_list[[14]]
+
+Phylogenetic tree with 8 tips and 7 internal nodes.
+
+Tip labels:
+  Afzeliada_sp.1_Zambia, Albanycada_albigera_S.Africa, Azanicada_zuluensis_S.Africa, Platypleura_capensis_S.Africa, Platypleura_stridula_S.Africa, Hamza_ciliaris_Philippines, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[15]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Dyticopycna_semiclara_S.Africa, Ugada_limbata_Ghana, Yanga_heathi_Madagascar, Pycna_strix_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[16]]
+[1] 25
+
+$return_pieces_list[[17]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Karenia_ravida_S.E.Asia, Dundubia_annandalei_India
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[18]]
+[1] 25
+
+$return_pieces_list[[19]]
+[1] 25
+
+$return_pieces_list[[20]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Hyalessa_maculaticollis_China, Formotosena_sp._Vietnam, Graptopsaltria_nigrofuscata_Japan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[21]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Gaeana_maculata_Vietnam, Talainga_chinensis_Vietnam
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[22]]
+[1] 25
+
+$return_pieces_list[[23]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Tympanoterpes_serricosta_Argentina, Prasinosoma_heidemanni_Argentina, Proarna_sp._Bolivia, Nosola_paradoxa_Bolivia, Beameria_venosa_USA, Diceroprocta_viridifascia_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[24]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Quesada_gigas_Mexico, Dorisiana_amoena_Guatemala, Dorisiana_sp._Argentina, Guyalna_sp._Bolivia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[25]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Borencona_aguadilla_Puert.Rico, Chinaria_vivianae_Dom.Rep.
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[26]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Chinaria_sp._Mexico, Miranha_imbellis_Guatemala, Daza_montezuma_Guatemala, Dazollina_petilunca_Cost.Rica, Dyticodopoea_signoreti_Guatemala, Procollina_sp.1_Guatemala
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[27]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  N.gen._sp.tepui_Venezuela, Zammara_cf.erna_Ecuador, Zammara_tympanum_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[28]]
+[1] 25
+
+$return_pieces_list[[29]]
+[1] 25
+
+$return_pieces_list[[30]]
+[1] 25
+
+$return_pieces_list[[31]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Cryptotympana_atrata_China, Neotibicen_winnemanna_USA, Megatibicen_resonans_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[32]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Hadoa_townsendii_USA, Cacama_moorei_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[33]]
+[1] 25
+
+$return_pieces_list[[34]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chremistica_sp._Malaysia, Chremistica_ribhoi_India
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[35]]
+[1] 25
+
+$return_pieces_list[[36]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Nablistes_heterochroma_Ghana, Maroboduus_fractus_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[37]]
+[1] 25
+
+$return_pieces_list[[38]]
+[1] 25
+
+$return_pieces_list[[39]]
+[1] 25
+
+$return_pieces_list[[40]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Xosopsaltria_thunbergi_S.Africa, Tettigomyia_vespiformis_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[41]]
+[1] 25
+
+$return_pieces_list[[42]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Malagasia_sp._Madagascar, Malgotilia_sogai_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[43]]
+[1] 25
+
+$return_pieces_list[[44]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Quintilia_wealei_S.Africa, nr.Quintilia_sp._S.Africa, Koranna_analis_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[45]]
+[1] 25
+
+$return_pieces_list[[46]]
+[1] 25
+
+$return_pieces_list[[47]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Neomuda_sp._S.Africa, Neomuda_peringueyi_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[48]]
+[1] 25
+
+$return_pieces_list[[49]]
+[1] 25
+
+$return_pieces_list[[50]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Allobroma_kedenburgi_Malaysia, Trismarcha_sp._Togo, nr.Trismarcha_sp.Ghana_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[51]]
+[1] 25
+
+$return_pieces_list[[52]]
+[1] 25
+
+$return_pieces_list[[53]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Brevialavenosa_sp.1_Brazil, Abricta_brunnea_Mauritius, Tryella_willsi_Australia, Magicicada_tredecim_USA, Magicicada_cassini_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[54]]
+[1] 25
+
+$return_pieces_list[[55]]
+[1] 25
+
+$return_pieces_list[[56]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Herrera_sp._Argentina, Carineta_diardi_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[57]]
+[1] 25
+
+$return_pieces_list[[58]]
+[1] 25
+
+$return_pieces_list[[59]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Cicadatra_atra_Greece, Mogannia_hebes_Taiwan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[60]]
+[1] 25
+
+$return_pieces_list[[61]]
+[1] 25
+
+$return_pieces_list[[62]]
+[1] 25
+
+$return_pieces_list[[63]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  nr.Zouga_sp._S.Africa, Zouga_sp._S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[64]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Calyria_sp._Ecuador, Parnisa_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[65]]
+[1] 25
+
+$return_pieces_list[[66]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Parnisa_sp.1_Brazil, Parnisa_sp.2_Brazil, Parnisa_sp.3_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[67]]
+[1] 25
+
+$return_pieces_list[[68]]
+[1] 25
+
+$return_pieces_list[[69]]
+[1] 25
+
+$return_pieces_list[[70]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Baeturia_sp._Vanuatu, Venustria_superba_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[71]]
+[1] 25
+
+$return_pieces_list[[72]]
+
+Phylogenetic tree with 14 tips and 13 internal nodes.
+
+Tip labels:
+  Huechys_sanguinea_Vietnam, Rhodopsalta_cruentata_NZ, Kikihia_rosea_NZ, Kikihia_scutellaris_NZ, Maoricicada_hamiltoni_NZ, Maoricicada_mangu_multicostata_NZ, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[73]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Neoplatypedia_constricta_USA, Platypedia_putnami_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[74]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chilecicada_trifascia_Chile, Chilecicada_sp._Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[75]]
+[1] 25
+
+$return_pieces_list[[76]]
+[1] 25
+
+$return_pieces_list[[77]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Selymbria_guianensis_Fr.Guiana, Selymbria_madredediosensis_Peru
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[78]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Torrescada_sanjuanensis_Argentina, Chonosia_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[79]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Acuticephala_alipuncta_Argentina, Tettigades_sp._Argentina, Tettigades_ulnaria_Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[80]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Okanagodes_gracilis_USA, Clidophleps_sp._USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[81]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Okanagana_canadensis_USA, Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Jassopsaltria_rufifacies_Australia"
+
+$return_pieces_basenames[[3]]
+[1] "Psaltoda_moerens_Australia"
+
+$return_pieces_basenames[[4]]
+[1] "Cyclochila_australasiae_Australia"
+
+$return_pieces_basenames[[5]]
+[1] "Thopha_saccata_Australia"
+
+$return_pieces_basenames[[6]]
+[1] "Illyria_burkei_Australia,Macrotristria_angularis_Australia"
+
+$return_pieces_basenames[[7]]
+[1] "Burbunga_hillieri_Australia"
+
+$return_pieces_basenames[[8]]
+[1] "Parnquila_unicolor_Australia"
+
+$return_pieces_basenames[[9]]
+[1] "Tamasa_tristigma_Australia"
+
+$return_pieces_basenames[[10]]
+[1] "Kimberpsaltria_taenia_Australia"
+
+$return_pieces_basenames[[11]]
+[1] "Talcopsaltria_olivei_Australia"
+
+$return_pieces_basenames[[12]]
+[1] "Antankaria_madagascariensis_Madagascar"
+
+$return_pieces_basenames[[13]]
+[1] "Durangona_tigrina_Ecuador"
+
+$return_pieces_basenames[[14]]
+[1] "Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa"
+
+$return_pieces_basenames[[15]]
+[1] "Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar"
+
+$return_pieces_basenames[[16]]
+[1] "Distantada_thomasseti_Mauritius"
+
+$return_pieces_basenames[[17]]
+[1] "Dundubia_annandalei_India,Karenia_ravida_S.E.Asia"
+
+$return_pieces_basenames[[18]]
+[1] "Cicada_orni_Greece"
+
+$return_pieces_basenames[[19]]
+[1] "Tosena_melanopteryx_Thailand"
+
+$return_pieces_basenames[[20]]
+[1] "Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China"
+
+$return_pieces_basenames[[21]]
+[1] "Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam"
+
+$return_pieces_basenames[[22]]
+[1] "Adusella_insignifera_Argentina"
+
+$return_pieces_basenames[[23]]
+[1] "Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina"
+
+$return_pieces_basenames[[24]]
+[1] "Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico"
+
+$return_pieces_basenames[[25]]
+[1] "Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep."
+
+$return_pieces_basenames[[26]]
+[1] "Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala"
+
+$return_pieces_basenames[[27]]
+[1] "N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[28]]
+[1] "Auritibicen_flammatus_Japan"
+
+$return_pieces_basenames[[29]]
+[1] "Lyristes_gemellus_Greece"
+
+$return_pieces_basenames[[30]]
+[1] "Heteropsaltria_aliena_Solom.Is."
+
+$return_pieces_basenames[[31]]
+[1] "Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA"
+
+$return_pieces_basenames[[32]]
+[1] "Cacama_moorei_USA,Hadoa_townsendii_USA"
+
+$return_pieces_basenames[[33]]
+[1] "Tacua_speciosa_Malaysia"
+
+$return_pieces_basenames[[34]]
+[1] "Chremistica_ribhoi_India,Chremistica_sp._Malaysia"
+
+$return_pieces_basenames[[35]]
+[1] "Paectira_dulcis_E.Africa"
+
+$return_pieces_basenames[[36]]
+[1] "Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana"
+
+$return_pieces_basenames[[37]]
+[1] "Hovana_distanti_Madagascar"
+
+$return_pieces_basenames[[38]]
+[1] "Lacetas_sp._Ghana"
+
+$return_pieces_basenames[[39]]
+[1] "Stagira_sp._S.Africa"
+
+$return_pieces_basenames[[40]]
+[1] "Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[41]]
+[1] "nr.Jafuna_sp._Madagascar"
+
+$return_pieces_basenames[[42]]
+[1] "Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar"
+
+$return_pieces_basenames[[43]]
+[1] "Masupha_ampliata_S.Africa"
+
+$return_pieces_basenames[[44]]
+[1] "Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa"
+
+$return_pieces_basenames[[45]]
+[1] "nr.Gogga_sp._S.Africa"
+
+$return_pieces_basenames[[46]]
+[1] "Quintilia_rufiventris_S.Africa"
+
+$return_pieces_basenames[[47]]
+[1] "Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa"
+
+$return_pieces_basenames[[48]]
+[1] "Katoa_sp._Vietnam"
+
+$return_pieces_basenames[[49]]
+[1] "Monomatapa_matoposa_Malawi"
+
+$return_pieces_basenames[[50]]
+[1] "Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo"
+
+$return_pieces_basenames[[51]]
+[1] "Taipinga_nigricans_S.Africa"
+
+$return_pieces_basenames[[52]]
+[1] "Panka_lungunca_Iv.Coast"
+
+$return_pieces_basenames[[53]]
+[1] "Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia"
+
+$return_pieces_basenames[[54]]
+[1] "Nelcyndana_sp._Malaysia"
+
+$return_pieces_basenames[[55]]
+[1] "Taphura_sp._Peru"
+
+$return_pieces_basenames[[56]]
+[1] "Carineta_diardi_Brazil,Herrera_sp._Argentina"
+
+$return_pieces_basenames[[57]]
+[1] "Pagiphora_annulata_Turkey"
+
+$return_pieces_basenames[[58]]
+[1] "Klapperichicen_sp._Pakistan"
+
+$return_pieces_basenames[[59]]
+[1] "Cicadatra_atra_Greece,Mogannia_hebes_Taiwan"
+
+$return_pieces_basenames[[60]]
+[1] "nr.Decebalus_sp.Mad_Madagascar"
+
+$return_pieces_basenames[[61]]
+[1] "Fractuosella_breoni_Reunion"
+
+$return_pieces_basenames[[62]]
+[1] "Calopsaltria_sp._S.Africa"
+
+$return_pieces_basenames[[63]]
+[1] "nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[64]]
+[1] "Calyria_sp._Ecuador,Parnisa_sp._Argentina"
+
+$return_pieces_basenames[[65]]
+[1] "Prunasis_sp._Brazil"
+
+$return_pieces_basenames[[66]]
+[1] "Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil"
+
+$return_pieces_basenames[[67]]
+[1] "Lembeja_paradoxa_Australia"
+
+$return_pieces_basenames[[68]]
+[1] "Prasia_faticina_Indonesia"
+
+$return_pieces_basenames[[69]]
+[1] "Chlorocysta_suffusa_Australia"
+
+$return_pieces_basenames[[70]]
+[1] "Baeturia_sp._Vanuatu,Venustria_superba_Australia"
+
+$return_pieces_basenames[[71]]
+[1] "Chrysocicada_sp._Australia"
+
+$return_pieces_basenames[[72]]
+[1] "Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia"
+
+$return_pieces_basenames[[73]]
+[1] "Neoplatypedia_constricta_USA,Platypedia_putnami_USA"
+
+$return_pieces_basenames[[74]]
+[1] "Chilecicada_sp._Chile,Chilecicada_trifascia_Chile"
+
+$return_pieces_basenames[[75]]
+[1] "Hemidictya_frondosa_Bolivia"
+
+$return_pieces_basenames[[76]]
+[1] "Aragualna_plenalinea_Venezuela"
+
+$return_pieces_basenames[[77]]
+[1] "Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru"
+
+$return_pieces_basenames[[78]]
+[1] "Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina"
+
+$return_pieces_basenames[[79]]
+[1] "Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile"
+
+$return_pieces_basenames[[80]]
+[1] "Clidophleps_sp._USA,Okanagodes_gracilis_USA"
+
+$return_pieces_basenames[[81]]
+[1] "Okanagana_canadensis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[2]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 26 tips and 25 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar, Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil, Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 10 tips and 9 internal nodes.
+
+Tip labels:
+  Jassopsaltria_rufifacies_Australia, Psaltoda_moerens_Australia, Cyclochila_australasiae_Australia, Thopha_saccata_Australia, Illyria_burkei_Australia,Macrotristria_angularis_Australia, Burbunga_hillieri_Australia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Antankaria_madagascariensis_Madagascar, Durangona_tigrina_Ecuador, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa, Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[4]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Distantada_thomasseti_Mauritius, Dundubia_annandalei_India,Karenia_ravida_S.E.Asia, Cicada_orni_Greece, Tosena_melanopteryx_Thailand, Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China, Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[5]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Adusella_insignifera_Argentina, Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina, Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico, Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep., Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala, N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[6]]
+
+Phylogenetic tree with 7 tips and 6 internal nodes.
+
+Tip labels:
+  Auritibicen_flammatus_Japan, Lyristes_gemellus_Greece, Heteropsaltria_aliena_Solom.Is., Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA, Cacama_moorei_USA,Hadoa_townsendii_USA, Tacua_speciosa_Malaysia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[7]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Paectira_dulcis_E.Africa, Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[8]]
+[1] 25
+
+$return_pieces_list[[9]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Lacetas_sp._Ghana, Stagira_sp._S.Africa, Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[10]]
+
+Phylogenetic tree with 7 tips and 6 internal nodes.
+
+Tip labels:
+  nr.Jafuna_sp._Madagascar, Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar, Masupha_ampliata_S.Africa, Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa, nr.Gogga_sp._S.Africa, Quintilia_rufiventris_S.Africa, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[11]]
+[1] 25
+
+$return_pieces_list[[12]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Monomatapa_matoposa_Malawi, Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo, Taipinga_nigricans_S.Africa, Panka_lungunca_Iv.Coast, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[13]]
+[1] 25
+
+$return_pieces_list[[14]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Taphura_sp._Peru, Carineta_diardi_Brazil,Herrera_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[15]]
+[1] 25
+
+$return_pieces_list[[16]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Klapperichicen_sp._Pakistan, Cicadatra_atra_Greece,Mogannia_hebes_Taiwan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[17]]
+[1] 25
+
+$return_pieces_list[[18]]
+[1] 25
+
+$return_pieces_list[[19]]
+[1] 25
+
+$return_pieces_list[[20]]
+[1] 25
+
+$return_pieces_list[[21]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Calyria_sp._Ecuador,Parnisa_sp._Argentina, Prunasis_sp._Brazil, Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[22]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Lembeja_paradoxa_Australia, Prasia_faticina_Indonesia, Chlorocysta_suffusa_Australia, Baeturia_sp._Vanuatu,Venustria_superba_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[23]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chrysocicada_sp._Australia, Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[24]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Neoplatypedia_constricta_USA,Platypedia_putnami_USA, Chilecicada_sp._Chile,Chilecicada_trifascia_Chile, Hemidictya_frondosa_Bolivia, Aragualna_plenalinea_Venezuela, Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[25]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[26]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Clidophleps_sp._USA,Okanagodes_gracilis_USA, Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Macrotristria_angularis_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia"
+
+$return_pieces_basenames[[3]]
+[1] "Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Antankaria_madagascariensis_Madagascar,Azanicada_zuluensis_S.Africa,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar"
+
+$return_pieces_basenames[[4]]
+[1] "Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Formotosena_sp._Vietnam,Gaeana_maculata_Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Karenia_ravida_S.E.Asia,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand"
+
+$return_pieces_basenames[[5]]
+[1] "Adusella_insignifera_Argentina,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dyticodopoea_signoreti_Guatemala,Guyalna_sp._Bolivia,Miranha_imbellis_Guatemala,N.gen._sp.tepui_Venezuela,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Quesada_gigas_Mexico,Tympanoterpes_serricosta_Argentina,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[6]]
+[1] "Auritibicen_flammatus_Japan,Cacama_moorei_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Hadoa_townsendii_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Tacua_speciosa_Malaysia"
+
+$return_pieces_basenames[[7]]
+[1] "Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa"
+
+$return_pieces_basenames[[8]]
+[1] "Hovana_distanti_Madagascar"
+
+$return_pieces_basenames[[9]]
+[1] "Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[10]]
+[1] "Koranna_analis_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa"
+
+$return_pieces_basenames[[11]]
+[1] "Katoa_sp._Vietnam"
+
+$return_pieces_basenames[[12]]
+[1] "Abricta_brunnea_Mauritius,Allobroma_kedenburgi_Malaysia,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Monomatapa_matoposa_Malawi,nr.Trismarcha_sp.Ghana_Ghana,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Trismarcha_sp._Togo,Tryella_willsi_Australia"
+
+$return_pieces_basenames[[13]]
+[1] "Nelcyndana_sp._Malaysia"
+
+$return_pieces_basenames[[14]]
+[1] "Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru"
+
+$return_pieces_basenames[[15]]
+[1] "Pagiphora_annulata_Turkey"
+
+$return_pieces_basenames[[16]]
+[1] "Cicadatra_atra_Greece,Klapperichicen_sp._Pakistan,Mogannia_hebes_Taiwan"
+
+$return_pieces_basenames[[17]]
+[1] "nr.Decebalus_sp.Mad_Madagascar"
+
+$return_pieces_basenames[[18]]
+[1] "Fractuosella_breoni_Reunion"
+
+$return_pieces_basenames[[19]]
+[1] "Calopsaltria_sp._S.Africa"
+
+$return_pieces_basenames[[20]]
+[1] "nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[21]]
+[1] "Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil"
+
+$return_pieces_basenames[[22]]
+[1] "Baeturia_sp._Vanuatu,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Venustria_superba_Australia"
+
+$return_pieces_basenames[[23]]
+[1] "Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Chrysocicada_sp._Australia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia"
+
+$return_pieces_basenames[[24]]
+[1] "Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru"
+
+$return_pieces_basenames[[25]]
+[1] "Acuticephala_alipuncta_Argentina,Chonosia_sp._Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Torrescada_sanjuanensis_Argentina"
+
+$return_pieces_basenames[[26]]
+[1] "Clidophleps_sp._USA,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[3]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar, Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil, Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Hovana_distanti_Madagascar, Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa, Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[4]]
+
+Phylogenetic tree with 13 tips and 12 internal nodes.
+
+Tip labels:
+  Katoa_sp._Vietnam, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa, Nelcyndana_sp._Malaysia, Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru, Pagiphora_annulata_Turkey, Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[5]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina, Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Antankaria_madagascariensis_Madagascar,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Burbunga_hillieri_Australia,Cacama_moorei_USA,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cicada_orni_Greece,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Gaeana_maculata_Vietnam,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Heteropsaltria_aliena_Solom.Is.,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Kimberpsaltria_taenia_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,N.gen._sp.tepui_Venezuela,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,Parnquila_unicolor_Australia,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Tacua_speciosa_Malaysia,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Tosena_melanopteryx_Thailand,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[3]]
+[1] "Hovana_distanti_Madagascar,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Nablistes_heterochroma_Ghana,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,Paectira_dulcis_E.Africa,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[4]]
+[1] "Abricta_brunnea_Mauritius,Allobroma_kedenburgi_Malaysia,Baeturia_sp._Vanuatu,Brevialavenosa_sp.1_Brazil,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chlorocysta_suffusa_Australia,Chrysocicada_sp._Australia,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Fractuosella_breoni_Reunion,Germalna_germaini_N.Caledonia,Herrera_sp._Argentina,Huechys_sanguinea_Vietnam,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Klapperichicen_sp._Pakistan,Lembeja_paradoxa_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prasia_faticina_Indonesia,Prunasis_sp._Brazil,Rhodopsalta_cruentata_NZ,Taipinga_nigricans_S.Africa,Taphura_sp._Peru,Trismarcha_sp._Togo,Tryella_willsi_Australia,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[5]]
+[1] "Acuticephala_alipuncta_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Chonosia_sp._Argentina,Clidophleps_sp._USA,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Tibicina_haematodes_Greece,Torrescada_sanjuanensis_Argentina"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[4]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+[1] 25
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Abricta_brunnea_Mauritius,Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Allobroma_kedenburgi_Malaysia,Antankaria_madagascariensis_Madagascar,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Baeturia_sp._Vanuatu,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Brevialavenosa_sp.1_Brazil,Burbunga_hillieri_Australia,Cacama_moorei_USA,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chlorocysta_suffusa_Australia,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Chrysocicada_sp._Australia,Cicada_orni_Greece,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Fractuosella_breoni_Reunion,Gaeana_maculata_Vietnam,Germalna_germaini_N.Caledonia,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Herrera_sp._Argentina,Heteropsaltria_aliena_Solom.Is.,Hovana_distanti_Madagascar,Huechys_sanguinea_Vietnam,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Kimberpsaltria_taenia_Australia,Klapperichicen_sp._Pakistan,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Lembeja_paradoxa_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,N.gen._sp.tepui_Venezuela,Nablistes_heterochroma_Ghana,Nelcyndana_sp._Malaysia,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,nr.Decebalus_sp.Mad_Madagascar,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Paectira_dulcis_E.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Parnquila_unicolor_Australia,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasia_faticina_Indonesia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Prunasis_sp._Brazil,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Rhodopsalta_cruentata_NZ,Stagira_sp._S.Africa,Tacua_speciosa_Malaysia,Taipinga_nigricans_S.Africa,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Taphura_sp._Peru,Tettigomyia_vespiformis_S.Africa,Thopha_saccata_Australia,Tosena_melanopteryx_Thailand,Trismarcha_sp._Togo,Tryella_willsi_Australia,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Xosopsaltria_thunbergi_S.Africa,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[3]]
+[1] "Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[5]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Abricta_brunnea_Mauritius,Acuticephala_alipuncta_Argentina,Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Allobroma_kedenburgi_Malaysia,Antankaria_madagascariensis_Madagascar,Aragualna_plenalinea_Venezuela,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Baeturia_sp._Vanuatu,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Brevialavenosa_sp.1_Brazil,Burbunga_hillieri_Australia,Cacama_moorei_USA,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chlorocysta_suffusa_Australia,Chonosia_sp._Argentina,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Chrysocicada_sp._Australia,Cicada_orni_Greece,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Clidophleps_sp._USA,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Derotettix_mendosensis_Argentina,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Fractuosella_breoni_Reunion,Gaeana_maculata_Vietnam,Germalna_germaini_N.Caledonia,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Hemidictya_frondosa_Bolivia,Herrera_sp._Argentina,Heteropsaltria_aliena_Solom.Is.,Hovana_distanti_Madagascar,Huechys_sanguinea_Vietnam,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Kimberpsaltria_taenia_Australia,Klapperichicen_sp._Pakistan,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Lembeja_paradoxa_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,N.gen._sp.tepui_Venezuela,Nablistes_heterochroma_Ghana,Nelcyndana_sp._Malaysia,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,Neoplatypedia_constricta_USA,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,nr.Decebalus_sp.Mad_Madagascar,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Paectira_dulcis_E.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Parnquila_unicolor_Australia,Platypedia_putnami_USA,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasia_faticina_Indonesia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Prunasis_sp._Brazil,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Rhodopsalta_cruentata_NZ,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Stagira_sp._S.Africa,Tacua_speciosa_Malaysia,Taipinga_nigricans_S.Africa,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Taphura_sp._Peru,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Tettigomyia_vespiformis_S.Africa,Thopha_saccata_Australia,Tibicina_haematodes_Greece,Torrescada_sanjuanensis_Argentina,Tosena_melanopteryx_Thailand,Trismarcha_sp._Togo,Tryella_willsi_Australia,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Xosopsaltria_thunbergi_S.Africa,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Zouga_sp._S.Africa"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+
+$master_table
+   node node.type parent_br edge.length ancestor daughter_nds  time_bp fossils                                  label stratum time_top time_bot reltimept piecenum piececlass SUBnode SUBnode.type
+1     1       tip         1 135.1930836      157              0.00e+00   FALSE       Derotettix_mendosensis_Argentina       0        0        0         0        0   orig_tip       1     orig_tip
+2     2       tip        10  41.7356802      165              3.64e-05   FALSE     Jassopsaltria_rufifacies_Australia       0        0        0         0        0   orig_tip       2     orig_tip
+3     3       tip        13  33.7767369      167              3.64e-05   FALSE             Psaltoda_moerens_Australia       0        0        0         0        0   orig_tip       3     orig_tip
+4     4       tip        15  32.3452610      168              3.64e-05   FALSE      Cyclochila_australasiae_Australia       0        0        0         0        0   orig_tip       4     orig_tip
+5     5       tip        17  31.7427185      169              3.64e-05   FALSE               Thopha_saccata_Australia       0        0        0         0        0   orig_tip       5     orig_tip
+6     6       tip        19  10.8221206      170              3.64e-05   FALSE      Macrotristria_angularis_Australia       0        0        0         0        0   orig_tip       6     orig_tip
+7     7       tip        20  10.8221206      170              3.64e-05   FALSE               Illyria_burkei_Australia       0        0        0         0        0   orig_tip       7     orig_tip
+8     8       tip        22  40.5749502      171              3.64e-05   FALSE            Burbunga_hillieri_Australia       0        0        0         0        0   orig_tip       8     orig_tip
+9     9       tip        24  28.5926882      172              3.64e-05   FALSE           Parnquila_unicolor_Australia       0        0        0         0        0   orig_tip       9     orig_tip
+10   10       tip        25  28.5926882      172              3.64e-05   FALSE             Tamasa_tristigma_Australia       0        0        0         0        0   orig_tip      10     orig_tip
+11   11       tip        27  27.7665993      173              3.64e-05   FALSE        Kimberpsaltria_taenia_Australia       0        0        0         0        0   orig_tip      11     orig_tip
+12   12       tip        28  27.7665993      173              3.64e-05   FALSE         Talcopsaltria_olivei_Australia       0        0        0         0        0   orig_tip      12     orig_tip
+13   13       tip        31  45.2329562      175              3.64e-05   FALSE Antankaria_madagascariensis_Madagascar       0        0        0         0        0   orig_tip      13     orig_tip
+14   14       tip        33  37.1230749      176              3.64e-05   FALSE              Durangona_tigrina_Ecuador       0        0        0         0        0   orig_tip      14     orig_tip
+15   15       tip        36  23.8855416      178              3.64e-05   FALSE                  Afzeliada_sp.1_Zambia       0        0        0         0        0   orig_tip      15     orig_tip
+16   16       tip        39  14.1826692      180              3.64e-05   FALSE           Albanycada_albigera_S.Africa       0        0        0         0        0   orig_tip      16     orig_tip
+17   17       tip        41   7.3788361      181              3.64e-05   FALSE           Azanicada_zuluensis_S.Africa       0        0        0         0        0   orig_tip      17     orig_tip
+18   18       tip        43   0.7757926      182              3.64e-05   FALSE          Platypleura_capensis_S.Africa       0        0        0         0        0   orig_tip      18     orig_tip
+19   19       tip        44   0.7757926      182              3.64e-05   FALSE          Platypleura_stridula_S.Africa       0        0        0         0        0   orig_tip      19     orig_tip
+20   20       tip        46  13.4674933      183              3.64e-05   FALSE             Hamza_ciliaris_Philippines       0        0        0         0        0   orig_tip      20     orig_tip
+   SUBparent_br SUBedge.length SUBancestor SUBdaughter_nds SUBtime_bp SUBfossils                               SUBlabel
+1             1    135.1930836         157                   0.00e+00      FALSE       Derotettix_mendosensis_Argentina
+2            10     41.7356802         165                   3.64e-05      FALSE     Jassopsaltria_rufifacies_Australia
+3            13     33.7767369         167                   3.64e-05      FALSE             Psaltoda_moerens_Australia
+4            15     32.3452610         168                   3.64e-05      FALSE      Cyclochila_australasiae_Australia
+5            17     31.7427185         169                   3.64e-05      FALSE               Thopha_saccata_Australia
+6            19     10.8221206         170                   3.64e-05      FALSE      Macrotristria_angularis_Australia
+7            20     10.8221206         170                   3.64e-05      FALSE               Illyria_burkei_Australia
+8            22     40.5749502         171                   3.64e-05      FALSE            Burbunga_hillieri_Australia
+9            24     28.5926882         172                   3.64e-05      FALSE           Parnquila_unicolor_Australia
+10           25     28.5926882         172                   3.64e-05      FALSE             Tamasa_tristigma_Australia
+11           27     27.7665993         173                   3.64e-05      FALSE        Kimberpsaltria_taenia_Australia
+12           28     27.7665993         173                   3.64e-05      FALSE         Talcopsaltria_olivei_Australia
+13           31     45.2329562         175                   3.64e-05      FALSE Antankaria_madagascariensis_Madagascar
+14           33     37.1230749         176                   3.64e-05      FALSE              Durangona_tigrina_Ecuador
+15           36     23.8855416         178                   3.64e-05      FALSE                  Afzeliada_sp.1_Zambia
+16           39     14.1826692         180                   3.64e-05      FALSE           Albanycada_albigera_S.Africa
+17           41      7.3788361         181                   3.64e-05      FALSE           Azanicada_zuluensis_S.Africa
+18           43      0.7757926         182                   3.64e-05      FALSE          Platypleura_capensis_S.Africa
+19           44      0.7757926         182                   3.64e-05      FALSE          Platypleura_stridula_S.Africa
+20           46     13.4674933         183                   3.64e-05      FALSE             Hamza_ciliaris_Philippines
+ [ reached 'max' / getOption("max.print") -- omitted 562 rows ]
+
+An object of class "BioGeoBEARS_model"
+Slot "params_table":
+         type    init      min      max     est                note                                                                  desc
+d        free 0.01000  1.0e-12  5.00000 0.01000               works                     anagenesis: rate of 'dispersal' (range expansion)
+e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
+a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
+b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
+w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
+u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
+j       fixed 0.00000  1.0e-05  2.99999 0.00000               works             cladogenesis: relative per-event weight of jump dispersal
+ysv       3-j 2.99999  1.0e-05  3.00000 2.99999               works                                                   cladogenesis: y+s+v
+ys    ysv*2/3 1.99999  1.0e-05  2.00000 1.99999               works                                                     cladogenesis: y+s
+y     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works   cladogenesis: relative per-event weight of sympatry (range-copying)
+s     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works          cladogenesis: relative per-event weight of subset speciation
+v     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works       cladogenesis: relative per-event weight of vicariant speciation
+mx01    fixed 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01j    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01y    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01s    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01v    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01r   fixed 0.50000  1.0e-04  0.99990 0.50000                  no                       root: controls range size probabilities of root
+mf      fixed 0.10000  5.0e-03  0.99500 0.10000                 yes                      mean frequency of truly sampling OTU of interest
+dp      fixed 1.00000  5.0e-03  0.99500 1.00000                 yes              detection probability per true sample of OTU of interest
+fdp     fixed 0.00000  5.0e-03  0.99500 0.00000                 yes false detection of OTU probability per true taphonomic control sample
+
+         type    init      min      max     est                note                                                                  desc
+d        free 0.01000  1.0e-12  5.00000 0.01000               works                     anagenesis: rate of 'dispersal' (range expansion)
+e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
+a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
+b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
+w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
+u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
+j       fixed 0.00000  1.0e-05  2.99999 0.00000               works             cladogenesis: relative per-event weight of jump dispersal
+ysv       3-j 2.99999  1.0e-05  3.00000 2.99999               works                                                   cladogenesis: y+s+v
+ys    ysv*2/3 1.99999  1.0e-05  2.00000 1.99999               works                                                     cladogenesis: y+s
+y     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works   cladogenesis: relative per-event weight of sympatry (range-copying)
+s     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works          cladogenesis: relative per-event weight of subset speciation
+v     ysv*1/3 1.00000  1.0e-05  1.00000 1.00000               works       cladogenesis: relative per-event weight of vicariant speciation
+mx01    fixed 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01j    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01y    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01s    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01v    mx01 0.00010  1.0e-04  0.99990 0.00010               works                 cladogenesis: controls range size of smaller daughter
+mx01r   fixed 0.50000  1.0e-04  0.99990 0.50000                  no                       root: controls range size probabilities of root
+mf      fixed 0.10000  5.0e-03  0.99500 0.10000                 yes                      mean frequency of truly sampling OTU of interest
+dp      fixed 1.00000  5.0e-03  0.99500 1.00000                 yes              detection probability per true sample of OTU of interest
+fdp     fixed 0.00000  5.0e-03  0.99500 0.00000                 yes false detection of OTU probability per true taphonomic control sample
+[1] TRUE
+[1] "Note: tipranges_to_tip_condlikes_of_data_on_each_state() is converting a states_list with (0-based) numbers to the equivalent areanames"
+
+Your computer has 24 cores.
+
+Your computer has 24 cores. You have chosen to use:
+num_cores_to_use = 2 cores for the matrix exponentiations in the likelihood calculations.
+
+Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
+Loading ~/.Rprofile...
+Currently viewed PATH:
+/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
+
+Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
+Loading ~/.Rprofile...
+Currently viewed PATH:
+/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
+Started cluster with 2 cores.
+
+
+
+NOTE: You are optimizing with GenSA::GenSA() ('Generalized Simulated Annealing') instead of optimx() or optim(). GenSA seems to be better for more complex problems (4+ parameters, wildly different scalings). However, it will likely be slower, as it does more calculations of the likelihood to search the parameter space.
+
+NOTE: Before running GenSA::GenSA(), here is a test calculation of the data likelihood
+using calc_loglike_for_optim_stratified() on initial parameter values, with printlevel=2...
+if this crashes, the error messages are more helpful
+than those from inside GenSA::GenSA().
+     d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
+
+calc_loglike_for_optim_stratified() on initial parameters loglike=-540.1634
+
+
+
+Calculation of likelihood on initial parameters: successful.
+
+Now starting Maximum Likelihood (ML) parameter optimization with GenSA::GenSA()...
+
+     d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
