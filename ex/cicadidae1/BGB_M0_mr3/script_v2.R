@@ -810,7 +810,7 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","est"] = 0.
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-runslow = TRUE
+runslow = FALSE
 resfn = "Cicadidae_BAYAREALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
@@ -931,7 +931,7 @@ BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=Bi
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 resfn = "Cicadidae_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
-runslow = TRUE
+runslow = FALSE
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -982,3 +982,150 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 dev.off()
 cmdstr = paste("open ", pdffn, sep="")
 system(cmdstr)
+
+
+
+
+
+# Set up empty tables to hold the statistical results
+restable = NULL
+teststable = NULL
+
+#######################################################
+# Statistics -- DEC vs. DEC+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resDEC)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resDECj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# DEC, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resDEC, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# DEC+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resDECj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+# The null hypothesis for a Likelihood Ratio Test (LRT) is that two models
+# confer the same likelihood on the data. See: Brian O'Meara's webpage:
+# http://www.brianomeara.info/tutorials/aic
+# ...for an intro to LRT, AIC, and AICc
+
+rbind(res2, res1)
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#######################################################
+# Statistics -- DIVALIKE vs. DIVALIKE+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resDIVALIKE)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resDIVALIKEj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# DIVALIKE, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resDIVALIKE, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# DIVALIKE+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resDIVALIKEj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+rbind(res2, res1)
+conditional_format_table(stats)
+
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#######################################################
+# Statistics -- BAYAREALIKE vs. BAYAREALIKE+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resBAYAREALIKE)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resBAYAREALIKEj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# BAYAREALIKE, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resBAYAREALIKE, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# BAYAREALIKE+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resBAYAREALIKEj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+rbind(res2, res1)
+conditional_format_table(stats)
+
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#########################################################################
+# ASSEMBLE RESULTS TABLES: DEC, DEC+J, DIVALIKE, DIVALIKE+J, BAYAREALIKE, BAYAREALIKE+J
+#########################################################################
+teststable$alt = c("DEC+J", "DIVALIKE+J", "BAYAREALIKE+J")
+teststable$null = c("DEC", "DIVALIKE", "BAYAREALIKE")
+row.names(restable) = c("DEC", "DEC+J", "DIVALIKE", "DIVALIKE+J", "BAYAREALIKE", "BAYAREALIKE+J")
+restable = put_jcol_after_ecol(restable)
+restable
+
+# Look at the results!!
+restable
+teststable
+
+#######################################################
+# Save the results tables for later -- check for e.g.
+# convergence issues
+#######################################################
+
+# Loads to "restable"
+save(restable, file="restable_v1.Rdata")
+load(file="restable_v1.Rdata")
+
+# Loads to "teststable"
+save(teststable, file="teststable_v1.Rdata")
+load(file="teststable_v1.Rdata")
+
+# Also save to text files
+write.table(restable, file="restable.txt", quote=FALSE, sep="\t")
+write.table(unlist_df(teststable), file="teststable.txt", quote=FALSE, sep="\t")
+
+#######################################################
+# Model weights of all six models
+#######################################################
+restable2 = restable
+
+# With AICs:
+AICtable = calc_AIC_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams)
+restable = cbind(restable, AICtable)
+restable_AIC_rellike = AkaikeWeights_on_summary_table(restable=restable, colname_to_use="AIC")
+restable_AIC_rellike = put_jcol_after_ecol(restable_AIC_rellike)
+restable_AIC_rellike
+
+# With AICcs -- factors in sample size
+samplesize = length(tr$tip.label)
+AICtable = calc_AICc_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams, samplesize=samplesize)
+restable2 = cbind(restable2, AICtable)
+restable_AICc_rellike = AkaikeWeights_on_summary_table(restable=restable2, colname_to_use="AICc")
+restable_AICc_rellike = put_jcol_after_ecol(restable_AICc_rellike)
+restable_AICc_rellike
+
+# Also save to text files
+write.table(restable_AIC_rellike, file="restable_AIC_rellike.txt", quote=FALSE, sep="\t")
+write.table(restable_AICc_rellike, file="restable_AICc_rellike.txt", quote=FALSE, sep="\t")
+
+# Save with nice conditional formatting
+write.table(conditional_format_table(restable_AIC_rellike), file="restable_AIC_rellike_formatted.txt", quote=FALSE, sep="\t")
+write.table(conditional_format_table(restable_AICc_rellike), file="restable_AICc_rellike_formatted.txt", quote=FALSE, sep="\t")

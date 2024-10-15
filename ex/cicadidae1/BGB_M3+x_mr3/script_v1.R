@@ -23,7 +23,7 @@ library(BioGeoBEARS)
 # Set your working directory for output files
 # default here is your home directory ("~")
 # Change this as you like
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M0_mr3/"
+wd = "/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M3+x_mr3/"
 setwd(wd)
 
 # Double-check your working directory with getwd()
@@ -248,11 +248,11 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #  and BioGeoBEARS Google Group posts for further hints)
 #
 # Uncomment files you wish to use in time-stratified analyses:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -261,7 +261,7 @@ BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; us
 BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 # (use more cores to speed it up; this requires
 # library(parallel) and/or library(snow). The package "parallel" 
 # is now default on Macs in R 3.0+, but apparently still 
@@ -284,7 +284,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -295,6 +295,13 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 
 # Set up DEC model
 # (nothing to do; defaults)
+# Add x as a free parameter
+xstart = 0.0
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 
 # Look at the BioGeoBEARS_run_object; it's just a list of settings etc.
 BioGeoBEARS_run_object
@@ -312,7 +319,7 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
 runslow = TRUE
-resfn = "Cicadidae_DEC_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_DEC_M3_stratdists_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -342,11 +349,11 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 # Also: search script on "include_null_range" for other places to change
 
 # Set up a time-stratified analysis:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -355,7 +362,7 @@ BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; us
 BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
@@ -363,7 +370,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -378,6 +385,7 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resDEC$outputs@params_table["d","est"]
 estart = resDEC$outputs@params_table["e","est"]
 jstart = 0.0001
+xstart = resDEC$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -390,10 +398,16 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","type"] = "free
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = jstart
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart
 
+# Add x as a free parameter
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_DEC+J_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_DEC+J_M3_stratdists_v1.Rdata"
 runslow = TRUE
 if (runslow)
     {
@@ -414,13 +428,13 @@ if (runslow)
 #######################################################
 # PDF plots
 #######################################################
-pdffn = "Cicadidae_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"
-pdf(pdffn, height=6, width=6)
+pdffn = "Cicadidae_DEC_vs_DEC+J_M3_stratdists_v1.pdf"
+pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - DEC
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DEC on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resDEC
@@ -435,7 +449,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DECJ
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC+J on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DEC+J on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resDECj
@@ -487,11 +501,11 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 # Also: search script on "include_null_range" for other places to change
 
 # Set up a time-stratified analysis:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -500,7 +514,7 @@ BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; us
 BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
@@ -508,7 +522,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -538,11 +552,18 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01v","est"] = 0.
 # BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = 0.01
 # BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = 0.01
 
+# Add x as a free parameter
+xstart = 0.0
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = TRUE
-resfn = "Cicadidae_DIVALIKE_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_DIVALIKE_M3_stratdists_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -572,11 +593,11 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 # Also: search script on "include_null_range" for other places to change
 
 # Set up a time-stratified analysis:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -585,7 +606,7 @@ BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; us
 BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
@@ -593,7 +614,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -608,6 +629,7 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resDIVALIKE$outputs@params_table["d","est"]
 estart = resDIVALIKE$outputs@params_table["e","est"]
 jstart = 0.0001
+xstart = resDIVALIKE$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -639,10 +661,16 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","min"] = 0.00001
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 1.99999
 
+# Add x as a free parameter
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_DIVALIKE+J_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_DIVALIKE+J_M3_stratdists_v1.Rdata"
 runslow = TRUE
 if (runslow)
     {
@@ -660,13 +688,13 @@ if (runslow)
     resDIVALIKEj = res
     }
 
-pdffn = "Cicadidae_DIVALIKE_vs_DIVALIKE+J_M0_unconstrained_v1.pdf"
-pdf(pdffn, height=6, width=6)
+pdffn = "Cicadidae_DIVALIKE_vs_DIVALIKE+J_M3_stratdists_v1.pdf"
+pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - DIVALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DIVALIKE on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resDIVALIKE
@@ -681,7 +709,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DIVALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resDIVALIKEj
@@ -749,11 +777,11 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 # Also: search script on "include_null_range" for other places to change
 
 # Set up a time-stratified analysis:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -762,7 +790,7 @@ BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; us
 BioGeoBEARS_run_object$use_optimx = TRUE    # if FALSE, use optim() instead of optimx();
 # if "GenSA", use Generalized Simulated Annealing, which seems better on high-dimensional
 # problems (5+ parameters), but seems to sometimes fail to optimize on simple problems
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
@@ -770,7 +798,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -806,12 +834,19 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","type"] = "
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","init"] = 0.9999
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","est"] = 0.9999
 
+# Add x as a free parameter
+xstart = 0.0
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 # Check the inputs; fixing any initial ("init") values outside min/max
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = TRUE
-resfn = "Cicadidae_BAYAREALIKE_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_BAYAREALIKE_M3_stratdists_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -841,18 +876,18 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 # Also: search script on "include_null_range" for other places to change
 
 # Set up a time-stratified analysis:
-#BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
+BioGeoBEARS_run_object$timesfn = "times.txt"
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
+BioGeoBEARS_run_object$distsfn = "distances_changing.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
 BioGeoBEARS_run_object$on_NaN_error = -1e50    # returns very low lnL if parameters produce NaN error (underflow check)
 BioGeoBEARS_run_object$speedup = TRUE          # shorcuts to speed ML search; use FALSE if worried (e.g. >3 params)
 BioGeoBEARS_run_object$use_optimx = "GenSA"
-BioGeoBEARS_run_object$num_cores_to_use = 12
+BioGeoBEARS_run_object$num_cores_to_use = 23
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
@@ -860,7 +895,7 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 BioGeoBEARS_run_object = readfiles_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 # Divide the tree up by timeperiods/strata (uncomment this for stratified analysis)
-#BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
+BioGeoBEARS_run_object = section_the_tree(inputs=BioGeoBEARS_run_object, make_master_table=TRUE, plot_pieces=FALSE, fossils_older_than=0.001, cut_fossils=FALSE)
 # The stratified tree is described in this table:
 #BioGeoBEARS_run_object$master_table
 
@@ -875,6 +910,7 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resBAYAREALIKE$outputs@params_table["d","est"]
 estart = resBAYAREALIKE$outputs@params_table["e","est"]
 jstart = 0.0001
+xstart = resBAYAREALIKE$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -927,10 +963,16 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","max"] = 4.9999
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","min"] = 0.00001
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 0.99999
 
+# Add x as a free parameter
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
+BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
+
+
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
+resfn = "Cicadidae_BAYAREALIKE+J_M3_stratdists_v1.Rdata"
 runslow = TRUE
 if (runslow)
     {
@@ -946,13 +988,13 @@ if (runslow)
     resBAYAREALIKEj = res
     }
 
-pdffn = "Cicadidae_BAYAREALIKE_vs_BAYAREALIKE+J_M0_unconstrained_v1.pdf"
-pdf(pdffn, height=6, width=6)
+pdffn = "Cicadidae_BAYAREALIKE_vs_BAYAREALIKE+J_M3_stratdists_v1.pdf"
+pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - BAYAREALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resBAYAREALIKE
@@ -967,7 +1009,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - BAYAREALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Cicadidae M0_unconstrained"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Cicadidae M3_stratdists"
 
 # Setup
 results_object = resBAYAREALIKEj
@@ -982,3 +1024,154 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 dev.off()
 cmdstr = paste("open ", pdffn, sep="")
 system(cmdstr)
+
+
+
+
+
+
+
+
+
+# Set up empty tables to hold the statistical results
+restable = NULL
+teststable = NULL
+
+#######################################################
+# Statistics -- DEC vs. DEC+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resDEC)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resDECj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# DEC, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resDEC, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# DEC+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resDECj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+# The null hypothesis for a Likelihood Ratio Test (LRT) is that two models
+# confer the same likelihood on the data. See: Brian O'Meara's webpage:
+# http://www.brianomeara.info/tutorials/aic
+# ...for an intro to LRT, AIC, and AICc
+
+rbind(res2, res1)
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#######################################################
+# Statistics -- DIVALIKE vs. DIVALIKE+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resDIVALIKE)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resDIVALIKEj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# DIVALIKE, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resDIVALIKE, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# DIVALIKE+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resDIVALIKEj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+rbind(res2, res1)
+conditional_format_table(stats)
+
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#######################################################
+# Statistics -- BAYAREALIKE vs. BAYAREALIKE+J
+#######################################################
+# We have to extract the log-likelihood differently, depending on the 
+# version of optim/optimx
+LnL_2 = get_LnL_from_BioGeoBEARS_results_object(resBAYAREALIKE)
+LnL_1 = get_LnL_from_BioGeoBEARS_results_object(resBAYAREALIKEj)
+
+numparams1 = 3
+numparams2 = 2
+stats = AICstats_2models(LnL_1, LnL_2, numparams1, numparams2)
+stats
+
+# BAYAREALIKE, null model for Likelihood Ratio Test (LRT)
+res2 = extract_params_from_BioGeoBEARS_results_object(results_object=resBAYAREALIKE, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+# BAYAREALIKE+J, alternative model for Likelihood Ratio Test (LRT)
+res1 = extract_params_from_BioGeoBEARS_results_object(results_object=resBAYAREALIKEj, returnwhat="table", addl_params=c("j"), paramsstr_digits=4)
+
+rbind(res2, res1)
+conditional_format_table(stats)
+
+tmp_tests = conditional_format_table(stats)
+
+restable = rbind(restable, res2, res1)
+teststable = rbind(teststable, tmp_tests)
+
+#########################################################################
+# ASSEMBLE RESULTS TABLES: DEC, DEC+J, DIVALIKE, DIVALIKE+J, BAYAREALIKE, BAYAREALIKE+J
+#########################################################################
+teststable$alt = c("DEC+J", "DIVALIKE+J", "BAYAREALIKE+J")
+teststable$null = c("DEC", "DIVALIKE", "BAYAREALIKE")
+row.names(restable) = c("DEC", "DEC+J", "DIVALIKE", "DIVALIKE+J", "BAYAREALIKE", "BAYAREALIKE+J")
+restable = put_jcol_after_ecol(restable)
+restable
+
+# Look at the results!!
+restable
+teststable
+
+#######################################################
+# Save the results tables for later -- check for e.g.
+# convergence issues
+#######################################################
+
+# Loads to "restable"
+save(restable, file="restable_v1.Rdata")
+load(file="restable_v1.Rdata")
+
+# Loads to "teststable"
+save(teststable, file="teststable_v1.Rdata")
+load(file="teststable_v1.Rdata")
+
+# Also save to text files
+write.table(restable, file="restable.txt", quote=FALSE, sep="\t")
+write.table(unlist_df(teststable), file="teststable.txt", quote=FALSE, sep="\t")
+
+#######################################################
+# Model weights of all six models
+#######################################################
+restable2 = restable
+
+# With AICs:
+AICtable = calc_AIC_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams)
+restable = cbind(restable, AICtable)
+restable_AIC_rellike = AkaikeWeights_on_summary_table(restable=restable, colname_to_use="AIC")
+restable_AIC_rellike = put_jcol_after_ecol(restable_AIC_rellike)
+restable_AIC_rellike
+
+# With AICcs -- factors in sample size
+samplesize = length(tr$tip.label)
+AICtable = calc_AICc_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams, samplesize=samplesize)
+restable2 = cbind(restable2, AICtable)
+restable_AICc_rellike = AkaikeWeights_on_summary_table(restable=restable2, colname_to_use="AICc")
+restable_AICc_rellike = put_jcol_after_ecol(restable_AICc_rellike)
+restable_AICc_rellike
+
+# Also save to text files
+write.table(restable_AIC_rellike, file="restable_AIC_rellike.txt", quote=FALSE, sep="\t")
+write.table(restable_AICc_rellike, file="restable_AICc_rellike.txt", quote=FALSE, sep="\t")
+
+# Save with nice conditional formatting
+write.table(conditional_format_table(restable_AIC_rellike), file="restable_AIC_rellike_formatted.txt", quote=FALSE, sep="\t")
+write.table(conditional_format_table(restable_AICc_rellike), file="restable_AICc_rellike_formatted.txt", quote=FALSE, sep="\t")

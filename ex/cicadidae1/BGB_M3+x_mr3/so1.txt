@@ -3,7 +3,7 @@ Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
 Loading ~/.Rprofile...
 Currently viewed PATH:
 /Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin
-[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M0_mr3"
+[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M3+x_mr3"
 [1] "/Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library/BioGeoBEARS/extdata"
  [1] "a_scripts"                                 "examples"                                  "Hawaii_abbreviations_table.txt"            "Phylowiki_M0_2023_v1.R"                   
  [5] "Phylowiki_M3_2023_v1.R"                    "Psychotria_5.2_old_not_ultrametric.newick" "Psychotria_5.2_ultrametric.newick"         "Psychotria_5.2.newick"                    
@@ -238,7 +238,78 @@ Baeturia_sp._Vanuatu                     0 0 0 0 0 0 0 0 0 1
 [1] 15
 [1] 11
 [1] 1024
-[1] 56
+[1] 176
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t1.0\t15.0\t55.0\t140.0\t45.0\t10.0\t110.0\t110.0\t100.0"
+[1] "1.0\t0.00\t1.0\t50.0\t130.0\t60.0\t115.0\t130.0\t150.0\t112.0"
+[1] "15.0\t1.0\t0.00\t30.0\t85.0\t60.0\t115.0\t125.0\t145.0\t80.0"
+[1] "55.0\t50.0\t30.0\t0.00\t4.00\t1.0\t1.0\t8.00\t50.0\t80.0"
+[1] "140.0\t130.0\t85.0\t4.00\t0.00\t55.0\t45.0\t37.0\t55.0\t65.0"
+[1] "45.0\t60.0\t60.0\t1.0\t55.0\t0.00\t1.0\t20.0\t50.0\t98.0"
+[1] "10.0\t115.0\t115.0\t1.0\t45.0\t1.0\t0.00\t1.0\t1.0\t40.0"
+[1] "110.0\t130.0\t125.0\t8.00\t37.0\t20.0\t1.0\t0.00\t1.0\t48.0"
+[1] "110.0\t150.0\t145.0\t50.0\t55.0\t50.0\t1.0\t1.0\t0.00\t5.00"
+[1] "100.0\t112.0\t80.0\t80.0\t65.0\t98.0\t40.0\t48.0\t5.00\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t1.0\t20.0\t35.0\t110.0\t25.0\t1.0\t95.0\t125.0\t110.0"
+[1] "1.0\t0.00\t10.0\t50.0\t125.0\t55.0\t110.0\t130.0\t150.0\t115.0"
+[1] "20.0\t10.0\t0.00\t20.0\t75.0\t50.0\t95.0\t105.0\t135.0\t100.0"
+[1] "35.0\t50.0\t20.0\t0.00\t3.50\t5.00\t8.50\t9.50\t45.0\t67.0"
+[1] "110.0\t125.0\t75.0\t3.50\t0.00\t60.0\t55.0\t30.0\t58.0\t58.0"
+[1] "25.0\t55.0\t50.0\t5.00\t60.0\t0.00\t1.0\t25.0\t50.0\t105.0"
+[1] "1.0\t110.0\t95.0\t8.50\t55.0\t1.0\t0.00\t1.0\t1.0\t55.0"
+[1] "95.0\t130.0\t105.0\t9.50\t30.0\t25.0\t1.0\t0.00\t1.0\t50.0"
+[1] "125.0\t150.0\t135.0\t45.0\t58.0\t50.0\t1.0\t1.0\t0.00\t20.0"
+[1] "110.0\t115.0\t100.0\t67.0\t58.0\t105.0\t55.0\t50.0\t20.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t12.0\t25.0\t30.0\t110.0\t8.00\t1.0\t98.0\t120.0\t110.0"
+[1] "12.0\t0.00\t11.0\t45.0\t120.0\t55.0\t110.0\t130.0\t140.0\t100.0"
+[1] "25.0\t11.0\t0.00\t14.0\t63.0\t50.0\t90.0\t90.0\t130.0\t85.0"
+[1] "30.0\t45.0\t14.0\t0.00\t6.00\t5.00\t23.0\t20.0\t55.0\t55.0"
+[1] "110.0\t12.0\t60.0\t6.00\t0.00\t60.0\t58.0\t25.0\t70.0\t50.0"
+[1] "8.00\t55.0\t50.0\t5.00\t60.0\t0.00\t1.0\t40.0\t60.0\t110.0"
+[1] "1.0\t110.0\t90.0\t23.0\t58.0\t1.0\t0.00\t8.50\t1.0\t75.0"
+[1] "98.0\t130.0\t90.0\t20.0\t25.0\t40.0\t8.50\t0.00\t20.0\t45.0"
+[1] "120.0\t140.0\t130.0\t55.0\t70.0\t60.0\t1.0\t20.0\t0.00\t30.0"
+[1] "110.0\t100.0\t85.0\t55.0\t50.0\t110.0\t75.0\t45.0\t30.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t15.0\t30.0\t30.0\t120.0\t4.00\t1.0\t100.0\t100.0\t150.0"
+[1] "15.0\t0.00\t5.00\t37.0\t100.0\t50.0\t110.0\t120.0\t150.0\t140.0"
+[1] "30.0\t5.00\t0.00\t9.00\t55.0\t45.0\t95.0\t65.0\t140.0\t80.0"
+[1] "30.0\t37.0\t9.00\t0.00\t8.00\t6.00\t28.0\t16.0\t55.0\t50.0"
+[1] "120.0\t100.0\t55.0\t8.00\t0.00\t67.0\t60.0\t5.00\t75.0\t45.0"
+[1] "4.00\t50.0\t45.0\t6.00\t67.0\t0.00\t1.0\t55.0\t50.0\t100.0"
+[1] "1.0\t110.0\t95.0\t28.0\t60.0\t1.0\t0.00\t45.0\t1.0\t67.0"
+[1] "100.0\t120.0\t65.0\t16.0\t5.00\t55.0\t45.0\t0.00\t55.0\t40.0"
+[1] "100.0\t150.0\t140.0\t55.0\t75.0\t50.0\t1.0\t55.0\t0.00\t33.0"
+[1] "150.0\t140.0\t80.0\t50.0\t45.0\t100.0\t67.0\t40.0\t33.0\t0.00"
+[1] ""
+[1] "N\tC\tS\tF\tM\tW\tE\tI\tD\tZ"
+[1] "0.00\t9.50\t27.0\t20.0\t110.0\t2.00\t1.0\t110.0\t97.0\t150.0"
+[1] "9.50\t0.00\t10.0\t35.0\t100.0\t50.0\t110.0\t110.0\t150.0\t140.0"
+[1] "27.0\t10.0\t0.00\t5.00\t46.0\t40.0\t90.0\t50.0\t130.0\t58.0"
+[1] "20.0\t35.0\t5.00\t0.00\t6.50\t6.00\t35.0\t10.0\t65.0\t48.0"
+[1] "110.0\t100.0\t46.0\t6.50\t0.00\t75.0\t72.0\t1.0\t80.0\t42.0"
+[1] "2.00\t50.0\t40.0\t6.00\t75.0\t0.00\t1.0\t70.0\t50.0\t110.0"
+[1] "1.0\t110.0\t90.0\t35.0\t72.0\t1.0\t0.00\t60.0\t1.0\t40.0"
+[1] "110.0\t110.0\t50.0\t10.0\t1.0\t70.0\t60.0\t0.00\t64.0\t25.0"
+[1] "97.0\t150.0\t130.0\t65.0\t80.0\t50.0\t1.0\t64.0\t0.00\t40.0"
+[1] "150.0\t140.0\t58.0\t48.0\t42.0\t110.0\t40.0\t25.0\t40.0\t0.00"
+[1] ""
+[1] "END"
+
+1- top: 0, bot: 25, rel_bot: 25
+
+2- top: 25, bot: 50, rel_bot: 25
+
+3- top: 50, bot: 75, rel_bot: 25
+
+4- top: 75, bot: 100, rel_bot: 25
+
+5- top: 100, bot: 150, rel_bot: 50
 $geogfn
 [1] "geog.data"
 
@@ -259,7 +330,7 @@ d        free 0.01000  1.0e-12  5.00000 0.01000               works             
 e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
 a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
 b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
-x       fixed 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
 n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
 w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
 u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
@@ -281,10 +352,10 @@ fdp     fixed 0.00000  5.0e-03  0.99500 0.00000                 yes false detect
 
 
 $timesfn
-[1] NA
+[1] "times.txt"
 
 $distsfn
-[1] NA
+[1] "distances_changing.txt"
 
 $dispersal_multipliers_fn
 [1] NA
@@ -323,7 +394,7 @@ $on_NaN_error
 [1] -1e+50
 
 $wd
-[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M0_mr3"
+[1] "/Users/nickm/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M3+x_mr3"
 
 $num_cores_to_use
 [1] 12
@@ -358,6 +429,1252 @@ $useAmbiguities
 $min_branchlength
 [1] 1e-06
 
+$timeperiods
+[1]  25  50  75 100 150
+
+$list_of_distances_mats
+$list_of_distances_mats[[1]]
+     N   C   S  F   M  W   E   I   D   Z
+1   NA   1  15 55 140 45  10 110 110 100
+2    1  NA   1 50 130 60 115 130 150 112
+3   15   1  NA 30  85 60 115 125 145  80
+4   55  50  30 NA   4  1   1   8  50  80
+5  140 130  85  4  NA 55  45  37  55  65
+6   45  60  60  1  55 NA   1  20  50  98
+7   10 115 115  1  45  1  NA   1   1  40
+8  110 130 125  8  37 20   1  NA   1  48
+9  110 150 145 50  55 50   1   1  NA   5
+10 100 112  80 80  65 98  40  48   5  NA
+
+$list_of_distances_mats[[2]]
+     N   C   S    F     M   W     E     I   D   Z
+1   NA   1  20 35.0 110.0  25   1.0  95.0 125 110
+2    1  NA  10 50.0 125.0  55 110.0 130.0 150 115
+3   20  10  NA 20.0  75.0  50  95.0 105.0 135 100
+4   35  50  20   NA   3.5   5   8.5   9.5  45  67
+5  110 125  75  3.5    NA  60  55.0  30.0  58  58
+6   25  55  50  5.0  60.0  NA   1.0  25.0  50 105
+7    1 110  95  8.5  55.0   1    NA   1.0   1  55
+8   95 130 105  9.5  30.0  25   1.0    NA   1  50
+9  125 150 135 45.0  58.0  50   1.0   1.0  NA  20
+10 110 115 100 67.0  58.0 105  55.0  50.0  20  NA
+
+$list_of_distances_mats[[3]]
+     N   C   S  F   M   W     E     I   D   Z
+1   NA  12  25 30 110   8   1.0  98.0 120 110
+2   12  NA  11 45 120  55 110.0 130.0 140 100
+3   25  11  NA 14  63  50  90.0  90.0 130  85
+4   30  45  14 NA   6   5  23.0  20.0  55  55
+5  110  12  60  6  NA  60  58.0  25.0  70  50
+6    8  55  50  5  60  NA   1.0  40.0  60 110
+7    1 110  90 23  58   1    NA   8.5   1  75
+8   98 130  90 20  25  40   8.5    NA  20  45
+9  120 140 130 55  70  60   1.0  20.0  NA  30
+10 110 100  85 55  50 110  75.0  45.0  30  NA
+
+$list_of_distances_mats[[4]]
+     N   C   S  F   M   W   E   I   D   Z
+1   NA  15  30 30 120   4   1 100 100 150
+2   15  NA   5 37 100  50 110 120 150 140
+3   30   5  NA  9  55  45  95  65 140  80
+4   30  37   9 NA   8   6  28  16  55  50
+5  120 100  55  8  NA  67  60   5  75  45
+6    4  50  45  6  67  NA   1  55  50 100
+7    1 110  95 28  60   1  NA  45   1  67
+8  100 120  65 16   5  55  45  NA  55  40
+9  100 150 140 55  75  50   1  55  NA  33
+10 150 140  80 50  45 100  67  40  33  NA
+
+$list_of_distances_mats[[5]]
+       N     C   S    F     M   W   E   I   D   Z
+1     NA   9.5  27 20.0 110.0   2   1 110  97 150
+2    9.5    NA  10 35.0 100.0  50 110 110 150 140
+3   27.0  10.0  NA  5.0  46.0  40  90  50 130  58
+4   20.0  35.0   5   NA   6.5   6  35  10  65  48
+5  110.0 100.0  46  6.5    NA  75  72   1  80  42
+6    2.0  50.0  40  6.0  75.0  NA   1  70  50 110
+7    1.0 110.0  90 35.0  72.0   1  NA  60   1  40
+8  110.0 110.0  50 10.0   1.0  70  60  NA  64  25
+9   97.0 150.0 130 65.0  80.0  50   1  64  NA  40
+10 150.0 140.0  58 48.0  42.0 110  40  25  40  NA
+
+
+$tree_sections_list
+$tree_sections_list[[1]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 81 tips and 80 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Jassopsaltria_rufifacies_Australia, Psaltoda_moerens_Australia, Cyclochila_australasiae_Australia, Thopha_saccata_Australia, Illyria_burkei_Australia,Macrotristria_angularis_Australia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+[1] 25
+
+$return_pieces_list[[3]]
+[1] 25
+
+$return_pieces_list[[4]]
+[1] 25
+
+$return_pieces_list[[5]]
+[1] 25
+
+$return_pieces_list[[6]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Macrotristria_angularis_Australia, Illyria_burkei_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[7]]
+[1] 25
+
+$return_pieces_list[[8]]
+[1] 25
+
+$return_pieces_list[[9]]
+[1] 25
+
+$return_pieces_list[[10]]
+[1] 25
+
+$return_pieces_list[[11]]
+[1] 25
+
+$return_pieces_list[[12]]
+[1] 25
+
+$return_pieces_list[[13]]
+[1] 25
+
+$return_pieces_list[[14]]
+
+Phylogenetic tree with 8 tips and 7 internal nodes.
+
+Tip labels:
+  Afzeliada_sp.1_Zambia, Albanycada_albigera_S.Africa, Azanicada_zuluensis_S.Africa, Platypleura_capensis_S.Africa, Platypleura_stridula_S.Africa, Hamza_ciliaris_Philippines, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[15]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Dyticopycna_semiclara_S.Africa, Ugada_limbata_Ghana, Yanga_heathi_Madagascar, Pycna_strix_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[16]]
+[1] 25
+
+$return_pieces_list[[17]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Karenia_ravida_S.E.Asia, Dundubia_annandalei_India
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[18]]
+[1] 25
+
+$return_pieces_list[[19]]
+[1] 25
+
+$return_pieces_list[[20]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Hyalessa_maculaticollis_China, Formotosena_sp._Vietnam, Graptopsaltria_nigrofuscata_Japan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[21]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Gaeana_maculata_Vietnam, Talainga_chinensis_Vietnam
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[22]]
+[1] 25
+
+$return_pieces_list[[23]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Tympanoterpes_serricosta_Argentina, Prasinosoma_heidemanni_Argentina, Proarna_sp._Bolivia, Nosola_paradoxa_Bolivia, Beameria_venosa_USA, Diceroprocta_viridifascia_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[24]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Quesada_gigas_Mexico, Dorisiana_amoena_Guatemala, Dorisiana_sp._Argentina, Guyalna_sp._Bolivia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[25]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Borencona_aguadilla_Puert.Rico, Chinaria_vivianae_Dom.Rep.
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[26]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Chinaria_sp._Mexico, Miranha_imbellis_Guatemala, Daza_montezuma_Guatemala, Dazollina_petilunca_Cost.Rica, Dyticodopoea_signoreti_Guatemala, Procollina_sp.1_Guatemala
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[27]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  N.gen._sp.tepui_Venezuela, Zammara_cf.erna_Ecuador, Zammara_tympanum_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[28]]
+[1] 25
+
+$return_pieces_list[[29]]
+[1] 25
+
+$return_pieces_list[[30]]
+[1] 25
+
+$return_pieces_list[[31]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Cryptotympana_atrata_China, Neotibicen_winnemanna_USA, Megatibicen_resonans_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[32]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Hadoa_townsendii_USA, Cacama_moorei_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[33]]
+[1] 25
+
+$return_pieces_list[[34]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chremistica_sp._Malaysia, Chremistica_ribhoi_India
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[35]]
+[1] 25
+
+$return_pieces_list[[36]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Nablistes_heterochroma_Ghana, Maroboduus_fractus_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[37]]
+[1] 25
+
+$return_pieces_list[[38]]
+[1] 25
+
+$return_pieces_list[[39]]
+[1] 25
+
+$return_pieces_list[[40]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Xosopsaltria_thunbergi_S.Africa, Tettigomyia_vespiformis_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[41]]
+[1] 25
+
+$return_pieces_list[[42]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Malagasia_sp._Madagascar, Malgotilia_sogai_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[43]]
+[1] 25
+
+$return_pieces_list[[44]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Quintilia_wealei_S.Africa, nr.Quintilia_sp._S.Africa, Koranna_analis_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[45]]
+[1] 25
+
+$return_pieces_list[[46]]
+[1] 25
+
+$return_pieces_list[[47]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Neomuda_sp._S.Africa, Neomuda_peringueyi_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[48]]
+[1] 25
+
+$return_pieces_list[[49]]
+[1] 25
+
+$return_pieces_list[[50]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Allobroma_kedenburgi_Malaysia, Trismarcha_sp._Togo, nr.Trismarcha_sp.Ghana_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[51]]
+[1] 25
+
+$return_pieces_list[[52]]
+[1] 25
+
+$return_pieces_list[[53]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Brevialavenosa_sp.1_Brazil, Abricta_brunnea_Mauritius, Tryella_willsi_Australia, Magicicada_tredecim_USA, Magicicada_cassini_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[54]]
+[1] 25
+
+$return_pieces_list[[55]]
+[1] 25
+
+$return_pieces_list[[56]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Herrera_sp._Argentina, Carineta_diardi_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[57]]
+[1] 25
+
+$return_pieces_list[[58]]
+[1] 25
+
+$return_pieces_list[[59]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Cicadatra_atra_Greece, Mogannia_hebes_Taiwan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[60]]
+[1] 25
+
+$return_pieces_list[[61]]
+[1] 25
+
+$return_pieces_list[[62]]
+[1] 25
+
+$return_pieces_list[[63]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  nr.Zouga_sp._S.Africa, Zouga_sp._S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[64]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Calyria_sp._Ecuador, Parnisa_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[65]]
+[1] 25
+
+$return_pieces_list[[66]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Parnisa_sp.1_Brazil, Parnisa_sp.2_Brazil, Parnisa_sp.3_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[67]]
+[1] 25
+
+$return_pieces_list[[68]]
+[1] 25
+
+$return_pieces_list[[69]]
+[1] 25
+
+$return_pieces_list[[70]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Baeturia_sp._Vanuatu, Venustria_superba_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[71]]
+[1] 25
+
+$return_pieces_list[[72]]
+
+Phylogenetic tree with 14 tips and 13 internal nodes.
+
+Tip labels:
+  Huechys_sanguinea_Vietnam, Rhodopsalta_cruentata_NZ, Kikihia_rosea_NZ, Kikihia_scutellaris_NZ, Maoricicada_hamiltoni_NZ, Maoricicada_mangu_multicostata_NZ, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[73]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Neoplatypedia_constricta_USA, Platypedia_putnami_USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[74]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chilecicada_trifascia_Chile, Chilecicada_sp._Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[75]]
+[1] 25
+
+$return_pieces_list[[76]]
+[1] 25
+
+$return_pieces_list[[77]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Selymbria_guianensis_Fr.Guiana, Selymbria_madredediosensis_Peru
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[78]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Torrescada_sanjuanensis_Argentina, Chonosia_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[79]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Acuticephala_alipuncta_Argentina, Tettigades_sp._Argentina, Tettigades_ulnaria_Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[80]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Okanagodes_gracilis_USA, Clidophleps_sp._USA
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[81]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Okanagana_canadensis_USA, Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Jassopsaltria_rufifacies_Australia"
+
+$return_pieces_basenames[[3]]
+[1] "Psaltoda_moerens_Australia"
+
+$return_pieces_basenames[[4]]
+[1] "Cyclochila_australasiae_Australia"
+
+$return_pieces_basenames[[5]]
+[1] "Thopha_saccata_Australia"
+
+$return_pieces_basenames[[6]]
+[1] "Illyria_burkei_Australia,Macrotristria_angularis_Australia"
+
+$return_pieces_basenames[[7]]
+[1] "Burbunga_hillieri_Australia"
+
+$return_pieces_basenames[[8]]
+[1] "Parnquila_unicolor_Australia"
+
+$return_pieces_basenames[[9]]
+[1] "Tamasa_tristigma_Australia"
+
+$return_pieces_basenames[[10]]
+[1] "Kimberpsaltria_taenia_Australia"
+
+$return_pieces_basenames[[11]]
+[1] "Talcopsaltria_olivei_Australia"
+
+$return_pieces_basenames[[12]]
+[1] "Antankaria_madagascariensis_Madagascar"
+
+$return_pieces_basenames[[13]]
+[1] "Durangona_tigrina_Ecuador"
+
+$return_pieces_basenames[[14]]
+[1] "Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa"
+
+$return_pieces_basenames[[15]]
+[1] "Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar"
+
+$return_pieces_basenames[[16]]
+[1] "Distantada_thomasseti_Mauritius"
+
+$return_pieces_basenames[[17]]
+[1] "Dundubia_annandalei_India,Karenia_ravida_S.E.Asia"
+
+$return_pieces_basenames[[18]]
+[1] "Cicada_orni_Greece"
+
+$return_pieces_basenames[[19]]
+[1] "Tosena_melanopteryx_Thailand"
+
+$return_pieces_basenames[[20]]
+[1] "Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China"
+
+$return_pieces_basenames[[21]]
+[1] "Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam"
+
+$return_pieces_basenames[[22]]
+[1] "Adusella_insignifera_Argentina"
+
+$return_pieces_basenames[[23]]
+[1] "Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina"
+
+$return_pieces_basenames[[24]]
+[1] "Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico"
+
+$return_pieces_basenames[[25]]
+[1] "Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep."
+
+$return_pieces_basenames[[26]]
+[1] "Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala"
+
+$return_pieces_basenames[[27]]
+[1] "N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[28]]
+[1] "Auritibicen_flammatus_Japan"
+
+$return_pieces_basenames[[29]]
+[1] "Lyristes_gemellus_Greece"
+
+$return_pieces_basenames[[30]]
+[1] "Heteropsaltria_aliena_Solom.Is."
+
+$return_pieces_basenames[[31]]
+[1] "Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA"
+
+$return_pieces_basenames[[32]]
+[1] "Cacama_moorei_USA,Hadoa_townsendii_USA"
+
+$return_pieces_basenames[[33]]
+[1] "Tacua_speciosa_Malaysia"
+
+$return_pieces_basenames[[34]]
+[1] "Chremistica_ribhoi_India,Chremistica_sp._Malaysia"
+
+$return_pieces_basenames[[35]]
+[1] "Paectira_dulcis_E.Africa"
+
+$return_pieces_basenames[[36]]
+[1] "Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana"
+
+$return_pieces_basenames[[37]]
+[1] "Hovana_distanti_Madagascar"
+
+$return_pieces_basenames[[38]]
+[1] "Lacetas_sp._Ghana"
+
+$return_pieces_basenames[[39]]
+[1] "Stagira_sp._S.Africa"
+
+$return_pieces_basenames[[40]]
+[1] "Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[41]]
+[1] "nr.Jafuna_sp._Madagascar"
+
+$return_pieces_basenames[[42]]
+[1] "Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar"
+
+$return_pieces_basenames[[43]]
+[1] "Masupha_ampliata_S.Africa"
+
+$return_pieces_basenames[[44]]
+[1] "Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa"
+
+$return_pieces_basenames[[45]]
+[1] "nr.Gogga_sp._S.Africa"
+
+$return_pieces_basenames[[46]]
+[1] "Quintilia_rufiventris_S.Africa"
+
+$return_pieces_basenames[[47]]
+[1] "Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa"
+
+$return_pieces_basenames[[48]]
+[1] "Katoa_sp._Vietnam"
+
+$return_pieces_basenames[[49]]
+[1] "Monomatapa_matoposa_Malawi"
+
+$return_pieces_basenames[[50]]
+[1] "Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo"
+
+$return_pieces_basenames[[51]]
+[1] "Taipinga_nigricans_S.Africa"
+
+$return_pieces_basenames[[52]]
+[1] "Panka_lungunca_Iv.Coast"
+
+$return_pieces_basenames[[53]]
+[1] "Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia"
+
+$return_pieces_basenames[[54]]
+[1] "Nelcyndana_sp._Malaysia"
+
+$return_pieces_basenames[[55]]
+[1] "Taphura_sp._Peru"
+
+$return_pieces_basenames[[56]]
+[1] "Carineta_diardi_Brazil,Herrera_sp._Argentina"
+
+$return_pieces_basenames[[57]]
+[1] "Pagiphora_annulata_Turkey"
+
+$return_pieces_basenames[[58]]
+[1] "Klapperichicen_sp._Pakistan"
+
+$return_pieces_basenames[[59]]
+[1] "Cicadatra_atra_Greece,Mogannia_hebes_Taiwan"
+
+$return_pieces_basenames[[60]]
+[1] "nr.Decebalus_sp.Mad_Madagascar"
+
+$return_pieces_basenames[[61]]
+[1] "Fractuosella_breoni_Reunion"
+
+$return_pieces_basenames[[62]]
+[1] "Calopsaltria_sp._S.Africa"
+
+$return_pieces_basenames[[63]]
+[1] "nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[64]]
+[1] "Calyria_sp._Ecuador,Parnisa_sp._Argentina"
+
+$return_pieces_basenames[[65]]
+[1] "Prunasis_sp._Brazil"
+
+$return_pieces_basenames[[66]]
+[1] "Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil"
+
+$return_pieces_basenames[[67]]
+[1] "Lembeja_paradoxa_Australia"
+
+$return_pieces_basenames[[68]]
+[1] "Prasia_faticina_Indonesia"
+
+$return_pieces_basenames[[69]]
+[1] "Chlorocysta_suffusa_Australia"
+
+$return_pieces_basenames[[70]]
+[1] "Baeturia_sp._Vanuatu,Venustria_superba_Australia"
+
+$return_pieces_basenames[[71]]
+[1] "Chrysocicada_sp._Australia"
+
+$return_pieces_basenames[[72]]
+[1] "Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia"
+
+$return_pieces_basenames[[73]]
+[1] "Neoplatypedia_constricta_USA,Platypedia_putnami_USA"
+
+$return_pieces_basenames[[74]]
+[1] "Chilecicada_sp._Chile,Chilecicada_trifascia_Chile"
+
+$return_pieces_basenames[[75]]
+[1] "Hemidictya_frondosa_Bolivia"
+
+$return_pieces_basenames[[76]]
+[1] "Aragualna_plenalinea_Venezuela"
+
+$return_pieces_basenames[[77]]
+[1] "Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru"
+
+$return_pieces_basenames[[78]]
+[1] "Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina"
+
+$return_pieces_basenames[[79]]
+[1] "Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile"
+
+$return_pieces_basenames[[80]]
+[1] "Clidophleps_sp._USA,Okanagodes_gracilis_USA"
+
+$return_pieces_basenames[[81]]
+[1] "Okanagana_canadensis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[2]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 26 tips and 25 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar, Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil, Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 10 tips and 9 internal nodes.
+
+Tip labels:
+  Jassopsaltria_rufifacies_Australia, Psaltoda_moerens_Australia, Cyclochila_australasiae_Australia, Thopha_saccata_Australia, Illyria_burkei_Australia,Macrotristria_angularis_Australia, Burbunga_hillieri_Australia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Antankaria_madagascariensis_Madagascar, Durangona_tigrina_Ecuador, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa, Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[4]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Distantada_thomasseti_Mauritius, Dundubia_annandalei_India,Karenia_ravida_S.E.Asia, Cicada_orni_Greece, Tosena_melanopteryx_Thailand, Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China, Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[5]]
+
+Phylogenetic tree with 6 tips and 5 internal nodes.
+
+Tip labels:
+  Adusella_insignifera_Argentina, Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina, Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico, Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep., Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala, N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[6]]
+
+Phylogenetic tree with 7 tips and 6 internal nodes.
+
+Tip labels:
+  Auritibicen_flammatus_Japan, Lyristes_gemellus_Greece, Heteropsaltria_aliena_Solom.Is., Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA, Cacama_moorei_USA,Hadoa_townsendii_USA, Tacua_speciosa_Malaysia, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[7]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Paectira_dulcis_E.Africa, Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[8]]
+[1] 25
+
+$return_pieces_list[[9]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Lacetas_sp._Ghana, Stagira_sp._S.Africa, Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[10]]
+
+Phylogenetic tree with 7 tips and 6 internal nodes.
+
+Tip labels:
+  nr.Jafuna_sp._Madagascar, Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar, Masupha_ampliata_S.Africa, Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa, nr.Gogga_sp._S.Africa, Quintilia_rufiventris_S.Africa, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[11]]
+[1] 25
+
+$return_pieces_list[[12]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Monomatapa_matoposa_Malawi, Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo, Taipinga_nigricans_S.Africa, Panka_lungunca_Iv.Coast, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[13]]
+[1] 25
+
+$return_pieces_list[[14]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Taphura_sp._Peru, Carineta_diardi_Brazil,Herrera_sp._Argentina
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[15]]
+[1] 25
+
+$return_pieces_list[[16]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Klapperichicen_sp._Pakistan, Cicadatra_atra_Greece,Mogannia_hebes_Taiwan
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[17]]
+[1] 25
+
+$return_pieces_list[[18]]
+[1] 25
+
+$return_pieces_list[[19]]
+[1] 25
+
+$return_pieces_list[[20]]
+[1] 25
+
+$return_pieces_list[[21]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Calyria_sp._Ecuador,Parnisa_sp._Argentina, Prunasis_sp._Brazil, Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[22]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Lembeja_paradoxa_Australia, Prasia_faticina_Indonesia, Chlorocysta_suffusa_Australia, Baeturia_sp._Vanuatu,Venustria_superba_Australia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[23]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chrysocicada_sp._Australia, Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[24]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Neoplatypedia_constricta_USA,Platypedia_putnami_USA, Chilecicada_sp._Chile,Chilecicada_trifascia_Chile, Hemidictya_frondosa_Bolivia, Aragualna_plenalinea_Venezuela, Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[25]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[26]]
+
+Phylogenetic tree with 2 tips and 1 internal nodes.
+
+Tip labels:
+  Clidophleps_sp._USA,Okanagodes_gracilis_USA, Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Macrotristria_angularis_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia"
+
+$return_pieces_basenames[[3]]
+[1] "Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Antankaria_madagascariensis_Madagascar,Azanicada_zuluensis_S.Africa,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar"
+
+$return_pieces_basenames[[4]]
+[1] "Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Formotosena_sp._Vietnam,Gaeana_maculata_Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Karenia_ravida_S.E.Asia,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand"
+
+$return_pieces_basenames[[5]]
+[1] "Adusella_insignifera_Argentina,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dyticodopoea_signoreti_Guatemala,Guyalna_sp._Bolivia,Miranha_imbellis_Guatemala,N.gen._sp.tepui_Venezuela,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Quesada_gigas_Mexico,Tympanoterpes_serricosta_Argentina,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[6]]
+[1] "Auritibicen_flammatus_Japan,Cacama_moorei_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Hadoa_townsendii_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Tacua_speciosa_Malaysia"
+
+$return_pieces_basenames[[7]]
+[1] "Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa"
+
+$return_pieces_basenames[[8]]
+[1] "Hovana_distanti_Madagascar"
+
+$return_pieces_basenames[[9]]
+[1] "Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[10]]
+[1] "Koranna_analis_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa"
+
+$return_pieces_basenames[[11]]
+[1] "Katoa_sp._Vietnam"
+
+$return_pieces_basenames[[12]]
+[1] "Abricta_brunnea_Mauritius,Allobroma_kedenburgi_Malaysia,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Monomatapa_matoposa_Malawi,nr.Trismarcha_sp.Ghana_Ghana,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Trismarcha_sp._Togo,Tryella_willsi_Australia"
+
+$return_pieces_basenames[[13]]
+[1] "Nelcyndana_sp._Malaysia"
+
+$return_pieces_basenames[[14]]
+[1] "Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru"
+
+$return_pieces_basenames[[15]]
+[1] "Pagiphora_annulata_Turkey"
+
+$return_pieces_basenames[[16]]
+[1] "Cicadatra_atra_Greece,Klapperichicen_sp._Pakistan,Mogannia_hebes_Taiwan"
+
+$return_pieces_basenames[[17]]
+[1] "nr.Decebalus_sp.Mad_Madagascar"
+
+$return_pieces_basenames[[18]]
+[1] "Fractuosella_breoni_Reunion"
+
+$return_pieces_basenames[[19]]
+[1] "Calopsaltria_sp._S.Africa"
+
+$return_pieces_basenames[[20]]
+[1] "nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[21]]
+[1] "Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil"
+
+$return_pieces_basenames[[22]]
+[1] "Baeturia_sp._Vanuatu,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Venustria_superba_Australia"
+
+$return_pieces_basenames[[23]]
+[1] "Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Chrysocicada_sp._Australia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia"
+
+$return_pieces_basenames[[24]]
+[1] "Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru"
+
+$return_pieces_basenames[[25]]
+[1] "Acuticephala_alipuncta_Argentina,Chonosia_sp._Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Torrescada_sanjuanensis_Argentina"
+
+$return_pieces_basenames[[26]]
+[1] "Clidophleps_sp._USA,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[3]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 5 tips and 4 internal nodes.
+
+Tip labels:
+  Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia, Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar, Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil, Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+
+Phylogenetic tree with 4 tips and 3 internal nodes.
+
+Tip labels:
+  Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Hovana_distanti_Madagascar, Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa, Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[4]]
+
+Phylogenetic tree with 13 tips and 12 internal nodes.
+
+Tip labels:
+  Katoa_sp._Vietnam, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa, Nelcyndana_sp._Malaysia, Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru, Pagiphora_annulata_Turkey, Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan, ...
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[5]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina, Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Antankaria_madagascariensis_Madagascar,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Burbunga_hillieri_Australia,Cacama_moorei_USA,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cicada_orni_Greece,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Gaeana_maculata_Vietnam,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Heteropsaltria_aliena_Solom.Is.,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Kimberpsaltria_taenia_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,N.gen._sp.tepui_Venezuela,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,Parnquila_unicolor_Australia,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Tacua_speciosa_Malaysia,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Tosena_melanopteryx_Thailand,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil"
+
+$return_pieces_basenames[[3]]
+[1] "Hovana_distanti_Madagascar,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Nablistes_heterochroma_Ghana,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,Paectira_dulcis_E.Africa,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa"
+
+$return_pieces_basenames[[4]]
+[1] "Abricta_brunnea_Mauritius,Allobroma_kedenburgi_Malaysia,Baeturia_sp._Vanuatu,Brevialavenosa_sp.1_Brazil,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chlorocysta_suffusa_Australia,Chrysocicada_sp._Australia,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Fractuosella_breoni_Reunion,Germalna_germaini_N.Caledonia,Herrera_sp._Argentina,Huechys_sanguinea_Vietnam,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Klapperichicen_sp._Pakistan,Lembeja_paradoxa_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prasia_faticina_Indonesia,Prunasis_sp._Brazil,Rhodopsalta_cruentata_NZ,Taipinga_nigricans_S.Africa,Taphura_sp._Peru,Trismarcha_sp._Togo,Tryella_willsi_Australia,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[5]]
+[1] "Acuticephala_alipuncta_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Chonosia_sp._Argentina,Clidophleps_sp._USA,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Tibicina_haematodes_Greece,Torrescada_sanjuanensis_Argentina"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[4]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+[1] 25
+
+$return_pieces_list[[2]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand, Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey
+
+Rooted; includes branch lengths.
+
+$return_pieces_list[[3]]
+[1] 25
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Derotettix_mendosensis_Argentina"
+
+$return_pieces_basenames[[2]]
+[1] "Abricta_brunnea_Mauritius,Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Allobroma_kedenburgi_Malaysia,Antankaria_madagascariensis_Madagascar,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Baeturia_sp._Vanuatu,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Brevialavenosa_sp.1_Brazil,Burbunga_hillieri_Australia,Cacama_moorei_USA,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chlorocysta_suffusa_Australia,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Chrysocicada_sp._Australia,Cicada_orni_Greece,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Fractuosella_breoni_Reunion,Gaeana_maculata_Vietnam,Germalna_germaini_N.Caledonia,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Herrera_sp._Argentina,Heteropsaltria_aliena_Solom.Is.,Hovana_distanti_Madagascar,Huechys_sanguinea_Vietnam,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Kimberpsaltria_taenia_Australia,Klapperichicen_sp._Pakistan,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Lembeja_paradoxa_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,N.gen._sp.tepui_Venezuela,Nablistes_heterochroma_Ghana,Nelcyndana_sp._Malaysia,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,nr.Decebalus_sp.Mad_Madagascar,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Paectira_dulcis_E.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Parnquila_unicolor_Australia,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasia_faticina_Indonesia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Prunasis_sp._Brazil,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Rhodopsalta_cruentata_NZ,Stagira_sp._S.Africa,Tacua_speciosa_Malaysia,Taipinga_nigricans_S.Africa,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Taphura_sp._Peru,Tettigomyia_vespiformis_S.Africa,Thopha_saccata_Australia,Tosena_melanopteryx_Thailand,Trismarcha_sp._Togo,Tryella_willsi_Australia,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Xosopsaltria_thunbergi_S.Africa,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Zouga_sp._S.Africa"
+
+$return_pieces_basenames[[3]]
+[1] "Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+$tree_sections_list[[5]]
+$tree_to_chainsaw
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+$return_pieces_list
+$return_pieces_list[[1]]
+
+Phylogenetic tree with 3 tips and 2 internal nodes.
+
+Tip labels:
+  Derotettix_mendosensis_Argentina, Abricta_brunnea_Mauritius,Brevialavenosa_sp.1_Brazil,Magicicada_cassini_USA,Magicicada_tredecim_USA,Tryella_willsi_Australia,Allobroma_kedenburgi_Malaysia,nr.Trismarcha_sp.Ghana_Ghana,Trismarcha_sp._Togo,Monomatapa_matoposa_Malawi,Panka_lungunca_Iv.Coast,Taipinga_nigricans_S.Africa,Baeturia_sp._Vanuatu,Venustria_superba_Australia,Chlorocysta_suffusa_Australia,Lembeja_paradoxa_Australia,Prasia_faticina_Indonesia,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Cicadetta_fangoana_France,Germalna_germaini_N.Caledonia,Huechys_sanguinea_Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Myersalna_depicta_N.Caledonia,Rhodopsalta_cruentata_NZ,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Chrysocicada_sp._Australia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Prunasis_sp._Brazil,Carineta_diardi_Brazil,Herrera_sp._Argentina,Taphura_sp._Peru,Cicadatra_atra_Greece,Mogannia_hebes_Taiwan,Klapperichicen_sp._Pakistan,Fractuosella_breoni_Reunion,Katoa_sp._Vietnam,Nelcyndana_sp._Malaysia,nr.Decebalus_sp.Mad_Madagascar,nr.Zouga_sp._S.Africa,Zouga_sp._S.Africa,Pagiphora_annulata_Turkey,Adusella_insignifera_Argentina,Beameria_venosa_USA,Diceroprocta_viridifascia_USA,Nosola_paradoxa_Bolivia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Tympanoterpes_serricosta_Argentina,Borencona_aguadilla_Puert.Rico,Chinaria_vivianae_Dom.Rep.,Chinaria_sp._Mexico,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Dyticodopoea_signoreti_Guatemala,Miranha_imbellis_Guatemala,Procollina_sp.1_Guatemala,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Guyalna_sp._Bolivia,Quesada_gigas_Mexico,N.gen._sp.tepui_Venezuela,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Azanicada_zuluensis_S.Africa,Eopycna_sp._India,Hamza_ciliaris_Philippines,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Antankaria_madagascariensis_Madagascar,Durangona_tigrina_Ecuador,Dyticopycna_semiclara_S.Africa,Pycna_strix_Madagascar,Ugada_limbata_Ghana,Yanga_heathi_Madagascar,Auritibicen_flammatus_Japan,Cacama_moorei_USA,Hadoa_townsendii_USA,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Cryptotympana_atrata_China,Megatibicen_resonans_USA,Neotibicen_winnemanna_USA,Heteropsaltria_aliena_Solom.Is.,Lyristes_gemellus_Greece,Tacua_speciosa_Malaysia,Burbunga_hillieri_Australia,Cyclochila_australasiae_Australia,Illyria_burkei_Australia,Macrotristria_angularis_Australia,Jassopsaltria_rufifacies_Australia,Kimberpsaltria_taenia_Australia,Parnquila_unicolor_Australia,Psaltoda_moerens_Australia,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Thopha_saccata_Australia,Cicada_orni_Greece,Distantada_thomasseti_Mauritius,Dundubia_annandalei_India,Karenia_ravida_S.E.Asia,Formotosena_sp._Vietnam,Graptopsaltria_nigrofuscata_Japan,Hyalessa_maculaticollis_China,Gaeana_maculata_Vietnam,Talainga_chinensis_Vietnam,Tosena_melanopteryx_Thailand,Hovana_distanti_Madagascar,Koranna_analis_S.Africa,nr.Quintilia_sp._S.Africa,Quintilia_wealei_S.Africa,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Masupha_ampliata_S.Africa,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,Quintilia_rufiventris_S.Africa,Lacetas_sp._Ghana,Stagira_sp._S.Africa,Tettigomyia_vespiformis_S.Africa,Xosopsaltria_thunbergi_S.Africa,Maroboduus_fractus_Ghana,Nablistes_heterochroma_Ghana,Paectira_dulcis_E.Africa, Acuticephala_alipuncta_Argentina,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Chonosia_sp._Argentina,Torrescada_sanjuanensis_Argentina,Aragualna_plenalinea_Venezuela,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Hemidictya_frondosa_Bolivia,Neoplatypedia_constricta_USA,Platypedia_putnami_USA,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Clidophleps_sp._USA,Okanagodes_gracilis_USA,Okanagana_canadensis_USA,Tibicina_haematodes_Greece
+
+Rooted; includes branch lengths.
+
+
+$return_pieces_basenames
+$return_pieces_basenames[[1]]
+[1] "Abricta_brunnea_Mauritius,Acuticephala_alipuncta_Argentina,Adusella_insignifera_Argentina,Afzeliada_sp.1_Zambia,Albanycada_albigera_S.Africa,Allobroma_kedenburgi_Malaysia,Antankaria_madagascariensis_Madagascar,Aragualna_plenalinea_Venezuela,Auritibicen_flammatus_Japan,Azanicada_zuluensis_S.Africa,Baeturia_sp._Vanuatu,Beameria_venosa_USA,Borencona_aguadilla_Puert.Rico,Brevialavenosa_sp.1_Brazil,Burbunga_hillieri_Australia,Cacama_moorei_USA,Caledopsalta_johanae_N.Caledonia,Caledopsalta_judithae_N.Caledonia,Calopsaltria_sp._S.Africa,Calyria_sp._Ecuador,Carineta_diardi_Brazil,Chilecicada_sp._Chile,Chilecicada_trifascia_Chile,Chinaria_sp._Mexico,Chinaria_vivianae_Dom.Rep.,Chlorocysta_suffusa_Australia,Chonosia_sp._Argentina,Chremistica_ribhoi_India,Chremistica_sp._Malaysia,Chrysocicada_sp._Australia,Cicada_orni_Greece,Cicadatra_atra_Greece,Cicadetta_fangoana_France,Clidophleps_sp._USA,Cryptotympana_atrata_China,Cyclochila_australasiae_Australia,Daza_montezuma_Guatemala,Dazollina_petilunca_Cost.Rica,Derotettix_mendosensis_Argentina,Diceroprocta_viridifascia_USA,Distantada_thomasseti_Mauritius,Dorisiana_amoena_Guatemala,Dorisiana_sp._Argentina,Dundubia_annandalei_India,Durangona_tigrina_Ecuador,Dyticodopoea_signoreti_Guatemala,Dyticopycna_semiclara_S.Africa,Eopycna_sp._India,Formotosena_sp._Vietnam,Fractuosella_breoni_Reunion,Gaeana_maculata_Vietnam,Germalna_germaini_N.Caledonia,Graptopsaltria_nigrofuscata_Japan,Guyalna_sp._Bolivia,Hadoa_townsendii_USA,Hamza_ciliaris_Philippines,Hemidictya_frondosa_Bolivia,Herrera_sp._Argentina,Heteropsaltria_aliena_Solom.Is.,Hovana_distanti_Madagascar,Huechys_sanguinea_Vietnam,Hyalessa_maculaticollis_China,Illyria_burkei_Australia,Jassopsaltria_rufifacies_Australia,Karenia_ravida_S.E.Asia,Katoa_sp._Vietnam,Kikihia_rosea_NZ,Kikihia_scutellaris_NZ,Kimberpsaltria_taenia_Australia,Klapperichicen_sp._Pakistan,Koranna_analis_S.Africa,Lacetas_sp._Ghana,Lembeja_paradoxa_Australia,Lyristes_gemellus_Greece,Macrotristria_angularis_Australia,Magicicada_cassini_USA,Magicicada_tredecim_USA,Malagasia_sp._Madagascar,Malgotilia_sogai_Madagascar,Maoricicada_hamiltoni_NZ,Maoricicada_mangu_multicostata_NZ,Maroboduus_fractus_Ghana,Masupha_ampliata_S.Africa,Megatibicen_resonans_USA,Miranha_imbellis_Guatemala,Mogannia_hebes_Taiwan,Monomatapa_matoposa_Malawi,Myersalna_depicta_N.Caledonia,N.gen._sp.tepui_Venezuela,Nablistes_heterochroma_Ghana,Nelcyndana_sp._Malaysia,Neomuda_peringueyi_S.Africa,Neomuda_sp._S.Africa,Neoplatypedia_constricta_USA,Neotibicen_winnemanna_USA,Nosola_paradoxa_Bolivia,nr.Decebalus_sp.Mad_Madagascar,nr.Gogga_sp._S.Africa,nr.Jafuna_sp._Madagascar,nr.Quintilia_sp._S.Africa,nr.Trismarcha_sp.Ghana_Ghana,nr.Zouga_sp._S.Africa,Okanagana_canadensis_USA,Okanagodes_gracilis_USA,Paectira_dulcis_E.Africa,Pagiphora_annulata_Turkey,Panka_lungunca_Iv.Coast,Parnisa_sp._Argentina,Parnisa_sp.1_Brazil,Parnisa_sp.2_Brazil,Parnisa_sp.3_Brazil,Parnquila_unicolor_Australia,Platypedia_putnami_USA,Platypleura_capensis_S.Africa,Platypleura_octoguttata_India,Platypleura_stridula_S.Africa,Prasia_faticina_Indonesia,Prasinosoma_heidemanni_Argentina,Proarna_sp._Bolivia,Procollina_sp.1_Guatemala,Prunasis_sp._Brazil,Psaltoda_moerens_Australia,Pycna_strix_Madagascar,Quesada_gigas_Mexico,Quintilia_rufiventris_S.Africa,Quintilia_wealei_S.Africa,Rhodopsalta_cruentata_NZ,Selymbria_guianensis_Fr.Guiana,Selymbria_madredediosensis_Peru,Stagira_sp._S.Africa,Tacua_speciosa_Malaysia,Taipinga_nigricans_S.Africa,Talainga_chinensis_Vietnam,Talcopsaltria_olivei_Australia,Tamasa_tristigma_Australia,Taphura_sp._Peru,Tettigades_sp._Argentina,Tettigades_ulnaria_Chile,Tettigomyia_vespiformis_S.Africa,Thopha_saccata_Australia,Tibicina_haematodes_Greece,Torrescada_sanjuanensis_Argentina,Tosena_melanopteryx_Thailand,Trismarcha_sp._Togo,Tryella_willsi_Australia,Tympanoterpes_serricosta_Argentina,Ugada_limbata_Ghana,UNKNOWN_Cicadettini_speciesT_N.Caledonia,UNKNOWN_Cicadettini_speciesU_N.Caledonia,Vastarena_pumila_N.Caledonia,Venustria_superba_Australia,Xosopsaltria_thunbergi_S.Africa,Yanga_heathi_Madagascar,Zammara_cf.erna_Ecuador,Zammara_tympanum_Brazil,Zouga_sp._S.Africa"
+
+
+attr(,"class")
+[1] "chainsaw_result"
+
+
+$master_table
+   node node.type parent_br edge.length ancestor daughter_nds  time_bp fossils                                  label stratum time_top time_bot reltimept piecenum piececlass SUBnode SUBnode.type
+1     1       tip         1 135.1930836      157              0.00e+00   FALSE       Derotettix_mendosensis_Argentina       0        0        0         0        0   orig_tip       1     orig_tip
+2     2       tip        10  41.7356802      165              3.64e-05   FALSE     Jassopsaltria_rufifacies_Australia       0        0        0         0        0   orig_tip       2     orig_tip
+3     3       tip        13  33.7767369      167              3.64e-05   FALSE             Psaltoda_moerens_Australia       0        0        0         0        0   orig_tip       3     orig_tip
+4     4       tip        15  32.3452610      168              3.64e-05   FALSE      Cyclochila_australasiae_Australia       0        0        0         0        0   orig_tip       4     orig_tip
+5     5       tip        17  31.7427185      169              3.64e-05   FALSE               Thopha_saccata_Australia       0        0        0         0        0   orig_tip       5     orig_tip
+6     6       tip        19  10.8221206      170              3.64e-05   FALSE      Macrotristria_angularis_Australia       0        0        0         0        0   orig_tip       6     orig_tip
+7     7       tip        20  10.8221206      170              3.64e-05   FALSE               Illyria_burkei_Australia       0        0        0         0        0   orig_tip       7     orig_tip
+8     8       tip        22  40.5749502      171              3.64e-05   FALSE            Burbunga_hillieri_Australia       0        0        0         0        0   orig_tip       8     orig_tip
+9     9       tip        24  28.5926882      172              3.64e-05   FALSE           Parnquila_unicolor_Australia       0        0        0         0        0   orig_tip       9     orig_tip
+10   10       tip        25  28.5926882      172              3.64e-05   FALSE             Tamasa_tristigma_Australia       0        0        0         0        0   orig_tip      10     orig_tip
+11   11       tip        27  27.7665993      173              3.64e-05   FALSE        Kimberpsaltria_taenia_Australia       0        0        0         0        0   orig_tip      11     orig_tip
+12   12       tip        28  27.7665993      173              3.64e-05   FALSE         Talcopsaltria_olivei_Australia       0        0        0         0        0   orig_tip      12     orig_tip
+13   13       tip        31  45.2329562      175              3.64e-05   FALSE Antankaria_madagascariensis_Madagascar       0        0        0         0        0   orig_tip      13     orig_tip
+14   14       tip        33  37.1230749      176              3.64e-05   FALSE              Durangona_tigrina_Ecuador       0        0        0         0        0   orig_tip      14     orig_tip
+15   15       tip        36  23.8855416      178              3.64e-05   FALSE                  Afzeliada_sp.1_Zambia       0        0        0         0        0   orig_tip      15     orig_tip
+16   16       tip        39  14.1826692      180              3.64e-05   FALSE           Albanycada_albigera_S.Africa       0        0        0         0        0   orig_tip      16     orig_tip
+17   17       tip        41   7.3788361      181              3.64e-05   FALSE           Azanicada_zuluensis_S.Africa       0        0        0         0        0   orig_tip      17     orig_tip
+18   18       tip        43   0.7757926      182              3.64e-05   FALSE          Platypleura_capensis_S.Africa       0        0        0         0        0   orig_tip      18     orig_tip
+19   19       tip        44   0.7757926      182              3.64e-05   FALSE          Platypleura_stridula_S.Africa       0        0        0         0        0   orig_tip      19     orig_tip
+20   20       tip        46  13.4674933      183              3.64e-05   FALSE             Hamza_ciliaris_Philippines       0        0        0         0        0   orig_tip      20     orig_tip
+   SUBparent_br SUBedge.length SUBancestor SUBdaughter_nds SUBtime_bp SUBfossils                               SUBlabel
+1             1    135.1930836         157                   0.00e+00      FALSE       Derotettix_mendosensis_Argentina
+2            10     41.7356802         165                   3.64e-05      FALSE     Jassopsaltria_rufifacies_Australia
+3            13     33.7767369         167                   3.64e-05      FALSE             Psaltoda_moerens_Australia
+4            15     32.3452610         168                   3.64e-05      FALSE      Cyclochila_australasiae_Australia
+5            17     31.7427185         169                   3.64e-05      FALSE               Thopha_saccata_Australia
+6            19     10.8221206         170                   3.64e-05      FALSE      Macrotristria_angularis_Australia
+7            20     10.8221206         170                   3.64e-05      FALSE               Illyria_burkei_Australia
+8            22     40.5749502         171                   3.64e-05      FALSE            Burbunga_hillieri_Australia
+9            24     28.5926882         172                   3.64e-05      FALSE           Parnquila_unicolor_Australia
+10           25     28.5926882         172                   3.64e-05      FALSE             Tamasa_tristigma_Australia
+11           27     27.7665993         173                   3.64e-05      FALSE        Kimberpsaltria_taenia_Australia
+12           28     27.7665993         173                   3.64e-05      FALSE         Talcopsaltria_olivei_Australia
+13           31     45.2329562         175                   3.64e-05      FALSE Antankaria_madagascariensis_Madagascar
+14           33     37.1230749         176                   3.64e-05      FALSE              Durangona_tigrina_Ecuador
+15           36     23.8855416         178                   3.64e-05      FALSE                  Afzeliada_sp.1_Zambia
+16           39     14.1826692         180                   3.64e-05      FALSE           Albanycada_albigera_S.Africa
+17           41      7.3788361         181                   3.64e-05      FALSE           Azanicada_zuluensis_S.Africa
+18           43      0.7757926         182                   3.64e-05      FALSE          Platypleura_capensis_S.Africa
+19           44      0.7757926         182                   3.64e-05      FALSE          Platypleura_stridula_S.Africa
+20           46     13.4674933         183                   3.64e-05      FALSE             Hamza_ciliaris_Philippines
+ [ reached 'max' / getOption("max.print") -- omitted 562 rows ]
+
 An object of class "BioGeoBEARS_model"
 Slot "params_table":
          type    init      min      max     est                note                                                                  desc
@@ -365,7 +1682,7 @@ d        free 0.01000  1.0e-12  5.00000 0.01000               works             
 e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
 a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
 b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
-x       fixed 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
 n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
 w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
 u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
@@ -390,7 +1707,7 @@ d        free 0.01000  1.0e-12  5.00000 0.01000               works             
 e        free 0.01000  1.0e-12  5.00000 0.01000               works                  anagenesis: rate of 'extinction' (range contraction)
 a       fixed 0.00000  1.0e-12  5.00000 0.00000               works       anagenesis: rate of range-switching (i.e. for a standard char.)
 b       fixed 1.00000  1.0e-12  1.00000 1.00000 non-stratified only                                anagenesis: exponent on branch lengths
-x       fixed 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
+x        free 0.00000 -2.5e+00  2.50000 0.00000               works                               exponent on distance (modifies d, j, a)
 n       fixed 0.00000 -1.0e+01 10.00000 0.00000               works                 exponent on environmental distance (modifies d, j, a)
 w       fixed 1.00000 -1.0e+01 10.00000 1.00000               works           exponent on manual dispersal multipliers (modifies d, j, a)
 u       fixed 0.00000 -1.0e+01 10.00000 0.00000               works        anagenesis: exponent on extinction risk with area (modifies e)
@@ -478,19 +1795,17 @@ Currently viewed PATH:
 /Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
 Started cluster with 12 cores.
 
-[1] "parscale:"
-[1] 1 1
 
 
 NOTE: Before running optimx(), here is a test calculation of the data likelihood
-using calc_loglike_for_optim() on initial parameter values, with printlevel=2...
+using calc_loglike_for_optim_stratified() on initial parameter values, with printlevel=2...
 if this crashes, the error messages are more helpful
 than those from inside optimx().
 
      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.164
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
 
-calc_loglike_for_optim() on initial parameters loglike=-540.1636
+calc_loglike_for_optim_stratified() on initial parameters loglike=-540.1634
 
 
 
@@ -500,7 +1815,7 @@ Now starting Maximum Likelihood (ML) parameter optimization with optimx()...
 
 
 
-Printing any warnings() that occurred during calc_loglike_for_optim():
+Printing any warnings() that occurred during calc_loglike_for_optim_stratified():
 
 
 
@@ -510,526 +1825,14 @@ $lpratio
 [1] 0
 
 $lbratio
-[1] 0
+[1] 1.737499e-13
 
 Maximizing -- use negfn and neggr
      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.164
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.164
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.164
+1 0.01 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -540.163
       d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
 1 0.012 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -594.442
-     d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.01 0.012 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -534.189
-      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.008 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -484.201
-      d    e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.006 0.01 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -428.341
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.002 0.011 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -335.984
-  d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0.018 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -1140.34
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.749
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.003 0.008 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -343.52
-  d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -339.323
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -321.357
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.002 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -324.354
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.672
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.67
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.721
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.568
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.39
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.007 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -320.123
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.006 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -319.731
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.006 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -319.095
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.006 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -318.049
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.004 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -316.782
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -316.559
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -316.637
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -315.517
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -314.65
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -313.775
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.004 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -314.191
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -313.467
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -313.258
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -313.07
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -312.754
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -312.808
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.003 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -313.456
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.965
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.858
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.864
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.901
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.825
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.774
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.691
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.543
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.295
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.017
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.138
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.599
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.078
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.023
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.947
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.941
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.944
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.941
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.956
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.937
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.936
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.13
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.155
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.985
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.988
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.948
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.948
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.938
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.938
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.937
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.938
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.125
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -311.15
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.984
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.986
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.947
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.947
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.938
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.938
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -310.935
-
-
-This is the output from optim, optimx, or GenSA. Check the help on those functions to
-interpret this output and check for convergence issues:
-
-                 p1          p2     value fevals gevals niter convcode  kkt1 kkt2  xtime
-bobyqa 0.0009615284 0.000690116 -310.9347     73     NA    NA        0 FALSE TRUE 37.655
-
-
-Stopping cluster with 12 cores.
-
-[1] TRUE
-[1] "Note: tipranges_to_tip_condlikes_of_data_on_each_state() is converting a states_list with (0-based) numbers to the equivalent areanames"
-
-Your computer has 24 cores.
-
-Your computer has 24 cores. You have chosen to use:
-num_cores_to_use = 12 cores for the matrix exponentiations in the likelihood calculations.
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-
-Sys.getenv("R_MAX_NUM_DLLS"):	[1] "153"
-Loading ~/.Rprofile...
-Currently viewed PATH:
-/Users/nickm/.juliaup/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/Users/nickm/miniconda2/bin:/opt/local/bin:/opt/local/sbin:/Users/nickm/.rvm/gems/ruby-2.3.0/bin:/Users/nickm/.rvm/gems/ruby-2.3.0@global/bin:/Users/nickm/.rvm/rubies/ruby-2.3.0/bin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/Library/Frameworks/Python.framework/Versions/Current/bin:/Users/nickm/.local/bin:/usr/local/gcc-7.1/bin:/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/Applications/RevBayes:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/ncbi/blast/bin:/Library/TeX/texbin:/usr/local/go/bin:/opt/X11/bin:/Library/Apple/usr/bin:/Applications/BayesTraits/:/Applications/Brownie/:/GIS/MRTSwath/bin:/Users/nickm/.rvm/bin:/usr/texbin:/usr/texbin
-Started cluster with 12 cores.
-
-[1] "parscale:"
-[1] 1.666678 1.666678 1.000000
-
-
-NOTE: Before running optimx(), here is a test calculation of the data likelihood
-using calc_loglike_for_optim() on initial parameter values, with printlevel=2...
-if this crashes, the error messages are more helpful
-than those from inside optimx().
-
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -309.768
-
-calc_loglike_for_optim() on initial parameters loglike=-309.7675
-
-
-
-Calculation of likelihood on initial parameters: successful.
-
-Now starting Maximum Likelihood (ML) parameter optimization with optimx()...
-
-
-
-Printing any warnings() that occurred during calc_loglike_for_optim():
-
-Warning message:
-In (function (npt = min(n + 2L, 2L * n), rhobeg = NA,  ... :
-  unused control arguments ignored
-
-
-Results of optimx_scalecheck() below. Note: sometimes rescaling parameters may be helpful for ML searches, when the parameters have much different absolute sizes. This can be attempted by setting BioGeoBEARS_run_object$rescale_params = TRUE.
-
-$lpratio
-[1] 0.9829621
-
-$lbratio
-[1] 0.2218516
-
-Maximizing -- use negfn and neggr
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -309.768
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -309.768
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -308.638
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -309.766
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -308.734
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -306.674
-      d     e a b x n w u j ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0   3  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -309.015
-      d     e a b x n w u     j   ysv ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0.001 2.999  2 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -304.775
-      d     e a b x n w u     j   ysv    ys y s v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0.001 2.999 1.999 1 1 1    0     0     0     0     0   0.5 0.1  1   0 -301.453
-      d     e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0.002 2.998 1.999 0.999 0.999 0.999    0     0     0     0     0   0.5 0.1  1   0 -295.985
-      d     e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.001 0 1 0 0 1 0 0.003 2.997 1.998 0.999 0.999 0.999    0     0     0     0     0   0.5 0.1  1   0 -289.174
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.004 2.996 1.997 0.999 0.999 0.999    0     0     0     0     0   0.5 0.1  1   0 -285.832
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.006 2.994 1.996 0.998 0.998 0.998    0     0     0     0     0   0.5 0.1  1   0 -281.253
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.007 2.993 1.995 0.998 0.998 0.998    0     0     0     0     0   0.5 0.1  1   0 -279.288
-      d     e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0.002 0 1 0 0 1 0 0.007 2.993 1.995 0.998 0.998 0.998    0     0     0     0     0   0.5 0.1  1   0 -284.902
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.002 0 0 1 0 0 1 0 0.007 2.993 1.995 0.998 0.998 0.998    0     0     0     0     0   0.5 0.1  1   0 -297.41
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0 0 1 0 0 1 0 0.008 2.992 1.995 0.997 0.997 0.997    0     0     0     0     0   0.5 0.1  1   0 -272.11
-      d e a b x n w u    j  ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.01 2.99 1.993 0.997 0.997 0.997    0     0     0     0     0   0.5 0.1  1   0 -268.136
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0.001 0 0 1 0 0 1 0 0.013 2.987 1.991 0.996 0.996 0.996    0     0     0     0     0   0.5 0.1  1   0 -266.93
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.012 2.988 1.992 0.996 0.996 0.996    0     0     0     0     0   0.5 0.1  1   0 -266.997
-      d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0.001 0 0 1 0 0 1 0 0.013 2.987 1.991 0.996 0.996 0.996    0     0     0     0     0   0.5 0.1  1   0 -284.987
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.014 2.986 1.991 0.995 0.995 0.995    0     0     0     0     0   0.5 0.1  1   0 -263.118
-  d e a b x n w u     j   ysv   ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.015 2.985 1.99 0.995 0.995 0.995    0     0     0     0     0   0.5 0.1  1   0 -262.305
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.017 2.983 1.989 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.704
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.385
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.392
-  d     e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0.001 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -267.853
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.828
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.931
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp     LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.49
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.505
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.594
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.418
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.404
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.377
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.382
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.398
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.376
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.376
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.377
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.375
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.374
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.374
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.372
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.369
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.363
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.018 2.982 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.353
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.988 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.334
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.308
-  d e a b x n w u    j  ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.02 2.98 1.987 0.993 0.993 0.993    0     0     0     0     0   0.5 0.1  1   0 -261.299
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.298
-  d e a b x n w u    j  ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.02 2.98 1.987 0.993 0.993 0.993    0     0     0     0     0   0.5 0.1  1   0 -261.298
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.341
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.297
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.302
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.297
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296
-  d e a b x n w u     j   ysv    ys     y     s     v mx01 mx01j mx01y mx01s mx01v mx01r  mf dp fdp      LnL
-1 0 0 0 1 0 0 1 0 0.019 2.981 1.987 0.994 0.994 0.994    0     0     0     0     0   0.5 0.1  1   0 -261.296

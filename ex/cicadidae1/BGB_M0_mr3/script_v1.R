@@ -23,7 +23,7 @@ library(BioGeoBEARS)
 # Set your working directory for output files
 # default here is your home directory ("~")
 # Change this as you like
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M4+x_mr3"
+wd = "/GitHub/PhyBEARS.jl/ex/cicadidae1/BGB_M0_mr3/"
 setwd(wd)
 
 # Double-check your working directory with getwd()
@@ -252,7 +252,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -278,13 +278,6 @@ BioGeoBEARS_run_object$num_cores_to_use = 12
 # Also, I have not implemented all functions to work with force_sparse=TRUE.
 # Volunteers are welcome to work on it!!
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
-
-
-# Add x as a free parameter
-xstart = 0.0
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
 
 # This function loads the dispersal multiplier matrix etc. from the text files into the model object. Required for these to work!
 # (It also runs some checks on these inputs for certain errors.)
@@ -319,7 +312,7 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
 runslow = FALSE
-resfn = "Cicadidae_DEC+x_M4_distances_v1.Rdata"
+resfn = "Cicadidae_DEC_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -353,7 +346,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -385,7 +378,6 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resDEC$outputs@params_table["d","est"]
 estart = resDEC$outputs@params_table["e","est"]
 jstart = 0.0001
-xstart = resDEC$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -398,16 +390,10 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","type"] = "free
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = jstart
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart
 
-# Add x as a free parameter
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
-
-
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_DEC+J+x_M4_distances_v1.Rdata"
+resfn = "Cicadidae_DEC+J_M0_unconstrained_v1.Rdata"
 runslow = FALSE
 if (runslow)
     {
@@ -428,13 +414,13 @@ if (runslow)
 #######################################################
 # PDF plots
 #######################################################
-pdffn = "Cicadidae_DEC_vs_DEC+J+x_M4_distances_v1.pdf"
+pdffn = "Cicadidae_DEC_vs_DEC+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - DEC
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS DEC on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resDEC
@@ -449,7 +435,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DECJ
 #######################################################
-analysis_titletxt ="BioGeoBEARS DEC+J on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS DEC+J on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resDECj
@@ -505,7 +491,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -552,18 +538,11 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01v","est"] = 0.
 # BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","init"] = 0.01
 # BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = 0.01
 
-# Add x as a free parameter
-xstart = 0.0
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
-
-
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-runslow = TRUE
-resfn = "Cicadidae_DIVALIKE+x_M4_distances_v1.Rdata"
+runslow = FALSE
+resfn = "Cicadidae_DIVALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -597,7 +576,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -629,7 +608,6 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resDIVALIKE$outputs@params_table["d","est"]
 estart = resDIVALIKE$outputs@params_table["e","est"]
 jstart = 0.0001
-xstart = resDIVALIKE$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -661,17 +639,11 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","est"] = jstart
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","min"] = 0.00001
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 1.99999
 
-# Add x as a free parameter
-xstart = 0.0
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
-
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_DIVALIKE+J+x_M4_distances_v1.Rdata"
-runslow = TRUE
+resfn = "Cicadidae_DIVALIKE+J_M0_unconstrained_v1.Rdata"
+runslow = FALSE
 if (runslow)
     {
     #sourceall("/Dropbox/_njm/__packages/BioGeoBEARS_setup/")
@@ -688,13 +660,13 @@ if (runslow)
     resDIVALIKEj = res
     }
 
-pdffn = "Cicadidae_DIVALIKE_vs_DIVALIKE+J+x_M4_distances_v1.pdf"
+pdffn = "Cicadidae_DIVALIKE_vs_DIVALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - DIVALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS DIVALIKE on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resDIVALIKE
@@ -709,7 +681,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DIVALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS DIVALIKE+J on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resDIVALIKEj
@@ -781,7 +753,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -834,19 +806,12 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","type"] = "
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","init"] = 0.9999
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","est"] = 0.9999
 
-# Add x as a free parameter
-xstart = 0.0
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
-
-
 # Check the inputs; fixing any initial ("init") values outside min/max
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-runslow = TRUE
-resfn = "Cicadidae_BAYAREALIKE+x_M4_distances_v1.Rdata"
+runslow = FALSE
+resfn = "Cicadidae_BAYAREALIKE_M0_unconstrained_v1.Rdata"
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -880,7 +845,7 @@ BioGeoBEARS_run_object$include_null_range = TRUE    # set to FALSE for e.g. DEC*
 #BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
-BioGeoBEARS_run_object$distsfn = "distances_fixed.txt"
+#BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
 # See notes on the distances model on PhyloWiki's BioGeoBEARS updates page.
 
 # Speed options and multicore processing if desired
@@ -910,7 +875,6 @@ BioGeoBEARS_run_object$calc_ancprobs = TRUE    # get ancestral states from optim
 dstart = resBAYAREALIKE$outputs@params_table["d","est"]
 estart = resBAYAREALIKE$outputs@params_table["e","est"]
 jstart = 0.0001
-xstart = resBAYAREALIKE$outputs@params_table["x","est"]
 
 # Input starting values for d, e
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["d","init"] = dstart
@@ -963,16 +927,11 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["e","max"] = 4.9999
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","min"] = 0.00001
 BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["j","max"] = 0.99999
 
-# Add x as a free parameter
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","type"] = "free"
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","init"] = xstart
-BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["x","est"] = xstart
-
 BioGeoBEARS_run_object = fix_BioGeoBEARS_params_minmax(BioGeoBEARS_run_object=BioGeoBEARS_run_object)
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
-resfn = "Cicadidae_BAYAREALIKE+J+x_M4_distances_v1.Rdata"
-runslow = TRUE
+resfn = "Cicadidae_BAYAREALIKE+J_M0_unconstrained_v1.Rdata"
+runslow = FALSE
 if (runslow)
     {
     res = bears_optim_run(BioGeoBEARS_run_object)
@@ -987,13 +946,13 @@ if (runslow)
     resBAYAREALIKEj = res
     }
 
-pdffn = "Cicadidae_BAYAREALIKE_vs_BAYAREALIKE+J+x_M4_distances_v1.pdf"
+pdffn = "Cicadidae_BAYAREALIKE_vs_BAYAREALIKE+J_M0_unconstrained_v1.pdf"
 pdf(pdffn, height=30, width=12)
 
 #######################################################
 # Plot ancestral states - BAYAREALIKE
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resBAYAREALIKE
@@ -1008,7 +967,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - BAYAREALIKE+J
 #######################################################
-analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Cicadidae M4_distances"
+analysis_titletxt ="BioGeoBEARS BAYAREALIKE+J on Cicadidae M0_unconstrained"
 
 # Setup
 results_object = resBAYAREALIKEj
