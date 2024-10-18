@@ -37,8 +37,10 @@ using PhyBEARS.Uppass
 """
 # Run with:
 cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC_M0_mr3/phybears_M0_mr3_DECj_v1.jl")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC_M0_mr3/phybears_M0_mr3_DEC_v2.jl")
 """
+
+setwd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC_M0_mr3/")
 
 # Input geography
 lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC_M0_mr3/geog.data"
