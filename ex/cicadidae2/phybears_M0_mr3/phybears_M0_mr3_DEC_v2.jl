@@ -170,7 +170,7 @@ p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 
 ##############################################
 ##############################################
-# DEC ML on Psychotria
+# DEC ML on Cicadidae
 ##############################################
 ##############################################
 
@@ -318,5 +318,3 @@ rstring = replace(rstring, "|"=>"\$") # replacing the pipes
 reval(rstring)
 
 
-
-end # END @testset "runtests_BiSSE_tree_n3" begin

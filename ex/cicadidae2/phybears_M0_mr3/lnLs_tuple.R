@@ -1,5 +1,5 @@
 input_tuple = list()
-input_tuple$total_calctime_in_sec = 4.745
+input_tuple$total_calctime_in_sec = 4.182
 input_tuple$iteration_number = 16
 input_tuple$Julia_sum_lq = -993.4815226741605
 input_tuple$rootstates_lnL = -9.074690043301379

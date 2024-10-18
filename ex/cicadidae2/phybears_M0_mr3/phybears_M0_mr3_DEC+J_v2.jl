@@ -61,127 +61,20 @@ numInternal = sum(trdf.nodeType .== "intern") + sum(trdf.nodeType .== "root")
 ttl_tree_length = sum(trdf.brlen[trdf.brlen.>0.0])
 birthRate = yuleBirthRate = (numInternal-1) / ttl_tree_length
 
+##############################################
+##############################################
+# DEC+J ML on Cicadidae
+##############################################
+##############################################
+
 bmo = construct_BioGeoBEARS_model_object()
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0
 bmo.est[bmo.rownames .== "d"] .= 0.0010
 bmo.est[bmo.rownames .== "e"] .= 0.0007
 bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.0
-numareas = 10
-n = numstates_from_numareas(10,3,true)
-#n = 176            # 10 areas, maxareas 3, 176 states
-
-# CHANGE PARAMETERS BEFORE E INTERPOLATOR
-root_age_mult=1.5; max_range_size=3; include_null_range=true; max_range_size=NaN
-max_range_size = 3 # replaces any background max_range_size=1
-inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
-
-numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
-root_age = maximum(trdf[!, :node_age])
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Es_v5.uE, Es_tspan, p_Es_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, sol_Es_v5=sol_Es_v5);
-
-# Check the interpolator
-p_Ds_v5.sol_Es_v5(1.0)
-Es_interpolator(1.0)
-
-# Do downpass - slow and fast calculation
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-# 8.8 seconds, lnLs match BioGeoBEARS
-# (8.84, 16, -993.5629081577177, -9.03925286266909, -1002.6021610203868, -310.97299243972896)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-# 0.456 seconds, lnLs match BioGeoBEARS
-# (0.456, 16, -993.5629081577177, -9.03925286266909, -1002.6021610203868, -310.97299243972896)
-
-
-##############################################
-# DEC+J model
-##############################################
-# BioGeoBEARS results
-# -261.3	0.0003	1.0E-12	0.0196
-
-bmo = construct_BioGeoBEARS_model_object()
 bmo.type[bmo.rownames .== "j"] .= "free"
-bmo.est[bmo.rownames .== "birthRate"] .= birthRate
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 0.0003
-bmo.est[bmo.rownames .== "e"] .= 1.0E-12
-bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.0196
-
-# Need to re-run the setup in order to create the j rows of Cijk_vals
-global root_age_mult=1.5; max_range_size=3; include_null_range=false; max_range_size=NaN
-max_range_size = 3 # replaces any background max_range_size=1
-inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
-
-df1 = prtCp(p_Es_v5);
-sort!(df1, :k);
-sort!(df1, :j);
-sort!(df1, :i);
-df1
-
-inputs_updater_v1!(inputs) ;
-bmo_updater_v1!(inputs.bmo) # works
-p_Ds_v5_updater_v1!(p_Es_v5, inputs);  # WORKS 2022-03-10
-
-df2 = prtCp(p_Es_v5);
-sort!(df2, :k);
-sort!(df2, :j);
-sort!(df2, :i);
-df2
-
-sum(df1.wt)
-sum(df2.wt)
-sum(df1.val)
-sum(df2.val)
-
-df1.wt .- df2.wt
-df1.wt ./ df2.wt
-df1.val ./ df2.val
-
-# Solve the Es
-print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Ds_v5.uE, Es_tspan, p_Es_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, sol_Es_v5=sol_Es_v5);
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-# 13 seconds, lnLs match BioGeoBEARS
-# (13.321, 16, -944.8160864058127, -8.380261407946984, -953.1963478137596, -261.302218014862)
-
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-# 0.68 seconds, lnLs match BioGeoBEARS
-# (0.68, 16, -944.8160864058127, -8.380261407946984, -953.1963478137596, -261.302218014862)
-
-
-
-
-##############################################
-##############################################
-# DEC ML on Psychotria
-##############################################
-##############################################
-
-bmo = construct_BioGeoBEARS_model_object()
-bmo.est[bmo.rownames .== "birthRate"] .= birthRate
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
-bmo.est[bmo.rownames .== "d"] .= 0.0010
-bmo.est[bmo.rownames .== "e"] .= 0.0007
-bmo.est[bmo.rownames .== "a"] .= 0.0
-bmo.est[bmo.rownames .== "j"] .= 0.0
-bmo.type[bmo.rownames .== "j"] .= "fixed"
+bmo.est[bmo.rownames .== "j"] .= 0.01
 numareas = 10
 n = numstates_from_numareas(10,3,true)
 
@@ -200,7 +93,7 @@ bmo_updater_v1!(inputs.bmo) # works
 # Set up DEC ML search
 pars = bmo.est[bmo.type .== "free"]
 func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL", printlevel=1)
-pars = [0.01, 0.01]
+pars = [0.01, 0.01, 0.01]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
@@ -317,6 +210,3 @@ system(cmdstr)
 rstring = replace(rstring, "|"=>"\$") # replacing the pipes
 reval(rstring)
 
-
-
-end # END @testset "runtests_BiSSE_tree_n3" begin

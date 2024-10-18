@@ -1185,7 +1185,7 @@ outfns = [
 		"lnLs_tuple.R",
 		"res_inputs_tuple.R"]
 """
-function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=NaN, outfns=NaN)
+function juliaRes_to_Rdata2(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=NaN, outfns=NaN)
 	setup="""
 	res = resDECj;
 	geogfn = lgdata_fn
@@ -1256,6 +1256,8 @@ function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, 
 	relative_probs_of_each_state_at_bottom_of_root_branch = repeat(["NA"], numstates);
 	relative_probs_of_each_state_at_bottom_of_root_branch = DataFrame(reshape(relative_probs_of_each_state_at_bottom_of_root_branch, length(relative_probs_of_each_state_at_bottom_of_root_branch), 1), :auto); # vector to matrix to DF
 	#total_loglikelihood = lnLs_tuple.total_loglikelihood
+	
+	print(outfns)
 	
 	# Write to files
 	CSV.write(outfns[1], computed_likelihoods_at_each_node; delim="\t")
