@@ -1185,7 +1185,7 @@ outfns = [
 		"lnLs_tuple.R",
 		"res_inputs_tuple.R"]
 """
-function juliaRes_to_Rdata2(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=NaN, outfns=NaN)
+function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=NaN, outfns=NaN)
 	setup="""
 	res = resDECj;
 	geogfn = lgdata_fn

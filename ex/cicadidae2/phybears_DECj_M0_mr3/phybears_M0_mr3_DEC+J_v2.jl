@@ -36,24 +36,24 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_M0_mr3/phybears_M0_mr3_DECj_v1.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/phybears_M0_mr3_DECj_v1.jl")
 """
 
 # Input geography
-lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_M0_mr3/geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Input tree
-trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_M0_mr3/tree.newick"
+trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
 
 #######################################################
 # BioGeoBEARS results: DEC model
 #######################################################
-# BioGeoBEARS DEC on Cicadidae M0_unconstrained ancstates: global optim, 3 areas max. 
-# d=0.001; e=7e−04; j=0; LnL=−310.93
+# BioGeoBEARS DEC+J on Cicadidae M0_unconstrained ancstates: global optim, 3 areas max. 
+# d=3e−04; e=0; j=0.0195; LnL=−261.30
 
 # Basic tree info
 numTips = sum(trdf.nodeType .== "tip")
@@ -117,11 +117,11 @@ opt.upper_bounds
 opt.ftol_abs = 0.001 # tolerance on log-likelihood
 (optf,optx,ret) = NLopt.optimize!(opt, pars)
 #######################################################
-# BioGeoBEARS DEC on Cicadidae M0_unconstrained ancstates: global optim, 3 areas max. 
-# d=0.001; e=7e−04; j=0; LnL=−310.93
+# BioGeoBEARS DEC+J on Cicadidae M0_unconstrained ancstates: global optim, 3 areas max. 
+# d=3e−04; e=0; j=0.0195; LnL=−261.30
 
 # NLopt: matches!
-# d=0.00096,	e=0.00075,	Julia_sum_lq=-993.4815, rootstates_lnL=-9.0747,	Julia_total_lnLs1=-1002.5562, bgb_lnL=-310.9376
+# d=0.0003,	e=0.0,	j=0.01972,	Julia_sum_lq=-944.8157, rootstates_lnL=-8.3781,	Julia_total_lnLs1=-953.1938, bgb_lnL=-261.301
 
 
 # Get the inputs & res:
@@ -176,7 +176,7 @@ library(ape)
 library(cladoRcpp)
 library(diversitree)
 library(BioGeoBEARS)
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_M0_mr3/"  # CHANGE THIS
+wd = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/"  # CHANGE THIS
 setwd(wd)
 sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
 res = PhyBEARS_res_to_BGB_res(outfns=NaN)
