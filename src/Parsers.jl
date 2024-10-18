@@ -1185,7 +1185,7 @@ outfns = [
 		"lnLs_tuple.R",
 		"res_inputs_tuple.R"]
 """
-function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outfns=NaN)
+function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=NaN, outfns=NaN)
 	setup="""
 	res = resDECj;
 	geogfn = lgdata_fn
@@ -1206,7 +1206,7 @@ function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, 
 		"res_inputs_tuple.R"]
 	""" # END setup
 
-	if (isnan(outfns) == true)
+	if (isnan2(outfns) == true)
 		outfns = [
 		"computed_likelihoods_at_each_node.txt",
 		"relative_probs_of_each_state_at_branch_top_AT_node_DOWNPASS.txt",
@@ -1222,6 +1222,17 @@ function juliaRes_to_Rdata(res, trdf, inputs, lnLs_tuple, optim_result, geogfn, 
 		"lnLs_tuple.R",
 		"res_inputs_tuple.R"]
 	end
+	
+	# Add the path, if outwd is not NaN, *AND* if the filename does
+	# not already have slashes in it.
+	if (isnan2(outwd) == false)
+		for i in 1:length(outfns)
+			if (occursin("/", outfns[i]) == false)
+				outfns[i] = slashslash(paste0([addslash(outwd), outfns[i]]))
+			end
+		end
+	end
+	
 	
 
 	numstates = length(res.anc_estimates_at_each_nodeIndex_branchTop[1])

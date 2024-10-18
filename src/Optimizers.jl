@@ -24,7 +24,7 @@ using PhyBEARS.TreePass
 print("...done.\n")
 
 
-export func_to_optimize, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1_OLD, bmo_updater_v1_SLOW, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
+export func_to_optimize, func_to_optimize_nonparallel_v7, func2_EXAMPLE, func_EXAMPLE, func_to_optimize, func2_v5, func_v5, update_Qij_vals, update_Qij_vals2!, p_Ds_v5_updater_v1_OLD, bmo_updater_v1_SLOW, bmo_updater_v1, bmo_updater_v2, update_maxent01, update_Cijk_vals, update_Cijk_vals2_noUpdate, update_Qij_vals_subs!, update_Cijk_vals2!, p_Ds_v5_updater_v1!, inputs_updater_v1!, inputs_updater_v2!, bmo_updater_v1!, func_to_optimize_v7, func_to_optimize_v7c, func_to_optimize_v12
 
 
 
@@ -2869,7 +2869,7 @@ function p_Ds_v5_updater_v1!(p_Ds_v5, inputs; check_if_free_params_in_mat=true, 
 		TF1 = in(free_param_names).(["j"])[1]
 		TF2 = in(unique(p_Ds_v5.p_indices.Carray_event_types)).(["j"])[1]
 		if TF1 != TF2
-			txt = paste0(["ERROR in p_Ds_v5_updater_v1!(): j's must be in both places. j_in_bmo:", TF1, "; j_in_params:", TF2])
+			txt = paste0(["ERROR in p_Ds_v5_updater_v1!(): j's must be in both places.\nj_in_bmo:", TF1, "\nj_in_params:", TF2, ".\n(Check e.g. prtCp(p_Ds_v5), column 'events'.)"])
 			print("\n")
 			print(txt)
 			print("\n")

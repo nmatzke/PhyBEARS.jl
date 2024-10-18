@@ -1,4 +1,4 @@
 alt	null	LnLalt	LnLnull	DFalt	DFnull	DF	Dstatistic	pval	test	tail	AIC1	AIC2	AICwt1	AICwt2	AICweight_ratio_model1	AICweight_ratio_model2
-1	DEC+J	DEC	-261.3	-310.9	3	2	1	99.28	2.2e-23	chi-squared	one-tailed	528.6	625.9	1	7.5e-22	1.33e+21	7.5e-22
-2	DIVALIKE+J	DIVALIKE	-263.8	-305.2	3	2	1	82.95	8.4e-20	chi-squared	one-tailed	533.5	614.5	1	2.6e-18	3.79e+17	2.6e-18
+1	DEC+J	DEC	-261.3	-540.2	3	2	1	557.7	2.6e-123	chi-squared	one-tailed	528.6	1084	1	2.1e-121	4.75e+120	2.1e-121
+2	DIVALIKE+J	DIVALIKE	-263.7	-537.9	3	2	1	548.2	3.1e-121	chi-squared	one-tailed	533.5	1080	1	2.5e-119	4.07e+118	2.5e-119
 3	BAYAREALIKE+J	BAYAREALIKE	-267.4	-355.2	3	2	1	175.6	4.5e-40	chi-squared	one-tailed	540.8	714.4	1	2.0e-38	4.93e+37	2.0e-38
