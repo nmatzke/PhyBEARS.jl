@@ -86,6 +86,10 @@ inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 p_Ds_v5 = inputs.p_Ds_v5;
 
+
+
+
+
 lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
 pars = bmo.est[bmo.type .== "free"]

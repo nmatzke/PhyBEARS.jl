@@ -1,0 +1,32 @@
+rownames	type	init	min	max	est	note	desc
+d	free	0.01	1.0e-12	4.999999999999	0.00039614337320260343	works	anagenesis: rate of 'dispersal' (range expansion)
+e	free	0.01	1.0e-12	4.999999999999	1.0e-12	works	anagenesis: rate of 'extinction' (range contraction)
+a	fixed	0.0	1.0e-12	4.999999999999	0.0	works	anagenesis: rate of range-switching (i.e. for a standard char.)
+b	fixed	1.0	1.0e-12	0.999999999999	1.0	non-stratified only	anagenesis: exponent on branch lengths
+x	fixed	0.0	-2.5	2.5	0.0	works	exponent on distmat (modifies d, j, a)
+x2	fixed	0.0	-2.5	2.5	0.0	works	exponent on distmat2 (modifies d, j, a)
+x3	fixed	0.0	-2.5	2.5	0.0	works	exponent on distmat3 (modifies d, j, a)
+xv	fixed	0.0	-2.5	2.5	0.0	works	exponent on vicariance distance (modifies v_rate)
+n	fixed	0.0	-10.0	10.0	0.0	works	exponent on environmental distance (modifies d, j, a)
+w	fixed	1.0	-10.0	10.0	1.0	works	exponent on manual dispersal multipliers (modifies d, j, a)
+u	fixed	0.0	-1.0	2.5	0.0	works	anagenesis: exponent on extinction risk with area (modifies e)
+u_e	u	0.0	-1.0	2.5	0.0	works	anagenesis: exponent on range extirpation risk with area (modifies e)
+u_mu	u	0.0	-1.0	2.5	0.0	works	u_mu: exponent on lineage extinction risk with area (modifies mu|deathRate)
+j	free	0.0	1.0e-5	2.99999	0.01219590956271266	works	cladogenesis: relative per-event weight of jump dispersal
+ysv	3-j	2.99999	1.0e-5	3.0	2.987804090437287	works	cladogenesis: y+s+v
+ys	ysv*2/3	1.99999	1.0e-5	2.0	1.9918693936248582	works	cladogenesis: y+s
+y	ysv*1/3	1.0	1.0e-5	1.0	0.9959346968124291	works	cladogenesis: relative per-event weight of sympatry (range-copying)
+s	ysv*1/3	1.0	1.0e-5	1.0	0.9959346968124291	works	cladogenesis: relative per-event weight of subset speciation
+v	ysv*1/3	1.0	1.0e-5	1.0	0.9959346968124291	works	cladogenesis: relative per-event weight of vicariant speciation
+birthRate	free	0.3288164	0.0	2.0	0.04357215572907851	works	speciation rate
+deathRate	birthRate	0.0	0.0	2.0	0.04357215572907851	works	extinction rate (lineages)
+psiRate	fixed	0.0	0.0	2.0	0.0	works	sampling rate (fossils)
+mx01	fixed	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
+mx01j	mx01	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
+mx01y	mx01	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
+mx01s	mx01	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
+mx01v	mx01	0.0	0.0001	0.9999	0.0	works	cladogenesis: controls range size of smaller daughter
+mx01r	fixed	0.5	0.0001	0.9999	0.5	no	root: controls range size probabilities of root
+mf	fixed	0.1	0.005	0.995	0.1	no	mean frequency of truly sampling OTU of interest
+dp	fixed	1.0	0.005	0.995	1.0	no	detection probability per true sample of OTU of interest
+fdp	fixed	0.0	0.005	0.995	0.0	no	false detection of OTU probability per true taphonomic control sample
