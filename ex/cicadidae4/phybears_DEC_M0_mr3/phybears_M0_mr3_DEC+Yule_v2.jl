@@ -113,7 +113,8 @@ files.distances_fn = "distances_changing_PhyBEARS.txt"
 
 # Construct interpolators, times-at-which-to-interpolate QC
 p = p_Ds_v5;
-oldest_possible_age = max.(Es_tspan);
+oldest_possible_age = 140;
+Es_tspan = (0, oldest_possible_age)
 interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=oldest_possible_age);
 
 interpolators.area_of_areas_interpolator
