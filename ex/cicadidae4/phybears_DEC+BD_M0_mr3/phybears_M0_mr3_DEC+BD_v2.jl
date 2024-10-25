@@ -66,6 +66,7 @@ max_range_size = 3 # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 
+
 # Modify the sampling probabilities of the tips (rho), due to 
 # incomplete taxon sampling.
 # 
@@ -87,27 +88,37 @@ inputs.res.sumLikes_at_node_at_branchTop .= sum.(inputs.res.likes_at_each_nodeIn
 
 sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
 
+#######################################################
+# Read in and parse distances and area-of-areas
+#######################################################
+files.times_fn = "times_PhyBEARS.txt"
+files.distances_fn = "distances_changing_PhyBEARS.txt"
+#files.area_of_areas_fn = "sunkNZ_area_of_areas.txt"
 
-numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
-root_age = maximum(trdf[!, :node_age])
+# Construct interpolators, times-at-which-to-interpolate QC
+p = p_Es_v5;
+oldest_possible_age = 150;
+Es_tspan = (0, oldest_possible_age)
+interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=oldest_possible_age);
+
+interpolators.area_of_areas_interpolator
+
+p_Es_v12 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
+
+# Add Q, C interpolators
+p_Es_v12 = p = PhyBEARS.TimeDep.construct_QC_interpolators(p_Es_v12, p_Es_v12.interpolators.times_for_SSE_interpolators);
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Es_v5.uE, Es_tspan, p_Es_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, sol_Es_v5=sol_Es_v5);
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-# Check the interpolator
-p_Ds_v5.sol_Es_v5(1.0)
-Es_interpolator(1.0)
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
-# Do downpass - slow and fast calculation
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
-
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 
@@ -125,6 +136,9 @@ bmo.est[bmo.rownames .== "deathRate"] .= 0.01
 bmo.est[bmo.rownames .== "d"] .= 0.0010
 bmo.est[bmo.rownames .== "e"] .= 0.0007
 bmo.est[bmo.rownames .== "a"] .= 0.0
+bmo.type[bmo.rownames .== "x"] .= "free"
+bmo.est[bmo.rownames .== "x"] .= -0.5
+
 bmo.est[bmo.rownames .== "j"] .= 0.0
 bmo.type[bmo.rownames .== "j"] .= "fixed"
 numareas = 10
@@ -134,7 +148,6 @@ n = numstates_from_numareas(10,3,true)
 max_range_size = 3 # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
-p_Ds_v5 = inputs.p_Ds_v5;
 
 # Modify the sampling probabilities of the tips (rho), due to 
 # incomplete taxon sampling.
@@ -166,8 +179,8 @@ bmo_updater_v1!(inputs.bmo) # works
 
 # Set up DEC ML search
 pars = bmo.est[bmo.type .== "free"]
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)
-pars = [0.01, 0.01, 0.01, 0.01]
+func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="lnL", printlevel=1)
+pars = [0.01, 0.01, 0.0, birthRate, 0.0]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
@@ -202,7 +215,7 @@ opt.ftol_abs = 0.001 # tolerance on log-likelihood
 pars = optx
 inputs.bmo.est[inputs.bmo.type .== "free"] .= pars
 bmo_updater_v1!(inputs.bmo)
-p_Ds_v5_updater_v1!(p_Es_v5, inputs);
+p_Ds_v5_updater_v1!(p_Es_v12, inputs);
 # SEE runtests_ClaSSE_tree_n13_DECj_WORKS.jl
 # save_everystep_EQ_false_CAN_MATTER_EVEN_ON_THE_Ds
 #inputs.solver_options.save_everystep=false # CAN PRODUCE A -20.9 vs. -20.6 difference!
@@ -210,13 +223,13 @@ inputs.solver_options.save_everystep=true	# WORKS!! Can make a difference EVEN O
 
 # Solve the Es
 print("\nSolving the Es once, for the whole tree timespan...")
-prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v7_simd_sums, p_Es_v5.uE, Es_tspan, p_Es_v5);
-# This solution is an interpolator
-sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=true, abstol=solver_options.abstol, reltol=solver_options.reltol);
-Es_interpolator = sol_Es_v5;
-p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, sol_Es_v5=sol_Es_v5);
+prob_Es_v12 = DifferentialEquations.ODEProblem(PhyBEARS.SSEs.parameterized_ClaSSE_Es_v12_simd_sums, p_Es_v12.uE, Es_tspan, p_Es_v12);
+sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
+
+# Solve the Ds
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 
 #######################################################
@@ -225,7 +238,7 @@ p_Ds_v7 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TF
 #######################################################
 
 # (updates the "res" results object)
-uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
+uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=false)
 
 # Output the updated res to a series of .Rdata objects that can be read in R
 #######################################################

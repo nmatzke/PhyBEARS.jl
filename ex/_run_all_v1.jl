@@ -29,7 +29,7 @@ cd("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC_M0_mr3/")
 include("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC_M0_mr3/phybears_M0_mr3_DEC+Yule_v2.jl")
 
 cd("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DECj_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DECj_M0_mr3/phybears_M0_mr3_DEC+Yule+J_v2.jl")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DECj_M0_mr3/phybears_M0_mr3_DEC+J+Yule_v2.jl")
 
 cd("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+BD_M0_mr3/")
 include("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+BD_M0_mr3/phybears_M0_mr3_DEC+BD_v2.jl")
@@ -52,7 +52,7 @@ cd("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DEC_M0_mr3/")
 include("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DEC_M0_mr3/phybears_M0_mr3_DEC+Yule_v2.jl")
 
 cd("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj_M0_mr3/phybears_M0_mr3_DEC+Yule+J_v2.jl")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj_M0_mr3/phybears_M0_mr3_DEC+J+Yule_v2.jl")
 
 cd("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DEC+BD_M0_mr3/")
 include("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DEC+BD_M0_mr3/phybears_M0_mr3_DEC+BD_v2.jl")
