@@ -1,17 +1,3 @@
-#######################################################
-# This script shows:
-# 1. The calculation of the BioGeoBEARS DEC and DEC+J
-#    log-likelihoods, using numeric integration with
-#    ClaSSE in Julia. (This requires taking the ClaSSE
-#    branch log-likelihood, i.e. lq, and subtracting
-#    the birthdeath-process lnL (BD lnL, but without
-#    the logfactorial term), as well as the root state
-#    frequencies.
-#
-# 2. Maximum likelihood, in a constrained ClaSSE model,
-#    achieving the same ML parameters and lnL as 
-#    BioGeoBEARS, for DEC and DEC+J.
-#######################################################
 
 using Test, PhyBEARS, DataFrames
 
@@ -36,18 +22,18 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/phybears_M0_mr3_DEC+J_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/phybears_M0_mr3_DEC+J_B=D_v2.jl")
 """
 
-setwd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/")
+setwd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/")
 
 # Input geography
-lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Input tree
-trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/tree.newick"
+trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
 
@@ -71,11 +57,13 @@ birthRate = yuleBirthRate = (numInternal-1) / ttl_tree_length
 
 bmo = construct_BioGeoBEARS_model_object()
 bmo.est[bmo.rownames .== "birthRate"] .= birthRate
-bmo.est[bmo.rownames .== "deathRate"] .= 0.0
+bmo.est[bmo.rownames .== "deathRate"] .= birthRate
 bmo.est[bmo.rownames .== "d"] .= 0.0010
 bmo.est[bmo.rownames .== "e"] .= 0.0007
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.type[bmo.rownames .== "j"] .= "free"
+bmo.type[bmo.rownames .== "birthRate"] .= "free"
+bmo.type[bmo.rownames .== "deathRate"] .= "birthRate"
 bmo.est[bmo.rownames .== "j"] .= 0.01
 numareas = 10
 n = numstates_from_numareas(10,3,true)
@@ -94,8 +82,8 @@ bmo_updater_v1!(inputs.bmo) # works
 
 # Set up DEC ML search
 pars = bmo.est[bmo.type .== "free"]
-func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v5; returnval="bgb_lnL", printlevel=1)
-pars = [0.01, 0.01, 0.01]
+func = x -> func_to_optimize_v7(x, parnames, inputs, p_Ds_v5; returnval="lnL", printlevel=1)
+pars = [0.01, 0.01, 0.01, 0.01]
 func(pars)
 function func2(pars, dummy_gradient!)
 	return func(pars)
@@ -159,12 +147,12 @@ uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
 #######################################################
 # Ancestral states estimation and plotting
 #######################################################
-resDECj_Yule = deepcopy(inputs.res);
+resDECj_BD = deepcopy(inputs.res);
 geogfn = lgdata_fn
 lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
 optim_result = build_optim_result(opt, optf, optx, ret)
 juliaRes_to_Rdata(inputs.res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=getwd(), outfns=NaN)
-resDECj_Yule_archive = deepcopy((inputs.res, inputs, lnLs_tuple, optim_result, geogfn, trfn));
+resDECj_BD_archive = deepcopy((inputs.res, inputs, lnLs_tuple, optim_result, geogfn, trfn));
 """
 # Then run, in R:
 """
@@ -178,7 +166,7 @@ library(ape)
 library(cladoRcpp)
 library(diversitree)
 library(BioGeoBEARS)
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj_M0_mr3/"  # CHANGE THIS
+wd = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DECj+B=D_M0_mr3/"  # CHANGE THIS
 setwd(wd)
 sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
 res = PhyBEARS_res_to_BGB_res(outfns=NaN)
@@ -193,9 +181,9 @@ tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)
 max_range_size = res|inputs|max_range_size
 include_null_range = res|inputs|include_null_range
 
-pdffn = "phyBEARS_cicadidae2_DEC+J+Yule_M0_unconstrained_v1.pdf"  # CHANGE THIS
+pdffn = "phyBEARS_cicadidae2_DEC+J+B=D_M0_unconstrained_v1.pdf"  # CHANGE THIS
 pdf(pdffn, height=24, width=9)
-analysis_titletxt ="PhyBEARS DEC+J+Yule on Cicadidae M0_unconstrained"  # CHANGE THIS
+analysis_titletxt ="PhyBEARS DEC+J+B=D on Cicadidae M0_unconstrained"  # CHANGE THIS
 results_object = res
 scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
 

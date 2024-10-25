@@ -22,18 +22,18 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+BD_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+BD_M0_mr3/phybears_M0_mr3_DEC+BD_v2.jl")
+cd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+BD_M0_mr3/")
+include("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+BD_M0_mr3/phybears_M0_mr3_DEC+BD_v2.jl")
 """
 
-setwd("/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+B=D_M0_mr3/")
+setwd("/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+B=D_M0_mr3/")
 
 # Input geography
-lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+B=D_M0_mr3/geog.data"
+lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+B=D_M0_mr3/geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Input tree
-trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+B=D_M0_mr3/tree.newick"
+trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+B=D_M0_mr3/tree.newick"
 tr = readTopology(trfn)
 trdf = prt(tr)
 
@@ -65,28 +65,6 @@ root_age_mult=1.5; max_range_size=3; include_null_range=true; max_range_size=NaN
 max_range_size = 3 # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
-
-# Modify the sampling probabilities of the tips (rho), due to 
-# incomplete taxon sampling.
-# 
-# As the sampling rate is very low, and not hugely different between clades, 
-# we will just use a constant sampling fraction for all tips.
-# This is valid, whereas different sampling rates for different tips
-# may be questionable (the calculation of Es seems to assume the
-# sampling can differ by state, but not by tip -- see comments in 
-# modify_tiplikes_sampling_fossils_v7! code.
-# 
-sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
-#inputs.res.sampling_f .= 0.039  # 0.039 for all states
-#modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
-
-# Manually modification with constant sampling rate
-inputs.res.likes_at_each_nodeIndex_branchTop .= inputs.res.likes_at_each_nodeIndex_branchTop .* 0.039
-inputs.res.sumLikes_at_node_at_branchTop .= sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
-sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
 
 numstates = length(inputs.res.likes_at_each_nodeIndex_branchTop[1])
 root_age = maximum(trdf[!, :node_age])
@@ -135,28 +113,6 @@ max_range_size = 3 # replaces any background max_range_size=1
 inputs = setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=max_range_size, include_null_range=true, bmo=bmo);
 (setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 p_Ds_v5 = inputs.p_Ds_v5;
-
-# Modify the sampling probabilities of the tips (rho), due to 
-# incomplete taxon sampling.
-# 
-# As the sampling rate is very low, and not hugely different between clades, 
-# we will just use a constant sampling fraction for all tips.
-# This is valid, whereas different sampling rates for different tips
-# may be questionable (the calculation of Es seems to assume the
-# sampling can differ by state, but not by tip -- see comments in 
-# modify_tiplikes_sampling_fossils_v7! code.
-# 
-sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
-#inputs.res.sampling_f .= 0.039  # 0.039 for all states
-#modify_tiplikes_sampling_fossils_v7!(inputs, p_Ds_v5, geog_df)
-
-# Manually modification with constant sampling rate
-inputs.res.likes_at_each_nodeIndex_branchTop .= inputs.res.likes_at_each_nodeIndex_branchTop .* 0.039
-inputs.res.sumLikes_at_node_at_branchTop .= sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
-sum.(inputs.res.likes_at_each_nodeIndex_branchTop)
-
 
 lower = bmo.min[bmo.type .== "free"]
 upper = bmo.max[bmo.type .== "free"]
@@ -250,7 +206,7 @@ library(ape)
 library(cladoRcpp)
 library(diversitree)
 library(BioGeoBEARS)
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae3/phybears_DEC+B=D_M0_mr3/"  # CHANGE THIS
+wd = "/GitHub/PhyBEARS.jl/ex/cicadidae2/phybears_DEC+B=D_M0_mr3/"  # CHANGE THIS
 setwd(wd)
 sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
 res = PhyBEARS_res_to_BGB_res(outfns=NaN)
@@ -265,7 +221,7 @@ tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)
 max_range_size = res|inputs|max_range_size
 include_null_range = res|inputs|include_null_range
 
-pdffn = "phyBEARS_cicadidae3_DEC+BirthDeath_M0_unconstrained_v1.pdf"  # CHANGE THIS
+pdffn = "phyBEARS_cicadidae2_DEC+BirthDeath_M0_unconstrained_v1.pdf"  # CHANGE THIS
 pdf(pdffn, height=24, width=9)
 analysis_titletxt ="PhyBEARS DEC+BirthDeath on Cicadidae M0_unconstrained"  # CHANGE THIS
 results_object = res
