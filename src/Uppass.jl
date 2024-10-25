@@ -1051,19 +1051,19 @@ function nodeOp_Cmat_uppass_v5!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
 			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
-			print("\n")
-			print(txt)
-			print("\nStarting probs at branch bottom:")
-			print(u0)
+			#print("\n")
+			#print(txt)
+			#print("\nStarting probs at branch bottom:")
+			#print(u0)
 
-			print("\nuppass_probs_just_below_node, pre-correction:")
-			print(uppass_probs_just_below_node)
+			#print("\nuppass_probs_just_below_node, pre-correction:")
+			#print(uppass_probs_just_below_node)
 
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
-			print("\nuppass_probs_just_below_node, post-correction:")
-			print(uppass_probs_just_below_node)
-			print("\n")
+			#print("\nuppass_probs_just_below_node, post-correction:")
+			#print(uppass_probs_just_below_node)
+			#print("\n")
 		end
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
@@ -1256,19 +1256,19 @@ function nodeOp_Cmat_uppass_v7!(res, current_nodeIndex, trdf, p_Ds_v7, solver_op
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
 			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
-			print("\n")
-			print(txt)
-			print("\nStarting probs at branch bottom:")
-			print(u0)
+			#print("\n")
+			#print(txt)
+			#print("\nStarting probs at branch bottom:")
+			#print(u0)
 
-			print("\nuppass_probs_just_below_node, pre-correction:")
-			print(uppass_probs_just_below_node)
+			#print("\nuppass_probs_just_below_node, pre-correction:")
+			#print(uppass_probs_just_below_node)
 
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
-			print("\nuppass_probs_just_below_node, post-correction:")
-			print(uppass_probs_just_below_node)
-			print("\n")
+			#print("\nuppass_probs_just_below_node, post-correction:")
+			#print(uppass_probs_just_below_node)
+			#print("\n")
 		end
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
@@ -1570,19 +1570,19 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# Normalize to sum to 1.0, *IF* sum is greater than 1
 		if (sum(uppass_probs_just_below_node) > 1.0)		
 			txt = paste0(["\nCorrection imposed at Node #", current_nodeIndex])
-			print("\n")
-			print(txt)
-			print("\nStarting probs at branch bottom:")
-			print(u0)
+			#print("\n")
+			#print(txt)
+			#print("\nStarting probs at branch bottom:")
+			#print(u0)
 
-			print("\nuppass_probs_just_below_node, pre-correction:")
-			print(uppass_probs_just_below_node)
+			#print("\nuppass_probs_just_below_node, pre-correction:")
+			#print(uppass_probs_just_below_node)
 
 			uppass_probs_just_below_node .= uppass_probs_just_below_node ./ sum(uppass_probs_just_below_node)
 
-			print("\nuppass_probs_just_below_node, post-correction:")
-			print(uppass_probs_just_below_node)
-			print("\n")
+			#print("\nuppass_probs_just_below_node, post-correction:")
+			#print(uppass_probs_just_below_node)
+			#print("\n")
 		end
 	end # END if (current_nodeIndex == res.root_nodeIndex)
 			# END uppass from branch below
