@@ -1593,12 +1593,28 @@ function bmo_updater_v1_SLOW(bmo)
 		bmo.est[bmo.rownames .== "u_mu"] .= u
 	end
 	
+	# Special relationships between parameters
 	# Update mx01's based on mx01?
 
 	# Update deathRate based on birthRate?
 	if bmo.type[bmo.rownames .== "deathRate"][1] == "birthRate"
 		bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "birthRate"]
 	end
+
+	# Update deathRate based on e (single-area extirpation rate)
+	# NOTE: This also needs a mu of 0.0 for ranges with more than 1 area
+	# 
+	# You can achieve this with an area matrix with areas of size 1.0,
+	# and a "u" fixed to -100.0. Thus, the e for 1 area is:
+	#
+	# 1.0 * 1.0^-100.0 = 1.0
+	#
+	# And for 2 areas, it is
+	# 1.0 * 2.0^-100.0 = 7.888609052210118e-31
+	if bmo.type[bmo.rownames .== "deathRate"][1] == "e"
+		bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "e"]
+	end
+
 	
 	# Update xv based on x?
 	# i.e., an x of -1 gives an xv of 1
