@@ -1601,6 +1601,11 @@ function bmo_updater_v1_SLOW(bmo)
 		bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "birthRate"]
 	end
 
+	# Update e based on d?
+	if bmo.type[bmo_rows.e] == "d"
+		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.d]
+	end
+
 	# Update deathRate based on e (single-area extirpation rate)
 	# NOTE: This also needs a mu of 0.0 for ranges with more than 1 area
 	# 
@@ -1700,6 +1705,11 @@ function bmo_updater_v1(bmo, bmo_rows)
 	# Update deathRate based on birthRate?
 	if bmo.type[bmo_rows.deathRate] == "birthRate"
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
+	end
+
+	# Update e based on d?
+	if bmo.type[bmo_rows.e] == "d"
+		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.d]
 	end
 
 	# Update deathRate based on e?
@@ -1817,6 +1827,12 @@ function bmo_updater_v2(bmo, bmo_rows)
 	if bmo.type[bmo_rows.deathRate] == "birthRate"
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
 	end
+
+	# Update e based on d?
+	if bmo.type[bmo_rows.e] == "d"
+		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.d]
+	end
+
 
 	# Update deathRate based on e?
 	if bmo.type[bmo_rows.deathRate] == "e"
