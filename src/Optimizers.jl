@@ -1614,6 +1614,12 @@ function bmo_updater_v1_SLOW(bmo)
 	if bmo.type[bmo.rownames .== "deathRate"][1] == "e"
 		bmo.est[bmo.rownames .== "deathRate"] .= bmo.est[bmo.rownames .== "e"]
 	end
+	
+	# If e also equates the birthRate (forces it to be higher)
+	if bmo.type[bmo.rownames .== "e"][1] == "birthRate"
+		bmo.est[bmo.rownames .== "e"] .= bmo.est[bmo.rownames .== "birthRate"]
+	end
+
 
 	
 	# Update xv based on x?
@@ -1696,8 +1702,14 @@ function bmo_updater_v1(bmo, bmo_rows)
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
 	end
 
+	# Update deathRate based on e?
 	if bmo.type[bmo_rows.deathRate] == "e"
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.e]
+	end
+
+	# Update e based on birthRate?
+	if bmo.type[bmo_rows.e] == "birthRate"
+		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.birthRate]
 	end
 
 	
@@ -1806,9 +1818,14 @@ function bmo_updater_v2(bmo, bmo_rows)
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.birthRate]
 	end
 
-	# Update deathRate based on birthRate?
+	# Update deathRate based on e?
 	if bmo.type[bmo_rows.deathRate] == "e"
 		bmo.est[bmo_rows.deathRate] = bmo.est[bmo_rows.e]
+	end
+
+	# Update e based on birthRate?
+	if bmo.type[bmo_rows.e] == "birthRate"
+		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.birthRate]
 	end
 	
 	# Update mx01's based on mx01?
