@@ -18,8 +18,8 @@
 # Run with:
 julia -t auto -p auto
 
-cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
+cd("/Users/nmat471/GitHub/PhyBEARS.jl/test/")
+include("/Users/nmat471/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
 """
 
 
@@ -68,8 +68,8 @@ bgb_lnL 					= correct_results[6]
 # List each PhyBEARS code file prefix here
 doesnt_work="""
 @everywhere using Pkg
-@everywhere cd("/GitHub/PhyBEARS.jl")
-@everywhere Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl")) # Gives error:
+@everywhere cd("/Users/nmat471/GitHub/PhyBEARS.jl")
+@everywhere Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyBEARS.jl")) # Gives error:
 # ERROR: TaskFailedException
 #   nested task error: TOML Parser error:
 #   none:2:5 error: expected equal sign after key
@@ -80,21 +80,21 @@ doesnt_work="""
 
 #@testset "speedtests_Cyrtandra_wExtinction+J_v2speed.jl" begin
 
-#include("/GitHub/PhyBEARS.jl/src/Gmaps.jl")
+#include("/Users/nmat471/GitHub/PhyBEARS.jl/src/Gmaps.jl")
 #import .Gmaps
-#include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
+#include("/Users/nmat471/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
 #import .ModelLikes
-#include("/GitHub/PhyBEARS.jl/notes/jl")
+#include("/Users/nmat471/GitHub/PhyBEARS.jl/notes/jl")
 #import .Flow
 
-#trfn = "/GitHub/PhyBEARS.jl/data/Klaus_Matzke_2020_PodoArau_197sp.newick"
+#trfn = "/Users/nmat471/GitHub/PhyBEARS.jl/data/Klaus_Matzke_2020_PodoArau_197sp.newick"
 #tr = readTopology(trfn)
-#lgdata_fn = "/GitHub/PhyBEARS.jl/data/Podocarpaceae_197_9areas_5Araucariaceae.data"
+#lgdata_fn = "/Users/nmat471/GitHub/PhyBEARS.jl/data/Podocarpaceae_197_9areas_5Araucariaceae.data"
 #geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
-trfn = "/GitHub/PhyBEARS.jl/data/Cyrtandra.newick"
+trfn = "/Users/nmat471/GitHub/PhyBEARS.jl/data/Cyrtandra.newick"
 tr = readTopology(trfn)
 
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Cyrtandra_geog.data"
+lgdata_fn = "/Users/nmat471/GitHub/PhyBEARS.jl/data/Cyrtandra_geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # DEC model on Hawaiian Psychotria

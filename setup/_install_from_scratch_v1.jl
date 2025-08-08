@@ -95,7 +95,7 @@ Pkg.gc()
 
 
 
-using Pkg; Pkg.add(PackageSpec(path="/GitHub/PhyloBits.jl"))
+using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyloBits.jl"))
 # OR: 
 # Pkg.add(url="https://github.com/nmatzke/PhyloBits.jl")
 
@@ -117,7 +117,7 @@ print("Unloading and re-loading PhyBEARS...\n")
 #    Pkg.activate(".")
 #end
 #Pkg.rm(PackageSpec(name="PhyBEARS", uuid="7876af07-990d-54b4-ab0e-23690620f79a"))
-using Pkg; Pkg.add(PackageSpec(path="/GitHub/PhyBEARS.jl"))
+using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyBEARS.jl"))
 # OR: 
 # Pkg.add(url="https://github.com/nmatzke/PhyBEARS.jl")
 using PhyBEARS
