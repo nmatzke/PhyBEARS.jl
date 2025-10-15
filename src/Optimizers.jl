@@ -1602,8 +1602,8 @@ function bmo_updater_v1_SLOW(bmo)
 	end
 
 	# Update e based on d?
-	if bmo.type[bmo_rows.e] == "d"
-		bmo.est[bmo_rows.e] = bmo.est[bmo_rows.d]
+	if bmo.type[bmo.rownames .== "e"] == "d"
+		bmo.est[bmo.rownames .== "e"] = bmo.est[bmo.rownames .== "d"]
 	end
 
 	# Update deathRate based on e (single-area extirpation rate)
@@ -1630,8 +1630,8 @@ function bmo_updater_v1_SLOW(bmo)
 	# Update xv based on x?
 	# i.e., an x of -1 gives an xv of 1
 	if bmo.type[bmo.rownames .== "xv"][1] == "-x"
-		#u = bmo.est[bmo_rows.u]
-		#bmo.est[bmo_rows.u_e] = u
+		#u = bmo.est[bmo.rownames .== "e"]
+		#bmo.est[bmo.rownames .== "u_e"] = u
 		bmo.est[bmo.rownames .== "xv"] = -1.0 * bmo.est[bmo.rownames .== "x"]
 	end
 	
