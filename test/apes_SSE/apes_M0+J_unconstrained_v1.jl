@@ -21,7 +21,7 @@ using DataFrames
 using CSV
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/")
 cd(wd)
 
 
@@ -81,7 +81,7 @@ p = p_Ds_v7 = (n=p_Es_v7.n, params=p_Es_v7.params, p_indices=p_Es_v7.p_indices, 
 # Solve the Ds
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/uppass_clado_v7A.jl")
+include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/uppass_clado_v7A.jl"))
 
 # Truth
 uppass_from_root_to_node6_branchBot = [0.0, 0.875, 0.0, 0.12500000]

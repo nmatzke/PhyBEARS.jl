@@ -28,11 +28,11 @@ using CSV
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/")
 cd(wd)
 
 """
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl")
+include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl"))
 """
 
 #######################################################

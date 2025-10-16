@@ -28,12 +28,12 @@ using CSV
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/")
 cd(wd)
 
 """
 
-include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
+include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl"))
 """
 
 #######################################################
@@ -41,7 +41,7 @@ include("/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
 # ON SIMPLE great ape phylogeny, 4-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source(expanduser("~/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R"))
 # Truth:
 R_bgb_lnL = -1.170587
 
@@ -106,7 +106,7 @@ p_Ds_v5_updater_v1!(p_Ds_v7, inputs);
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = PhyBEARS.TreePass.iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 # Save results
-results_fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+results_fn = expanduser("~/GitHub/PhyBEARS.jl/test/test_results.txt") # lnLs and times
 
 txtvec = ["test: ", "apes_M0_DEC+J_v1.jl", "apes", "areas:2", "states:4", "DEC+J+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, R_bgb_lnL]
 

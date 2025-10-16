@@ -28,7 +28,7 @@ using CSV
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/test/apes_SSE/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/")
 cd(wd)
 
 """
