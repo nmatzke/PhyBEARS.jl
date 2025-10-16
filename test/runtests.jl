@@ -20,14 +20,14 @@ num_processes = Distributed.nprocs()
 
 """
 # Run with:
-cd("/Users/nmat471/GitHub/PhyBEARS.jl/test/")
-include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/test/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests.jl"))
 """
 
 # default directory for data etc.
 pathof_result = pathof(PhyBEARS)
 dd = pp(pathof_result, "PhyBEARS")
-dd = "/Users/nmat471/GitHub/PhyBEARS.jl"
+dd = expanduser("~/GitHub/PhyBEARS.jl")
 
 
 @testset "All tests" begin
@@ -260,8 +260,8 @@ end
 	
 	# Q: is there a reason slashslash() has the internal code repeated several times?
 	# A: to remove any cases of ///, ////, etc.
-	@test slashslash("//GitHub/PhyBEARS.jl//src//PhyBEARS.jl") == "/Users/nmat471/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
-	@test slashslash(paste0([addslash("/Users/nmat471/GitHub/PhyBEARS.jl"), "/src/PhyBEARS.jl"])) == "/Users/nmat471/GitHub/PhyBEARS.jl/src/PhyBEARS.jl"
+	@test slashslash(expanduser("~//GitHub/PhyBEARS.jl//src//PhyBEARS.jl")) == expanduser("~/GitHub/PhyBEARS.jl/src/PhyBEARS.jl")
+	@test slashslash(paste0([addslash(expanduser("~/GitHub/PhyBEARS.jl")), "/src/PhyBEARS.jl"])) == expanduser("~/GitHub/PhyBEARS.jl/src/PhyBEARS.jl")
 
 	tmpmatrix = [3 1; 3 2; 5 3; 5 4; 7 5; 7 6]
 	tmpstr = repr(tmpmatrix)
@@ -429,56 +429,56 @@ end
 
 
 @testset "Checks against BioGeoBEARS models" begin
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DEC+J_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_DIVALIKE+J_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/apes_M0_BAYAREALIKE+J_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl"))
 end
 
 @testset "Checks against BioGeoBEARS models, adding direct ancs, fossil hooknodes/tips to the tree" begin
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl"))
 end 
 
 @testset "Checks against diversitree's BiSSE" begin
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/bisse_ASR+J_v1.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/bisse_ASR+J_v1.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl"))
 
 end
 
 
 @testset "Checks against diversitree's ClaSSE" begin
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n4.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n5.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n6.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7b_difftips_diffMus.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n4.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n5.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n6.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7a_difftips.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n7b_difftips_diffMus.jl"))
 	
 	# Positive deathrate, uses rootstates_lnL_condsurv_TRUE function
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl"))
 	
 end
 
 @testset "Checks against BioGeoBEARS models -- Psychotria (19 species, 16 states)" begin
 	# Psychotria tree
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl")
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl"))
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
 	# Add birthRate / deathRate inference
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl"))
 end
 
 @testset "Check lnLs with Gflow calculations etc." begin
-	include("/Users/nmat471/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
 end
 
 if ((numthreads > 1) == true) || ((num_processes > 1) == true)
 	@testset "Check parallelized lnLs - only runs when nthreads>1, nprocs>1" begin
-		include("/Users/nmat471/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed_wParallel.jl")
+		include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed_wParallel.jl")
 	end
 end
 
