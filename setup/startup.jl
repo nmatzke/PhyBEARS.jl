@@ -7,7 +7,7 @@ print("\n")
 # Perhaps useful for Revise, but couldn't get Revise() to work on my Mac
 print("Adding package developing directories to LOAD_PATH (JULIA_LOAD_PATH externall)...")
 print("\n")
-push!(LOAD_PATH, "/Users/nmat471/GitHub/PhyBEARS.jl")
+push!(LOAD_PATH, "~/GitHub/PhyBEARS.jl")
 print("Printing current LOAD_PATH:\n")
 print(LOAD_PATH)
 print("\n\n")
@@ -150,7 +150,7 @@ print("DifferentialEquations...\n")
 using DifferentialEquations # for ODEProblem
 print("PhyloBits...\n")
 
-using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyloBits.jl"))
+using Pkg; Pkg.add(PackageSpec(path=expanduser("~/GitHub/PhyloBits.jl")))
 # OR: 
 # Pkg.add(url="https://github.com/nmatzke/PhyloBits.jl")
 
@@ -169,11 +169,11 @@ print("Unloading and re-loading PhyBEARS...\n")
 """
 Pkg.rm("PhyBEARS")
 Pkg.rm(PackageSpec(name="PhyBEARS", uuid="7876af07-990d-54b4-ab0e-23690620f79a"))
-using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyBEARS.jl"))
-# using Pkg; Pkg.develop(PackageSpec(path="/Users/nmat471/Downloads/PhyBEARS.jl"))
+using Pkg; Pkg.add(PackageSpec(path=expanduser("~/GitHub/PhyBEARS.jl")))
+# using Pkg; Pkg.develop(PackageSpec(path=expanduser("~/Downloads/PhyBEARS.jl")))
 Pkg.rm("PhyBEARS")
 Pkg.rm("PhyloBits")
-using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyloBits.jl"))
+using Pkg; Pkg.add(PackageSpec(path=expanduser("~/GitHub/PhyloBits.jl")))
 """
 
 # Activate PhyBEARS
@@ -181,7 +181,7 @@ using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyloBits.jl"))
 #    Pkg.activate(".")
 #end
 #Pkg.rm(PackageSpec(name="PhyBEARS", uuid="7876af07-990d-54b4-ab0e-23690620f79a"))
-using Pkg; Pkg.add(PackageSpec(path="/Users/nmat471/GitHub/PhyBEARS.jl"))
+using Pkg; Pkg.add(PackageSpec(path=expanduser("~/GitHub/PhyBEARS.jl")))
 # OR: 
 # Pkg.add(url="https://github.com/nmatzke/PhyBEARS.jl")
 using PhyBEARS
@@ -220,7 +220,7 @@ Psychotria_tree = readTopology("((((((((P_hawaiiensis_WaikamoiL1:0.9665748366,P_
 show(Psychotria_tree)
 
 
-include("/Users/nmat471/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl")
-include("/Users/nmat471/GitHub/PhyBEARS.jl/test/runtests.jl")
-include("/Users/nmat471/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
+include(expanduser("~/GitHub/PhyBEARS.jl/test/apes_SSE/fossils_apes_M0_DEC_v1.jl"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests.jl"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl"))
 

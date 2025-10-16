@@ -35,13 +35,13 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/test/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl"))
 """
 # 
 # """
 # # Run with:
-# include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl")
+# include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl"))
 # """
 # 
 # @testset "Example" begin
@@ -64,7 +64,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl")
 # ON HAWAIIAN PSYCHOTRIA, 16-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source(expanduser("~/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R"))
 # Truth:
 DEC_lnL = -34.54313;
 DEC_R_result_branch_lnL = -67.6295;
@@ -82,16 +82,16 @@ DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
 #######################################################
 
 
-#include("/GitHub/PhyBEARS.jl/src/TreePass.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/src/TreePass.jl"))
 #import .TreePass
 
 # Repeat calculation in Julia
-#include("/GitHub/PhyBEARS.jl/notes/ModelLikes.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/ModelLikes.jl"))
 #import .ModelLikes
 
 # Island numbers (KOMH = 1234) in Rnodenums order:
 #island_nums = [3, 3, 2, 2, 3, 3, 2, 1, 1, 3, 4, 2, 1, 1, 1, 1, 1, 1, 2]
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Psychotria tree
@@ -1218,7 +1218,9 @@ print(bgb_diffs_atWORK)
 
 TF1 = abs(bgb_diffs) < cutoff
 TF2 = abs(bgb_diffs_atWORK) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
 
@@ -1232,48 +1234,64 @@ print(Julia_sum_lq_diffs_atWORK)
 
 TF1 = abs(Julia_sum_lq_diffs) < cutoff
 TF2 = abs(Julia_sum_lq_diffs_atWORK) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v6!(res; trdf=trdf, p_Ds_v5=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 #@test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
 TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
 TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
 TF1 = abs(Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
 TF2 = abs(Julia_sum_lq_ORIG_atWORK - Julia_sum_lq) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v7, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 #@test Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
 TF1 = abs(Julia_bgb_lnL_ORIG - bgb_lnL) < cutoff
 TF2 = abs(Julia_bgb_lnL_ORIG_atWORK - bgb_lnL) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 #@test Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
 TF1 = abs(Julia_sum_lq_ORIG - Julia_sum_lq) < cutoff
 TF2 = abs(Julia_sum_lq_ORIG_atWORK - Julia_sum_lq) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 #@test Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF1 = abs(Julia_total_lnLs1_ORIG - Julia_total_lnLs1) < cutoff
 TF2 = abs(Julia_total_lnLs1_ORIG_atWORK - Julia_total_lnLs1) < cutoff
-@test TF1 || TF2
+TF12 = TF1 || TF2
+@test TF12
+
 
 print("\n\n...END of runtests_ClaSSE_tree_n13_DECj_WORKS.jl: Different optimizations on DEC+BD at home vs work...\n\n")
 
