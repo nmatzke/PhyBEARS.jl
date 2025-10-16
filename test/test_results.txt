@@ -39,7 +39,49 @@ nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNode
 5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.0212357703981079	0.757828224601766	0.220936005000126	0.0	0.0212	0.7578	0.2209
 3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	0.0324086154040224	0.630413600097194	0.337177784498784	0.0	0.0324	0.6304	0.3372
 
-test: 	fossils_apes_M0_DEC_v1.jl	apes_wFossilAncNode	areas:2	states:4	DEC+Yule	1 like	0.066	4	-8.695792991666291	-2.754808854680205	-11.450601846346496	-4.4810121674831125	-4.481012
+test: 	apes_M0_DEC+J_v1.jl	apes	areas:2	states:4	DEC+J+Yule	1 like	0.0	3	-5.500653841805407	-3.197079409417631	-8.697733251223038	-1.1706088908014065	-1.170587
+botstates
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	5.483716e-31	1.0	1.492539e-14	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	7.463047e-39	1.492539e-14	0.0	1.0	0.0	0.0
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	2.000002e-24	1.0	1.791046e-13	0.0	0.0	1.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	4.500005e-24	1.0	8.059706e-13	0.0	0.0	1.0	0.0
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	NaN	NaN	NaN	NaN	NaN	NaN	NaN	NaN
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.940298	4.486683e-7	0.05970153	0.0	0.9403	0.0	0.0597
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	0.9850746	5.890815e-13	0.01492539	0.0	0.9851	0.0	0.0149
+
+topstates
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	0.0	0.0	0.0	1.0	0.0	0.0
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	0.0	0.4029848	0.4029853	0.1940299	0.0	0.403	0.403	0.194
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.940298	4.486684e-7	0.05970153	0.0	0.9403	0.0	0.0597
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	0.9850746	6.338576e-13	0.01492539	0.0	0.9851	0.0	0.0149
+
+test: 	apes_M0_DEC+J_v1.jl	apes	areas:2	states:4	DEC+J+Yule	ML	0.001	3	-5.689698931512602	-2.7916345025626668	-8.48133343407527	-0.9542090736536375	-1.170587
+botstates
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	5.483716e-31	1.0	1.492539e-14	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	7.463047e-39	1.492539e-14	0.0	1.0	0.0	0.0
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	2.000002e-24	1.0	1.791046e-13	0.0	0.0	1.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	4.500005e-24	1.0	8.059706e-13	0.0	0.0	1.0	0.0
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	NaN	NaN	NaN	NaN	NaN	NaN	NaN	NaN
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.940298	4.486683e-7	0.05970153	0.0	0.9403	0.0	0.0597
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	0.9850746	5.890815e-13	0.01492539	0.0	0.9851	0.0	0.0149
+
+topstates
+nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
+1	1	1	0.0	1.0	3	-999	-999	chimp	tip	false	false	1	chimp	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+2	2	2	0.0	1.0	3	-999	-999	human	tip	false	false	1	human	0.0	1.0	0.0	0.0	0.0	1.0	0.0	0.0
+4	3	3	0.0	2.0	5	-999	-999	gorilla	tip	false	false	1	gorilla	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+6	4	4	0.0	3.0	7	-999	-999	orang	tip	false	false	1	orang	0.0	0.0	1.0	0.0	0.0	0.0	1.0	0.0
+7	-2	5	3.0	-999.0	-999	5	6	in07	root	false	false	1	chimp,gorilla,human,orang	0.0	0.4029848	0.4029853	0.1940299	0.0	0.403	0.403	0.194
+5	-3	6	2.0	1.0	7	3	4	in05	intern	false	false	1	chimp,gorilla,human	0.0	0.940298	4.486684e-7	0.05970153	0.0	0.9403	0.0	0.0597
+3	-4	7	1.0	1.0	5	1	2	in03	intern	false	false	1	chimp,human	0.0	0.9850746	6.338576e-13	0.01492539	0.0	0.9851	0.0	0.0149
+
+test: 	fossils_apes_M0_DEC_v1.jl	apes_wFossilAncNode	areas:2	states:4	DEC+Yule	1 like	0.001	4	-8.695792991666291	-2.754808854680205	-11.450601846346496	-4.4810121674831125	-4.481012
 botstates
 nodeIndex	PNnumber	Rnodenums	node_age	brlen	ancNodeIndex	leftNodeIndex	rightNodeIndex	nodeName	nodeType	hook	foss	reg	taxa	x1	x2	x3	x4	x1_1	x2_1	x3_1	x4_1
 1	1	1	0.0	1.0	4	-999	-999	chimp	tip	false	false	1	chimp	0.0	9.55885872371469e-14	0.999999999998852	1.05227375864171e-12	0.0	0.0	1.0	0.0
