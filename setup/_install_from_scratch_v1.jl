@@ -26,6 +26,7 @@ Pkg.add("StatsBase")
 
 # PhyBEARS.jl dependencies
 Pkg.add("Interpolations")
+Pkg.add("RCall")
 Pkg.add("Combinatorics")
 Pkg.add("Dates")
 Pkg.add("DiffEqNoiseProcess")

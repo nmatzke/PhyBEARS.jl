@@ -467,18 +467,18 @@ end
 	# Psychotria tree
 	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl"))
 	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n9_DECj.jl"))
-	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl"))
 	# Add birthRate / deathRate inference
 	include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n13_DECj_WORKS.jl"))
 end
 
 @testset "Check lnLs with Gflow calculations etc." begin
-	include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl")
+	include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed.jl"))
 end
 
 if ((numthreads > 1) == true) || ((num_processes > 1) == true)
 	@testset "Check parallelized lnLs - only runs when nthreads>1, nprocs>1" begin
-		include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed_wParallel.jl")
+		include(expanduser("~/GitHub/PhyBEARS.jl/test/speedtests_Cyrtandra_wExtinction+J_v2speed_wParallel.jl"))
 	end
 end
 
