@@ -1,5 +1,5 @@
 # PhyBEARS.jl
-BioGeoBEARS but faster and new stuff with Julia
+ PhyBEARS.jl - a Julia package for biogeographical state-dependent speciation/extinction (SSE) models using 100-1000+ Ordinary Differential Equations.
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaLang.github.io/PhyBEARS.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaLang.github.io/PhyBEARS.jl/dev)
