@@ -30,13 +30,13 @@ using CSV
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/test/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl"))
 """
 # 
 # """
 # # Run with:
-# include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
+# include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl"))
 # """
 # 
 # @testset "Example" begin
@@ -59,7 +59,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n8_DEC.jl")
 # ON HAWAIIAN PSYCHOTRIA, 16-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
+# source("~/GitHub/PhyBEARS.jl/R_examples/compare_BGB_diversitree_DEC_v1.R")
 # Truth:
 DEC_lnL = -34.54313
 DEC_R_result_branch_lnL = -67.6295
@@ -74,7 +74,7 @@ island_nums = [3, 3, 2, 2, 3, 3, 2, 1, 1, 3, 4, 2, 1, 1, 1, 1, 1, 1, 2]
 
 """
 # Load geog data file
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 julian_dput(geog_df)
 """
@@ -142,7 +142,7 @@ vfft(res.likes_at_each_nodeIndex_branchTop)
 vfft(res.likes_at_each_nodeIndex_branchTop)
 
 # Save results
-results_fn = "/GitHub/PhyBEARS.jl/test/test_results.txt" # lnLs and times
+results_fn = expanduser("~/GitHub/PhyBEARS.jl/test/test_results.txt") # lnLs and times
 
 txtvec = ["test, v5 ancstates", "runtests_ClaSSE_tree_n8_DEC.jl", "Psychotria", "areas:4", "states:16", "DEC+Yule", "1 like", total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, DEC_R_result_total_LnLs1]
 
@@ -283,11 +283,11 @@ print("\n")
 
 @testset "Psychotria ancstates DEC v5" begin
 
-fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt")
 R_ancstates_nodes = numstxt_to_df(fn)
 
 # Has NAs; these are auto-convert to NaN by numstxt_to_df
-fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt")
 R_ancstates_corners = numstxt_to_df(fn)
 
 trdf = prt(tr)
@@ -316,11 +316,11 @@ end # END @testset "Psychotria ancstates DEC" begin
 
 @testset "Psychotria ancstates DEC v7" begin
 
-fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt"
+fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_nodes.txt")
 R_ancstates_nodes = numstxt_to_df(fn)
 
 # Has NAs; these are auto-convert to NaN by numstxt_to_df
-fn = "/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt"
+fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria_DEC_ancstates_corners.txt")
 R_ancstates_corners = numstxt_to_df(fn)
 
 trdf = prt(tr)

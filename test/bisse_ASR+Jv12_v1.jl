@@ -25,8 +25,8 @@ using PhyBEARS.Uppass
 
 
 """
-cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/test/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl"))
 """
 
 
@@ -49,7 +49,7 @@ include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
 # (1 branch, pure birth, no Q transitions, branchlength=1)
 #
 # R code based on
-# source("/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.R")
+# source("~/GitHub/PhyBEARS.jl/test/bisse_ASR_v1.R")
 
 # Truth:
 # > LnLs1
@@ -57,7 +57,7 @@ include("/GitHub/PhyBEARS.jl/test/bisse_ASR+Jv12_v1.jl")
 # > LnLs1t
 # [1] -7.464283 -6.670978
 
-wd = "/GitHub/PhyBEARS.jl/test/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/test/")
 cd(wd)
 
 
@@ -341,7 +341,7 @@ R_sum_lq_nodes = R_result_sum_log_computed_likelihoods_at_each_node_x_lambda
 
 
 
-print("\nDifferences between Julia and R lnLs for\n/GitHub/PhyBEARS.jl/test/BiSSE_branchlikes_w_MLE_v6_WORKING.R\n calculation:\n")
+print("\nDifferences between Julia and R lnLs for\n~/GitHub/PhyBEARS.jl/test/BiSSE_branchlikes_w_MLE_v6_WORKING.R\n calculation:\n")
 print("R_result_branch_lnL (lq) - Julia_sum_lq: ")
 print(R_result_branch_lnL - Julia_sum_lq)
 print("\n")
@@ -402,7 +402,7 @@ solver_options.reltol = 1e-6
 solver_options.save_everystep = true  # This has to be true to calculate Es, as this is a continuous interpolator
 
 
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 tspan = (anctime, dectime)
 
 u0 = right_likes
@@ -433,7 +433,7 @@ uppass_likes ./ sum(uppass_likes)
 # 0.9947838697767504
 
 
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 
 ctable1 = prtCp(p_Ds_v5)
 make_ctable_single_events(ctable1)
@@ -473,7 +473,7 @@ asr_at_node7[1] - julia_bisseJ_Rnode7_01[1]
 asr_at_node7[2] - julia_bisseJ_Rnode7_01[2]
 
 
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 u0 = left_likes
 prob_Ds_v5 = DifferentialEquations.ODEProblem(calcDs_4states2D, u0, tspan, p_Ds_v5);
 sol_Ds_v5 = solve(prob_Ds_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
@@ -499,7 +499,7 @@ uppass_likes ./ sum(uppass_likes)
 #######################################################
 
 # v5 algorithm
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 R_order = sort(trdf, :Rnodenums).nodeIndex
 p_Ds_v7 = p_Ds_v5;
 tmpnode = 6
@@ -576,7 +576,7 @@ Julia_bisse_anc_estimates .- R_bisse_anc_estimates
 
 
 # v7 algorithm
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 R_order = sort(trdf, :Rnodenums).nodeIndex
 p_Ds_v7 = p_Ds_v5;
 uppass_ancstates_v7!(res, trdf, p_Ds_v7, solver_options; use_Cijk_rates_t=false)
@@ -626,7 +626,7 @@ Julia_bisse_anc_estimates .- Julia_bisseJ_anc_estimates
 
 
 # v12 algorithm
-#include("/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl")
+#include(expanduser("~/GitHub/PhyBEARS.jl/notes/nodeOp_Cmat_uppass_v12.jl"))
 R_order = sort(trdf, :Rnodenums).nodeIndex
 uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=true)
 rn(res)

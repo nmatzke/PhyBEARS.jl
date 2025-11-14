@@ -21,7 +21,7 @@ using PhyBEARS.Uppass
 # 
 """
 # Run with:
-include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl"))
 """
 # 
 # @testset "Example" begin
@@ -46,7 +46,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_treeorang.jl")
 # (1 branch, pure birth, no Q transitions, branchlength=1)
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/R_examples/_compare_ClaSSE_calcs_v3_compare2julia.R")
+# source("~/GitHub/PhyBEARS.jl/R_examples/_compare_ClaSSE_calcs_v3_compare2julia.R")
 # Truth:
 DEC_R_result_branch_lnL = -9.164509
 DEC_R_result_total_LnLs1 = -12.609029
@@ -57,7 +57,7 @@ DEC_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -19.43301
 
 tr = readTopology("(((chimp:1,human:1):1,gorilla:2):1,orang:3);")
 
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/treeorang.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/data/treeorang.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 in_params = (birthRate=0.2, deathRate=0.1, d_val=0.0, e_val=0.0, a_val=0.0, j_val=0.0)

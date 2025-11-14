@@ -35,13 +35,13 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/test/")
-include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/test/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl"))
 """
 # 
 # """
 # # Run with:
-# include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl")
+# include(expanduser("~/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj.jl"))
 # """
 # 
 # @testset "Example" begin
@@ -64,7 +64,7 @@ include("/GitHub/PhyBEARS.jl/test/runtests_ClaSSE_tree_n12_DECj_first_ML_inf.jl"
 # ON HAWAIIAN PSYCHOTRIA, 16-STATE DEC MODEL
 #
 # Run with:
-# source("/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
+# source("~/GitHub/PhyBEARS.jl/Rsrc/compare_BGB_diversitree_DEC+J_v1.R")
 # Truth:
 DEC_lnL = -34.54313;
 DEC_R_result_branch_lnL = -67.6295;
@@ -84,7 +84,7 @@ DECj_R_result_sum_log_computed_likelihoods_at_each_node_x_lambda = -96.34151;
 
 # Island numbers (KOMH = 1234) in Rnodenums order:
 #island_nums = [3, 3, 2, 2, 3, 3, 2, 1, 1, 3, 4, 2, 1, 1, 1, 1, 1, 1, 2]
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Psychotria tree
