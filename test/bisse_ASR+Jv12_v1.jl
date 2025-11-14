@@ -176,7 +176,7 @@ prob_Es_v5 = DifferentialEquations.ODEProblem(parameterized_ClaSSE_Es_v5, p_Ds_v
 # This solution is a linear interpolator
 sol_Es_v5 = solve(prob_Es_v5, solver_options.solver, save_everystep=solver_options.save_everystep, abstol=solver_options.abstol, reltol=solver_options.reltol);
 Es_interpolator = sol_Es_v5;
-#p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, sol_Es_v5=sol_Es_v5);
+p_Ds_v5 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, sol_Es_v5=sol_Es_v5);
 
 p_Ds_v7 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, sol_Es_v5=sol_Es_v5);
 
@@ -917,9 +917,10 @@ sol_Es_v12 = solve(prob_Es_v12, solver_options.solver, save_everystep=solver_opt
 p = p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, p_TFs=p_Es_v12.p_TFs, uE=p_Es_v12.uE, terms=p_Es_v12.terms, setup=p_Es_v12.setup, states_as_areas_lists=p_Es_v12.states_as_areas_lists, use_distances=p_Es_v12.use_distances, bmo=p_Es_v12.bmo, interpolators=p_Es_v12.interpolators, sol_Es_v12=sol_Es_v12);
 
 rn(p_Ds_v12.interpolators)
-p_Ds_v12.interpolators.Q_vals_interpolator[seq(0.0, 5.0, 0.5)]
-p_Ds_v12.interpolators.C_rates_interpolator[seq(0.0, 5.0, 0.5)]
-p_Ds_v12.interpolators.mu_vals_interpolator[seq(0.0, 5.0, 0.5)]
+p_Es_v12.interpolators.Q_vals_interpolator
+p_Ds_v12.interpolators.Q_vals_interpolator.(seq(0.0, 5.0, 0.5))
+p_Ds_v12.interpolators.C_rates_interpolator.(seq(0.0, 5.0, 0.5))
+p_Ds_v12.interpolators.mu_vals_interpolator.(seq(0.0, 5.0, 0.5))
 p_Ds_v12.params.mu_vals_t
 p_Ds_v7.params.mu_vals
 
