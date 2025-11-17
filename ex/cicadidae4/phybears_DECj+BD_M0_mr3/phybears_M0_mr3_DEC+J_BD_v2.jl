@@ -22,18 +22,18 @@ using PhyBEARS.Uppass
 
 """
 # Run with:
-cd("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/")
-include("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/phybears_M0_mr3_DEC+J_BD_v2.jl")
+cd(expanduser("~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/"))
+include(expanduser("~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/phybears_M0_mr3_DEC+J_BD_v2.jl"))
 """
 
-setwd("/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/")
+setwd(expanduser("~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/"))
 
 # Input geography
-lgdata_fn = "/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/geog.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/geog.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Input tree
-trfn = "/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/tree.newick"
+trfn = expanduser("~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/tree.newick")
 tr = readTopology(trfn)
 trdf = prt(tr)
 
@@ -206,9 +206,9 @@ library(ape)
 library(cladoRcpp)
 library(diversitree)
 library(BioGeoBEARS)
-wd = "/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/"  # CHANGE THIS
+wd = "~/GitHub/PhyBEARS.jl/ex/cicadidae4/phybears_DECj+BD_M0_mr3/"  # CHANGE THIS
 setwd(wd)
-sourceall("/GitHub/PhyBEARS.jl/Rsrc/")
+sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
 res = PhyBEARS_res_to_BGB_res(outfns=NaN)
 resDECj = res  # CHANGE THIS
 results_object = res

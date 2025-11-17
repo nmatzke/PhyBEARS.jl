@@ -46,7 +46,7 @@ Distributed.nprocs()
 numthreads = Base.Threads.nthreads()
 
 # Load files
-lgdata_fn = "/GitHub/PhyBEARS.jl/data/Psychotria_geog.data"
+lgdata_fn = expanduser("~/GitHub/PhyBEARS.jl/data/Psychotria/Psychotria_geog.data")
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn)
 
 # Psychotria tree
@@ -67,7 +67,7 @@ numareas = Rncol(geog_df)-1
 #inputs = ModelLikes.setup_DEC_SSE(numareas, tr; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, in_params=in_params)
 root_age_mult=1.5; max_range_size=NaN; include_null_range=false; max_range_size=NaN
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=4, include_null_range=true, bmo=bmo);
-(setup, res, trdf, bmo, solver_options, p_Es_v5, Es_tspan) = inputs;
+(setup, res, trdf, bmo, files, solver_options, p_Es_v5, Es_tspan) = inputs;
 
 # Look at the anagenetic (Q) and cladogenetic (C) tables/dataframes
 prtQp(p_Es_v5)
@@ -86,15 +86,17 @@ Es_interpolator = sol_Es_v5;
 p_Ds_v5 = (n=p_Es_v5.n, params=p_Es_v5.params, p_indices=p_Es_v5.p_indices, p_TFs=p_Es_v5.p_TFs, uE=p_Es_v5.uE, terms=p_Es_v5.terms, sol_Es_v5=sol_Es_v5);
 
 # Do downpass, method v5
+(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v5!(res; trdf=trdf, p_Ds_v5=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
+# Do downpass, method v7
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^5, return_lnLs=true)
 
 # Do downpass, method v7
-solver_options=inputs.solver_options; max_iterations=10^6; return_lnLs=true; printlevel=1
-(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_parallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
+#solver_options=inputs.solver_options; max_iterations=10^6; return_lnLs=true; printlevel=1
+#(total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_parallel_ClaSSE_v7!(res; trdf=trdf, p_Ds_v7=p_Ds_v5, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
 
 
-
+setup.bmo_rows
 
 
 #######################################################
@@ -108,7 +110,7 @@ bmo.est[bmo.rownames .== "d"] .= 0.03505038
 bmo.est[bmo.rownames .== "e"] .= 0.02832370
 bmo.est[bmo.rownames .== "a"] .= 0.0
 bmo.est[bmo.rownames .== "j"] .= 0.0
-bmo.est[:] = bmo_updater_v1(bmo) # works
+bmo.est[:] = bmo_updater_v2(bmo, setup.bmo_rows) # works
 
 #
 inputs = ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
