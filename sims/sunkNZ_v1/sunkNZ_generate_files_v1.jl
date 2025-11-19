@@ -178,7 +178,8 @@ round.(res.normlikes_at_each_nodeIndex_branchTop[tr.root]; digits=3)
 
 
 # Install modified "castor" package in R
-# install.packages(pkgs="/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
+# install.packages(c('naturalsort', 'RSpectra'))
+# install.packages(pkgs="~/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
 
 # Write model out to text files that can be read in to simulator
 geog_interpolator_times = parse_times_fn(files.times_fn)

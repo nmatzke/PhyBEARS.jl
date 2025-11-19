@@ -1,0 +1,19 @@
+Package: castor
+Type: Package
+Title: Efficient Phylogenetics on Large Trees
+Version: 1.7.2.000004
+Date: 2022-07-22
+Author: Stilianos Louca; minors modification by Nicholas J. Matzke to add joint cladogenetic range inheritance to dsse_simulate2() and tdsse_simulate2().
+Maintainer: Stilianos Louca <louca@zoology.ubc.ca>
+Description: Efficient phylogenetic analyses on massive phylogenies comprising up to millions of tips. Functions include pruning, rerooting, calculation of most-recent common ancestors, calculating distances from the tree root and calculating pairwise distances. Calculation of phylogenetic signal and mean trait depth (trait conservatism), ancestral state reconstruction and hidden character prediction of discrete characters, simulating and fitting models of trait evolution, fitting and simulating diversification models, dating trees, comparing trees, and reading/writing trees in Newick format. Citation: Louca, Stilianos and Doebeli, Michael (2017) <doi:10.1093/bioinformatics/btx701>.
+License: GPL (>= 2)
+Depends: Rcpp (>= 0.12.10)
+Imports: parallel, naturalsort, stats, Matrix, RSpectra
+Suggests: nloptr
+SystemRequirements: C++11
+LinkingTo: Rcpp
+RoxygenNote: 7.1.2.000004
+NeedsCompilation: yes
+Packaged: 2022-07-22 03:59:33 UTC; nmat471
+Repository: GitHub
+Date/Publication: 2022-07-22 11:23:01 UTC

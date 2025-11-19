@@ -1,12 +1,23 @@
 library(cladoRcpp)
 library(BioGeoBEARS)
 library(ape)
+
+# modified version of castor
+
+# Install modified "castor" package in R
+install='
+install.packages(c('naturalsort', 'RSpectra'))
+R CMD install ~/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz
+'
+# install.packages(pkgs="~/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz", lib="/Library/Frameworks/R.framework/Resources/library/", repos=NULL, type="source")
+
+# install.packages("~/GitHub/PhyBEARS.jl/simulator/castor_1.7.2.000004.tar.gz
 library(castor)
 
 # for: reorder_castor_sim_to_default_ape_node_order(simulation)
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+wd = "~/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
 setwd(wd)
 simfns = c("setup_df.txt",
 "timepoints.txt", 
@@ -258,7 +269,7 @@ simulation = simulate_tdsse2( Nstates = numstates,
 simulation
 
 
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
 # Check for successful simulation
 if (simulation$success == TRUE)

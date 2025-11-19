@@ -1,0 +1,9 @@
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Article",
+	journal = "Bioinformatics",
+         title = "Efficient comparative phylogenetics on large trees",
+         author = c( person("Stilianos", "Louca"),
+                     person("Michael", "Doebeli")),
+         DOI = "10.1093/bioinformatics/btx701",
+         year = "2017")
