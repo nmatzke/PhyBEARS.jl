@@ -451,5 +451,5 @@ tiplabels(text=statetxt_by_node3[tipnums], tip=tipnums, bg=cols_byNode3[tipnums]
 nodelabels(text=statetxt_by_node3[nodenums], node=nodenums, bg=cols_byNode3[nodenums])
 
 
-plot_castor_simulation(simulation2, areas=2, max_range_size=2, include_null_range=TRUE)
+#plot_castor_simulation(simulation2, areas=2, max_range_size=2, include_null_range=TRUE)
 

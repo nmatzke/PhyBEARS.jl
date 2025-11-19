@@ -16,15 +16,31 @@ using LinearAlgebra  	# for "I" in: Matrix{Float64}(I, 2, 2)
 using Sundials				# for CVODE_BDF
 using Test						# for @test, @testset
 using PhyloBits
-using DataFrames
+using PhyloBits.PNtypes						# Types: Tree, Node, Edge etc.
+using PhyloBits.PNmanipulateNet
+using PhyloBits.PNreadwrite				# Helper functions
+using PhyloBits.PNreadwrite 			# Reading and writing trees; readTopology
+using PhyloBits.PNdescriptive			# show() commands for trees etc.
+using PhyloBits.TrUtils						# basic utility functions, R-like functions
+using PhyloBits.TreeTable					# for prt() tree tables (tree dataframes, using DataFrames
 using CSV
-
+using DifferentialEquations
 using PhyBEARS
 #using PhyBEARS.Parsers
+using PhyBEARS.BGExample
+using PhyBEARS.TimeDep
+using PhyBEARS.MaxentInterp
+using PhyBEARS.StateSpace
+using PhyBEARS.SSEs
+using PhyBEARS.Parsers
+using PhyBEARS.TreePass
+using PhyBEARS.Flow
+using PhyBEARS.Gmaps
+using PhyBEARS.Optimizers
 
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/"
+wd = expanduser("~/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/")
 cd(wd)
 
 # This simulation has 148 living species
@@ -40,7 +56,7 @@ numareas = Rncol(geog_df)-1
 max_range_size = numareas
 n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 
-# DEC-type SSE model on Hawaiian Psychotria
+# DEC-type SSE model on simulated NZ/ Australia data
 # We are setting "j" to 0.0, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
 #bmo.type[bmo.rownames .== "j"] .= "free";
@@ -50,7 +66,7 @@ bmo.est[bmo.rownames .== "d"] .= 0.034;
 bmo.est[bmo.rownames .== "e"] .= 0.028;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
 bmo.est[bmo.rownames .== "j"] .= 0.1;
-bmo.est[bmo.rownames .== "u"] .= -1.0;
+bmo.est[bmo.rownames .== "u"] .= -1.0; # extinction_rate = base_rate * area^u
 bmo.min[bmo.rownames .== "u"] .= -2.5;
 bmo.max[bmo.rownames .== "u"] .= 0.0;
 
@@ -63,7 +79,7 @@ bmo.type[bmo.rownames .== "birthRate"] .= "free"
 bmo.type[bmo.rownames .== "deathRate"] .= "free"
 
 
-bmo.est .= bmo_updater_v1(bmo);
+#bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=include_null_range, bmo=bmo);
@@ -231,9 +247,9 @@ library(ape)
 library(castor)
 
 # for: reorder_castor_sim_to_default_ape_node_order(simulation)
-source("/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-wd = "/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/"
+wd = "~/GitHub/PhyBEARS.jl/sims/sunkNZ_v1/"
 setwd(wd)
 simfns = c("setup_df.txt",
 "timepoints.txt", 

@@ -5,6 +5,9 @@ library(castor)
 
 source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
+wd = "~/GitHub/PhyBEARS.jl/simulator/examples/ex4/"
+setwd(wd)
+
 # Set the random number seed, to make it repeatable
 set.seed(54321)
 
@@ -175,7 +178,7 @@ for (i in 1:length(time_grid))
 
 
 parameters = list(birth_rates         = 0.3,
-                  death_rates         = 0.0,
+                  death_rates         = 0.15,
                   transition_matrix_A = A,
                   transition_matrix_C = transition_matrix_C_array,
                   transition_table_indices_C = transition_table_indices_C,
@@ -199,7 +202,7 @@ simulation$Ntransitions_C
 # Helper functions for castor
 source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
 
-wd = "~/GitHub/PhyBEARS.jl/simulator/examples/ex1/"
+wd = "~/GitHub/PhyBEARS.jl/simulator/examples/ex4/"
 setwd(wd)
 
 write_out_original_castor_simfiles(simulation, wd, fn="rawsim")
@@ -224,4 +227,17 @@ write_out_reordered_castor_simfiles(simulation2, wd, area_names=c("A","B","C","D
 
 # Look at the files in Finder
 system(paste0("open ", wd))
+
+
+
+#######################################################
+# Plots
+#######################################################
+cols_byNode = plot_castor_simulation_LIVING(simulation=simulation2, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE, tip_age_tolerance=1e-6)
+
+cols_byNode = plot_castor_simulation(simulation=simulation2, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE)
+
+
+
+
 
