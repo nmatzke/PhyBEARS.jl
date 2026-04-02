@@ -31,7 +31,7 @@ cd(wd)
 trfn = "tree.newick"
 tr1 = readTopology(trfn)
 trdf = prt(tr);
-oldest_possible_age = 78
+oldest_possible_age = 150
 
 lgdata_fn = "geog.data"
 geog_df = Parsers.getranges_from_LagrangePHYLIP(lgdata_fn);
@@ -44,16 +44,16 @@ n = numstates_from_numareas(numareas, max_range_size, include_null_range)
 # We are setting "j" to 0.0, for now -- so, no jump dispersal
 bmo = construct_BioGeoBEARS_model_object();
 #bmo.type[bmo.rownames .== "j"] .= "free";
-bmo.est[bmo.rownames .== "birthRate"] .= ML_yule_birthRate(tr1);
+bmo.est[bmo.rownames .== "birthRate"] .= 0.5*ML_yule_birthRate(tr1);
 bmo.est[bmo.rownames .== "deathRate"] .= 0.0001;
 bmo.est[bmo.rownames .== "d"] .= 0.001;
 bmo.est[bmo.rownames .== "e"] .= 0.0001;
 bmo.est[bmo.rownames .== "a"] .= 0.0;
-bmo.est[bmo.rownames .== "j"] .= 0.1;
-bmo.est[bmo.rownames .== "u"] .= 0.0001;
-bmo.max[bmo.rownames .== "u"] .= 2.5;
-bmo.min[bmo.rownames .== "u"] .= 0.0;
-bmo.est[bmo.rownames .== "x"] .= -0.0001;
+bmo.est[bmo.rownames .== "j"] .= 0.01;
+bmo.est[bmo.rownames .== "u"] .= 0.0;
+bmo.min[bmo.rownames .== "u"] .= -2.5;
+bmo.max[bmo.rownames .== "u"] .= 0.0;
+bmo.est[bmo.rownames .== "x"] .= 0.0;
 bmo.min[bmo.rownames .== "x"] .= -2.5;
 bmo.max[bmo.rownames .== "x"] .= 0.0;
 
@@ -116,6 +116,23 @@ parnames = bmo.rownames[bmo.type .== "free"]
 func = x -> func_to_optimize_v12(x, parnames, inputs, p_Ds_v12; returnval="lnL", printlevel=1)
 #pars = [0.04, 0.001, -0.0001, 0.0001, 0.1, bmo.est[bmo.rownames .== "birthRate"][1]]
 
+
+#######################################################
+# NJM 2026-04-02: I get errors here or after a few NLopt steps.
+# I suspect that, maybe, having the distances and areas be in metric units, 
+# rather than scaled so that the maximum is 1.0, may be the culprit.
+#
+# Ie if a distance is 1000 km, that's 1,000,000 m, multipling a rate by
+# 1000 or 1 million might make the ODE solution freak out as the likelihood gets 
+# so low there is a precision error (or something, I'm guessing).
+#
+# Try re-doing the inference with relative distances & areas in the input files.
+# If that doesn't work, try constraining x and u to narrower and narrow values near 
+# the null (0.0). These work like the MVD & Matzke 2016 article:
+#
+# dispersal_actual = base_dispersal_rate * distance ^ x
+# extinction_actual = base_extinction_rate * area ^ u
+#######################################################
 
 func(pars)
 function func2(pars, dummy_gradient!)
