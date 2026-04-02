@@ -900,6 +900,16 @@ end # END function parse_times_fn(fn)
 # Read distances etc. files to interpolators
 #######################################################
 function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jvals, Carray_kvals, trdf; oldest_possible_age=1000.0, fraction_of_minimum_nonzero_distance=0.5)
+	"""
+	numareas=setup.numareas
+	states_list=setup.states_list
+	v_rows=setup.v_rows
+	Carray_jvals=p.p_indices.Carray_jvals
+	Carray_kvals=p.p_indices.Carray_kvals
+	trdf=trdf
+	oldest_possible_age=1000.0
+	fraction_of_minimum_nonzero_distance=0.5
+	"""
 	
 	if files.distances_fn != ""
 		times = parse_times_fn(files.times_fn)
@@ -921,7 +931,8 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 		# files.manual_dispersal_multipliers_fn
 		TF = length(times) == length(distmats)
 		if TF == false
-			txt = "STOP ERROR in files_to_interpolators(). distances_fn must have the same number of entries as the times_fn file."
+			txt = paste0(["STOP ERROR in files_to_interpolators(). distances_fn must have the same number of entries as the times_fn file. length(times)=", length(times), ", length(distmats)=", length(distmats)])
+			
 			error(txt)
 		end
 		
@@ -1014,7 +1025,7 @@ function files_to_interpolators(files, numareas, states_list, v_rows, Carray_jva
 		area_of_areas = parse_areas_fn(files.area_of_areas_fn)
 		TF = length(times) == length(area_of_areas)
 		if TF == false
-			txt = "STOP ERROR in files_to_interpolators(). area_of_areas_fn must have the same number of entries as the times_fn file."
+			txt = paste0(["STOP ERROR in files_to_interpolators(). area_of_areas_fn must have the same number of entries as the times_fn file. length(times)=", length(times), ", length(area_of_areas)=", length(area_of_areas)])
 			error(txt)
 		end
 
