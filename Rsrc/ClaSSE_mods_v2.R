@@ -1839,21 +1839,43 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	params_table = params_table[,-1]
 	params_table[1:5, 1:6]
 	
-	BioGeoBEARS_model_object = define_BioGeoBEARS_model_object()
+	BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+	BioGeoBEARS_model_object = BioGeoBEARS_run_object$BioGeoBEARS_model_object
+	
+	# Error check - Julia has 0s for inputs.bmo, these should be 0.0001
+	rownames_tmp = c("mx01", "mx01j", "mx01y", "mx01s", "mx01v", "mx01r")
+	TF = params_table[rownames_tmp, "init"] < 0.00001
+	params_table[rownames_tmp, "init"][TF] = 0.0001
+	TF = params_table[rownames_tmp, "est"] < 0.00001
+	params_table[rownames_tmp, "est"][TF] = 0.0001
+	TF = params_table[rownames_tmp, "init"] > 0.99999
+	params_table[rownames_tmp, "init"][TF] = 0.9999
+	TF = params_table[rownames_tmp, "est"] > 0.99999
+	params_table[rownames_tmp, "est"][TF] = 0.9999
+	
 	BioGeoBEARS_model_object@params_table = params_table
-	 
+	
+	
+	# BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table = params_table
+	
 	# Load optim_results
 	optim_result = read.table(outfns[11], header=TRUE, sep="\t", stringsAsFactors=FALSE)
 	#attr(res$optim_result, "class") = c("Julia_NLopt", "data.frame")
 	
-	# Make input_tuple, into lnLs_tuple
+	# Make input_tuple, put into lnLs_tuple
 	source(outfns[12])
 	lnLs_tuple = input_tuple
 	
-	# Makes input_tuple, into res_inputs_tuple
+	# Makes input_tuple, put into res_inputs_tuple
 	source(outfns[13])
 	res_inputs_tuple = input_tuple
 	
+	tmpnames = names(res_inputs_tuple)
+	for (i in 1:length(tmpnames))
+		{
+		BioGeoBEARS_run_object[[tmpnames[i]]] = res_inputs_tuple[[tmpnames[i]]]
+		}
+	BioGeoBEARS_run_object
 	
 	res = list()
 	res$computed_likelihoods_at_each_node = unname(c(computed_likelihoods_at_each_node))
@@ -1867,12 +1889,62 @@ PhyBEARS_res_to_BGB_res <- function(outfns=NaN)
 	res$relative_probs_of_each_state_at_bottom_of_root_branch = relative_probs_of_each_state_at_bottom_of_root_branch
 	res$lnLs = lnLs_tuple
 	res$total_loglikelihood = lnLs_tuple$total_loglikelihood
-	res$inputs = res_inputs_tuple
+	res$inputs = BioGeoBEARS_run_object
 	res$outputs = BioGeoBEARS_model_object
 	res$optim_result = optim_result
-
+	
+	# The filenames for res$inputs are "", they should be NA for the special inputs
+	if (isblank_TF(res$inputs$timesfn) == TRUE)
+		{
+		res$inputs$timesfn = NA
+		}
+	if (isblank_TF(res$inputs$dispersal_multipliers_fn) == TRUE)
+		{
+		res$inputs$dispersal_multipliers_fn = NA
+		}
+	if (isblank_TF(res$inputs$distsfn) == TRUE)
+		{
+		res$inputs$distsfn = NA
+		}
+	if (isblank_TF(res$inputs$envdistsfn) == TRUE)
+		{
+		res$inputs$envdistsfn = NA
+		}
+	if (isblank_TF(res$inputs$area_of_areas_fn) == TRUE)
+		{
+		res$inputs$area_of_areas_fn = NA
+		}
+	if (isblank_TF(res$inputs$detects_fn) == TRUE)
+		{
+		res$inputs$detects_fn = NA
+		}
+	if (isblank_TF(res$inputs$controls_fn) == TRUE)
+		{
+		res$inputs$controls_fn = NA
+		}
+	if (isblank_TF(res$inputs$areas_allowed_fn) == TRUE)
+		{
+		res$inputs$areas_allowed_fn = NA
+		}
+	if (isblank_TF(res$inputs$areas_adjacency_fn) == TRUE)
+		{
+		res$inputs$areas_adjacency_fn = NA
+		}
+	
+	
+	# check:
+	tmp = try(readfiles_BioGeoBEARS_run(res$inputs))
+	if ("try-error" %in% class(tmp))
+		{
+		stoptxt = "STOP ERROR in PhyBEARS_res_to_BGB_res(outfns): readfiles_BioGeoBEARS_run(res$inputs) gave an error. This may mean that e.g. one of your input files is '' rather than NA. This is not caught by an is.character() check. Check res$inputs$areas_allowed_fn and similar inputs to make sure they either specify exisiting files, or are NA to indicate no file specified."
+		cat("\n")
+		cat(stoptxt)
+		cat("\n")
+		stop(stoptxt)
+		} # END if ("try-error" %in% class(tmp))
+	
 	return(res)
-	}
+	} # END PhyBEARS_res_to_BGB_res(outfns)
 
 
 
