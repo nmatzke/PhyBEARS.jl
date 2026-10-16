@@ -21,8 +21,8 @@ using DataFrames
 using CSV
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
-cd(wd)
+wd = "~/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+cd(expanduser(wd))
 
 # This simulation has 50 living species
 trfn = "tree.newick"
@@ -61,9 +61,9 @@ inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult
 #######################################################
 # Read in and parse distances and area-of-areas
 #######################################################
-files.times_fn = "/GitHub/PhyBEARS.jl/files/v12a_times.txt"
-files.distances_fn = "/GitHub/PhyBEARS.jl/files/v12a_distances.txt"
-files.area_of_areas_fn = "/GitHub/PhyBEARS.jl/files/v12a_area_of_areas.txt"
+files.times_fn = "v12a_times.txt"
+files.distances_fn = "v12a_distances.txt"
+files.area_of_areas_fn = "v12a_area_of_areas.txt"
 
 # Construct interpolators, times-at-which-to-interpolate QC
 p = p_Ds_v5
