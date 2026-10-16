@@ -138,3 +138,75 @@ p_Ds_v12 = (n=p_Es_v12.n, params=p_Es_v12.params, p_indices=p_Es_v12.p_indices, 
 # Calculate the Ds, and final log-likelihood etc.
 (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL) = iterative_downpass_nonparallel_ClaSSE_v12!(res; trdf=trdf, p_Ds_v12=p_Ds_v12, solver_options=inputs.solver_options, max_iterations=10^6, return_lnLs=true)
 
+
+
+
+
+
+
+
+
+#######################################################
+# Calculate ancestral range probabilities under the PhyBEARS DEC model,
+# ML parameters
+#######################################################
+
+# (updates the "res" results object)
+PhyBEARS.Uppass.uppass_ancstates_v12!(res, trdf, p_Ds_v12, solver_options; use_Cijk_rates_t=false)
+
+# Output the updated res to a series of .Rdata objects that can be read in R
+#######################################################
+# Ancestral states estimation and plotting
+#######################################################
+tmpres = deepcopy(inputs.res);
+geogfn = lgdata_fn
+lnLs_tuple = (total_calctime_in_sec, iteration_number, Julia_sum_lq, rootstates_lnL, Julia_total_lnLs1, bgb_lnL, total_loglikelihood=bgb_lnL)
+optim_result = build_optim_result(opt, optf, optx, ret)
+juliaRes_to_Rdata(inputs.res, trdf, inputs, lnLs_tuple, optim_result, geogfn, trfn; outwd=getwd(), outfns=NaN)
+tmpres_archive = deepcopy((inputs.res, inputs, lnLs_tuple, optim_result, geogfn, trfn));
+"""
+# Then run, in R:
+"""
+# (NOTE: NO COMMENTS are allowed *after* R commands, in the same line)
+# $ -- This changes the Julia window to an R window
+using RCall
+
+# Load the R string WITHOUT dollar-sign symbols (using pipes instead), then replace
+rstring = """
+library(ape)
+library(cladoRcpp)
+library(diversitree)
+library(BioGeoBEARS)
+wd = "~/GitHub/PhyBEARS.jl/ex/siminf_v12a/"  # CHANGE THIS
+setwd(wd)
+sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
+res = PhyBEARS_res_to_BGB_res(outfns=NaN)
+resDECj = res  # CHANGE THIS
+results_object = res
+
+trfn = res|inputs|trfn				# The pipe characters will be converted to dollar signs
+geogfn = res|inputs|geogfn		# The pipe characters will be converted to dollar signs
+tr = read.tree(trfn)
+tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)
+
+max_range_size = res|inputs|max_range_size
+include_null_range = res|inputs|include_null_range
+
+pdffn = "example_inf_v12a_v4.jl.pdf"  # CHANGE THIS
+pdf(pdffn, height=24, width=9)
+analysis_titletxt ="example_inf_v12a_v4.jl"  # CHANGE THIS
+results_object = res
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
+
+# States
+res1 = plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)
+
+# Pie chart
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"), plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)
+
+dev.off()
+cmdstr = paste("open ", pdffn, sep="")
+system(cmdstr)
+"""
+rstring = replace(rstring, "|"=>"\$") # replacing the pipes
+reval(rstring)
