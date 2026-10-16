@@ -1627,6 +1627,10 @@ function nodeOp_Cmat_uppass_v12!(res, current_nodeIndex, trdf, p_Ds_v12, solver_
 		# If it's a tip node on a super-short branch, treat as a direct ancestor, 
 		# rather than going through the nodeOp_Cmat_get_condprobs(), just
 		# calculate the uppass probabilities directly
+		# 2026-10-16 check
+		Ldownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Left_corner]
+		Rdownpass_likes = res.normlikes_at_each_nodeIndex_branchBot[node_above_Right_corner]
+
 		if (hookTF == true)
 			uppass_lprobs = repeat([0.0], n)
 			uppass_rprobs = repeat([0.0], n)

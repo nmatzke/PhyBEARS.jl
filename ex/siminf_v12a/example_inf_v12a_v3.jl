@@ -21,8 +21,8 @@ using DataFrames
 using CSV
 
 # Change the working directory as needed
-wd = "/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
-cd(wd)
+wd = "~/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+cd(expanduser(wd))
 
 # This simulation has 50 living species
 trfn = "tree.newick"
