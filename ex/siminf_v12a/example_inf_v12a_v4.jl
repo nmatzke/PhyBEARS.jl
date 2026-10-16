@@ -52,7 +52,7 @@ bmo.est[bmo.rownames .== "x"] .= 0.0;
 bmo.est[bmo.rownames .== "xv"] .= 0.1;
 bmo.max[bmo.rownames .== "xv"] .= 10.0;
 
-bmo.est .= bmo_updater_v1(bmo);
+#bmo.est .= bmo_updater_v1(bmo);
 
 # Set up the model
 inputs = PhyBEARS.ModelLikes.setup_DEC_SSE2(numareas, tr, geog_df; root_age_mult=1.5, max_range_size=NaN, include_null_range=true, bmo=bmo);
@@ -67,7 +67,7 @@ files.area_of_areas_fn = "v12a_area_of_areas.txt"
 
 # Construct interpolators, times-at-which-to-interpolate QC
 p = p_Ds_v5
-interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf; oldest_possible_age=100.0);
+interpolators = files_to_interpolators(files, setup.numareas, setup.states_list, setup.v_rows, p.p_indices.Carray_jvals, p.p_indices.Carray_kvals, trdf); #oldest_possible_age=100.0);
 
 p_Es_v12 = (n=p_Ds_v5.n, params=p_Ds_v5.params, p_indices=p_Ds_v5.p_indices, p_TFs=p_Ds_v5.p_TFs, uE=p_Ds_v5.uE, terms=p_Ds_v5.terms, setup=inputs.setup, states_as_areas_lists=inputs.setup.states_list, use_distances=true, bmo=bmo, interpolators=interpolators);
 

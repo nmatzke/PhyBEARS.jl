@@ -1,12 +1,12 @@
 rownames	type	init	min	max	est	note	desc
-d	free	0.01	1.0e-12	4.999999999999	0.06321350941707701	works	anagenesis: rate of 'dispersal' (range expansion)
-e	free	0.01	1.0e-12	4.999999999999	0.0010624589776226578	works	anagenesis: rate of 'extinction' (range contraction)
+d	free	0.01	1.0e-12	4.999999999999	0.07108820582919805	works	anagenesis: rate of 'dispersal' (range expansion)
+e	free	0.01	1.0e-12	4.999999999999	0.0011746042800393844	works	anagenesis: rate of 'extinction' (range contraction)
 a	fixed	0.0	1.0e-12	4.999999999999	0.0	works	anagenesis: rate of range-switching (i.e. for a standard char.)
 b	fixed	1.0	1.0e-12	0.999999999999	1.0	non-stratified only	anagenesis: exponent on branch lengths
-x	free	0.0	-2.5	2.5	-1.0527914141372627	works	exponent on distmat (modifies d, j, a)
+x	free	0.0	-2.5	2.5	-0.9550060462346164	works	exponent on distmat (modifies d, j, a)
 x2	fixed	0.0	-2.5	2.5	0.0	works	exponent on distmat2 (modifies d, j, a)
 x3	fixed	0.0	-2.5	2.5	0.0	works	exponent on distmat3 (modifies d, j, a)
-xv	free	0.0	-2.5	10.0	6.984703035393861	works	exponent on vicariance distance (modifies v_rate)
+xv	free	0.0	-2.5	10.0	6.130671404361917	works	exponent on vicariance distance (modifies v_rate)
 n	fixed	0.0	-10.0	10.0	0.0	works	exponent on environmental distance (modifies d, j, a)
 w	fixed	1.0	-10.0	10.0	1.0	works	exponent on manual dispersal multipliers (modifies d, j, a)
 u	fixed	0.0	-1.0	2.5	0.0	works	anagenesis: exponent on extinction risk with area (modifies e)
