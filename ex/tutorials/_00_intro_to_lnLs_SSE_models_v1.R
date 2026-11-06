@@ -45,4 +45,4 @@
 # Example scripts:
 # ~/GitHub/PhyBEARS.jl/simulator/examples/tdsse_example_plus_converter_v1.R
 # ~/GitHub/PhyBEARS.jl/simulator/examples/tdsse_example_plus_converter_v4.R
-
+# (2026-11-06, fixed node labeling after reordering)
