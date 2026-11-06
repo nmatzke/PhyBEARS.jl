@@ -9,7 +9,7 @@ wd = "~/GitHub/PhyBEARS.jl/simulator/examples/ex4/"
 setwd(wd)
 
 # Set the random number seed, to make it repeatable
-set.seed(54321)
+set.seed(13)  # Has some alleged ancestral nulls
 
 time_grid = seq(0,10,0.1) # About halfway through
 A = get_random_mk_transition_matrix(Nstates=4, rate_model="ER", max_rate=0.1)
@@ -208,7 +208,7 @@ setwd(wd)
 write_out_original_castor_simfiles(simulation, wd, fn="rawsim")
 
 # Remove the last tip from the simulation
-simulation2 = remove_last_tip_from_simulation(simulation)
+simulation2 = remove_last_tip_from_simulation_and_reorder(simulation)
 plot(simulation2$tree)
 
 # Write out files with tip 51 removed
@@ -216,27 +216,42 @@ write_out_original_castor_simfiles(simulation2, wd, fn="rawsim_wo_tip51")
 
 # Reorder to be more readable
 # Write out A WHOLE BUNCH OF FILES, e.g. geography etc.
-simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2)
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2, ladderize_LR=NULL)
 
 # External inputs for making geography files etc.
-area_names = c("A","B","C","D")
+area_names = c("A","B")
 states_list = rcpp_areas_list_to_states_list(areas=area_names, maxareas=length(area_names), include_null_range=TRUE)
 
 # Reorder, and also write out the reordered files plus geography etc.
-write_out_reordered_castor_simfiles(simulation2, wd, area_names=c("A","B","C","D"), states_list=states_list)
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B"), states_list=states_list)
 
 # Look at the files in Finder
 system(paste0("open ", wd))
 
 
+plot(simulation$tree)
+nodelabels(simulation$node_states)
+tiplabels(simulation$tip_states)
+
+cols_byNode = plot_castor_simulation(simulation=simulation, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE)
+
 
 #######################################################
 # Plots
 #######################################################
-cols_byNode = plot_castor_simulation_LIVING(simulation=simulation2, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE, tip_age_tolerance=1e-6)
+cols_byNode = plot_castor_simulation_LIVING(simulation=simulation3, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE, tip_age_tolerance=1e-6)
+cols_byNode = plot_castor_simulation(simulation=simulation3, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE)
 
-cols_byNode = plot_castor_simulation(simulation=simulation2, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE)
 
+
+
+#######################################################
+# Ladderize & plot
+#######################################################
+simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2, ladderize_LR="left")
+write_out_reordered_castor_simfiles(simulation3, wd, area_names=c("A","B"), states_list=states_list)
+cols_byNode = plot_castor_simulation_LIVING(simulation=simulation3, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE, tip_age_tolerance=1e-6)
+cols_byNode = plot_castor_simulation(simulation=simulation3, areas=area_names, max_range_size=length(area_names), include_null_range=TRUE)
 
 
 

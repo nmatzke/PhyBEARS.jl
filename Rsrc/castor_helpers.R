@@ -1,73 +1,3 @@
-#######################################################
-# Reorder a castor simulation from e.g. simulate_tdsse2()
-# to the default APE node order
-#
-# Procedure: 
-# 1. prints simulation$tree to a newick file,
-#    then reads it back in
-#
-# 2. Reorders the simulation$tip_states and simulation$node_states to match 
-#
-# 3. Adds simulation$states, to put all the states in one place
-#######################################################
-reorder_castor_sim_to_default_ape_node_order <- function(simulation)
-	{
-	# Make tree table from simulation tree
-	simtree = simulation$tree
-	simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)
-	
-	# Simtree nodes are in date order from the root
-	internal_nodes = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)
-	simulation_nodestate_order_in_prt = order(simtable$node_ht[internal_nodes])
-	simulation_nodestate_order_in_prt
-	
-	# translation table
-	simstate_translation_table = cbind(1:simtree$Nnode, simulation_nodestate_order_in_prt)
-	tmp = simstate_translation_table[order(simstate_translation_table[,2]),]
-	simstates_to_prt_order = tmp[,1]
-	
-	# simtree_nodenums to APE order
-	#match(x=1:simtree$Nnode, table=simtree_nodenums)
-
-	# Write simtree to Newick; read back in to get standard APE newick format
-	newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))
-	# Write tree table for new tree
-	newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)
-
-	match_simtree_in_new2 = match(x=newtable$tipnames, table=simtable$tipnames)
-	match_simtree_in_new2
-
-	match_simtree_in_new2sub_tips = match_simtree_in_new2[match_simtree_in_new2 <= length(simtree$tip.label)]
-	match_simtree_in_new2sub_nodes = match_simtree_in_new2[match_simtree_in_new2 > length(simtree$tip.label)]-length(simtree$tip.label)
-	
-	simstates_OLD = c(as.numeric(simulation$tip_states), as.numeric(simulation$node_states))
-	simstates = c(as.numeric(simulation$tip_states), as.numeric(simulation$node_states[simstates_to_prt_order]))
-
-	simstates
-	simstates[match_simtree_in_new2]
-
-	simulation$node_states
-	simulation$node_states[match_simtree_in_new2sub_nodes]
-	
-	simulation$tip_states
-	simulation$tip_states[match_simtree_in_new2sub_tips]
-	
-	# Re-save the re-ordered simulation
-	simulation2 = simulation
-	simulation2$tree = newtree
-	simulation2$node_states = simulation$node_states[match_simtree_in_new2sub_nodes]
-	simulation2$tip_states = simulation$tip_states[match_simtree_in_new2sub_tips]
-	
-	# BAD: RE-LABELS TIPS
-	#names(simulation2$tip_states) = 1:length(simulation2$tip_states)
-	names(simulation2$tip_states)
-	
-	# Same thing twice
-	simulation2$states = simstates[match_simtree_in_new2]
-	simulation2$simstates = c(unname(simulation2$tip_states), simulation2$node_states)
-	return(simulation2)
-	} # END reorder_castor_sim_to_default_ape_node_order
-
 
 
 
@@ -129,17 +59,16 @@ plot_castor_simulation <- function(simulation, areas=c("A","B"), max_range_size=
 	# Plot the original simtree
 	tipnums = 1:length(simtree$tip.label)
 	nodenums = (length(simtree$tip.label)+1):(length(simtree$tip.label)+simtree$Nnode)
+	nodenums_in_nodelabel_ordering = 1:length(nodenums)
 	plot(simtree, show.tip.label=FALSE)
 	axisPhylo()
 	mtext(text="Millions of years ago (Mega-annum, Ma)", side=1, line=2.5)
 	title("Plotting simtree & states from simulate_tdsse2()")
 	tiplabels(text=statetxt_by_node[tipnums], tip=tipnums, bg=cols_byNode[tipnums])
-	nodelabels(text=statetxt_by_node[nodenums], node=nodenums, bg=cols_byNode[nodenums])
+	nodelabels(text=statetxt_by_node[nodenums], bg=cols_byNode[nodenums])
 
 	return(cols_byNode)
 	} # END plot_castor_simulation
-
-
 
 
 
@@ -157,6 +86,8 @@ plot_castor_simulation_LIVING <- function(simulation, areas=c("A","B"), max_rang
 	areas = c("A", "B")
 	max_range_size = 2
 	include_null_range = TRUE
+	
+	
 	'
 	simtree = simulation$tree
 	simstates = c(unname(simulation$tip_states), simulation$node_states)
@@ -711,9 +642,95 @@ get_root_age <- function(tr)
 	}
 	
 		
+remove_tiplabel_from_internal_node_tipname <- function(tipnames_internal_node, tiplabel_to_remove)
+	{
+	ex='
+	tipnames_internal_node = "39,50,51"
+	tiplabel_to_remove = 51
+	remove_tiplabel_from_internal_node_tipname(tipnames_internal_node, tiplabel_to_remove)
+	
+	'
+	words = strsplit(x=tipnames_internal_node, split=",")[[1]]
+	words = words[words != tiplabel_to_remove]
+	new_tipnames_internal_node = paste0(words, collapse=",")
+	new_tipnames_internal_node
+	return(new_tipnames_internal_node)	
+	} # END remove_tiplabe_from_internal_node_tipname <- function(tipnames_internal_node, tiplabel_to_remove)
+
+remove_tiplabel_from_internal_node_tipnames <- function(tipnames_internal_nodes, tiplabel_to_remove)
+	{
+	ex = '
+	tipnames_internal_nodes = c("39,50,51",
+	"46,47",
+	"40,41",
+	"26,29,30",
+	"35,36",
+	"25,42,43",
+	"42,43",
+	"29,30",
+	"32,48,49",
+	"48,49",
+	"50,51")
+	
+	tiplabel_to_remove = 51
+	
+	remove_tiplabel_from_internal_node_tipnames(tipnames_internal_nodes, tiplabel_to_remove)
+	'
+	
+	new_tipnames_internal_nodes = sapply(X=tipnames_internal_nodes, FUN=remove_tiplabel_from_internal_node_tipname, tiplabel_to_remove=tiplabel_to_remove)
+	new_tipnames_internal_nodes
+	new_tipnames_internal_nodes = unname(new_tipnames_internal_nodes)
+	new_tipnames_internal_nodes
+	
+	return(new_tipnames_internal_nodes)
+	}
 
 
 
+# This only drops the relevant tip and internal node, it doesn't
+# renumber anything
+drop_tip_from_prt_table <- function(orig_simtree_table, tiplabel_to_remove)
+	{
+	ex='
+	simulation = example_51tip_tdsse2_sim_original_ordering()
+	orig_simtree_table = prt(simulation$tree)
+	tiplabel_to_remove = 51
+	
+	simtree_table_with_last_tip_dropped = drop_tip_from_prt_table(orig_simtree_table, tiplabel_to_remove)
+	'
+	
+	simtree_table_with_last_tip_dropped = orig_simtree_table
+	
+	tiprow_TF = orig_simtree_table$tipnames == tipname_to_drop
+	tiprow = (1:nrow(orig_simtree_table))[tiprow_TF]
+	tiprow
+	
+	# Remove from tiplabels
+	nodenums = 1:nrow(orig_simtree_table)
+	tipnums = nodenums[orig_simtree_table$node.type == "tip"]
+	tipnums
+	internal_nodenums = nodenums[orig_simtree_table$node.type != "tip"]
+	internal_nodenums
+	
+	# Edit the tipnames column to remove e.g. ",51"
+	tipnames_internal_nodes = orig_simtree_table$tipnames[internal_nodenums]
+	new_tipnames_internal_nodes = remove_tiplabel_from_internal_node_tipnames(tipnames_internal_nodes, tiplabel_to_remove)
+	simtree_table_with_last_tip_dropped$tipnames[internal_nodenums] = new_tipnames_internal_nodes
+	
+	# Remove the internal node holding the tip
+	daughters_of_internal_nodes = orig_simtree_table$daughter_nds[internal_nodenums]
+	daughers_of_each_internal_node_matrix = matrix(unlist(daughters_of_internal_nodes), ncol=2, byrow=TRUE)
+	dropTF = (rowSums(daughers_of_each_internal_node_matrix == tiprow)) == 1
+	row_to_drop = internal_nodenums[dropTF]
+	row_to_drop
+	
+	simtree_table_with_last_tip_dropped = simtree_table_with_last_tip_dropped[-row_to_drop,]
+	
+	# Remove the tipnode row (which is before the above)
+	simtree_table_with_last_tip_dropped = simtree_table_with_last_tip_dropped[-tiprow,]
+	
+	return(simtree_table_with_last_tip_dropped)
+	} # END drop_tip_from_prt_table <- function(orig_simtree_table, tipname_to_drop)
 
 
 
@@ -726,8 +743,22 @@ get_root_age <- function(tr)
 # (assumes simulation object has been reordered)
 # simulation2 = reorder_castor_sim_to_default_ape_node_order(simulation)
 
-remove_last_tip_from_simulation <- function(simulation)
+remove_last_tip_from_simulation_and_reorder <- function(simulation)
 	{
+	ex='
+	simulation = example_51tip_tdsse2_sim_original_ordering()
+	plot(simulation$tree)
+	nodelabels(simulation$node_states)
+	tiplabels(simulation$tip_states)
+	
+	simulation2 = remove_last_tip_from_simulation_and_reorder(simulation)
+	plot(simulation2$tree)
+	tiplabels(simulation2$tip_states)
+	nodelabels(simulation2$node_states)
+	'
+
+	orig_simtree_table = prt(simulation$tree)
+
 	# Node times
 	last_tips_TF = simulation$birth_times == simulation$final_time
 
@@ -757,25 +788,199 @@ remove_last_tip_from_simulation <- function(simulation)
 	highest_nodenum = nodenums[highest_node_TF]
 	nodenums_1based_to_drop = nodenums_1based[highest_node_TF]
 	simulation$node_states = simulation$node_states[-nodenums_1based_to_drop]
-	
-	# Drop last tip
-	tipname_to_drop = simulation$tree$tip.label[trtable$daughter_nds[highest_nodenum][[1]][2]]
-	simulation$tree = drop.tip(simulation$tree, tip=tipname_to_drop)
+
+	# Make a prt table with the dropped tip
+	# but not renumbered)
+	tiplabel_to_remove = simulation$tree$tip.label[trtable$daughter_nds[highest_nodenum][[1]][2]]
+	simtree_table_with_last_tip_dropped = drop_tip_from_prt_table(orig_simtree_table, tiplabel_to_remove)
+
+	# Matching tipname to drop
+	tipname_to_drop_TF = names(simulation$tip_states) == tiplabel_to_remove
+	tipname_to_drop = names(simulation$tip_states)[tipname_to_drop_TF == TRUE]
+	simulation$tip_states = simulation$tip_states[tipname_to_drop_TF == FALSE] # tipnames to keep
 
 	# Drop last birth time and tip state
 	simulation$birth_times = simulation$birth_times[last_tips_TF==FALSE]
+
+	# Drop last tip FROM TREE OBJECT
+	# NOTE: This will reorder the tree, so you have to reorder the node states etc.
+	simulation$tree = drop.tip(simulation$tree, tip=tiplabel_to_remove)
+	simulation$tree = read.tree(file="", text=write.tree(simulation$tree, file=""))
 	
-	# Matching tipname to drop
-	tipname_to_drop_TF = names(simulation$tip_states) == tipname_to_drop
-	simulation$tip_states = simulation$tip_states[tipname_to_drop_TF == FALSE]
+	# Reorder states to match dropped-tip tree
+	simtree_table = prt(simulation$tree)
+	convert_old_trtable_wDropped_tip_to_reordered_tree = match(x=simtree_table$tipnames, table=simtree_table_with_last_tip_dropped$tipnames)
+	convert_old_trtable_wDropped_tip_to_reordered_tree
+	
+	tipnums = 1:length(simulation$tree$tip.label)
+	nodenums = (length(simulation$tree$tip.label)+1):(length(simulation$tree$tip.label)+simulation$tree$Nnode)
+	nodenums_1based = 1:simulation$tree$Nnode
+	convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums = convert_old_trtable_wDropped_tip_to_reordered_tree[nodenums] - length(tipnums)
+	convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums
+	
+	simulation$node_states
+	simulation$node_states[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums]
+	
+	# Doesn't work!
+	#plot(simulation$tree)
+	#tiplabels(simulation$tip_states)
+	#nodelabels(simulation$node_states)
 
-	# Drop last node - OLD
-	# simulation$node_states = simulation$node_states[-length(simulation$node_states)]
-
+	# Works!
+	plot_cmds='
+	plot(simulation$tree)
+	tiplabels(simulation$tip_states)
+	nodelabels(simulation$node_states[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums])
+	'
+	
+	simulation$node_states = simulation$node_states[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums]
+	simulation$tip_states = simulation$tip_states[convert_old_trtable_wDropped_tip_to_reordered_tree[tipnums]]
+	simulation$birth_times = simulation$birth_times[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums]
+	
 	return(simulation)
-	}
+	} # END remove_last_tip_from_simulation_and_reorder <- function(simulation)
 
+
+
+#######################################################
+# Reorder a castor simulation from e.g. simulate_tdsse2()
+# to the default APE node order
+#
+# Procedure: 
+# 1. prints simulation$tree to a newick file,
+#    then reads it back in
+#
+# 2. Reorders the simulation$tip_states and simulation$node_states to match 
+#
+# 3. Adds simulation$states, to put all the states in one place
+#######################################################
+reorder_castor_sim_to_default_ape_node_order <- function(simulation, ladderize_LR=NULL)
+	{
+	ex='
 	
+	simulation = example_51tip_tdsse2_sim_original_ordering()
+	plot(simulation$tree)
+	nodelabels(simulation$node_states)
+	tiplabels(simulation$tip_states)
+	
+	ladderize_LR = NULL
+	simulation2 = remove_last_tip_from_simulation_and_reorder(simulation, ladderize_LR=ladderize_LR)
+	plot(simulation2$tree)
+	tiplabels(simulation2$tip_states)
+	nodelabels(simulation2$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2, ladderize_LR=ladderize_LR)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+	ladderize_LR = "right"
+	simulation2 = remove_last_tip_from_simulation_and_reorder(simulation)
+	plot(simulation2$tree)
+	tiplabels(simulation2$tip_states)
+	nodelabels(simulation2$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation, ladderize_LR=ladderize_LR)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2, ladderize_LR=ladderize_LR)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+
+	ladderize_LR = "left"
+	simulation2 = remove_last_tip_from_simulation_and_reorder(simulation)
+	plot(simulation2$tree)
+	tiplabels(simulation2$tip_states)
+	nodelabels(simulation2$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation, ladderize_LR=ladderize_LR)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+	simulation3 = reorder_castor_sim_to_default_ape_node_order(simulation2, ladderize_LR=ladderize_LR)
+	plot(simulation3$tree)
+	tiplabels(simulation3$tip_states)
+	nodelabels(simulation3$node_states)
+
+	' # END ex
+
+	# Make tree table from simulation tree
+	simtree = simulation$tree
+	simtable = prt(simtree, printflag=FALSE, get_tipnames=TRUE)
+
+	tipnums = 1:length(simulation$tree$tip.label)
+	nodenums = (length(simulation$tree$tip.label)+1):(length(simulation$tree$tip.label)+simulation$tree$Nnode)
+	nodenums_1based = 1:simulation$tree$Nnode
+
+	# Write simtree to Newick; read back in to get standard APE newick format
+	newtree = read.tree(file="", text=write.tree(simulation$tree, file=""))
+	
+	if (is.null(ladderize_LR) == FALSE)
+		{
+		if ((ladderize_LR %in% c("left","right")) == FALSE)
+			{
+			txt = paste0("STOP ERROR in reorder_castor_sim_to_default_ape_node_order(): the option ladderize_LR must be NULL, 'left', or 'right'. Instead, you have: '", ladderize_LR, "'. Fix and re-run.")
+			cat("\n")
+			cat(txt)
+			cat("\n")
+			stop(txt)
+			}
+		if (ladderize_LR == "right")
+			{
+			newtree2 = ladderize(phy=newtree, right=TRUE)
+			}
+		if (ladderize_LR == "left")
+			{
+			newtree2 = ladderize(phy=newtree, right=FALSE)
+			}
+		newtree = read.tree(file="", text=write.tree(newtree2, file=""))
+		} # END if (is.null(ladderize_LR) == FALSE)
+	
+	# Write tree table for new tree
+	newtable = prt(newtree, printflag=FALSE, get_tipnames=TRUE)
+
+	convert_old_trtable_wDropped_tip_to_reordered_tree = match(x=newtable$tipnames, table=simtable$tipnames)
+	convert_old_trtable_wDropped_tip_to_reordered_tree
+	
+	tipnums = 1:length(newtree$tip.label)
+	nodenums = (length(newtree$tip.label)+1):(length(newtree$tip.label)+newtree$Nnode)
+	nodenums_1based = 1:newtree$Nnode
+	convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums = convert_old_trtable_wDropped_tip_to_reordered_tree[nodenums] - length(tipnums)
+	convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums
+
+	plot_cmds='
+	plot(simulation$tree)
+	tiplabels(simulation$tip_states)
+	nodelabels(simulation$node_states)
+
+	plot(newtree)
+	tiplabels(simulation$tip_states[convert_old_trtable_wDropped_tip_to_reordered_tree[tipnums]])
+	nodelabels(simulation$node_states[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums])
+
+	'
+	
+	simulation3 = simulation
+	simulation3$tree = newtree
+	simulation3$node_states = simulation$node_states[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums]
+	simulation3$tip_states = simulation$tip_states[convert_old_trtable_wDropped_tip_to_reordered_tree[tipnums]]
+	simulation3$birth_times = simulation$birth_times[convert_old_trtable_wDropped_tip_to_reordered_tree_intnodenums]
+
+	# Same thing again
+	simulation3$states = c(unname(simulation3$tip_states), simulation3$node_states)
+	simulation3$simstates = c(unname(simulation3$tip_states), simulation3$node_states)
+	return(simulation3)
+	} # END reorder_castor_sim_to_default_ape_node_order
+
 
 
 
@@ -806,8 +1011,8 @@ write_out_original_castor_simfiles <- function(simulation, wd, fn="rawsim")
 	
 	outfn = slashslash(paste0(wd, "/", fn, "_simstates_in_orig_castor_order.txt"))
 	write.table(simstates_in_orig_castor_order, file=outfn, quote=FALSE, sep="\t", col.names=TRUE, row.names=FALSE)
-	
-	}
+	} # END write_out_original_castor_simfiles <- function(simulation, wd, fn="rawsim")
+
 
 
 
@@ -909,10 +1114,112 @@ write_out_reordered_castor_simfiles <- function(simulation, wd, area_names, stat
 	outfn = slashslash(paste0(wd, "/", "simstates_living.txt"))
 	write.table(unname(simulation2$simstates[index_in_fulltree_matching_living_tree_tipnode]), file=outfn)
 	
+	} # END write_out_reordered_castor_simfiles <- function(simulation, wd, area_names, states_list, tip_age_tolerance=1e-6)
 
-	}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# simulation = example_51tip_tdsse2_sim_original_ordering()
+# 
+# From:
+# ~/GitHub/PhyBEARS.jl/simulator/examples/tdsse_example_plus_converter_v4.R
+# 
+example_51tip_tdsse2_sim_original_ordering <- function()
+	{
+	simulation = list(success = TRUE, tree = structure(list(Nnode = 50, tip.label = c("1", 
+"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", 
+"14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", 
+"25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", 
+"36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", 
+"47", "48", "49", "50", "51"), node.label = NULL, edge = structure(c(52, 
+52, 53, 53, 54, 54, 55, 55, 56, 56, 59, 59, 57, 57, 60, 60, 58, 
+58, 63, 63, 62, 62, 61, 61, 66, 66, 68, 68, 67, 67, 73, 73, 75, 
+75, 69, 69, 78, 78, 64, 64, 79, 79, 70, 70, 81, 81, 77, 77, 82, 
+82, 83, 83, 71, 71, 86, 86, 76, 76, 89, 89, 85, 85, 74, 74, 88, 
+88, 65, 65, 96, 96, 94, 94, 90, 90, 98, 98, 84, 84, 99, 99, 87, 
+87, 95, 95, 72, 72, 91, 91, 93, 93, 97, 97, 80, 80, 92, 92, 100, 
+100, 101, 101, 53, 1, 54, 2, 3, 55, 56, 57, 58, 59, 4, 60, 5, 
+61, 62, 63, 6, 64, 65, 66, 67, 68, 7, 69, 70, 8, 71, 9, 72, 73, 
+74, 75, 76, 77, 10, 78, 11, 79, 80, 12, 13, 81, 82, 14, 83, 15, 
+84, 85, 16, 17, 86, 18, 87, 88, 89, 90, 19, 91, 20, 92, 21, 93, 
+22, 94, 95, 23, 96, 24, 97, 25, 26, 98, 27, 28, 29, 30, 31, 99, 
+32, 100, 33, 34, 35, 36, 37, 38, 101, 39, 40, 41, 42, 43, 44, 
+45, 46, 47, 48, 49, 50, 51), dim = c(100L, 2L)), edge.length = c(3.76167625422872, 
+1.15118504212692, 1.4129763294059, 0.952295999869243, 0.0916725060258141, 
+2.02544036940875, 1.36906311875584, 4.27844598210136, 3.27152906397526, 
+1.03784038163911, 6.64100336884915, 1.93994889991997, 1.06340811178046, 
+0.831626767388471, 0.372375367496508, 0.300394016719052, 5.59382680340637, 
+2.25963809962222, 4.38951537042398, 0.539141253639613, 0.746335305738642, 
+0.529376290655232, 0.464514156117362, 1.35992974780259, 1.744496242705, 
+5.96504648104722, 2.57603589129339, 5.90283009325414, 4.84938942875932, 
+0.3612195489423, 3.01729230438924, 0.577527685768292, 1.67333906543283, 
+0.753534691917093, 0.666051926773619, 0.290307852956083, 0.19526707536729, 
+0.158285999094026, 3.83375769612207, 2.03466890343517, 4.23283780237827, 
+0.23711321531777, 0.606035136127531, 0.932604764788138, 0.652038839927609, 
+3.9957245870605, 2.35844914301417, 1.41946958020324, 0.661428341884992, 
+0.0218866768469823, 0.178471224928703, 0.221972531207459, 1.95413355601748, 
+1.04946315962594, 0.430041003110073, 1.42148536430939, 2.69666510612332, 
+2.25860959732395, 2.73517351909411, 2.32403420383738, 2.5741195713398, 
+1.94190141827375, 2.30735922483919, 0.350103341537803, 1.13924658300406, 
+2.27733104233481, 0.103227355811395, 2.11467236426286, 1.5502385925764, 
+0.551269796144204, 1.65342749535174, 0.248765181139387, 1.7437291578948, 
+1.7437291578948, 1.708490702162, 1.708490702162, 1.63514000852888, 
+0.143283610676164, 1.49185639785271, 1.1477781378256, 0.662178365025607, 
+1.37266064594327, 1.13808445933075, 1.13808445933075, 0.836481649411411, 
+0.836481649411411, 0.81517518070336, 0.81517518070336, 0.632218153066049, 
+0.381884701760079, 0.461206415875058, 0.461206415875058, 0.41744617324542, 
+0.41744617324542, 0.411139315256733, 0.411139315256733, 0.108424654525258, 
+0.344078260027111, 0, 0), root = 52), class = "phylo"), root_time = 2.92778473614645, 
+    final_time = 21.2793118409106, Nbirths = c(35, 0, 9, 6), 
+    Ndeaths = c(12, 2, 4, 2), Ntransitions_A = structure(c(0, 
+    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0), dim = c(4L, 
+    4L)), Ntransitions_C = structure(c(70, 0, 0, 0, 0, 0, 0, 
+    3, 0, 0, 18, 1, 0, 0, 0, 8), dim = c(4L, 4L)), Nrarefied = 0, 
+    tip_states = c(`1` = 4, `2` = 4, `3` = 2, `4` = 1, `5` = 3, 
+    `6` = 1, `7` = 2, `8` = 1, `9` = 1, `10` = 3, `11` = 3, `12` = 1, 
+    `13` = 3, `14` = 1, `15` = 3, `16` = 1, `17` = 1, `18` = 3, 
+    `19` = 1, `20` = 3, `21` = 1, `22` = 1, `23` = 1, `24` = 1, 
+    `25` = 1, `26` = 1, `27` = 3, `28` = 3, `29` = 1, `30` = 1, 
+    `31` = 1, `32` = 1, `33` = 1, `34` = 1, `35` = 1, `36` = 1, 
+    `37` = 1, `38` = 1, `39` = 1, `40` = 1, `41` = 1, `42` = 1, 
+    `43` = 1, `44` = 1, `45` = 1, `46` = 3, `47` = 3, `48` = 1, 
+    `49` = 1, `50` = 1, `51` = 1), node_states = c(4, 4, 4, 4, 
+    1, 4, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 
+    1, 1, 1, 3, 3, 1, 3, 1, 3, 1, 1, 3, 1, 1, 3, 3, 1, 3, 1, 
+    1, 1, 1, 1, 1, 1, 1, 1), tip_proxy_states = NULL, node_proxy_states = NULL, 
+    start_state = 2, birth_times = c(2.92778473614645, 6.68946099037516, 
+    8.10243731978107, 10.1278776891898, 11.4969408079457, 12.5347811895848, 
+    14.4063236712912, 14.4747300895047, 14.7684698719209, 14.7751241062238, 
+    14.8471054570012, 15.2379504386796, 15.3142653598634, 15.3764817476565, 
+    15.5934407627399, 15.9546603116822, 16.5321879974505, 16.5978801864822, 
+    16.8881880394383, 17.0281079715431, 17.0464740385323, 17.0587616025684, 
+    17.2835872538501, 17.2857226893676, 17.6647967386959, 17.9356260937777, 
+    17.9525176389499, 18.1140973187064, 18.2055270628833, 18.5441383218165, 
+    18.7051922695708, 18.9719526160714, 19.0019807985758, 19.1646394766478, 
+    19.2678668324592, 19.3220559576092, 19.5355826830158, 19.5708211387486, 
+    19.6441718323817, 19.7874554430579, 19.9066511949673, 20.1412273815799, 
+    20.4428301914992, 20.4641366602073, 20.6470936878446, 20.8181054250356, 
+    20.8618656676652, 20.8681725256539, 20.9352335808835, 21.2793118409106
+    ), death_times = c(4.07896977827337, 7.64175699024441, 8.19410982580688, 
+    15.4697317830716, 15.702464594797, 17.0834551148056, 17.2639321132559, 
+    17.6866834155429, 17.9913663673565, 18.1575986249852, 18.3262250805809, 
+    19.0627768749783, 19.1757845584339, 19.8191366286034, 20.3622966753273, 
+    20.568829559993, 20.9021921690066, 20.975483452961, 21.0289783896046, 
+    21.0436582354088))
+  return(simulation)
+	} # END example_51tip_tdsse2_sim_original_ordering <- function()
 
 
 

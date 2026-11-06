@@ -16,8 +16,8 @@ using PhyBEARS.Uppass
 
 
 # Change the working directory as needed
-wd = "/Users/nmat471/HD/GitHub/PhyBEARS.jl/ex/tutorials/4sims/ss8_sim_001/"
-cd(wd)
+wd = "~/GitHub/PhyBEARS.jl/ex/tutorials/4sims/ss8_sim_001/"
+cd(expanduser(wd))
 
 # This simulation has 148 living species
 trfn = "tree2.newick"

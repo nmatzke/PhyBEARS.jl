@@ -27,9 +27,9 @@ library(ape)
 #trfn = "tree_small.newick"
 trstr = "((chimp:1,human:1):1,gorilla:2);"
 tr = read.tree(file="", text=trstr)
-# plot(tr)
-# axisPhylo()
-# title("Tree with 3 taxa")
+plot(tr)
+axisPhylo()
+title("Tree with 3 taxa")
 
 
 
@@ -110,8 +110,9 @@ y <- xstart <- c(S = 1, P = 1, C = 1)
 ## Solving
 out <-  lsoda(xstart, times, SPCmod, parms) 
 
-
-
+plot(out[,"time"], out[,"S"], ylim=c(0,3))
+lines(out[,"time"], out[,"P"], col="blue") # P=producer=blue
+lines(out[,"time"], out[,"C"], col="green") # C=consumer=green
 
 
 
@@ -130,7 +131,7 @@ axisPhylo()
 # Get the ML estimates of birthRate (speciation rate) 
 # and deathRate (extinction rate)
 # ...using ape::birthdeath
-BD =  birthdeath(tr)
+BD =  ape::birthdeath(tr)
 BD
 names(BD)
 
@@ -143,33 +144,36 @@ c(birthRate, deathRate)
 
 # You should get:
 # c(birthRate, deathRate)
-# [1] 0.2222222 0.0000000
+# [1] 0.2000000 0.0000000
 
 # Get the log-likelihood of the tree under the ML parameters
 # Convert the deviance to likelihood
 BD_LnL = -1 * BD$dev / 2
 BD_LnL
-# -3.216395
+# -1.916291
 
 
 # Set birthRate
-#birthRate = 0.22222222222222222222
+#birthRate = 0.20000
 
 
 #######################################################
 # Likelihood equation in the birthdeath function
 #######################################################
 N <- length(tr$tip.label)
-nb_node = tr$Nnode - 1
+nb_node = tr$Nnode - 1 # number of internal nodes, excluding the root
 sptimes <- c(NA, branching.times(tr)) # NA so the number of times equals number of tips?
-# a = "d/b"
-# r = "b-d"
+# a = "d/b" # relative death rate
+# r = "b-d" # diversifcation rate
+a=0.0
+r=0.2
 
-dev <- function(a=0.1, r=0.2, N, x, return_deviance=FALSE)
+dev <- function(a=0.1, r=0.2, N, return_deviance=FALSE)
 	{
 	if (r < 0 || a > 1) 
 		return(1e+100)
 	
+	# I think this comes from Nee 1994, PNAS (?)
 	lnl_topology = lfactorial(tr$Nnode)
 	lnl_numBirths = nb_node * log(r)
 	lnl_Births_above_root = r * sum(sptimes[3:N])
@@ -214,19 +218,19 @@ dev <- function(a=0.1, r=0.2, N, x, return_deviance=FALSE)
 		}
 	return(result)
 	}
-dev(a=0.1, r=0.2, N=N, x=x)
+dev(a=0.1, r=0.2, N=N)
 # -4.063987
 
-dev(a=x1, r=x2, N=N, x=x)
+dev(a=x1, r=x2, N=N)
 # -3.216395
 
-dev(a=deathRate/birthRate, r=birthRate-deathRate, N=N, x=x)
+dev(a=deathRate/birthRate, r=birthRate-deathRate, N=N)
 # -3.216395
 
-dev(a=0/birthRate, r=birthRate-0, N=N, x=x)
+dev(a=0/birthRate, r=birthRate-0, N=N)
 
 birthRate = 0.222222222222
-dev(a=0/birthRate, r=birthRate-0, N=N, x=x)
+dev(a=0/birthRate, r=birthRate-0, N=N)
 
 
 S <- rep(1, times=length(tr$tip.label))
@@ -311,14 +315,16 @@ yule_lik(tr=tr)
 
 # ClaSSE helper functions
 library(diversitree)
-source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")
-source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")
+source("~/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_mods_v2.R")
+source("~/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")
 
 
 ##################################################
 # Set up states for BiSSE to match DEC states
 ##################################################
 
+# Disregard this bit; for BiSSE, just doing 2 states, not 4
+# # # # # # # # 
 # States in the BiSSE model, and how they correspond
 # to the geographic ranges in DEC
 # 
@@ -330,10 +336,11 @@ source("/GitHub/PhyBEARS.jl/Rsrc/ClaSSE_functions_v3.R")
 # 3 = B = Asia
 # 4 = AB = both
 # ====================
+# # # # # # # # 
+
+
 
 # States at the tips of the tree
-# (ranges A, A, A, B)
-#states = c(1, 1, 1, 1)
 states = c(0, 0, 0) # 3 states for 3 tips
 states = c(1, 1, 1) # 3 states for 3 tips
 names(states) = tr$tip.label
@@ -573,7 +580,7 @@ computed_likelihoods_at_each_node_x_lambda = computed_likelihoods_at_each_node
 i = 1
 edges_to_visit = seq(from=1, by=2, length.out=num_internal_nodes)
 
-birthRate = 0.222222222
+birthRate = 0.2
 deathRate = 0.1
 
 lambda0 = birthRate
