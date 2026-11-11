@@ -1,0 +1,574 @@
+
+R version 4.6.1 (2026-06-24) -- "Happy Hop"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin23
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[R.app GUI 1.83 (8608) aarch64-apple-darwin23]
+
+[History restored from /Users/nmat471/.Rapp.history]
+
+> 
+> library(ape)
+> library(msa)
+Loading required package: Biostrings
+Loading required package: BiocGenerics
+Loading required package: generics
+
+Attaching package: ‘generics’
+
+The following objects are masked from ‘package:base’:
+
+    as.difftime, as.factor, as.ordered, intersect, is.element, setdiff, setequal, union
+
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:stats’:
+
+    IQR, mad, sd, var, xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, aperm, append, as.data.frame, basename, cbind, colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find, get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget, order, paste, pmax, pmax.int,
+    pmin, pmin.int, Position, rank, rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique, unsplit, which.max, which.min
+
+Loading required package: S4Vectors
+Loading required package: stats4
+
+Attaching package: ‘S4Vectors’
+
+The following object is masked from ‘package:utils’:
+
+    findMatches
+
+The following objects are masked from ‘package:base’:
+
+    expand.grid, I, unname
+
+Loading required package: IRanges
+Loading required package: XVector
+Loading required package: Seqinfo
+
+Attaching package: ‘Biostrings’
+
+The following object is masked from ‘package:ape’:
+
+    complement
+
+The following object is masked from ‘package:base’:
+
+    strsplit
+
+> library(seqinr)
+
+Attaching package: ‘seqinr’
+
+The following object is masked from ‘package:Biostrings’:
+
+    translate
+
+The following objects are masked from ‘package:ape’:
+
+    as.alignment, consensus
+
+> library(BioGeoBEARS)
+> #library(rvest) # for html_table()
+> #library(phytools) # for midpoint.root
+> #library(openxlsx) # for read.xlsx
+> library(ginmappeR)
+> library(queryup)
+> #library(rentrez)  # for rentrez::entrez_fetch(db="protein", id=MotA_seq_ids[1:170], rettype="fasta")
+> library(AMR)				# for microbe names (AMR = Antimicrobial Resistance)
+Assuming EUCAST 2026 as the default AMR guideline, see `?AMR-options` to change this.
+> 
+> sourceall("~/GitHub/str2phy/Rsrc/")
+
+Sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+Sourcing Rfile: 00_process_protnames_v1.R
+Sourcing Rfile: alignments_v1.R
+Sourcing Rfile: build_query_url2.R
+Sourcing Rfile: custom_names_abbr_v1.R
+Sourcing Rfile: genbank_recs_v1.R
+Sourcing Rfile: get_from_string_v1.R
+Sourcing Rfile: get_info_from_seqIDs_v1.R
+Sourcing Rfile: ncbi_downloads_v1.R
+Sourcing Rfile: parse_protein_labels_v1.R
+Sourcing Rfile: parsing_iqtree_file_v1.R
+Sourcing Rfile: processing_CDbatch_v1.R
+Sourcing Rfile: protein_bioinf_v1.R
+Sourcing Rfile: seqnames_v1.R
+Sourcing Rfile: str2phy_v1.R
+Sourcing Rfile: t3ss_relabel_v1.R
+Sourcing Rfile: tree_manip_v1.R
+Loading required package: maps
+Registered S3 method overwritten by 'igraph':
+  method   from
+  plot.sir AMR 
+
+Done sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+[1] "~/GitHub/str2phy/Rsrc/"
+> 
+> wd = "~/DropboxUoA/flag/hmmer_search_620_genomes_for_CheC/01_CheC_uniqs_aln_v1/"
+> setwd(wd)
+> fasta_fn = "CheCdomains_unique_hits.fasta"
+> 
+> type = "AA"
+> chars_to_skip = c("B","X","J","Z")
+> seqs = read_FASTA_safe(file=fasta_fn, type="AA", chars_to_skip=c("B","X","J","Z"))
+Warning message:
+In check_if_DNA_or_AA(txtstrings, chars_to_skip = chars_to_skip) :
+  Warning in check_if_DNA_or_AA(): Sequence has >20 AA unique symbols, specifically length(letters_in_seq)=23. Extra AA symbols allowed: U,O,*,B,X,J,Z. Decision: probably AAs. Set chars_to_skip=NULL to see unusual characters.
+> 
+> seqnames = names(seqs)
+> split=" "
+> genomeID_also=TRUE
+> genomeID_split="\\|"
+> change_internal_apostrophes_to="PprimeP"
+> recodes=genbank_prefixes()
+> removetxt=c(">")
+> replace_spaces=FALSE
+> prflag=FALSE
+> 
+> list_of_trailing_phrases_to_remove = c(" family type III secretion apparatus protein",
++ 	" family flagellar motor switch protein",
++ 	" family flagellar motor C-terminal domain-containing protein")
+> 
+> seqlabels_parsed_df = process_protnames(seqnames, split=" ", genomeID_also=TRUE, genomeID_split="\\|", change_internal_apostrophes_to="PprimeP", recodes=genbank_prefixes(), removetxt=c(">"), replace_spaces=FALSE, prflag=FALSE, list_of_trailing_phrases_to_remove=list_of_trailing_phrases_to_remove)
+
+WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.The labels without brackets are listed below:
+
+GCA_001899335.1|OIHNNC_02700 hypothetical protein
+GCA_001899335.1|OIHNNC_07065 hypothetical protein
+GCA_001899335.1|OIHNNC_07145 FliMN-C domain-containing protein
+GCA_002011615.1|DPININ_02260 hypothetical protein
+GCA_002011615.1|DPININ_06225 hypothetical protein
+GCA_002011615.1|DPININ_07395 Chemotaxis protein CheC
+GCA_002011615.1|DPININ_08390 Tellurite resistance methyltransferase TehB
+GCA_003134695.1|GFFGKD_03540 hypothetical protein
+GCA_003134695.1|GFFGKD_04160 SAM-dependent methyltransferase
+GCA_003134695.1|GFFGKD_08385 hypothetical protein
+GCA_003134695.1|GFFGKD_08390 Flagellar motor switch protein FliN
+GCA_003134695.1|GFFGKD_09395 Ubiquinone biosynthesis O-methyltransferase
+GCA_003134695.1|GFFGKD_11190 hypothetical protein
+GCA_003134695.1|GFFGKD_13125 Release factor glutamine methyltransferase
+GCA_004555545.1|BGDGLI_01625 Ubiquinone biosynthesis O-methyltransferase
+GCA_004555545.1|BGDGLI_03315 hypothetical protein
+GCA_004555545.1|BGDGLI_05120 Ubiquinone/menaquinone biosynthesis C-methyltransferase UbiE
+GCA_004555545.1|BGDGLI_05890 Chemotaxis protein CheX
+GCA_004555545.1|BGDGLI_06695 Flagellar motor switch protein FliM
+GCA_004555545.1|BGDGLI_06700 Flagellar motor switch protein FliN
+GCA_004555545.1|BGDGLI_07215 Chemotaxis protein methyltransferase
+GCA_903889845.1|EMDNOK_01940 Methyltransferase type 11
+GCA_903889845.1|EMDNOK_02055 protein-glutamate O-methyltransferase
+GCA_903889845.1|EMDNOK_02230 Transcriptional regulator, ArsR family
+GCA_903889845.1|EMDNOK_08065 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903889845.1|EMDNOK_08375 Flagellar motor switch protein FliM
+GCA_903889845.1|EMDNOK_08790 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903889845.1|EMDNOK_09080 hypothetical protein
+GCA_903889845.1|EMDNOK_11285 Multidrug resistance protein MdtE
+GCA_903889845.1|EMDNOK_12920 hypothetical protein
+GCA_903937045.1|KLHPPI_00335 Methyltransferase type 11
+GCA_903937045.1|KLHPPI_03180 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903937045.1|KLHPPI_03390 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903937045.1|KLHPPI_04275 hypothetical protein
+GCA_903937045.1|KLHPPI_06450 Multidrug resistance protein MdtE
+GCA_903937045.1|KLHPPI_06960 Flagellar motor switch protein FliM
+GCA_903937045.1|KLHPPI_07585 Methyltransferase domain-containing protein
+
+...done.
+
+WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+Error in str_replace(string = x, pattern = "\\S+\\s+\\([^()]+\\)$", replacement = function(m) { : 
+  could not find function "str_replace"
+In addition: Warning messages:
+1: In extract_last_brackets(list_of_strings = seqnames, replace_spaces = replace_spaces,  :
+  WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.
+2: In protlabels_to_df(seqnames, split = split, genomeID_also = genomeID_also,  :
+  WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+> 
+> head(seqlabels_parsed_df)
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'x' in selecting a method for function 'head': object 'seqlabels_parsed_df' not found
+> dim(seqlabels_parsed_df)
+Error: object 'seqlabels_parsed_df' not found
+> 
+> stringr:: str_replace
+function (string, pattern, replacement) 
+{
+    if (!missing(replacement) && is_replacement_fun(replacement)) {
+        replacement <- as_function(replacement)
+        return(str_transform(string, pattern, replacement))
+    }
+    check_lengths(string, pattern, replacement)
+    out <- switch(type(pattern), empty = no_empty(), bound = no_boundary(), 
+        fixed = stri_replace_first_fixed(string, pattern, replacement, 
+            opts_fixed = opts(pattern)), coll = stri_replace_first_coll(string, 
+            pattern, replacement, opts_collator = opts(pattern)), 
+        regex = stri_replace_first_regex(string, pattern, fix_replacement(replacement), 
+            opts_regex = opts(pattern)))
+    preserve_names_if_possible(string, pattern, out)
+}
+<bytecode: 0xb658013f0>
+<environment: namespace:stringr>
+> library(ape)
+> library(msa)
+> library(seqinr)
+> library(BioGeoBEARS)
+> #library(rvest) # for html_table()
+> #library(phytools) # for midpoint.root
+> #library(openxlsx) # for read.xlsx
+> library(ginmappeR)
+> library(queryup)
+> #library(rentrez)  # for rentrez::entrez_fetch(db="protein", id=MotA_seq_ids[1:170], rettype="fasta")
+> library(AMR)				# for microbe names (AMR = Antimicrobial Resistance)
+> 
+> sourceall("~/GitHub/str2phy/Rsrc/")
+
+Sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+Sourcing Rfile: 00_process_protnames_v1.R
+Sourcing Rfile: alignments_v1.R
+Sourcing Rfile: build_query_url2.R
+Sourcing Rfile: custom_names_abbr_v1.R
+Sourcing Rfile: genbank_recs_v1.R
+Sourcing Rfile: get_from_string_v1.R
+Sourcing Rfile: get_info_from_seqIDs_v1.R
+Sourcing Rfile: ncbi_downloads_v1.R
+Sourcing Rfile: parse_protein_labels_v1.R
+Sourcing Rfile: parsing_iqtree_file_v1.R
+Sourcing Rfile: processing_CDbatch_v1.R
+Sourcing Rfile: protein_bioinf_v1.R
+Sourcing Rfile: seqnames_v1.R
+Sourcing Rfile: str2phy_v1.R
+Sourcing Rfile: t3ss_relabel_v1.R
+Sourcing Rfile: tree_manip_v1.R
+
+Done sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+[1] "~/GitHub/str2phy/Rsrc/"
+> 
+> wd = "~/DropboxUoA/flag/hmmer_search_620_genomes_for_CheC/01_CheC_uniqs_aln_v1/"
+> setwd(wd)
+> fasta_fn = "CheCdomains_unique_hits.fasta"
+> 
+> type = "AA"
+> chars_to_skip = c("B","X","J","Z")
+> seqs = read_FASTA_safe(file=fasta_fn, type="AA", chars_to_skip=c("B","X","J","Z"))
+Warning message:
+In check_if_DNA_or_AA(txtstrings, chars_to_skip = chars_to_skip) :
+  Warning in check_if_DNA_or_AA(): Sequence has >20 AA unique symbols, specifically length(letters_in_seq)=23. Extra AA symbols allowed: U,O,*,B,X,J,Z. Decision: probably AAs. Set chars_to_skip=NULL to see unusual characters.
+> 
+> seqnames = names(seqs)
+> split=" "
+> genomeID_also=TRUE
+> genomeID_split="\\|"
+> change_internal_apostrophes_to="PprimeP"
+> recodes=genbank_prefixes()
+> removetxt=c(">")
+> replace_spaces=FALSE
+> prflag=FALSE
+> 
+> list_of_trailing_phrases_to_remove = c(" family type III secretion apparatus protein",
++ 	" family flagellar motor switch protein",
++ 	" family flagellar motor C-terminal domain-containing protein")
+> 
+> seqlabels_parsed_df = process_protnames(seqnames, split=" ", genomeID_also=TRUE, genomeID_split="\\|", change_internal_apostrophes_to="PprimeP", recodes=genbank_prefixes(), removetxt=c(">"), replace_spaces=FALSE, prflag=FALSE, list_of_trailing_phrases_to_remove=list_of_trailing_phrases_to_remove)
+
+WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.The labels without brackets are listed below:
+
+GCA_001899335.1|OIHNNC_02700 hypothetical protein
+GCA_001899335.1|OIHNNC_07065 hypothetical protein
+GCA_001899335.1|OIHNNC_07145 FliMN-C domain-containing protein
+GCA_002011615.1|DPININ_02260 hypothetical protein
+GCA_002011615.1|DPININ_06225 hypothetical protein
+GCA_002011615.1|DPININ_07395 Chemotaxis protein CheC
+GCA_002011615.1|DPININ_08390 Tellurite resistance methyltransferase TehB
+GCA_003134695.1|GFFGKD_03540 hypothetical protein
+GCA_003134695.1|GFFGKD_04160 SAM-dependent methyltransferase
+GCA_003134695.1|GFFGKD_08385 hypothetical protein
+GCA_003134695.1|GFFGKD_08390 Flagellar motor switch protein FliN
+GCA_003134695.1|GFFGKD_09395 Ubiquinone biosynthesis O-methyltransferase
+GCA_003134695.1|GFFGKD_11190 hypothetical protein
+GCA_003134695.1|GFFGKD_13125 Release factor glutamine methyltransferase
+GCA_004555545.1|BGDGLI_01625 Ubiquinone biosynthesis O-methyltransferase
+GCA_004555545.1|BGDGLI_03315 hypothetical protein
+GCA_004555545.1|BGDGLI_05120 Ubiquinone/menaquinone biosynthesis C-methyltransferase UbiE
+GCA_004555545.1|BGDGLI_05890 Chemotaxis protein CheX
+GCA_004555545.1|BGDGLI_06695 Flagellar motor switch protein FliM
+GCA_004555545.1|BGDGLI_06700 Flagellar motor switch protein FliN
+GCA_004555545.1|BGDGLI_07215 Chemotaxis protein methyltransferase
+GCA_903889845.1|EMDNOK_01940 Methyltransferase type 11
+GCA_903889845.1|EMDNOK_02055 protein-glutamate O-methyltransferase
+GCA_903889845.1|EMDNOK_02230 Transcriptional regulator, ArsR family
+GCA_903889845.1|EMDNOK_08065 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903889845.1|EMDNOK_08375 Flagellar motor switch protein FliM
+GCA_903889845.1|EMDNOK_08790 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903889845.1|EMDNOK_09080 hypothetical protein
+GCA_903889845.1|EMDNOK_11285 Multidrug resistance protein MdtE
+GCA_903889845.1|EMDNOK_12920 hypothetical protein
+GCA_903937045.1|KLHPPI_00335 Methyltransferase type 11
+GCA_903937045.1|KLHPPI_03180 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903937045.1|KLHPPI_03390 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903937045.1|KLHPPI_04275 hypothetical protein
+GCA_903937045.1|KLHPPI_06450 Multidrug resistance protein MdtE
+GCA_903937045.1|KLHPPI_06960 Flagellar motor switch protein FliM
+GCA_903937045.1|KLHPPI_07585 Methyltransferase domain-containing protein
+
+...done.
+
+WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+
+Running AMR::mo_phylum()...
+ℹ Microorganism translation was uncertain for 127 microorganisms. Run `mo_uncertainties()` to review these uncertainties, or use `add_custom_microorganisms()` to add custom entries.                                                                         
+ℹ The following microorganisms were taxonomically renamed (use `keep_synonyms = TRUE` to leave uncorrected):
+  • Akkermansia glycaniphila (Ouwerkerk et al., 2016)            -> Neoakkermansia glycaniphila (Dali et al., 2026)
+  • Aromatoleum toluclasticum (Song et al., 1999)                -> Azoarcus toluclasticus (Song et al., 1999)
+  • Atlantibacter hermannii (Hata et al., 2025)                  -> Escherichia hermannii (Brenner et al., 1983)
+  • Bacillus oxytocus (Flugge, 1886)                             -> Klebsiella oxytoca (Lautrop, 1956)
+  • Bacillus subtilis inaquosorum (Rooney et al., 2009)          -> Bacillus inaquosorum (Dunlap et al., 2020)
+  • Bacillus subtilis subtilis (Nakamura et al., 1999)           -> Bacillus subtilis (Cohn, 1872)
+  • Bacteroides levii (Johnson et al., 1983)                     -> Porphyromonas levii (Shah et al., 1995)
+  • Borreliella burgdorferi (Adeolu et al., 2015)                -> Borrelia burgdorferi (Johnson et al., 1984)
+  • Bosea thiooxidans (Das et al., 1996)                         -> Allobosea thiooxidans (Deshmukh et al., 2026)
+  • Brucella suis (Huddleson, 1929)                              -> Brucella melitensis (Meyer et al., 1920)
+  • Brumicola pallidula (Rey-Velasco et al., 2024)               -> Glaciecola pallidula (Bowman et al., 1998)
+  • Cupriavidus paucula (Vaneechoutte et al., 2004)              -> Cupriavidus pauculus (Vandamme et al., 2004)
+  • Flavobacterium meningosepticum (King, 1959)                  -> Elizabethkingia meningoseptica (Kim et al., 2005)
+  • Klebsiella alba (Xu et al., 2015)                            -> Klebsiella quasipneumoniae similipneumoniae (Brisse et al., 2014)
+  • Moorella thermoacetica (Collins et al., 1994)                -> Neomoorella thermoacetica (Gtari et al., 2025)
+  • Mycobacterium tuberculosis caprae (Aranaz et al., 1999)      -> Mycobacterium tuberculosis (Lehmann et al., 1896)
+  • Pectobacterium carotovorum carotovorum (Hauben et al., 1999) -> Pectobacterium carotovorum (Waldee, 1945)
+  • Pectobacterium polaris (Dees et al., 2017)                   -> Pectobacterium polare (Dees et al., 2017)
+  • Piscinibacter sakaiensis (Liu et al., 2023)                  -> Pseudideonella sakaiensis (Lu et al., 2026)
+  • Pseudomonas humi (Akita et al., 2019)                        -> Pseudomonas citronellolis (Seubert, 1960)
+  • Pseudomonas syringae savastanoi (Janse, 1982)                -> Pseudomonas savastanoi (Gardan et al., 1992)
+  • Pseudomonas syringae syringae (Janse, 1982)                  -> Pseudomonas syringae (Van Hall, 1902)
+  • Rhizobacter gummiphilus (Imai et al., 2016)                  -> Piscinibacter gummiphilus (Liu et al., 2023)
+  • Selenomonas bovis (Zhang et al., 2009)                       -> Dongibacter bovis (Heng et al., 2026)
+  • Serratia marcescens marcescens (Ajithkumar et al., 2003)     -> Serratia marcescens (Bizio, 1823)
+  Only the first 25 (out of 30) are shown. Run `print(mo_renamed(), n = ...)` to view more entries (might be slow), or save `mo_renamed()` to an object.
+                                                                                                                                                                                                                                                              
+Running AMR::mo_class()...
+ℹ Returning previously coerced values for "Acinetobacter pittii PHEA-2", "Aeromonas hydrophila subsp. hydrophila ATCC 7966", "Aeromonas salmonicida subsp. pectinolytica 34mel", "Aeromonas veronii AMC34", "Afifella sp. IM 167", "Aliivibrio fischeri ES114",
+  "Alkalihalophilus pseudofirmus OF4", "Anaplasma phagocytophilum str. JM", "Arcobacter nitrofigilis DSM 7299", "Bacillus cereus ATCC 10987", "Bacillus sp. OxB-1", "Bacillus subtilis subsp. natto", "Bacillus subtilis subsp. natto BEST195", "Bacillus
+  subtilis subsp. subtilis str. 168", "bacterium BD-1", "Bacteroidales bacterium", "Bacteroides fragilis 638R", "Bacteroides sp. OM05-10AA", "Bacteroidetes bacterium", "Bacteroidetes bacterium 37-13", "Bacteroidia bacterium", "Bordetella avium 197N",
+  "Bordetella bronchiseptica RB50", "Borreliella burgdorferi ZS7", "Bosea sp. Root483D1", "Brachyspira pilosicoli WesB", "Brevibacillus laterosporus DSM 25", "Brucella suis 1330", "Burkholderia cenocepacia HI2424", "Burkholderia mallei ATCC 23344",
+  "Burkholderia pseudomallei K96243", "Burkholderia thailandensis E264", "Caballeronia sp. dw_276", "Campylobacter jejuni subsp. jejuni NCTC 11168 = ATCC 700819", "Capnocytophaga canimorsus Cc5", "Capnocytophaga sputigena ATCC 33612", "Cereibacter
+  sphaeroides KD131", "Chlamydia pneumoniae TW-183", "Chromobacterium violaceum ATCC 12472", "Citrobacter sp. RHBSTW-00881", "Clostridium acetobutylicum DSM 1731", "Clostridium autoethanogenum DSM 10061", "Clostridium tetani E88", "Comamonas testosteroni
+  KF-1", "Coprobacter secundus subsp. similis", "Corynebacterium kroppenstedtii DSM 44385", "Cronobacter condimenti 1330", "Cupriavidus sp. HMR-1", "Cupriavidus taiwanensis LMG 19424", "Dehalococcoides mccartyi 195", "Deinococcus maricopensis DSM 21211",
+  "Enterobacter genomosp. O", "Enterococcus faecalis V583", "Escherichia sp. ESNIH1", "Fibrobacter succinogenes subsp. succinogenes S85", "Fibrobacteres bacterium", "Flavobacteriaceae bacterium", "Flavobacteriales bacterium", "Flavobacterium cauense
+  R2A-7", "Flavobacterium johnsoniae UW101", "Gemmatimonas groenlandica", "Geobacillus kaustophilus HTA426", "Halalkalibacterium halodurans C-125", "Helicobacter hepaticus ATCC 51449", "Helicobacter pylori 26695", "Hydrogenivirga sp. 128-5-R1-1",
+  "Klebsiella sp. M589", "Leifsonia xyli subsp. cynodontis DSM 46306", "Leptotrichia buccalis C-1013-b", "Listeria monocytogenes str. 1/2a F6854", "Luteibacter sp. OK325", "Luteimonas sp. Sa2BVA3", "Lysobacter sp. K5869", "Magnetospirillum magneticum
+  AMB-1", "Marinobacter nauticus VT8", "Methylacidimicrobium sp. B4", "Methylococcus capsulatus str. Bath", "Micavibrio aeruginosavorus ARL-13", "Moraxella catarrhalis BBH18", "Moraxella macacae 0408225", "Morganella morganii subsp. morganii KT",
+  "Mycobacterium tuberculosis H37Rv", "Nitrospina gracilis 3/211", "Nitrospira japonica", "Octadecabacter arcticus 238", "Oleidesulfovibrio alaskensis G20", "Paenibacillus sp. TCA20", "Parabacteroides gordonii MS-1 = DSM 23371", "Parabacteroides sp.
+  2_1_7", "Paraglaciecola psychrophila 170", "Pectobacterium carotovorum subsp. carotovorum PC1", "Pectobacterium sp. F1-1", "Photobacterium profundum SS9", "Photorhabdus luminescens subsp. luminescens", "Polaribacter sp. IC063", "Porphyromonas gingivalis
+  ATCC 33277", "Pseudanabaena sp. PCC 7367", "Pseudoalteromonas sp. NBT06-2", "Pseudomonas aeruginosa PA99", "Pseudomonas aeruginosa PAO1", "Pseudomonas putida GB-1", "Pseudomonas sp. GM17", "Pseudomonas sp. GW531-T4", "Pseudomonas sp. WCS365",
+  "Pseudomonas syringae pv. actinidiae ICMP 19497", "Pseudomonas syringae pv. syringae B728a", "Psychrobacillus sp. AK 1817", "Rhizobium rhizogenes K84", "Rhodanobacter sp. C03", "Rhodobacter capsulatus SB 1003", "Rickettsia conorii str. Malish 7",
+  "Serratia marcescens subsp. marcescens ATCC 13880", "Shewanella oneidensis MR-1", "Shewanella sp. ANA-3", "Sinorhizobium meliloti 1021", "Solidesulfovibrio magneticus RS-1", "Sphingobacteriales bacterium", "Sphingobium sp. SYK-6", "Sphingomonas sp.
+  36D10-4-7", "Staphylococcus aureus subsp. aureus NCTC 8325", "Streptococcus oralis ATCC 35037", "Streptococcus pneumoniae R6", "Sulfurihydrogenibium yellowstonense SS-5", "Synechocystis sp. PCC 6803", "Thauera sp. SWB20", "Thermanaerovibrio
+  acidaminovorans DSM 6589", "Thomasclavelia spiroformis DSM 1552", "Tissierella sp. JN-28", "Treponema denticola ATCC 35405", "Treponema pallidum subsp. pallidum", "Treponema pallidum subsp. pertenue", "Vibrio aestuarianus subsp. cardii", "Vibrio
+  alginolyticus 12G01", "Vibrio mediterranei AK1", "Vibrio mimicus VM603", "Vibrio parahaemolyticus RIMD 2210633", "Vibrio sp. VPAP30", "Vibrio splendidus 12B01", "Vibrio tasmaniensis 1F-267", "Vibrio vulnificus YJ016", "Xanthomonas sp. SHU 199",
+  "Yersinia mollaretii ATCC 43969", "Yersinia pestis 8787", and "Yersinia pseudotuberculosis IP 32953". Run `mo_reset_session()` to reset this. This note will be shown once per session for this input.
+Error in process_protnames(seqnames, split = " ", genomeID_also = TRUE,  : 
+  object 'tdf3' not found
+In addition: Warning messages:
+1: In extract_last_brackets(list_of_strings = seqnames, replace_spaces = replace_spaces,  :
+  WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.
+2: In protlabels_to_df(seqnames, split = split, genomeID_also = genomeID_also,  :
+  WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+> 
+> head(seqlabels_parsed_df)
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'x' in selecting a method for function 'head': object 'seqlabels_parsed_df' not found
+> dim(seqlabels_parsed_df)
+Error: object 'seqlabels_parsed_df' not found
+> 
+> 
+> 
+> 
+> library(ape)
+> library(msa)
+> library(seqinr)
+> library(BioGeoBEARS)
+> #library(rvest) # for html_table()
+> #library(phytools) # for midpoint.root
+> #library(openxlsx) # for read.xlsx
+> library(ginmappeR)
+> library(queryup)
+> #library(rentrez)  # for rentrez::entrez_fetch(db="protein", id=MotA_seq_ids[1:170], rettype="fasta")
+> library(AMR)				# for microbe names (AMR = Antimicrobial Resistance)
+> 
+> sourceall("~/GitHub/str2phy/Rsrc/")
+
+Sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+Sourcing Rfile: 00_process_protnames_v1.R
+Sourcing Rfile: alignments_v1.R
+Sourcing Rfile: build_query_url2.R
+Sourcing Rfile: custom_names_abbr_v1.R
+Sourcing Rfile: genbank_recs_v1.R
+Sourcing Rfile: get_from_string_v1.R
+Sourcing Rfile: get_info_from_seqIDs_v1.R
+Sourcing Rfile: ncbi_downloads_v1.R
+Sourcing Rfile: parse_protein_labels_v1.R
+Sourcing Rfile: parsing_iqtree_file_v1.R
+Sourcing Rfile: processing_CDbatch_v1.R
+Sourcing Rfile: protein_bioinf_v1.R
+Sourcing Rfile: seqnames_v1.R
+Sourcing Rfile: str2phy_v1.R
+Sourcing Rfile: t3ss_relabel_v1.R
+Sourcing Rfile: tree_manip_v1.R
+
+Done sourcing Rfiles in ~/GitHub/str2phy/Rsrc/...
+[1] "~/GitHub/str2phy/Rsrc/"
+> 
+> wd = "~/DropboxUoA/flag/hmmer_search_620_genomes_for_CheC/01_CheC_uniqs_aln_v1/"
+> setwd(wd)
+> fasta_fn = "CheCdomains_unique_hits.fasta"
+> 
+> type = "AA"
+> chars_to_skip = c("B","X","J","Z")
+> seqs = read_FASTA_safe(file=fasta_fn, type="AA", chars_to_skip=c("B","X","J","Z"))
+Warning message:
+In check_if_DNA_or_AA(txtstrings, chars_to_skip = chars_to_skip) :
+  Warning in check_if_DNA_or_AA(): Sequence has >20 AA unique symbols, specifically length(letters_in_seq)=23. Extra AA symbols allowed: U,O,*,B,X,J,Z. Decision: probably AAs. Set chars_to_skip=NULL to see unusual characters.
+> 
+> seqnames = names(seqs)
+> split=" "
+> genomeID_also=TRUE
+> genomeID_split="\\|"
+> change_internal_apostrophes_to="PprimeP"
+> recodes=genbank_prefixes()
+> removetxt=c(">")
+> replace_spaces=FALSE
+> prflag=FALSE
+> 
+> list_of_trailing_phrases_to_remove = c(" family type III secretion apparatus protein",
++ 	" family flagellar motor switch protein",
++ 	" family flagellar motor C-terminal domain-containing protein")
+> 
+> seqlabels_parsed_df = process_protnames(seqnames, split=" ", genomeID_also=TRUE, genomeID_split="\\|", change_internal_apostrophes_to="PprimeP", recodes=genbank_prefixes(), removetxt=c(">"), replace_spaces=FALSE, prflag=FALSE, list_of_trailing_phrases_to_remove=list_of_trailing_phrases_to_remove)
+
+WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.The labels without brackets are listed below:
+
+GCA_001899335.1|OIHNNC_02700 hypothetical protein
+GCA_001899335.1|OIHNNC_07065 hypothetical protein
+GCA_001899335.1|OIHNNC_07145 FliMN-C domain-containing protein
+GCA_002011615.1|DPININ_02260 hypothetical protein
+GCA_002011615.1|DPININ_06225 hypothetical protein
+GCA_002011615.1|DPININ_07395 Chemotaxis protein CheC
+GCA_002011615.1|DPININ_08390 Tellurite resistance methyltransferase TehB
+GCA_003134695.1|GFFGKD_03540 hypothetical protein
+GCA_003134695.1|GFFGKD_04160 SAM-dependent methyltransferase
+GCA_003134695.1|GFFGKD_08385 hypothetical protein
+GCA_003134695.1|GFFGKD_08390 Flagellar motor switch protein FliN
+GCA_003134695.1|GFFGKD_09395 Ubiquinone biosynthesis O-methyltransferase
+GCA_003134695.1|GFFGKD_11190 hypothetical protein
+GCA_003134695.1|GFFGKD_13125 Release factor glutamine methyltransferase
+GCA_004555545.1|BGDGLI_01625 Ubiquinone biosynthesis O-methyltransferase
+GCA_004555545.1|BGDGLI_03315 hypothetical protein
+GCA_004555545.1|BGDGLI_05120 Ubiquinone/menaquinone biosynthesis C-methyltransferase UbiE
+GCA_004555545.1|BGDGLI_05890 Chemotaxis protein CheX
+GCA_004555545.1|BGDGLI_06695 Flagellar motor switch protein FliM
+GCA_004555545.1|BGDGLI_06700 Flagellar motor switch protein FliN
+GCA_004555545.1|BGDGLI_07215 Chemotaxis protein methyltransferase
+GCA_903889845.1|EMDNOK_01940 Methyltransferase type 11
+GCA_903889845.1|EMDNOK_02055 protein-glutamate O-methyltransferase
+GCA_903889845.1|EMDNOK_02230 Transcriptional regulator, ArsR family
+GCA_903889845.1|EMDNOK_08065 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903889845.1|EMDNOK_08375 Flagellar motor switch protein FliM
+GCA_903889845.1|EMDNOK_08790 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903889845.1|EMDNOK_09080 hypothetical protein
+GCA_903889845.1|EMDNOK_11285 Multidrug resistance protein MdtE
+GCA_903889845.1|EMDNOK_12920 hypothetical protein
+GCA_903937045.1|KLHPPI_00335 Methyltransferase type 11
+GCA_903937045.1|KLHPPI_03180 Chemotaxis protein CheY-P-specific phosphatase CheC
+GCA_903937045.1|KLHPPI_03390 Chemotaxis protein CheX, a CheY~P-specific phosphatase
+GCA_903937045.1|KLHPPI_04275 hypothetical protein
+GCA_903937045.1|KLHPPI_06450 Multidrug resistance protein MdtE
+GCA_903937045.1|KLHPPI_06960 Flagellar motor switch protein FliM
+GCA_903937045.1|KLHPPI_07585 Methyltransferase domain-containing protein
+
+...done.
+
+WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+
+Running AMR::mo_phylum()...
+ℹ The following microorganisms were taxonomically renamed (use `keep_synonyms = TRUE` to leave uncorrected):
+  • Akkermansia glycaniphila (Ouwerkerk et al., 2016)            -> Neoakkermansia glycaniphila (Dali et al., 2026)
+  • Aromatoleum toluclasticum (Song et al., 1999)                -> Azoarcus toluclasticus (Song et al., 1999)
+  • Atlantibacter hermannii (Hata et al., 2025)                  -> Escherichia hermannii (Brenner et al., 1983)
+  • Bacillus oxytocus (Flugge, 1886)                             -> Klebsiella oxytoca (Lautrop, 1956)
+  • Bacillus subtilis inaquosorum (Rooney et al., 2009)          -> Bacillus inaquosorum (Dunlap et al., 2020)
+  • Bacillus subtilis subtilis (Nakamura et al., 1999)           -> Bacillus subtilis (Cohn, 1872)
+  • Bacteroides levii (Johnson et al., 1983)                     -> Porphyromonas levii (Shah et al., 1995)
+  • Borreliella burgdorferi (Adeolu et al., 2015)                -> Borrelia burgdorferi (Johnson et al., 1984)
+  • Bosea thiooxidans (Das et al., 1996)                         -> Allobosea thiooxidans (Deshmukh et al., 2026)
+  • Brucella suis (Huddleson, 1929)                              -> Brucella melitensis (Meyer et al., 1920)
+  • Brumicola pallidula (Rey-Velasco et al., 2024)               -> Glaciecola pallidula (Bowman et al., 1998)
+  • Cupriavidus paucula (Vaneechoutte et al., 2004)              -> Cupriavidus pauculus (Vandamme et al., 2004)
+  • Flavobacterium meningosepticum (King, 1959)                  -> Elizabethkingia meningoseptica (Kim et al., 2005)
+  • Klebsiella alba (Xu et al., 2015)                            -> Klebsiella quasipneumoniae similipneumoniae (Brisse et al., 2014)
+  • Moorella thermoacetica (Collins et al., 1994)                -> Neomoorella thermoacetica (Gtari et al., 2025)
+  • Mycobacterium tuberculosis caprae (Aranaz et al., 1999)      -> Mycobacterium tuberculosis (Lehmann et al., 1896)
+  • Pectobacterium carotovorum carotovorum (Hauben et al., 1999) -> Pectobacterium carotovorum (Waldee, 1945)
+  • Pectobacterium polaris (Dees et al., 2017)                   -> Pectobacterium polare (Dees et al., 2017)
+  • Piscinibacter sakaiensis (Liu et al., 2023)                  -> Pseudideonella sakaiensis (Lu et al., 2026)
+  • Pseudomonas humi (Akita et al., 2019)                        -> Pseudomonas citronellolis (Seubert, 1960)
+  • Pseudomonas syringae savastanoi (Janse, 1982)                -> Pseudomonas savastanoi (Gardan et al., 1992)
+  • Pseudomonas syringae syringae (Janse, 1982)                  -> Pseudomonas syringae (Van Hall, 1902)
+  • Rhizobacter gummiphilus (Imai et al., 2016)                  -> Piscinibacter gummiphilus (Liu et al., 2023)
+  • Selenomonas bovis (Zhang et al., 2009)                       -> Dongibacter bovis (Heng et al., 2026)
+  • Serratia marcescens marcescens (Ajithkumar et al., 2003)     -> Serratia marcescens (Bizio, 1823)
+  Only the first 25 (out of 30) are shown. Run `print(mo_renamed(), n = ...)` to view more entries (might be slow), or save `mo_renamed()` to an object.
+
+Running AMR::mo_class()...
+Warning messages:
+1: In extract_last_brackets(list_of_strings = seqnames, replace_spaces = replace_spaces,  :
+  WARNING from extract_last_brackets(): of 7910 items in input 'list_of_strings', 37 had *NO* bracket ('[') character, usually indicating the taxon/species. These items will be returned as blank.
+2: In protlabels_to_df(seqnames, split = split, genomeID_also = genomeID_also,  :
+  WARNING in protlabels_to_df(): replacing 37 blank species labels with: 'Unk unk unk' (meaning: 'unknown' species label).
+> 
+> head(seqlabels_parsed_df)
+        genomeIDs     seqIDs                                                   desc                           species            genus           sp strain strain_lastwords                             taxon                            taxon1
+1 GCA_000005825.2 ADC48084.1                    Chemotaxis protein phosphatase CheC Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+2 GCA_000005825.2 ADC48095.1                         flagellar motor switch protein Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+3 GCA_000005825.2 ADC48096.1                    flagellar motor switch protein FliM Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+4 GCA_000005825.2 ADC48154.1                        serine/threonine protein kinase Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+5 GCA_000005825.2 ADC49449.1            modification methylase, HemK family protein Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+6 GCA_000005825.2 ADC49566.1 S-adenosylmethionine (SAM)-dependent methyltransferase Alkalihalophilus pseudofirmus OF4 Alkalihalophilus pseudofirmus    OF4              OF4 Alkalihalophilus_pseudofirmus_OF4 Alkalihalophilus_pseudofirmus_OF4
+                       brief_desc            desc_parse                      uniq_species    phylum   class                pc        pcAbbr                                                                                                     bestname
+1                            CheC                    1L Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI                            CheC__GCA_000005825.2_ADC48084.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+2                            flag         find_replace2 Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI                            flag__GCA_000005825.2_ADC48095.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+3                            FliM                    1L Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI                            FliM__GCA_000005825.2_ADC48096.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+4 serine_threonine_protein_kinase              fixnames Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI serine_threonine_protein_kinase__GCA_000005825.2_ADC48154.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+5                            HemK find_label_make_label Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI                            HemK__GCA_000005825.2_ADC49449.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+6                   CSALmethSynth         find_replace2 Alkalihalophilus pseudofirmus OF4 Bacillota Bacilli Bacillota_Bacilli bacillBACILLI                   CSALmethSynth__GCA_000005825.2_ADC49566.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4
+> dim(seqlabels_parsed_df)
+[1] 7910   18
+> head(seqnames)
+[1] "GCA_000005825.2|ADC48084.1 Chemotaxis protein phosphatase CheC [Alkalihalophilus pseudofirmus OF4]"                    "GCA_000005825.2|ADC48095.1 flagellar motor switch protein [Alkalihalophilus pseudofirmus OF4]"                        
+[3] "GCA_000005825.2|ADC48096.1 flagellar motor switch protein FliM [Alkalihalophilus pseudofirmus OF4]"                    "GCA_000005825.2|ADC48154.1 serine/threonine protein kinase [Alkalihalophilus pseudofirmus OF4]"                       
+[5] "GCA_000005825.2|ADC49449.1 modification methylase, HemK family protein [Alkalihalophilus pseudofirmus OF4]"            "GCA_000005825.2|ADC49566.1 S-adenosylmethionine (SAM)-dependent methyltransferase [Alkalihalophilus pseudofirmus OF4]"
+> head(seqlabels_parsed_df$bestnames)
+NULL
+> head(seqnames)
+[1] "GCA_000005825.2|ADC48084.1 Chemotaxis protein phosphatase CheC [Alkalihalophilus pseudofirmus OF4]"                    "GCA_000005825.2|ADC48095.1 flagellar motor switch protein [Alkalihalophilus pseudofirmus OF4]"                        
+[3] "GCA_000005825.2|ADC48096.1 flagellar motor switch protein FliM [Alkalihalophilus pseudofirmus OF4]"                    "GCA_000005825.2|ADC48154.1 serine/threonine protein kinase [Alkalihalophilus pseudofirmus OF4]"                       
+[5] "GCA_000005825.2|ADC49449.1 modification methylase, HemK family protein [Alkalihalophilus pseudofirmus OF4]"            "GCA_000005825.2|ADC49566.1 S-adenosylmethionine (SAM)-dependent methyltransferase [Alkalihalophilus pseudofirmus OF4]"
+> head(seqlabels_parsed_df$bestname)
+[1] "CheC__GCA_000005825.2_ADC48084.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"                            "flag__GCA_000005825.2_ADC48095.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"                           
+[3] "FliM__GCA_000005825.2_ADC48096.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"                            "serine_threonine_protein_kinase__GCA_000005825.2_ADC48154.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"
+[5] "HemK__GCA_000005825.2_ADC49449.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"                            "CSALmethSynth__GCA_000005825.2_ADC49566.1__bacillBACILLI_Alkalihalophilus_pseudofirmus_OF4"                  
+> 

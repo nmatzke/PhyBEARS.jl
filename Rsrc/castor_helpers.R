@@ -701,7 +701,7 @@ drop_tip_from_prt_table <- function(orig_simtree_table, tiplabel_to_remove)
 	
 	simtree_table_with_last_tip_dropped = orig_simtree_table
 	
-	tiprow_TF = orig_simtree_table$tipnames == tipname_to_drop
+	tiprow_TF = orig_simtree_table$tipnames == tiplabel_to_remove
 	tiprow = (1:nrow(orig_simtree_table))[tiprow_TF]
 	tiprow
 	
@@ -730,7 +730,7 @@ drop_tip_from_prt_table <- function(orig_simtree_table, tiplabel_to_remove)
 	simtree_table_with_last_tip_dropped = simtree_table_with_last_tip_dropped[-tiprow,]
 	
 	return(simtree_table_with_last_tip_dropped)
-	} # END drop_tip_from_prt_table <- function(orig_simtree_table, tipname_to_drop)
+	} # END drop_tip_from_prt_table <- function(orig_simtree_table, tiplabel_to_remove)
 
 
 
