@@ -199,24 +199,37 @@ default_simfns <- function()
 
 
 # Simulate for a certain period of time, until minimum number of living taxa produced
-starter="
+starter='
+library(cladoRcpp)
 library(BioGeoBEARS)
-source('/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R')
+library(castor)
+source("~/GitHub/PhyBEARS.jl/Rsrc/castor_helpers.R")
+sourceall("~/GitHub/PhyBEARS.jl/Rsrc/")
 
-wd = '/GitHub/PhyBEARS.jl/ex/siminf_v12a/'
+
+wd = "~/GitHub/PhyBEARS.jl/ex/siminf_v12a/"
+setwd(wd)
 start_state = 2 # number of the starting state
-max_simulation_time = 15.0 # Set to 0 if the user doesn't want to set a max simulation time
+max_simulation_time = 15.0 # Set to 0 if the user doesnt want to set a max simulation time
 min_tips = 50
-max_tips=100
-simfns=default_simfns()
+max_tips = 100
+simfns = default_simfns()
 seedval = 54321
 max_rate=10.0
 numtries = 1000
 
 start_state=2; max_simulation_time=15; min_tips=50; max_tips=100; simfns=default_simfns(); seedval=54321; max_rate=10.0; numtries=1000
 
-simulate_tdsse2_for_timeperiod(wd, start_state, max_simulation_time, min_tips, max_tips, simfns, seedval, max_rate, numtries)
-"
+seedval = 54321
+seedval = Sys.time()
+
+simulation = simulate_tdsse2_for_timeperiod(wd, start_state, max_simulation_time, min_tips, max_tips, simfns, seedval, max_rate, numtries)
+simulation
+
+# reorder_castor_sim_to_default_ape_node_order(simulation)
+# ...HAS BEEN RUN...
+plot_castor_simulation(simulation, areas=c("A","B","C"), max_range_size=2, include_null_range=TRUE)
+'
 simulate_tdsse2_for_timeperiod <- function(wd, start_state=2, max_simulation_time=10, min_tips=2, max_tips=NULL, simfns=default_simfns(), seedval=54321, max_rate=10.0, numtries=1000)
 	{
 	# Error check
